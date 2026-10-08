@@ -6,6 +6,7 @@ use crate::family::Family;
 use crate::modifier::ModifierField;
 use crate::standard::StandardVersion;
 
+mod app6e;
 mod corridors;
 mod first_milestone;
 
@@ -13,6 +14,7 @@ mod first_milestone;
 pub(super) static TABLES: &[&[SymbolSpec]] = &[
     first_milestone::SPECS,
     corridors::SPECS,
+    app6e::SPECS,
     crate::generated::specs::SPECS,
 ];
 

@@ -22,6 +22,7 @@ use crate::style::{DashPattern, Fill, Hatch, Rgba, Stroke};
 mod classify;
 mod labels;
 mod pattern;
+mod rhumb;
 mod storm;
 
 /// Pixel extents the graphic is drawn at for classification. They lie on
@@ -38,6 +39,21 @@ pub(crate) fn construct(ctx: &mut Ctx<'_>, def: &GraphicDefinition) -> Result<()
     if storm::applies(def) {
         return storm::construct(ctx, def);
     }
+    match rhumb::prepare(ctx, def)? {
+        Some((anchors, modifiers)) => draw(ctx, def, anchors, &modifiers),
+        None => draw(ctx, def, def.positions().collect(), &def.modifiers),
+    }
+}
+
+/// Draws `def` from the renderer's points `anchors` and amplifiers
+/// `modifiers`, which are the definition's own unless the graphic is
+/// prepared for the renderer.
+fn draw(
+    ctx: &mut Ctx<'_>,
+    def: &GraphicDefinition,
+    anchors: Vec<GeoPoint>,
+    modifiers: &crate::modifier::Modifiers,
+) -> Result<(), ConstructError> {
     let symbol = &crate::engine::intercept::engine_symbol(&def.symbol);
     let line_type = crate::engine::line_type::line_type(
         symbol.version_code(),
@@ -51,22 +67,23 @@ pub(crate) fn construct(ctx: &mut Ctx<'_>, def: &GraphicDefinition) -> Result<()
         symbol: ctx.spec.name(),
         reason: "no upstream line type",
     })?;
-    let anchors: Vec<GeoPoint> = def.positions().collect();
     let origin = anchors.first().copied().ok_or(ConstructError::Degenerate {
         symbol: ctx.spec.name(),
         reason: "no control points",
     })?;
     let plane = LocalPlane::new(ctx.earth, origin);
     let xy: Vec<Xy> = anchors.iter().map(|&p| plane.to_xy(p)).collect();
-    let extent = extent_m(&xy, &def.modifiers.distances_m);
+    let extent = extent_m(&xy, &modifiers.distances_m);
     let mut runs = Vec::with_capacity(REFERENCE_EXTENTS_PX.len());
     for px in REFERENCE_EXTENTS_PX {
         let mpp = extent / px;
         runs.push((
             mpp,
-            run(def, symbol, line_type, &xy, mpp).map_err(|e| ConstructError::Unrenderable {
-                symbol: ctx.spec.name(),
-                reason: e.to_string(),
+            run(def, modifiers, symbol, line_type, &xy, mpp).map_err(|e| {
+                ConstructError::Unrenderable {
+                    symbol: ctx.spec.name(),
+                    reason: e.to_string(),
+                }
             })?,
         ));
     }
@@ -98,7 +115,7 @@ pub(crate) fn construct(ctx: &mut Ctx<'_>, def: &GraphicDefinition) -> Result<()
         line_type,
         anchors,
         symbol: symbol.clone(),
-        modifiers: Box::new(def.modifiers.clone()),
+        modifiers: Box::new(modifiers.clone()),
         style: crate::engine::api::Style::of(&def.style),
         geographic,
         shape_count: a.shapes.len(),
@@ -137,6 +154,7 @@ pub(crate) fn from_px((x, y): (f64, f64), mpp: f64) -> Xy {
 
 fn run(
     def: &GraphicDefinition,
+    modifiers: &crate::modifier::Modifiers,
     symbol: &crate::sidc::SymbolId,
     line_type: i32,
     xy: &[Xy],
@@ -149,7 +167,7 @@ fn run(
         line_type,
         symbol,
         pixels: xy.iter().map(|&p| to_px(p, mpp)).collect(),
-        modifiers: &def.modifiers,
+        modifiers,
         meters_per_pixel: mpp,
         text_width: &width,
         ms_info: crate::family::ported::ms_info(symbol),

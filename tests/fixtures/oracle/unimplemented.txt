@@ -17,24 +17,3 @@
 45140200-e
 45140200-e-anticipated
 45140200-e-s100k
-# APP-6(E) change 2 codes upstream's getCMLineType does not map: it draws
-# only their control points as a line, which is not the graphic.
-25120800-app6e
-25142100-app6e
-25152300-app6e
-25152400-app6e
-25152500-app6e
-25220109-app6e
-25240804-app6e
-25242400-app6e
-25242500-app6e
-25242600-app6e
-25242701-app6e
-25242702-app6e
-25242703-app6e
-25344600-app6e
-25370100-app6e
-25142100-app6e-anticipated
-25142100-app6e-s100k
-25240804-app6e-anticipated
-25240804-app6e-s100k

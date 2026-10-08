@@ -33,6 +33,9 @@ pub(crate) fn is_app6e_2(tg: &Tg) -> bool {
 /// differently.
 pub(crate) fn get_center_label(tg: &Tg) -> String {
     let version = symbol_version(&tg.symbol_id);
+    if let Some(label) = app6e_label(tg) {
+        return label.to_owned();
+    }
     let lt = tg.line_type;
     let versioned = match lt {
         tl::AO if version == Some(VERSION_APP6E_2) => Some("AOO"),
@@ -58,6 +61,24 @@ pub(crate) fn get_center_label(tg: &Tg) -> String {
         .or_else(|| fixed_2(lt))
         .unwrap_or("")
         .to_owned()
+}
+
+/// The label of a version 16 code that upstream draws with another code's
+/// line type (`line_type::control_measures`).
+fn app6e_label(tg: &Tg) -> Option<&'static str> {
+    if !is_app6e_2(tg) {
+        return None;
+    }
+    let entity: u32 = tg.symbol_id.get(10..16)?.parse().ok()?;
+    Some(match entity {
+        120_800 => "BA",
+        370_100 => "HT",
+        242_600 => "ZF",
+        242_400 => "AMA",
+        242_500 => "ARA",
+        344_600 => "R",
+        _ => return None,
+    })
 }
 
 /// Labels that do not depend on the symbol version (part 1).

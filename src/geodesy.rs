@@ -4,6 +4,10 @@ use geographiclib_rs::{DirectGeodesic, Geodesic, GeodesicLine, InverseGeodesic, 
 
 use crate::geo::GeoPoint;
 
+mod rhumb;
+
+pub(crate) use rhumb::Rhumb;
+
 #[cfg(test)]
 mod tests;
 

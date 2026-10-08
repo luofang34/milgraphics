@@ -188,3 +188,199 @@ fn the_version_16_dynamic_minefield_puts_h_above_and_w_below() {
     let e = out("15032500002707070000", tl::DEPICT, SQUARE, &modifiers);
     assert!(e.labels.iter().all(|l| l.text != "HH"));
 }
+
+/// Version 16 code `entity` drawn with the line type it is mapped to.
+fn app6e(entity: u32, points: &[(f64, f64)], modifiers: &Modifiers) -> Output {
+    let line_type = crate::engine::line_type::line_type(16, 25, entity).unwrap();
+    out(
+        &format!("1603250000{entity}0000"),
+        line_type,
+        points,
+        modifiers,
+    )
+}
+
+fn texts(o: &Output) -> Vec<&str> {
+    o.labels.iter().map(|l| l.text.as_str()).collect()
+}
+
+fn full() -> Modifiers {
+    Modifiers {
+        designation: Some("T1X".into()),
+        additional_info: Some("HH".into()),
+        dtg_start: Some("W0".into()),
+        dtg_end: Some("W1".into()),
+        echelon: Some("XX".into()),
+        ..Modifiers::default()
+    }
+}
+
+#[test]
+fn the_new_version_16_areas_carry_their_template_labels() {
+    let t = Modifiers {
+        designation: Some("T1X".into()),
+        ..Modifiers::default()
+    };
+    assert_eq!(texts(&app6e(120_800, SQUARE, &t)), ["BA T1X"]);
+    assert_eq!(texts(&app6e(242_600, SQUARE, &t)), ["ZF T1X"]);
+    let h = Modifiers {
+        additional_info: Some("HH".into()),
+        ..Modifiers::default()
+    };
+    let ht = app6e(370_100, SQUARE, &h);
+    assert_eq!(texts(&ht), ["HT", "HH"]);
+    assert!((ht.labels[1].y - ht.labels[0].y - 12.0).abs() < 1e-9);
+    // Version 15 has no such graphics.
+    assert_eq!(crate::engine::line_type::line_type(15, 25, 120_800), None);
+}
+
+#[test]
+fn the_artillery_areas_break_their_outline_under_the_label_at_four_sides() {
+    for (entity, label) in [(242_400, "AMA"), (242_500, "ARA")] {
+        let o = app6e(entity, SQUARE, &full());
+        let on_line: Vec<_> = o.labels.iter().filter(|l| l.text == label).collect();
+        assert_eq!(on_line.len(), 4);
+        assert!(on_line.iter().all(|l| l.knockout));
+        assert!(texts(&o).contains(&"T1X"));
+    }
+}
+
+#[test]
+fn restricted_terrain_is_hatched_and_severely_restricted_cross_hatched() {
+    use crate::engine::render_utility::hatch::HATCH_FORWARD_DIAGONAL as FORWARD;
+    let hatches = |o: &Output| -> Vec<i32> {
+        o.shapes
+            .iter()
+            .filter_map(|s| s.pattern_fill.map(|h| h.style))
+            .collect()
+    };
+    let restricted = app6e(152_400, SQUARE, &full());
+    assert_eq!(hatches(&restricted).len(), 1);
+    assert_eq!(texts(&restricted), ["HH"]);
+    assert_eq!(
+        (restricted.labels[0].x, restricted.labels[0].y),
+        (200.0, 203.6)
+    );
+    let severe = app6e(152_500, SQUARE, &full());
+    let styles = hatches(&severe);
+    assert_eq!(styles.len(), 2);
+    assert!(styles.contains(&FORWARD) && styles.iter().any(|&s| s != FORWARD));
+    // The second hatch adds no outline.
+    let outlined = severe
+        .shapes
+        .iter()
+        .filter(|s| s.shape_type != shape_type::FILL);
+    assert_eq!(outlined.count(), 1);
+}
+
+#[test]
+fn psyops_zones_hold_a_loudspeaker_beside_h_over_t() {
+    let circle = [(200.0, 200.0)];
+    let mut m = full();
+    m.distances_m = vec![1000.0];
+    for (entity, points) in [
+        (242_701, SQUARE),
+        (242_702, &[(100.0, 200.0), (300.0, 200.0)][..]),
+        (242_703, &circle[..]),
+    ] {
+        let o = app6e(entity, points, &m);
+        let t = texts(&o);
+        assert!(!t.contains(&"PKB"), "{entity}: {t:?}");
+        let h = o.labels.iter().find(|l| l.text == "HH").unwrap();
+        let name = o.labels.iter().find(|l| l.text == "T1X").unwrap();
+        assert_eq!((h.justify, name.justify), (Justify::Left, Justify::Left));
+        assert!(h.x == name.x && h.y < name.y);
+        let speaker = o.shapes.last().unwrap();
+        assert_eq!(speaker.shape_type, shape_type::FILL);
+        // The loudspeaker ends left of the text and is centred between
+        // its two lines.
+        let xs = speaker
+            .points()
+            .iter()
+            .map(|p| p.x)
+            .fold(f64::MIN, f64::max);
+        assert!(xs < h.x, "{entity}");
+        assert!(t.iter().any(|l| l.starts_with("W0")), "{entity}: {t:?}");
+    }
+}
+
+#[test]
+fn the_avenue_of_approach_is_labelled_aa_with_h_and_n_beside_it() {
+    let axis = [
+        (400.0, 100.0),
+        (300.0, 120.0),
+        (100.0, 150.0),
+        (380.0, 140.0),
+    ];
+    let o = app6e(152_300, &axis, &full());
+    assert_eq!(texts(&o), ["AA T1X", "HH"]);
+    let hostile = out(
+        "16062500001523000000",
+        crate::engine::line_type::line_type(16, 25, 152_300).unwrap(),
+        &axis,
+        &full(),
+    );
+    let eny: Vec<_> = hostile.labels.iter().filter(|l| l.text == "ENY").collect();
+    assert_eq!(eny.len(), 2);
+    // Near the rear (point N-1), one each side of the axis.
+    assert!(eny.iter().all(|l| l.x < 150.0));
+    assert!((eny[0].y - eny[1].y).abs() > 20.0);
+    let h = hostile.labels.iter().find(|l| l.text == "HH").unwrap();
+    assert!(eny.iter().all(|l| h.y < l.y));
+}
+
+#[test]
+fn the_mobility_corridor_forks_both_ends_and_repeats_b_and_h_per_segment() {
+    let line = [(100.0, 300.0), (300.0, 300.0), (400.0, 200.0)];
+    let o = app6e(142_100, &line, &full());
+    let b: Vec<_> = o.labels.iter().filter(|l| l.text == "XX").collect();
+    let h: Vec<_> = o.labels.iter().filter(|l| l.text == "HH").collect();
+    assert_eq!((b.len(), h.len()), (2, 2));
+    assert!(b.iter().all(|l| l.knockout) && h.iter().all(|l| !l.knockout));
+    // B in the middle of the first segment, H above it.
+    assert!((b[0].x - 200.0).abs() < 1e-9 && h[0].y < b[0].y);
+    // Two prongs at each end, opening away from the line.
+    let prongs: Vec<_> = lines(&o).into_iter().filter(|l| l.len() == 2).collect();
+    assert_eq!(prongs.len(), 4);
+    assert!(
+        prongs[..2]
+            .iter()
+            .all(|l| l[0] == (100.0, 300.0) && l[1].0 < 100.0)
+    );
+}
+
+#[test]
+fn the_rhumb_line_carries_an_along_it_and_t_boxed_across_it() {
+    let m = Modifiers {
+        designation: Some("15".into()),
+        azimuths_deg: vec![60.0],
+        ..Modifiers::default()
+    };
+    // Drawn left to right: its left is up on screen.
+    let o = app6e(220_109, &[(100.0, 300.0), (300.0, 300.0)], &m);
+    let an = o.labels.iter().find(|l| l.text == "060").unwrap();
+    let t = o.labels.iter().find(|l| l.text == "15").unwrap();
+    assert!(an.y < 300.0 && t.y > 300.0);
+    assert_eq!(t.angle_deg, 0.0);
+    let boxed = lines(&o).into_iter().find(|l| l.len() == 5).unwrap();
+    let top = boxed.iter().map(|p| p.1).fold(f64::MAX, f64::min);
+    assert!(top > 300.0 && top < 310.0, "{top}");
+    assert!(boxed.iter().any(|p| p.0 < t.x) && boxed.iter().any(|p| p.0 > t.x));
+    assert_eq!(rhumb::course_text(5.0), "005");
+    assert_eq!(rhumb::course_text(45.5), "45.5");
+}
+
+#[test]
+fn recover_is_drawn_as_evacuate_with_r() {
+    let points = [
+        (100.0, 200.0),
+        (130.0, 200.0),
+        (250.0, 150.0),
+        (350.0, 200.0),
+    ];
+    let none = Modifiers::default();
+    let recover = app6e(344_600, &points, &none);
+    assert_eq!(texts(&recover), ["R"]);
+    let evacuate = out("16032500003445000000", tl::EVACUATE, &points, &none);
+    assert_eq!(lines(&recover), lines(&evacuate));
+}

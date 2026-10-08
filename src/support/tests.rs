@@ -89,9 +89,11 @@ fn lookup_by_symbol_id() {
     assert_eq!(app6e.reference().map(|r| r.table), Some("Table 8-9"));
     // The standard's name, where upstream's catalog has another graphic's.
     assert_eq!(app6e.name(), "Probable Line of Deployment");
-    // Upstream draws this APP-6(E) Avenue of Approach as its bare control points.
-    let unmapped = SymbolId::parse("16032500001523000000").unwrap();
-    assert!(matches!(spec(&unmapped), Err(Unsupported::Symbol { .. })));
+    let avenue = SymbolId::parse("16032500001523000000").unwrap();
+    assert_eq!(spec(&avenue).unwrap().name(), "Avenue of Approach");
+    // Fighting Position has no row in APP-6(E)(2).
+    let undefined = SymbolId::parse("16032500002910000000").unwrap();
+    assert!(matches!(spec(&undefined), Err(Unsupported::Symbol { .. })));
 }
 
 /// Declared symbols whose standard prints a different draw rule than
