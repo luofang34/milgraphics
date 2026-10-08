@@ -151,14 +151,18 @@ pub(super) fn shift_modifier_path(tg: &mut Tg, ends: &mut EndPoints) -> Result<(
 /// that are furthest left, right, up and down (the first two only when
 /// `two_label_only`). A midpoint is compared by identity upstream, so the
 /// four start as distinct candidates and a segment can win several.
-pub(super) fn add_modifier_on_line(
-    tg: &mut Tg,
-    label: &str,
-    two_label_only: bool,
-) -> Result<(), EngineError> {
+///
+/// Upstream catches a failure (fewer than two pixels) inside this function
+/// and goes on, so this adds nothing in that case and reports nothing.
+pub(super) fn add_modifier_on_line(tg: &mut Tg, label: &str, two_label_only: bool) {
     if label.is_empty() || tg.pixels.is_empty() {
-        return Ok(());
+        return;
     }
+    place_on_line(tg, label, two_label_only).ok();
+}
+
+/// The body of [`add_modifier_on_line`].
+fn place_on_line(tg: &mut Tg, label: &str, two_label_only: bool) -> Result<(), EngineError> {
     let first = mid_point_double(px(tg, 0)?, px(tg, 1)?, 0);
     let (mut left, mut right, mut top, mut bottom) =
         ((first, -1), (first, -2), (first, -3), (first, -4));
@@ -194,12 +198,11 @@ pub(super) fn add_modifier_on_line(
 }
 
 /// Upstream `addNModifier`: the hostile "N" label on the outline.
-pub(super) fn add_n_modifier(tg: &mut Tg) -> Result<(), EngineError> {
+pub(super) fn add_n_modifier(tg: &mut Tg) {
     if tg.is_hostile() {
         let n = tg.n.clone();
-        add_modifier_on_line(tg, &n, true)?;
+        add_modifier_on_line(tg, &n, true);
     }
-    Ok(())
 }
 
 /// Index of the segment whose end points have the extreme `y` sum,
@@ -305,4 +308,10 @@ pub(super) fn pixels_middle_segment(
         }
     }
     Ok(seg)
+}
+
+/// Java `String.split(",")` for the tests of this module.
+#[cfg(test)]
+pub(super) fn split_commas_for_tests(text: &str) -> Vec<&str> {
+    super::post_areas::split_commas(text)
 }

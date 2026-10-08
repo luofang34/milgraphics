@@ -75,7 +75,7 @@ pub(crate) fn add_modifiers2(
             sector_labels(tg, lt, frame)?;
         }
     }
-    scale_modifiers(tg, settings)?;
+    scale_modifiers(tg, settings);
     tg.pixels = orig_points;
     Ok(())
 }

@@ -55,11 +55,19 @@ fn simple_areas(tg: &mut Tg, g: &mut Geo<'_>, line_type: i32) -> Result<bool, En
             at_center(tg, g, &format!("{label}{td}{name}"), 0.0, false);
         }
         tl::JTAA | tl::SAA | tl::SGAA => {
-            add_n_modifier(tg)?;
+            add_n_modifier(tg);
             at_center(tg, g, &format!("{label}{td}{name}"), 0.0, false);
             add_dtg(tg, AREA, (cs, 2.0 * cs), c, c);
         }
         tl::FORT | tl::ZONE => at_center(tg, g, &name, 0.0, false),
+        tl::MSDZ => {
+            // The numbers 1 to 3 mark the second to fourth control points.
+            for (text, p) in [("1", g.ends.pt1), ("2", g.pt2), ("3", g.pt3)] {
+                if let Some(p) = p {
+                    area_modifier(tg, text, AREA, 0.0, (p, p), true);
+                }
+            }
+        }
         tl::BDZ => area_modifier(tg, &label, AREA, 0.0, (g.ends.pt0, g.ends.pt0), false),
         tl::ASSAULT
         | tl::ATKPOS
@@ -80,14 +88,14 @@ fn simple_areas(tg: &mut Tg, g: &mut Geo<'_>, line_type: i32) -> Result<bool, En
             let h = tg.h.clone();
             add_modifier(tg, &h, AREA, 0.0, c, c);
             add_dtg(tg, AREA, (cs, 2.0 * cs), c, c);
-            add_n_modifier(tg)?;
+            add_n_modifier(tg);
             let echelon = tg.echelon_symbol.clone();
             add_modifier_bottom_segment(tg, &echelon)?;
         }
         tl::GENERIC_AREA => {
             at_center(tg, g, &format!("{} {name}", tg.h), -0.5 * cs, false);
             add_dtg(tg, AREA, (0.5 * cs, 1.5 * cs), c, c);
-            add_n_modifier(tg)?;
+            add_n_modifier(tg);
         }
         tl::AIRHEAD => {
             let (_, _, lr, ll) = get_mbr(tg)?;
@@ -135,7 +143,7 @@ fn centered_areas(tg: &mut Tg, g: &mut Geo<'_>, line_type: i32) -> Result<bool, 
             at_center(tg, g, &format!("{label}{ts}{name}"), 0.0, false);
             let echelon = tg.echelon_symbol.clone();
             add_modifier_bottom_segment(tg, &echelon)?;
-            add_n_modifier(tg)?;
+            add_n_modifier(tg);
         }
         _ => return Ok(false),
     }
@@ -171,15 +179,15 @@ fn point_areas(tg: &mut Tg, g: &mut Geo<'_>, line_type: i32) -> Result<bool, Eng
             at_center(tg, g, "AREA", 0.5 * cs, false);
             at_center(tg, g, &name, 1.5 * cs, false);
         }
-        tl::UXO => add_modifier_on_line(tg, "UXO", true)?,
-        tl::GENERAL => add_n_modifier(tg)?,
+        tl::UXO => add_modifier_on_line(tg, "UXO", true),
+        tl::GENERAL => add_n_modifier(tg),
         tl::DHA | tl::KILL_ZONE | tl::FARP => {
             at_center(tg, g, &label, -0.5 * cs, false);
             at_center(tg, g, &name, 0.5 * cs, false);
         }
         tl::DEPICT => {
             get_mbr(tg)?;
-            add_n_modifier(tg)?;
+            add_n_modifier(tg);
         }
         tl::FFA | tl::RFA | tl::NFA => {
             at_center(tg, g, &label, -cs, false);
@@ -187,7 +195,7 @@ fn point_areas(tg: &mut Tg, g: &mut Geo<'_>, line_type: i32) -> Result<bool, Eng
             add_dtg(tg, AREA, (cs, 2.0 * cs), c, c);
         }
         tl::PAA => {
-            add_modifier_on_line(tg, "PAA", false)?;
+            add_modifier_on_line(tg, "PAA", false);
             at_center(tg, g, &name, -0.5 * cs, false);
             add_dtg(tg, AREA, (0.5 * cs, 1.5 * cs), c, c);
         }

@@ -68,9 +68,9 @@ fn end_rules(tg: &mut Tg, g: &mut Geo<'_>, line_type: i32) -> Result<bool, Engin
         tl::EWL => {
             end_pair(tg, g, &label, ABOVE_END, -cs);
             tg.echelon_symbol.clear();
-            add_boundary_modifiers(tg, g.text_width)?;
+            add_boundary_modifiers(tg, g.text_width);
         }
-        tl::BOUNDARY => add_boundary_modifiers(tg, g.text_width)?,
+        tl::BOUNDARY => add_boundary_modifiers(tg, g.text_width),
         _ => return Ok(false),
     }
     Ok(true)
@@ -377,6 +377,6 @@ fn mined(tg: &mut Tg, g: &Geo<'_>, is_mined: bool) -> Result<(), EngineError> {
         area_modifier(tg, &h, ABOVE_MIDDLE, -1.5 * cs, (ul, ur), false);
         area_modifier(tg, &w, ABOVE_MIDDLE, 1.5 * cs, (ll, lr), false);
     }
-    add_modifier_on_line(tg, "M", false)?;
+    add_modifier_on_line(tg, "M", false);
     Ok(())
 }

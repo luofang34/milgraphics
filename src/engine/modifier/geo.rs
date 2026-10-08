@@ -105,7 +105,7 @@ pub(crate) fn add_modifiers_geo(
             area_labels(tg, &mut g, lt)?;
         }
     }
-    scale_modifiers(tg, settings)?;
+    scale_modifiers(tg, settings);
     tg.pixels = orig_points;
     Ok(())
 }
@@ -116,7 +116,7 @@ fn grouped_labels(tg: &mut Tg, g: &mut Geo<'_>) -> Result<bool, EngineError> {
     let (c, cs) = (g.center, 1.0);
     match tg.line_type {
         tl::PAA => {
-            add_modifier_on_line(tg, "PAA", false)?;
+            add_modifier_on_line(tg, "PAA", false);
             let text = build_area_group_string(tg, &g.label);
             area_modifier(tg, &text, AREA, 0.0, (c, c), false);
         }

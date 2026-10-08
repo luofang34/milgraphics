@@ -35,14 +35,19 @@ pub(super) fn sector_labels(
     line_type: i32,
     frame: SectorFrame,
 ) -> Result<(), EngineError> {
+    if !matches!(line_type, tl::RANGE_FAN_SECTOR | tl::RADAR_SEARCH) {
+        return Ok(());
+    }
     if !(frame.meters_per_pixel.is_finite() && frame.meters_per_pixel > 0.0) {
         return Err(EngineError::Degenerate("meters per pixel must be positive"));
     }
+    // Upstream catches any failure here (a missing or malformed amplifier)
+    // and goes on with the labels it has.
     match line_type {
-        tl::RANGE_FAN_SECTOR => range_fan_sector(tg, frame),
-        tl::RADAR_SEARCH => radar_search(tg, frame),
-        _ => Ok(()),
-    }
+        tl::RANGE_FAN_SECTOR => range_fan_sector(tg, frame).ok(),
+        _ => radar_search(tg, frame).ok(),
+    };
+    Ok(())
 }
 
 /// Parses every comma-separated number; `None` where upstream's

@@ -33,7 +33,15 @@ fn boundary_segment_too_short(tg: &Tg, segment: i32, text_width: &dyn Fn(&str) -
 
 /// Upstream `AddBoundaryModifiers`: labels the middle segment, or, when it
 /// is too short for them, labels it anyway.
-pub(super) fn add_boundary_modifiers(
+///
+/// Upstream catches a failure (the segment is missing) inside this function
+/// and goes on, keeping the labels added before it.
+pub(super) fn add_boundary_modifiers(tg: &mut Tg, text_width: &dyn Fn(&str) -> f64) {
+    label_boundary_segment(tg, text_width).ok();
+}
+
+/// The body of [`add_boundary_modifiers`].
+fn label_boundary_segment(
     tg: &mut Tg,
     text_width: &dyn Fn(&str) -> f64,
 ) -> Result<(), EngineError> {

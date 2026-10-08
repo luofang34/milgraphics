@@ -46,10 +46,10 @@ pub(crate) fn display_modifiers2(
     tg: &Tg,
     text_width: &dyn Fn(&str) -> f64,
     is_text_flipped: bool,
-) -> Result<Vec<PlacedLabel>, EngineError> {
+) -> Vec<PlacedLabel> {
     let mut out = Vec::new();
     if tg.modifiers.is_empty() || tg.font.size == 0 {
-        return Ok(out);
+        return out;
     }
     let string_height = f64::from(tg.font.size);
     for label in &tg.modifiers {
@@ -62,8 +62,12 @@ pub(crate) fn display_modifiers2(
             string_height,
             is_text_flipped,
         );
-        let Some(p) = place(tg, label.kind, &frame)? else {
-            continue;
+        // Upstream catches a failure inside the loop and keeps the labels
+        // placed so far.
+        let p = match place(tg, label.kind, &frame) {
+            Ok(Some(p)) => p,
+            Ok(None) => continue,
+            Err(_) => break,
         };
         out.push(PlacedLabel {
             text: label.text.clone(),
@@ -76,7 +80,7 @@ pub(crate) fn display_modifiers2(
             text_id: label.text_id.clone(),
         });
     }
-    Ok(out)
+    out
 }
 
 /// The rounded text path of `label`, with its angle flipped upright.

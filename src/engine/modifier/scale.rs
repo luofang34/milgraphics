@@ -63,7 +63,14 @@ fn is_scaled(label: &ModifierLabel, change1: bool) -> bool {
 
 /// Upstream `scaleModifiers`: scales the line factor of an area's labels to
 /// the area's height, or collapses the labels that do not fit.
-pub(crate) fn scale_modifiers(tg: &mut Tg, settings: &Settings) -> Result<(), EngineError> {
+///
+/// Upstream catches a failure (no pixels) inside this function and goes on.
+pub(crate) fn scale_modifiers(tg: &mut Tg, settings: &Settings) {
+    scale(tg, settings).ok();
+}
+
+/// The body of [`scale_modifiers`].
+fn scale(tg: &mut Tg, settings: &Settings) -> Result<(), EngineError> {
     if !settings.auto_collapse_modifiers || tg.modifiers.is_empty() {
         return Ok(());
     }
