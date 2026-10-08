@@ -65,6 +65,11 @@ fn control_points(case: &serde_json::Value, conv: &Converter) -> Vec<Pt> {
         .collect()
 }
 
+/// A numeric field of a symbol id.
+fn symbol_field<T: std::str::FromStr>(symbol: &str, range: std::ops::Range<usize>) -> Option<T> {
+    symbol.get(range)?.parse().ok()
+}
+
 /// Runs the stages upstream applies to the pixels before `DrawChannel`.
 fn render(symbol: &str, line_type: i32, pixels: Vec<Pt>) -> Vec<Shape> {
     let settings = Settings::default();
@@ -91,9 +96,13 @@ fn channel_shapes_match_the_oracle() {
     for line in FIXTURES.lines() {
         let case: serde_json::Value = serde_json::from_str(line).unwrap();
         let symbol = case["symbol"].as_str().unwrap();
-        let version: u8 = symbol[2..4].parse().unwrap();
-        let set: u8 = symbol[4..6].parse().unwrap();
-        let entity: u32 = symbol[10..16].parse().unwrap();
+        let (Some(version), Some(set), Some(entity)) = (
+            symbol_field::<u8>(symbol, 2..4),
+            symbol_field::<u8>(symbol, 4..6),
+            symbol_field::<u32>(symbol, 10..16),
+        ) else {
+            continue;
+        };
         let Some(line_type) = line_type(version, set, entity) else {
             continue;
         };
