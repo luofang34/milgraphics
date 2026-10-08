@@ -35,7 +35,7 @@ fn main_attack_follows_upstream_in_both_editions() {
 fn air_corridor_takes_width() {
     let entry = lookup(11, 25, 170100).expect("air corridor");
     assert_eq!(entry.draw_rule, standard(DrawRule::Corridor1));
-    assert!(entry.modifiers.contains(&ModifierKey::Am));
+    assert!(entry.modifiers.contains(&ModifierField::AM));
 }
 
 #[test]
@@ -124,9 +124,6 @@ fn names_round_trip() {
     }
     for rule in MoDrawRule::ALL {
         assert_eq!(MoDrawRule::from_name(rule.name()), Some(*rule));
-    }
-    for key in ModifierKey::ALL {
-        assert_eq!(ModifierKey::from_name(key.name()), Some(*key));
     }
     assert_eq!(DrawRule::from_name("Line2"), Some(DrawRule::Line2));
     assert_eq!(DrawRule::from_name("line2"), None);

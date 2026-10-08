@@ -56,11 +56,7 @@ fn def(sidc: &str, points: &[(f64, f64)], t: Option<&str>) -> GraphicDefinition 
 }
 
 fn view() -> View {
-    View {
-        view_revision: 1,
-        surface_revision: 0,
-        label_font: Font::default(),
-    }
+    View::new(1, 0)
 }
 
 fn plan(d: &GraphicDefinition, projection: &dyn Projection) -> RenderPlan {

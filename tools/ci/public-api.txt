@@ -1,0 +1,1050 @@
+pub mod milgraphics
+pub mod milgraphics::antimeridian
+pub fn milgraphics::antimeridian::split_line(&[milgraphics::geo::GeoPoint]) -> alloc::vec::Vec<alloc::vec::Vec<milgraphics::antimeridian::LonLat>>
+pub fn milgraphics::antimeridian::split_ring(&[milgraphics::geo::GeoPoint]) -> alloc::vec::Vec<alloc::vec::Vec<milgraphics::antimeridian::LonLat>>
+pub type milgraphics::antimeridian::LonLat = [f64; 2]
+pub mod milgraphics::budget
+#[non_exhaustive] pub enum milgraphics::budget::BudgetError
+pub milgraphics::budget::BudgetError::ControlPoints
+pub milgraphics::budget::BudgetError::ControlPoints::count: usize
+pub milgraphics::budget::BudgetError::ControlPoints::limit: usize
+pub milgraphics::budget::BudgetError::Labels
+pub milgraphics::budget::BudgetError::Labels::count: usize
+pub milgraphics::budget::BudgetError::Labels::limit: usize
+pub milgraphics::budget::BudgetError::ModifierValues
+pub milgraphics::budget::BudgetError::ModifierValues::count: usize
+pub milgraphics::budget::BudgetError::ModifierValues::field: milgraphics::ModifierField
+pub milgraphics::budget::BudgetError::ModifierValues::limit: usize
+pub milgraphics::budget::BudgetError::Text
+pub milgraphics::budget::BudgetError::Text::count: usize
+pub milgraphics::budget::BudgetError::Text::field: milgraphics::ModifierField
+pub milgraphics::budget::BudgetError::Text::limit: usize
+pub milgraphics::budget::BudgetError::Vertices
+pub milgraphics::budget::BudgetError::Vertices::count: usize
+pub milgraphics::budget::BudgetError::Vertices::limit: usize
+#[non_exhaustive] pub struct milgraphics::budget::Budget
+pub milgraphics::budget::Budget::max_control_points: usize
+pub milgraphics::budget::Budget::max_labels: usize
+pub milgraphics::budget::Budget::max_modifier_values: usize
+pub milgraphics::budget::Budget::max_text_chars: usize
+pub milgraphics::budget::Budget::max_vertices: usize
+impl core::default::Default for milgraphics::budget::Budget
+pub fn milgraphics::budget::Budget::default() -> Self
+pub mod milgraphics::catalog
+#[non_exhaustive] pub enum milgraphics::catalog::CatalogDrawRule
+pub milgraphics::catalog::CatalogDrawRule::Metoc(milgraphics::MoDrawRule)
+pub milgraphics::catalog::CatalogDrawRule::Standard(milgraphics::DrawRule)
+#[non_exhaustive] pub enum milgraphics::catalog::GeometryKind
+pub milgraphics::catalog::GeometryKind::Area
+pub milgraphics::catalog::GeometryKind::Line
+pub milgraphics::catalog::GeometryKind::Point
+#[non_exhaustive] pub struct milgraphics::catalog::CatalogEntry
+pub milgraphics::catalog::CatalogEntry::draw_rule: milgraphics::catalog::CatalogDrawRule
+pub milgraphics::catalog::CatalogEntry::entity: u32
+pub milgraphics::catalog::CatalogEntry::geometry: milgraphics::catalog::GeometryKind
+pub milgraphics::catalog::CatalogEntry::modifiers: &'static [milgraphics::ModifierField]
+pub milgraphics::catalog::CatalogEntry::name: &'static str
+pub milgraphics::catalog::CatalogEntry::path: &'static [&'static str]
+pub milgraphics::catalog::CatalogEntry::symbol_set: u8
+pub milgraphics::catalog::CatalogEntry::versions: milgraphics::catalog::VersionSet
+pub struct milgraphics::catalog::VersionSet(_)
+impl milgraphics::catalog::VersionSet
+pub const fn milgraphics::catalog::VersionSet::contains(self, u8) -> bool
+pub fn milgraphics::catalog::VersionSet::iter(self) -> impl core::iter::traits::iterator::Iterator<Item = u8>
+pub fn milgraphics::catalog::entries() -> &'static [milgraphics::catalog::CatalogEntry]
+pub fn milgraphics::catalog::lookup(u8, u8, u32) -> core::option::Option<&'static milgraphics::catalog::CatalogEntry>
+pub mod milgraphics::construction
+#[non_exhaustive] pub enum milgraphics::construction::DecorationSize
+pub milgraphics::construction::DecorationSize::Proportional
+pub milgraphics::construction::DecorationSize::Proportional::fraction: f64
+pub milgraphics::construction::DecorationSize::Proportional::max_px: f64
+pub milgraphics::construction::DecorationSize::Proportional::min_px: f64
+pub milgraphics::construction::DecorationSize::Proportional::segments: [(milgraphics::geo::GeoPoint, milgraphics::geo::GeoPoint); 2]
+pub milgraphics::construction::DecorationSize::Px(f64)
+pub enum milgraphics::construction::GeoGeometry
+pub milgraphics::construction::GeoGeometry::Line(alloc::vec::Vec<milgraphics::geo::GeoPoint>)
+pub milgraphics::construction::GeoGeometry::Ring(alloc::vec::Vec<milgraphics::geo::GeoPoint>)
+impl milgraphics::construction::GeoGeometry
+pub fn milgraphics::construction::GeoGeometry::points(&self) -> &[milgraphics::geo::GeoPoint]
+#[non_exhaustive] pub enum milgraphics::construction::HandleKind
+pub milgraphics::construction::HandleKind::Azimuth
+pub milgraphics::construction::HandleKind::Range
+pub milgraphics::construction::HandleKind::Vertex
+pub milgraphics::construction::HandleKind::Width
+#[non_exhaustive] pub enum milgraphics::construction::LabelPlacement
+pub milgraphics::construction::LabelPlacement::Along
+pub milgraphics::construction::LabelPlacement::Along::toward: milgraphics::geo::GeoPoint
+pub milgraphics::construction::LabelPlacement::Centered
+pub milgraphics::construction::LabelPlacement::LineEnd
+pub milgraphics::construction::LabelPlacement::LineEnd::inward: milgraphics::geo::GeoPoint
+pub milgraphics::construction::LabelPlacement::OutsideEdge
+pub milgraphics::construction::LabelPlacement::OutsideEdge::edges: [milgraphics::geo::GeoPoint; 2]
+pub milgraphics::construction::LabelPlacement::OutsideEdge::toward: milgraphics::geo::GeoPoint
+#[non_exhaustive] pub enum milgraphics::construction::PartRole
+pub milgraphics::construction::PartRole::Arrowhead
+pub milgraphics::construction::PartRole::Boundary
+pub milgraphics::construction::PartRole::Decoration
+pub milgraphics::construction::PartRole::Line
+pub milgraphics::construction::PartRole::Orientation
+#[non_exhaustive] pub enum milgraphics::construction::ScreenDecoration
+pub milgraphics::construction::ScreenDecoration::Arrowhead
+pub milgraphics::construction::ScreenDecoration::Arrowhead::filled: bool
+pub milgraphics::construction::ScreenDecoration::Arrowhead::half_angle_deg: f64
+pub milgraphics::construction::ScreenDecoration::Arrowhead::id: milgraphics::construction::PartId
+pub milgraphics::construction::ScreenDecoration::Arrowhead::size: milgraphics::construction::DecorationSize
+pub milgraphics::construction::ScreenDecoration::Arrowhead::stroke: milgraphics::style::Stroke
+pub milgraphics::construction::ScreenDecoration::Arrowhead::tip: milgraphics::geo::GeoPoint
+pub milgraphics::construction::ScreenDecoration::Arrowhead::toward: milgraphics::geo::GeoPoint
+pub milgraphics::construction::ScreenDecoration::Pointer
+pub milgraphics::construction::ScreenDecoration::Pointer::from: milgraphics::geo::GeoPoint
+pub milgraphics::construction::ScreenDecoration::Pointer::head_px: f64
+pub milgraphics::construction::ScreenDecoration::Pointer::id: milgraphics::construction::PartId
+pub milgraphics::construction::ScreenDecoration::Pointer::stroke: milgraphics::style::Stroke
+pub milgraphics::construction::ScreenDecoration::Pointer::through: milgraphics::geo::GeoPoint
+#[non_exhaustive] pub struct milgraphics::construction::Construction
+pub milgraphics::construction::Construction::decorations: alloc::vec::Vec<milgraphics::construction::ScreenDecoration>
+pub milgraphics::construction::Construction::definition: milgraphics::definition::GraphicId
+pub milgraphics::construction::Construction::handles: alloc::vec::Vec<milgraphics::construction::HandleSpec>
+pub milgraphics::construction::Construction::labels: alloc::vec::Vec<milgraphics::construction::LabelSpec>
+pub milgraphics::construction::Construction::parts: alloc::vec::Vec<milgraphics::construction::GeoPart>
+pub milgraphics::construction::Construction::renderer_version: &'static str
+pub milgraphics::construction::Construction::revision: u64
+#[non_exhaustive] pub struct milgraphics::construction::GeoPart
+pub milgraphics::construction::GeoPart::fill: milgraphics::style::Fill
+pub milgraphics::construction::GeoPart::geometry: milgraphics::construction::GeoGeometry
+pub milgraphics::construction::GeoPart::id: milgraphics::construction::PartId
+pub milgraphics::construction::GeoPart::role: milgraphics::construction::PartRole
+pub milgraphics::construction::GeoPart::stroke: core::option::Option<milgraphics::style::Stroke>
+#[non_exhaustive] pub struct milgraphics::construction::HandleSpec
+pub milgraphics::construction::HandleSpec::at: milgraphics::geo::GeoPoint
+pub milgraphics::construction::HandleSpec::id: milgraphics::edit::HandleId
+pub milgraphics::construction::HandleSpec::kind: milgraphics::construction::HandleKind
+#[non_exhaustive] pub struct milgraphics::construction::LabelSpec
+pub milgraphics::construction::LabelSpec::anchor: milgraphics::geo::GeoPoint
+pub milgraphics::construction::LabelSpec::line_offset: f64
+pub milgraphics::construction::LabelSpec::may_hide: bool
+pub milgraphics::construction::LabelSpec::part: milgraphics::construction::PartId
+pub milgraphics::construction::LabelSpec::placement: milgraphics::construction::LabelPlacement
+pub milgraphics::construction::LabelSpec::text: alloc::string::String
+pub struct milgraphics::construction::PartId(pub u16)
+pub mod milgraphics::definition
+#[non_exhaustive] pub enum milgraphics::definition::ControlPointError
+pub milgraphics::definition::ControlPointError::Altitude(serde_json::error::Error)
+pub milgraphics::definition::ControlPointError::Coordinates
+pub milgraphics::definition::ControlPointError::Geo(milgraphics::geo::GeoError)
+#[non_exhaustive] pub enum milgraphics::definition::GraphicIdError
+pub milgraphics::definition::GraphicIdError::Empty
+pub milgraphics::definition::GraphicIdError::TooLong
+pub milgraphics::definition::GraphicIdError::TooLong::len: usize
+#[non_exhaustive] pub struct milgraphics::definition::ControlPoint
+pub milgraphics::definition::ControlPoint::altitude: core::option::Option<milgraphics::geo::Altitude>
+pub milgraphics::definition::ControlPoint::position: milgraphics::geo::GeoPoint
+pub milgraphics::definition::ControlPoint::unknown: alloc::collections::btree::map::BTreeMap<alloc::string::String, serde_json::value::Value>
+impl milgraphics::definition::ControlPoint
+pub fn milgraphics::definition::ControlPoint::ground(milgraphics::geo::GeoPoint) -> Self
+impl core::convert::From<milgraphics::definition::ControlPoint> for serde_json::map::Map<alloc::string::String, serde_json::value::Value>
+pub fn serde_json::map::Map<alloc::string::String, serde_json::value::Value>::from(milgraphics::definition::ControlPoint) -> Self
+impl core::convert::TryFrom<serde_json::map::Map<alloc::string::String, serde_json::value::Value>> for milgraphics::definition::ControlPoint
+pub type milgraphics::definition::ControlPoint::Error = milgraphics::definition::ControlPointError
+pub fn milgraphics::definition::ControlPoint::try_from(serde_json::map::Map<alloc::string::String, serde_json::value::Value>) -> core::result::Result<Self, milgraphics::definition::ControlPointError>
+#[non_exhaustive] pub struct milgraphics::definition::GraphicDefinition
+pub milgraphics::definition::GraphicDefinition::id: milgraphics::definition::GraphicId
+pub milgraphics::definition::GraphicDefinition::modifiers: milgraphics::modifier::Modifiers
+pub milgraphics::definition::GraphicDefinition::points: alloc::vec::Vec<milgraphics::definition::ControlPoint>
+pub milgraphics::definition::GraphicDefinition::revision: u64
+pub milgraphics::definition::GraphicDefinition::style: milgraphics::definition::StyleOverrides
+pub milgraphics::definition::GraphicDefinition::symbol: milgraphics::sidc::SymbolId
+pub milgraphics::definition::GraphicDefinition::unknown: alloc::collections::btree::map::BTreeMap<alloc::string::String, serde_json::value::Value>
+pub milgraphics::definition::GraphicDefinition::validity: core::option::Option<milgraphics::definition::Validity>
+impl milgraphics::definition::GraphicDefinition
+pub fn milgraphics::definition::GraphicDefinition::new(milgraphics::definition::GraphicId, milgraphics::sidc::SymbolId, alloc::vec::Vec<milgraphics::definition::ControlPoint>) -> Self
+pub fn milgraphics::definition::GraphicDefinition::positions(&self) -> impl core::iter::traits::exact_size::ExactSizeIterator<Item = milgraphics::geo::GeoPoint> + '_
+pub struct milgraphics::definition::GraphicId(_)
+impl milgraphics::definition::GraphicId
+pub fn milgraphics::definition::GraphicId::as_str(&self) -> &str
+pub fn milgraphics::definition::GraphicId::new(impl core::convert::Into<alloc::string::String>) -> core::result::Result<Self, milgraphics::definition::GraphicIdError>
+impl core::convert::From<milgraphics::definition::GraphicId> for alloc::string::String
+pub fn alloc::string::String::from(milgraphics::definition::GraphicId) -> Self
+impl core::convert::TryFrom<alloc::string::String> for milgraphics::definition::GraphicId
+pub type milgraphics::definition::GraphicId::Error = milgraphics::definition::GraphicIdError
+pub fn milgraphics::definition::GraphicId::try_from(alloc::string::String) -> core::result::Result<Self, milgraphics::definition::GraphicIdError>
+impl core::fmt::Display for milgraphics::definition::GraphicId
+pub fn milgraphics::definition::GraphicId::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+#[non_exhaustive] pub struct milgraphics::definition::StyleOverrides
+pub milgraphics::definition::StyleOverrides::fill_color: core::option::Option<alloc::string::String>
+pub milgraphics::definition::StyleOverrides::line_color: core::option::Option<alloc::string::String>
+pub milgraphics::definition::StyleOverrides::unknown: alloc::collections::btree::map::BTreeMap<alloc::string::String, serde_json::value::Value>
+impl milgraphics::definition::StyleOverrides
+pub fn milgraphics::definition::StyleOverrides::is_empty(&self) -> bool
+#[non_exhaustive] pub struct milgraphics::definition::Validity
+pub milgraphics::definition::Validity::end: core::option::Option<alloc::string::String>
+pub milgraphics::definition::Validity::start: core::option::Option<alloc::string::String>
+pub milgraphics::definition::Validity::unknown: alloc::collections::btree::map::BTreeMap<alloc::string::String, serde_json::value::Value>
+pub const milgraphics::definition::MAX_ID_BYTES: usize
+pub mod milgraphics::edit
+#[non_exhaustive] pub enum milgraphics::edit::Edit
+pub milgraphics::edit::Edit::DeleteVertex
+pub milgraphics::edit::Edit::DeleteVertex::index: u16
+pub milgraphics::edit::Edit::InsertVertex
+pub milgraphics::edit::Edit::InsertVertex::at: milgraphics::geo::GeoPoint
+pub milgraphics::edit::Edit::InsertVertex::index: u16
+pub milgraphics::edit::Edit::Move
+pub milgraphics::edit::Edit::Move::handle: milgraphics::edit::HandleId
+pub milgraphics::edit::Edit::Move::to: milgraphics::geo::GeoPoint
+#[non_exhaustive] pub enum milgraphics::edit::EditError
+pub milgraphics::edit::EditError::Invalid(milgraphics::ConstructError)
+pub milgraphics::edit::EditError::NoSuchHandle
+pub milgraphics::edit::EditError::NoSuchHandle::handle: milgraphics::edit::HandleId
+pub milgraphics::edit::EditError::PointCount
+pub milgraphics::edit::EditError::PointCount::count: usize
+pub milgraphics::edit::EditError::PointCount::max: usize
+pub milgraphics::edit::EditError::PointCount::min: usize
+pub milgraphics::edit::EditError::Unsupported(milgraphics::support::Unsupported)
+#[non_exhaustive] pub enum milgraphics::edit::HandleId
+pub milgraphics::edit::HandleId::Azimuth(u16)
+pub milgraphics::edit::HandleId::Range(u16)
+pub milgraphics::edit::HandleId::Vertex(u16)
+pub milgraphics::edit::HandleId::Width
+pub fn milgraphics::edit::apply_edit(&milgraphics::definition::GraphicDefinition, &milgraphics::edit::Edit) -> core::result::Result<milgraphics::definition::GraphicDefinition, milgraphics::edit::EditError>
+pub mod milgraphics::geo
+#[non_exhaustive] pub enum milgraphics::geo::GeoError
+pub milgraphics::geo::GeoError::Latitude
+pub milgraphics::geo::GeoError::Latitude::lat: f64
+pub milgraphics::geo::GeoError::NotFinite
+pub milgraphics::geo::GeoError::NotFinite::lat: f64
+pub milgraphics::geo::GeoError::NotFinite::lon: f64
+#[non_exhaustive] pub enum milgraphics::geo::VerticalDatum
+pub milgraphics::geo::VerticalDatum::AboveGround
+pub milgraphics::geo::VerticalDatum::Ellipsoid
+pub milgraphics::geo::VerticalDatum::MeanSeaLevel
+#[non_exhaustive] pub struct milgraphics::geo::Altitude
+pub milgraphics::geo::Altitude::datum: milgraphics::geo::VerticalDatum
+pub milgraphics::geo::Altitude::metres: f64
+pub milgraphics::geo::Altitude::unknown: alloc::collections::btree::map::BTreeMap<alloc::string::String, serde_json::value::Value>
+impl milgraphics::geo::Altitude
+pub fn milgraphics::geo::Altitude::new(f64, milgraphics::geo::VerticalDatum) -> Self
+pub struct milgraphics::geo::GeoPoint
+impl milgraphics::geo::GeoPoint
+pub fn milgraphics::geo::GeoPoint::lat(self) -> f64
+pub fn milgraphics::geo::GeoPoint::lon(self) -> f64
+pub fn milgraphics::geo::GeoPoint::new(f64, f64) -> core::result::Result<Self, milgraphics::geo::GeoError>
+pub mod milgraphics::geojson
+pub fn milgraphics::geojson::geographic_features(&[milgraphics::render::GeoItem]) -> alloc::vec::Vec<serde_json::value::Value>
+pub fn milgraphics::geojson::to_geojson(&milgraphics::render::RenderPlan) -> serde_json::value::Value
+pub mod milgraphics::modifier
+#[non_exhaustive] pub enum milgraphics::modifier::ModifierField
+pub milgraphics::modifier::ModifierField::A
+pub milgraphics::modifier::ModifierField::AM
+pub milgraphics::modifier::ModifierField::AN
+pub milgraphics::modifier::ModifierField::AP
+pub milgraphics::modifier::ModifierField::AP1
+pub milgraphics::modifier::ModifierField::AS
+pub milgraphics::modifier::ModifierField::B
+pub milgraphics::modifier::ModifierField::C
+pub milgraphics::modifier::ModifierField::H
+pub milgraphics::modifier::ModifierField::H1
+pub milgraphics::modifier::ModifierField::N
+pub milgraphics::modifier::ModifierField::Q
+pub milgraphics::modifier::ModifierField::T
+pub milgraphics::modifier::ModifierField::T1
+pub milgraphics::modifier::ModifierField::T2
+pub milgraphics::modifier::ModifierField::V
+pub milgraphics::modifier::ModifierField::W
+pub milgraphics::modifier::ModifierField::W1
+pub milgraphics::modifier::ModifierField::X
+pub milgraphics::modifier::ModifierField::Y
+impl milgraphics::ModifierField
+pub const milgraphics::ModifierField::ALL: [Self; 20]
+pub fn milgraphics::ModifierField::from_name(&str) -> core::option::Option<Self>
+pub const fn milgraphics::ModifierField::kind(self) -> milgraphics::ModifierKind
+pub const fn milgraphics::ModifierField::name(self) -> &'static str
+impl core::fmt::Display for milgraphics::ModifierField
+pub fn milgraphics::ModifierField::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+#[non_exhaustive] pub enum milgraphics::modifier::ModifierKind
+pub milgraphics::modifier::ModifierKind::Altitudes
+pub milgraphics::modifier::ModifierKind::Azimuths
+pub milgraphics::modifier::ModifierKind::DateTime
+pub milgraphics::modifier::ModifierKind::Direction
+pub milgraphics::modifier::ModifierKind::Distances
+pub milgraphics::modifier::ModifierKind::SymbolCode
+pub milgraphics::modifier::ModifierKind::Text
+#[non_exhaustive] pub enum milgraphics::modifier::ModifierValue
+pub milgraphics::modifier::ModifierValue::Altitudes(alloc::vec::Vec<milgraphics::geo::Altitude>)
+pub milgraphics::modifier::ModifierValue::Numbers(alloc::vec::Vec<f64>)
+pub milgraphics::modifier::ModifierValue::Text(alloc::string::String)
+#[non_exhaustive] pub enum milgraphics::modifier::ModifierValueError
+pub milgraphics::modifier::ModifierValueError::Count
+pub milgraphics::modifier::ModifierValueError::Count::count: usize
+pub milgraphics::modifier::ModifierValueError::Count::field: milgraphics::ModifierField
+pub milgraphics::modifier::ModifierValueError::Kind
+pub milgraphics::modifier::ModifierValueError::Kind::field: milgraphics::ModifierField
+pub milgraphics::modifier::ModifierValueError::Kind::kind: milgraphics::ModifierKind
+#[non_exhaustive] pub struct milgraphics::modifier::Modifiers
+pub milgraphics::modifier::Modifiers::additional_info: core::option::Option<alloc::string::String>
+pub milgraphics::modifier::Modifiers::additional_info2: core::option::Option<alloc::string::String>
+pub milgraphics::modifier::Modifiers::altitudes: alloc::vec::Vec<milgraphics::geo::Altitude>
+pub milgraphics::modifier::Modifiers::azimuths_deg: alloc::vec::Vec<f64>
+pub milgraphics::modifier::Modifiers::country: core::option::Option<alloc::string::String>
+pub milgraphics::modifier::Modifiers::designation: core::option::Option<alloc::string::String>
+pub milgraphics::modifier::Modifiers::designation2: core::option::Option<alloc::string::String>
+pub milgraphics::modifier::Modifiers::designation3: core::option::Option<alloc::string::String>
+pub milgraphics::modifier::Modifiers::direction_deg: core::option::Option<f64>
+pub milgraphics::modifier::Modifiers::distances_m: alloc::vec::Vec<f64>
+pub milgraphics::modifier::Modifiers::dtg_end: core::option::Option<alloc::string::String>
+pub milgraphics::modifier::Modifiers::dtg_start: core::option::Option<alloc::string::String>
+pub milgraphics::modifier::Modifiers::echelon: core::option::Option<alloc::string::String>
+pub milgraphics::modifier::Modifiers::equipment_type: core::option::Option<alloc::string::String>
+pub milgraphics::modifier::Modifiers::hostile: core::option::Option<alloc::string::String>
+pub milgraphics::modifier::Modifiers::location: core::option::Option<alloc::string::String>
+pub milgraphics::modifier::Modifiers::quantity: core::option::Option<alloc::string::String>
+pub milgraphics::modifier::Modifiers::symbol_icon: core::option::Option<alloc::string::String>
+pub milgraphics::modifier::Modifiers::target_number: core::option::Option<alloc::string::String>
+pub milgraphics::modifier::Modifiers::target_number_extension: core::option::Option<alloc::string::String>
+pub milgraphics::modifier::Modifiers::unknown: alloc::collections::btree::map::BTreeMap<alloc::string::String, serde_json::value::Value>
+impl milgraphics::modifier::Modifiers
+pub fn milgraphics::modifier::Modifiers::clear(&mut self, milgraphics::ModifierField)
+pub fn milgraphics::modifier::Modifiers::count(&self, milgraphics::ModifierField) -> usize
+pub fn milgraphics::modifier::Modifiers::designation(&self) -> core::option::Option<&str>
+pub fn milgraphics::modifier::Modifiers::get(&self, milgraphics::ModifierField) -> core::option::Option<milgraphics::modifier::ModifierValue>
+pub fn milgraphics::modifier::Modifiers::is_empty(&self) -> bool
+pub fn milgraphics::modifier::Modifiers::is_set(&self, milgraphics::ModifierField) -> bool
+pub fn milgraphics::modifier::Modifiers::set(&mut self, milgraphics::ModifierField, milgraphics::modifier::ModifierValue) -> core::result::Result<(), milgraphics::modifier::ModifierValueError>
+impl core::convert::From<milgraphics::modifier::Modifiers> for serde_json::map::Map<alloc::string::String, serde_json::value::Value>
+pub fn serde_json::map::Map<alloc::string::String, serde_json::value::Value>::from(milgraphics::modifier::Modifiers) -> Self
+impl core::convert::From<serde_json::map::Map<alloc::string::String, serde_json::value::Value>> for milgraphics::modifier::Modifiers
+pub fn milgraphics::modifier::Modifiers::from(serde_json::map::Map<alloc::string::String, serde_json::value::Value>) -> Self
+pub mod milgraphics::persist
+#[non_exhaustive] pub enum milgraphics::persist::PersistError
+pub milgraphics::persist::PersistError::Invalid(serde_json::error::Error)
+pub milgraphics::persist::PersistError::NotAnObject(serde_json::error::Error)
+pub milgraphics::persist::PersistError::Serialize
+pub milgraphics::persist::PersistError::Serialize::id: alloc::string::String
+pub milgraphics::persist::PersistError::Serialize::source: serde_json::error::Error
+pub milgraphics::persist::PersistError::UnknownSchema
+pub milgraphics::persist::PersistError::UnknownSchema::found: core::option::Option<serde_json::value::Value>
+pub milgraphics::persist::PersistError::WrongType
+pub milgraphics::persist::PersistError::WrongType::found: &'static str
+#[non_exhaustive] pub struct milgraphics::persist::PersistedGraphic
+impl milgraphics::persist::PersistedGraphic
+pub fn milgraphics::persist::PersistedGraphic::as_json(&self) -> &str
+pub fn milgraphics::persist::PersistedGraphic::decode(&self) -> core::result::Result<milgraphics::definition::GraphicDefinition, milgraphics::persist::PersistError>
+pub fn milgraphics::persist::PersistedGraphic::from_definition(&milgraphics::definition::GraphicDefinition) -> core::result::Result<Self, milgraphics::persist::PersistError>
+pub fn milgraphics::persist::PersistedGraphic::from_json(&str) -> core::result::Result<Self, milgraphics::persist::PersistError>
+pub const milgraphics::persist::SCHEMA_VERSION: u64
+pub mod milgraphics::pick
+#[non_exhaustive] pub enum milgraphics::pick::PickTarget
+pub milgraphics::pick::PickTarget::Handle(milgraphics::edit::HandleId)
+pub milgraphics::pick::PickTarget::Part(milgraphics::construction::PartId)
+#[non_exhaustive] pub struct milgraphics::pick::PickRef
+pub milgraphics::pick::PickRef::definition: milgraphics::definition::GraphicId
+pub milgraphics::pick::PickRef::target: milgraphics::pick::PickTarget
+pub mod milgraphics::render
+pub enum milgraphics::render::GeoShape
+pub milgraphics::render::GeoShape::Lines(alloc::vec::Vec<alloc::vec::Vec<milgraphics::antimeridian::LonLat>>)
+pub milgraphics::render::GeoShape::Polygons(alloc::vec::Vec<alloc::vec::Vec<milgraphics::antimeridian::LonLat>>)
+#[non_exhaustive] pub enum milgraphics::render::RenderError
+pub milgraphics::render::RenderError::Budget(milgraphics::budget::BudgetError)
+pub enum milgraphics::render::ScreenShape
+pub milgraphics::render::ScreenShape::Polygon(alloc::vec::Vec<milgraphics::render::ScreenPoint>)
+pub milgraphics::render::ScreenShape::Polyline(alloc::vec::Vec<milgraphics::render::ScreenPoint>)
+#[non_exhaustive] pub enum milgraphics::render::TextAlign
+pub milgraphics::render::TextAlign::Center
+pub milgraphics::render::TextAlign::Left
+pub milgraphics::render::TextAlign::Right
+#[non_exhaustive] pub struct milgraphics::render::FixedAdvanceMetrics
+pub milgraphics::render::FixedAdvanceMetrics::advance_em: f64
+impl core::default::Default for milgraphics::render::FixedAdvanceMetrics
+pub fn milgraphics::render::FixedAdvanceMetrics::default() -> Self
+impl milgraphics::render::FontMetrics for milgraphics::render::FixedAdvanceMetrics
+pub fn milgraphics::render::FixedAdvanceMetrics::identity(&self) -> &str
+pub fn milgraphics::render::FixedAdvanceMetrics::line_height_px(&self, &milgraphics::render::Font) -> f64
+pub fn milgraphics::render::FixedAdvanceMetrics::text_width_px(&self, &milgraphics::render::Font, &str) -> f64
+#[non_exhaustive] pub struct milgraphics::render::Font
+pub milgraphics::render::Font::bold: bool
+pub milgraphics::render::Font::family: alloc::string::String
+pub milgraphics::render::Font::size_px: f64
+impl milgraphics::render::Font
+pub fn milgraphics::render::Font::new(impl core::convert::Into<alloc::string::String>, f64, bool) -> Self
+impl core::default::Default for milgraphics::render::Font
+pub fn milgraphics::render::Font::default() -> Self
+#[non_exhaustive] pub struct milgraphics::render::GeoItem
+pub milgraphics::render::GeoItem::fill: milgraphics::style::Fill
+pub milgraphics::render::GeoItem::pick: milgraphics::pick::PickRef
+pub milgraphics::render::GeoItem::role: milgraphics::construction::PartRole
+pub milgraphics::render::GeoItem::shape: milgraphics::render::GeoShape
+pub milgraphics::render::GeoItem::stroke: core::option::Option<milgraphics::style::Stroke>
+impl milgraphics::render::GeoItem
+pub fn milgraphics::render::GeoItem::vertex_count(&self) -> usize
+#[non_exhaustive] pub struct milgraphics::render::Handle
+pub milgraphics::render::Handle::at: milgraphics::geo::GeoPoint
+pub milgraphics::render::Handle::id: milgraphics::edit::HandleId
+pub milgraphics::render::Handle::kind: milgraphics::construction::HandleKind
+pub milgraphics::render::Handle::pick: milgraphics::pick::PickRef
+pub milgraphics::render::Handle::screen: core::option::Option<milgraphics::render::ScreenPoint>
+#[non_exhaustive] pub struct milgraphics::render::Label
+pub milgraphics::render::Label::align: milgraphics::render::TextAlign
+pub milgraphics::render::Label::anchor: milgraphics::geo::GeoPoint
+pub milgraphics::render::Label::corners: core::option::Option<[milgraphics::render::ScreenPoint; 4]>
+pub milgraphics::render::Label::font: milgraphics::render::Font
+pub milgraphics::render::Label::may_hide: bool
+pub milgraphics::render::Label::offset_em: [f64; 2]
+pub milgraphics::render::Label::pick: milgraphics::pick::PickRef
+pub milgraphics::render::Label::rotation_deg: f64
+pub milgraphics::render::Label::screen: core::option::Option<milgraphics::render::ScreenPoint>
+pub milgraphics::render::Label::text: alloc::string::String
+pub milgraphics::render::Label::width_px: f64
+pub struct milgraphics::render::LocalEquirectangular
+impl milgraphics::render::LocalEquirectangular
+pub fn milgraphics::render::LocalEquirectangular::metres_per_px(&self) -> f64
+pub fn milgraphics::render::LocalEquirectangular::new(f64, f64, f64, f64) -> Self
+impl milgraphics::render::Projection for milgraphics::render::LocalEquirectangular
+pub fn milgraphics::render::LocalEquirectangular::project(&self, milgraphics::geo::GeoPoint) -> core::option::Option<milgraphics::render::ScreenPoint>
+pub fn milgraphics::render::LocalEquirectangular::segment_may_be_visible(&self, milgraphics::geo::GeoPoint, milgraphics::geo::GeoPoint) -> bool
+pub fn milgraphics::render::LocalEquirectangular::tolerance_px(&self) -> f64
+pub fn milgraphics::render::LocalEquirectangular::unproject(&self, milgraphics::render::ScreenPoint) -> core::option::Option<milgraphics::geo::GeoPoint>
+#[non_exhaustive] pub struct milgraphics::render::RenderPlan
+pub milgraphics::render::RenderPlan::geo: alloc::vec::Vec<milgraphics::render::GeoItem>
+pub milgraphics::render::RenderPlan::handles: alloc::vec::Vec<milgraphics::render::Handle>
+pub milgraphics::render::RenderPlan::labels: alloc::vec::Vec<milgraphics::render::Label>
+pub milgraphics::render::RenderPlan::metrics: alloc::string::String
+pub milgraphics::render::RenderPlan::renderer_version: &'static str
+pub milgraphics::render::RenderPlan::revision: u64
+pub milgraphics::render::RenderPlan::screen: alloc::vec::Vec<milgraphics::render::ScreenItem>
+pub milgraphics::render::RenderPlan::surface_revision: u64
+pub milgraphics::render::RenderPlan::view_revision: u64
+#[non_exhaustive] pub struct milgraphics::render::ScreenItem
+pub milgraphics::render::ScreenItem::decoration: bool
+pub milgraphics::render::ScreenItem::fill: milgraphics::style::Fill
+pub milgraphics::render::ScreenItem::pick: milgraphics::pick::PickRef
+pub milgraphics::render::ScreenItem::role: milgraphics::construction::PartRole
+pub milgraphics::render::ScreenItem::shape: milgraphics::render::ScreenShape
+pub milgraphics::render::ScreenItem::stroke: core::option::Option<milgraphics::style::Stroke>
+pub struct milgraphics::render::ScreenPoint
+pub milgraphics::render::ScreenPoint::x: f64
+pub milgraphics::render::ScreenPoint::y: f64
+#[non_exhaustive] pub struct milgraphics::render::View
+pub milgraphics::render::View::label_font: milgraphics::render::Font
+pub milgraphics::render::View::surface_revision: u64
+pub milgraphics::render::View::view_revision: u64
+impl milgraphics::render::View
+pub fn milgraphics::render::View::new(u64, u64) -> Self
+pub trait milgraphics::render::FontMetrics
+pub fn milgraphics::render::FontMetrics::identity(&self) -> &str
+pub fn milgraphics::render::FontMetrics::line_height_px(&self, &milgraphics::render::Font) -> f64
+pub fn milgraphics::render::FontMetrics::text_width_px(&self, &milgraphics::render::Font, &str) -> f64
+impl milgraphics::render::FontMetrics for milgraphics::render::FixedAdvanceMetrics
+pub fn milgraphics::render::FixedAdvanceMetrics::identity(&self) -> &str
+pub fn milgraphics::render::FixedAdvanceMetrics::line_height_px(&self, &milgraphics::render::Font) -> f64
+pub fn milgraphics::render::FixedAdvanceMetrics::text_width_px(&self, &milgraphics::render::Font, &str) -> f64
+pub trait milgraphics::render::Projection
+pub fn milgraphics::render::Projection::project(&self, milgraphics::geo::GeoPoint) -> core::option::Option<milgraphics::render::ScreenPoint>
+pub fn milgraphics::render::Projection::segment_may_be_visible(&self, milgraphics::geo::GeoPoint, milgraphics::geo::GeoPoint) -> bool
+pub fn milgraphics::render::Projection::tolerance_px(&self) -> f64
+pub fn milgraphics::render::Projection::unproject(&self, milgraphics::render::ScreenPoint) -> core::option::Option<milgraphics::geo::GeoPoint>
+impl milgraphics::render::Projection for milgraphics::render::LocalEquirectangular
+pub fn milgraphics::render::LocalEquirectangular::project(&self, milgraphics::geo::GeoPoint) -> core::option::Option<milgraphics::render::ScreenPoint>
+pub fn milgraphics::render::LocalEquirectangular::segment_may_be_visible(&self, milgraphics::geo::GeoPoint, milgraphics::geo::GeoPoint) -> bool
+pub fn milgraphics::render::LocalEquirectangular::tolerance_px(&self) -> f64
+pub fn milgraphics::render::LocalEquirectangular::unproject(&self, milgraphics::render::ScreenPoint) -> core::option::Option<milgraphics::geo::GeoPoint>
+pub fn milgraphics::render::geographic(&milgraphics::construction::Construction, &milgraphics::budget::Budget) -> core::result::Result<alloc::vec::Vec<milgraphics::render::GeoItem>, milgraphics::render::RenderError>
+pub fn milgraphics::render::render(&milgraphics::construction::Construction, &milgraphics::render::View, &dyn milgraphics::render::Projection, &dyn milgraphics::render::FontMetrics, &milgraphics::budget::Budget) -> core::result::Result<milgraphics::render::RenderPlan, milgraphics::render::RenderError>
+pub mod milgraphics::sidc
+#[non_exhaustive] pub enum milgraphics::sidc::SidcError
+pub milgraphics::sidc::SidcError::Format
+pub milgraphics::sidc::SidcError::Format::code: alloc::string::String
+pub struct milgraphics::sidc::EntityCode(_)
+impl milgraphics::sidc::EntityCode
+pub const fn milgraphics::sidc::EntityCode::get(self) -> u32
+pub const fn milgraphics::sidc::EntityCode::new(u32) -> core::option::Option<Self>
+impl core::fmt::Display for milgraphics::sidc::EntityCode
+pub fn milgraphics::sidc::EntityCode::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+pub struct milgraphics::sidc::SymbolId
+impl milgraphics::sidc::SymbolId
+pub fn milgraphics::sidc::SymbolId::amplifier(&self) -> u8
+pub fn milgraphics::sidc::SymbolId::as_str(&self) -> &str
+pub fn milgraphics::sidc::SymbolId::context(&self) -> u8
+pub fn milgraphics::sidc::SymbolId::entity(&self) -> milgraphics::sidc::EntityCode
+pub fn milgraphics::sidc::SymbolId::hq_tf_dummy(&self) -> u8
+pub fn milgraphics::sidc::SymbolId::identity(&self) -> u8
+pub fn milgraphics::sidc::SymbolId::modifier1(&self) -> u8
+pub fn milgraphics::sidc::SymbolId::modifier2(&self) -> u8
+pub fn milgraphics::sidc::SymbolId::parse(&str) -> core::result::Result<Self, milgraphics::sidc::SidcError>
+pub fn milgraphics::sidc::SymbolId::standard(&self) -> core::option::Option<milgraphics::standard::StandardVersion>
+pub fn milgraphics::sidc::SymbolId::status(&self) -> u8
+pub fn milgraphics::sidc::SymbolId::symbol_set(&self) -> u8
+pub fn milgraphics::sidc::SymbolId::version_code(&self) -> u8
+impl core::fmt::Display for milgraphics::sidc::SymbolId
+pub fn milgraphics::sidc::SymbolId::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::str::traits::FromStr for milgraphics::sidc::SymbolId
+pub type milgraphics::sidc::SymbolId::Err = milgraphics::sidc::SidcError
+pub fn milgraphics::sidc::SymbolId::from_str(&str) -> core::result::Result<Self, Self::Err>
+impl serde_core::ser::Serialize for milgraphics::sidc::SymbolId
+pub fn milgraphics::sidc::SymbolId::serialize<S: serde_core::ser::Serializer>(&self, S) -> core::result::Result<<S as serde_core::ser::Serializer>::Ok, <S as serde_core::ser::Serializer>::Error>
+impl<'de> serde_core::de::Deserialize<'de> for milgraphics::sidc::SymbolId
+pub fn milgraphics::sidc::SymbolId::deserialize<D: serde_core::de::Deserializer<'de>>(D) -> core::result::Result<Self, <D as serde_core::de::Deserializer>::Error>
+pub mod milgraphics::standard
+#[non_exhaustive] pub enum milgraphics::standard::StandardVersion
+pub milgraphics::standard::StandardVersion::App6D
+pub milgraphics::standard::StandardVersion::App6Ech2
+pub milgraphics::standard::StandardVersion::Mil2525Dch1
+pub milgraphics::standard::StandardVersion::Mil2525Ech1
+impl milgraphics::standard::StandardVersion
+pub const milgraphics::standard::StandardVersion::ALL: [Self; 4]
+pub const fn milgraphics::standard::StandardVersion::code(self) -> u8
+pub const fn milgraphics::standard::StandardVersion::from_code(u8) -> core::option::Option<Self>
+impl core::fmt::Display for milgraphics::standard::StandardVersion
+pub fn milgraphics::standard::StandardVersion::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+pub mod milgraphics::style
+#[non_exhaustive] pub enum milgraphics::style::DashPattern
+pub milgraphics::style::DashPattern::Dashed
+pub milgraphics::style::DashPattern::Solid
+impl milgraphics::style::DashPattern
+pub fn milgraphics::style::DashPattern::array(self) -> &'static [f64]
+#[non_exhaustive] pub enum milgraphics::style::Fill
+pub milgraphics::style::Fill::None
+pub milgraphics::style::Fill::Solid(milgraphics::style::Rgba)
+pub struct milgraphics::style::Rgba
+pub milgraphics::style::Rgba::a: u8
+pub milgraphics::style::Rgba::b: u8
+pub milgraphics::style::Rgba::g: u8
+pub milgraphics::style::Rgba::r: u8
+impl milgraphics::style::Rgba
+pub const milgraphics::style::Rgba::BLACK: Self
+pub const milgraphics::style::Rgba::RED: Self
+pub const fn milgraphics::style::Rgba::opaque(u8, u8, u8) -> Self
+pub fn milgraphics::style::Rgba::parse_hex(&str) -> core::option::Option<Self>
+pub fn milgraphics::style::Rgba::to_hex(self) -> alloc::string::String
+#[non_exhaustive] pub struct milgraphics::style::Stroke
+pub milgraphics::style::Stroke::color: milgraphics::style::Rgba
+pub milgraphics::style::Stroke::dash: milgraphics::style::DashPattern
+pub milgraphics::style::Stroke::width_px: f64
+pub const milgraphics::style::DEFAULT_LINE_WIDTH_PX: f64
+pub mod milgraphics::support
+#[non_exhaustive] pub enum milgraphics::support::Unsupported
+pub milgraphics::support::Unsupported::Standard
+pub milgraphics::support::Unsupported::Standard::code: u8
+pub milgraphics::support::Unsupported::Symbol
+pub milgraphics::support::Unsupported::Symbol::entity: u32
+pub milgraphics::support::Unsupported::Symbol::standard: milgraphics::standard::StandardVersion
+pub milgraphics::support::Unsupported::Symbol::symbol_set: u8
+#[non_exhaustive] pub struct milgraphics::support::ModifierSpec
+pub milgraphics::support::ModifierSpec::field: milgraphics::ModifierField
+pub milgraphics::support::ModifierSpec::max_count: usize
+pub milgraphics::support::ModifierSpec::min_count: usize
+pub milgraphics::support::ModifierSpec::required: bool
+#[non_exhaustive] pub struct milgraphics::support::StandardRef
+pub milgraphics::support::StandardRef::document: &'static str
+pub milgraphics::support::StandardRef::pdf_page: u16
+pub milgraphics::support::StandardRef::table: &'static str
+#[non_exhaustive] pub struct milgraphics::support::SymbolSpec
+pub milgraphics::support::SymbolSpec::catalog_divergence: core::option::Option<&'static str>
+pub milgraphics::support::SymbolSpec::draw_rule: &'static str
+pub milgraphics::support::SymbolSpec::entity: u32
+pub milgraphics::support::SymbolSpec::max_points: usize
+pub milgraphics::support::SymbolSpec::min_points: usize
+pub milgraphics::support::SymbolSpec::modifiers: &'static [milgraphics::support::ModifierSpec]
+pub milgraphics::support::SymbolSpec::name: &'static str
+pub milgraphics::support::SymbolSpec::reference: milgraphics::support::StandardRef
+pub milgraphics::support::SymbolSpec::standard: milgraphics::standard::StandardVersion
+pub milgraphics::support::SymbolSpec::symbol_set: u8
+impl milgraphics::support::SymbolSpec
+pub fn milgraphics::support::SymbolSpec::allows_vertex_edits(&self) -> bool
+pub fn milgraphics::support::SymbolSpec::catalog_entry(&self) -> core::option::Option<&'static milgraphics::catalog::CatalogEntry>
+pub fn milgraphics::support::SymbolSpec::modifier(&self, milgraphics::ModifierField) -> core::option::Option<&'static milgraphics::support::ModifierSpec>
+pub fn milgraphics::support::SymbolSpec::required(&self) -> impl core::iter::traits::iterator::Iterator<Item = milgraphics::ModifierField> + 'static
+pub fn milgraphics::support::all() -> impl core::iter::traits::iterator::Iterator<Item = &'static milgraphics::support::SymbolSpec> + core::clone::Clone
+pub fn milgraphics::support::spec(&milgraphics::sidc::SymbolId) -> core::result::Result<&'static milgraphics::support::SymbolSpec, milgraphics::support::Unsupported>
+pub mod milgraphics::svg
+pub fn milgraphics::svg::to_svg(&milgraphics::render::RenderPlan, f64, f64) -> alloc::string::String
+#[non_exhaustive] pub enum milgraphics::BudgetError
+pub milgraphics::BudgetError::ControlPoints
+pub milgraphics::BudgetError::ControlPoints::count: usize
+pub milgraphics::BudgetError::ControlPoints::limit: usize
+pub milgraphics::BudgetError::Labels
+pub milgraphics::BudgetError::Labels::count: usize
+pub milgraphics::BudgetError::Labels::limit: usize
+pub milgraphics::BudgetError::ModifierValues
+pub milgraphics::BudgetError::ModifierValues::count: usize
+pub milgraphics::BudgetError::ModifierValues::field: milgraphics::ModifierField
+pub milgraphics::BudgetError::ModifierValues::limit: usize
+pub milgraphics::BudgetError::Text
+pub milgraphics::BudgetError::Text::count: usize
+pub milgraphics::BudgetError::Text::field: milgraphics::ModifierField
+pub milgraphics::BudgetError::Text::limit: usize
+pub milgraphics::BudgetError::Vertices
+pub milgraphics::BudgetError::Vertices::count: usize
+pub milgraphics::BudgetError::Vertices::limit: usize
+#[non_exhaustive] pub enum milgraphics::CatalogDrawRule
+pub milgraphics::CatalogDrawRule::Metoc(milgraphics::MoDrawRule)
+pub milgraphics::CatalogDrawRule::Standard(milgraphics::DrawRule)
+#[non_exhaustive] pub enum milgraphics::ConstructError
+pub milgraphics::ConstructError::Budget(milgraphics::budget::BudgetError)
+pub milgraphics::ConstructError::Degenerate
+pub milgraphics::ConstructError::Degenerate::reason: &'static str
+pub milgraphics::ConstructError::Degenerate::symbol: &'static str
+pub milgraphics::ConstructError::InvalidModifier
+pub milgraphics::ConstructError::InvalidModifier::field: milgraphics::ModifierField
+pub milgraphics::ConstructError::InvalidModifier::index: usize
+pub milgraphics::ConstructError::InvalidModifier::reason: &'static str
+pub milgraphics::ConstructError::InvalidModifier::value: f64
+pub milgraphics::ConstructError::MissingModifier
+pub milgraphics::ConstructError::MissingModifier::field: milgraphics::ModifierField
+pub milgraphics::ConstructError::MissingModifier::symbol: &'static str
+pub milgraphics::ConstructError::ModifierCount
+pub milgraphics::ConstructError::ModifierCount::count: usize
+pub milgraphics::ConstructError::ModifierCount::field: milgraphics::ModifierField
+pub milgraphics::ConstructError::ModifierCount::max: usize
+pub milgraphics::ConstructError::ModifierCount::min: usize
+pub milgraphics::ConstructError::ModifierCount::symbol: &'static str
+pub milgraphics::ConstructError::PointCount
+pub milgraphics::ConstructError::PointCount::count: usize
+pub milgraphics::ConstructError::PointCount::max: usize
+pub milgraphics::ConstructError::PointCount::min: usize
+pub milgraphics::ConstructError::PointCount::symbol: &'static str
+pub milgraphics::ConstructError::UnknownModifier
+pub milgraphics::ConstructError::UnknownModifier::key: alloc::string::String
+pub milgraphics::ConstructError::UnknownModifier::symbol: &'static str
+pub milgraphics::ConstructError::Unsupported(milgraphics::support::Unsupported)
+pub milgraphics::ConstructError::UnsupportedAltitude
+pub milgraphics::ConstructError::UnsupportedAltitude::index: usize
+pub milgraphics::ConstructError::UnsupportedAltitude::symbol: &'static str
+pub milgraphics::ConstructError::UnsupportedModifier
+pub milgraphics::ConstructError::UnsupportedModifier::field: milgraphics::ModifierField
+pub milgraphics::ConstructError::UnsupportedModifier::symbol: &'static str
+#[non_exhaustive] pub enum milgraphics::DrawRule
+pub milgraphics::DrawRule::Arc1
+pub milgraphics::DrawRule::Area1
+pub milgraphics::DrawRule::Area10
+pub milgraphics::DrawRule::Area11
+pub milgraphics::DrawRule::Area12
+pub milgraphics::DrawRule::Area13
+pub milgraphics::DrawRule::Area14
+pub milgraphics::DrawRule::Area15
+pub milgraphics::DrawRule::Area16
+pub milgraphics::DrawRule::Area17
+pub milgraphics::DrawRule::Area18
+pub milgraphics::DrawRule::Area19
+pub milgraphics::DrawRule::Area2
+pub milgraphics::DrawRule::Area20
+pub milgraphics::DrawRule::Area21
+pub milgraphics::DrawRule::Area22
+pub milgraphics::DrawRule::Area23
+pub milgraphics::DrawRule::Area24
+pub milgraphics::DrawRule::Area25
+pub milgraphics::DrawRule::Area26
+pub milgraphics::DrawRule::Area27
+pub milgraphics::DrawRule::Area3
+pub milgraphics::DrawRule::Area4
+pub milgraphics::DrawRule::Area5
+pub milgraphics::DrawRule::Area6
+pub milgraphics::DrawRule::Area7
+pub milgraphics::DrawRule::Area8
+pub milgraphics::DrawRule::Area9
+pub milgraphics::DrawRule::Axis1
+pub milgraphics::DrawRule::Axis2
+pub milgraphics::DrawRule::Circular1
+pub milgraphics::DrawRule::Circular2
+pub milgraphics::DrawRule::Corridor1
+pub milgraphics::DrawRule::DoNotDraw
+pub milgraphics::DrawRule::Ellipse1
+pub milgraphics::DrawRule::Line1
+pub milgraphics::DrawRule::Line10
+pub milgraphics::DrawRule::Line11
+pub milgraphics::DrawRule::Line12
+pub milgraphics::DrawRule::Line13
+pub milgraphics::DrawRule::Line14
+pub milgraphics::DrawRule::Line16
+pub milgraphics::DrawRule::Line17
+pub milgraphics::DrawRule::Line18
+pub milgraphics::DrawRule::Line19
+pub milgraphics::DrawRule::Line2
+pub milgraphics::DrawRule::Line20
+pub milgraphics::DrawRule::Line21
+pub milgraphics::DrawRule::Line22
+pub milgraphics::DrawRule::Line23
+pub milgraphics::DrawRule::Line24
+pub milgraphics::DrawRule::Line25
+pub milgraphics::DrawRule::Line26
+pub milgraphics::DrawRule::Line27
+pub milgraphics::DrawRule::Line28
+pub milgraphics::DrawRule::Line29
+pub milgraphics::DrawRule::Line3
+pub milgraphics::DrawRule::Line30
+pub milgraphics::DrawRule::Line31
+pub milgraphics::DrawRule::Line32
+pub milgraphics::DrawRule::Line33
+pub milgraphics::DrawRule::Line4
+pub milgraphics::DrawRule::Line5
+pub milgraphics::DrawRule::Line50
+pub milgraphics::DrawRule::Line6
+pub milgraphics::DrawRule::Line7
+pub milgraphics::DrawRule::Line8
+pub milgraphics::DrawRule::Line9
+pub milgraphics::DrawRule::Point1
+pub milgraphics::DrawRule::Point10
+pub milgraphics::DrawRule::Point11
+pub milgraphics::DrawRule::Point12
+pub milgraphics::DrawRule::Point13
+pub milgraphics::DrawRule::Point14
+pub milgraphics::DrawRule::Point15
+pub milgraphics::DrawRule::Point16
+pub milgraphics::DrawRule::Point17
+pub milgraphics::DrawRule::Point18
+pub milgraphics::DrawRule::Point2
+pub milgraphics::DrawRule::Point3
+pub milgraphics::DrawRule::Point4
+pub milgraphics::DrawRule::Point5
+pub milgraphics::DrawRule::Point6
+pub milgraphics::DrawRule::Point7
+pub milgraphics::DrawRule::Point8
+pub milgraphics::DrawRule::Point9
+pub milgraphics::DrawRule::Polyline1
+pub milgraphics::DrawRule::Rectangular1
+pub milgraphics::DrawRule::Rectangular2
+pub milgraphics::DrawRule::Rectangular3
+impl milgraphics::DrawRule
+pub const milgraphics::DrawRule::ALL: &[Self]
+pub fn milgraphics::DrawRule::from_name(&str) -> core::option::Option<Self>
+pub const fn milgraphics::DrawRule::name(self) -> &'static str
+#[non_exhaustive] pub enum milgraphics::Edit
+pub milgraphics::Edit::DeleteVertex
+pub milgraphics::Edit::DeleteVertex::index: u16
+pub milgraphics::Edit::InsertVertex
+pub milgraphics::Edit::InsertVertex::at: milgraphics::geo::GeoPoint
+pub milgraphics::Edit::InsertVertex::index: u16
+pub milgraphics::Edit::Move
+pub milgraphics::Edit::Move::handle: milgraphics::edit::HandleId
+pub milgraphics::Edit::Move::to: milgraphics::geo::GeoPoint
+#[non_exhaustive] pub enum milgraphics::EditError
+pub milgraphics::EditError::Invalid(milgraphics::ConstructError)
+pub milgraphics::EditError::NoSuchHandle
+pub milgraphics::EditError::NoSuchHandle::handle: milgraphics::edit::HandleId
+pub milgraphics::EditError::PointCount
+pub milgraphics::EditError::PointCount::count: usize
+pub milgraphics::EditError::PointCount::max: usize
+pub milgraphics::EditError::PointCount::min: usize
+pub milgraphics::EditError::Unsupported(milgraphics::support::Unsupported)
+#[non_exhaustive] pub enum milgraphics::GeometryKind
+pub milgraphics::GeometryKind::Area
+pub milgraphics::GeometryKind::Line
+pub milgraphics::GeometryKind::Point
+#[non_exhaustive] pub enum milgraphics::HandleId
+pub milgraphics::HandleId::Azimuth(u16)
+pub milgraphics::HandleId::Range(u16)
+pub milgraphics::HandleId::Vertex(u16)
+pub milgraphics::HandleId::Width
+#[non_exhaustive] pub enum milgraphics::MoDrawRule
+pub milgraphics::MoDrawRule::Area1
+pub milgraphics::MoDrawRule::Area2
+pub milgraphics::MoDrawRule::DoNotDraw
+pub milgraphics::MoDrawRule::Line1
+pub milgraphics::MoDrawRule::Line2
+pub milgraphics::MoDrawRule::Line3
+pub milgraphics::MoDrawRule::Line4
+pub milgraphics::MoDrawRule::Line5
+pub milgraphics::MoDrawRule::Line6
+pub milgraphics::MoDrawRule::Line7
+pub milgraphics::MoDrawRule::Line8
+pub milgraphics::MoDrawRule::Point1
+pub milgraphics::MoDrawRule::Point2
+pub milgraphics::MoDrawRule::Point3
+pub milgraphics::MoDrawRule::Point4
+pub milgraphics::MoDrawRule::Point5
+pub milgraphics::MoDrawRule::Point6
+pub milgraphics::MoDrawRule::Point7
+pub milgraphics::MoDrawRule::Point8
+impl milgraphics::MoDrawRule
+pub const milgraphics::MoDrawRule::ALL: &[Self]
+pub fn milgraphics::MoDrawRule::from_name(&str) -> core::option::Option<Self>
+pub const fn milgraphics::MoDrawRule::name(self) -> &'static str
+#[non_exhaustive] pub enum milgraphics::ModifierField
+pub milgraphics::ModifierField::A
+pub milgraphics::ModifierField::AM
+pub milgraphics::ModifierField::AN
+pub milgraphics::ModifierField::AP
+pub milgraphics::ModifierField::AP1
+pub milgraphics::ModifierField::AS
+pub milgraphics::ModifierField::B
+pub milgraphics::ModifierField::C
+pub milgraphics::ModifierField::H
+pub milgraphics::ModifierField::H1
+pub milgraphics::ModifierField::N
+pub milgraphics::ModifierField::Q
+pub milgraphics::ModifierField::T
+pub milgraphics::ModifierField::T1
+pub milgraphics::ModifierField::T2
+pub milgraphics::ModifierField::V
+pub milgraphics::ModifierField::W
+pub milgraphics::ModifierField::W1
+pub milgraphics::ModifierField::X
+pub milgraphics::ModifierField::Y
+impl milgraphics::ModifierField
+pub const milgraphics::ModifierField::ALL: [Self; 20]
+pub fn milgraphics::ModifierField::from_name(&str) -> core::option::Option<Self>
+pub const fn milgraphics::ModifierField::kind(self) -> milgraphics::ModifierKind
+pub const fn milgraphics::ModifierField::name(self) -> &'static str
+impl core::fmt::Display for milgraphics::ModifierField
+pub fn milgraphics::ModifierField::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+#[non_exhaustive] pub enum milgraphics::ModifierKind
+pub milgraphics::ModifierKind::Altitudes
+pub milgraphics::ModifierKind::Azimuths
+pub milgraphics::ModifierKind::DateTime
+pub milgraphics::ModifierKind::Direction
+pub milgraphics::ModifierKind::Distances
+pub milgraphics::ModifierKind::SymbolCode
+pub milgraphics::ModifierKind::Text
+#[non_exhaustive] pub enum milgraphics::ModifierValue
+pub milgraphics::ModifierValue::Altitudes(alloc::vec::Vec<milgraphics::geo::Altitude>)
+pub milgraphics::ModifierValue::Numbers(alloc::vec::Vec<f64>)
+pub milgraphics::ModifierValue::Text(alloc::string::String)
+#[non_exhaustive] pub enum milgraphics::ModifierValueError
+pub milgraphics::ModifierValueError::Count
+pub milgraphics::ModifierValueError::Count::count: usize
+pub milgraphics::ModifierValueError::Count::field: milgraphics::ModifierField
+pub milgraphics::ModifierValueError::Kind
+pub milgraphics::ModifierValueError::Kind::field: milgraphics::ModifierField
+pub milgraphics::ModifierValueError::Kind::kind: milgraphics::ModifierKind
+#[non_exhaustive] pub enum milgraphics::PersistError
+pub milgraphics::PersistError::Invalid(serde_json::error::Error)
+pub milgraphics::PersistError::NotAnObject(serde_json::error::Error)
+pub milgraphics::PersistError::Serialize
+pub milgraphics::PersistError::Serialize::id: alloc::string::String
+pub milgraphics::PersistError::Serialize::source: serde_json::error::Error
+pub milgraphics::PersistError::UnknownSchema
+pub milgraphics::PersistError::UnknownSchema::found: core::option::Option<serde_json::value::Value>
+pub milgraphics::PersistError::WrongType
+pub milgraphics::PersistError::WrongType::found: &'static str
+#[non_exhaustive] pub enum milgraphics::PickTarget
+pub milgraphics::PickTarget::Handle(milgraphics::edit::HandleId)
+pub milgraphics::PickTarget::Part(milgraphics::construction::PartId)
+#[non_exhaustive] pub enum milgraphics::RenderError
+pub milgraphics::RenderError::Budget(milgraphics::budget::BudgetError)
+#[non_exhaustive] pub enum milgraphics::StandardVersion
+pub milgraphics::StandardVersion::App6D
+pub milgraphics::StandardVersion::App6Ech2
+pub milgraphics::StandardVersion::Mil2525Dch1
+pub milgraphics::StandardVersion::Mil2525Ech1
+impl milgraphics::standard::StandardVersion
+pub const milgraphics::standard::StandardVersion::ALL: [Self; 4]
+pub const fn milgraphics::standard::StandardVersion::code(self) -> u8
+pub const fn milgraphics::standard::StandardVersion::from_code(u8) -> core::option::Option<Self>
+impl core::fmt::Display for milgraphics::standard::StandardVersion
+pub fn milgraphics::standard::StandardVersion::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+#[non_exhaustive] pub enum milgraphics::Unsupported
+pub milgraphics::Unsupported::Standard
+pub milgraphics::Unsupported::Standard::code: u8
+pub milgraphics::Unsupported::Symbol
+pub milgraphics::Unsupported::Symbol::entity: u32
+pub milgraphics::Unsupported::Symbol::standard: milgraphics::standard::StandardVersion
+pub milgraphics::Unsupported::Symbol::symbol_set: u8
+#[non_exhaustive] pub enum milgraphics::VerticalDatum
+pub milgraphics::VerticalDatum::AboveGround
+pub milgraphics::VerticalDatum::Ellipsoid
+pub milgraphics::VerticalDatum::MeanSeaLevel
+#[non_exhaustive] pub struct milgraphics::Altitude
+pub milgraphics::Altitude::datum: milgraphics::geo::VerticalDatum
+pub milgraphics::Altitude::metres: f64
+pub milgraphics::Altitude::unknown: alloc::collections::btree::map::BTreeMap<alloc::string::String, serde_json::value::Value>
+impl milgraphics::geo::Altitude
+pub fn milgraphics::geo::Altitude::new(f64, milgraphics::geo::VerticalDatum) -> Self
+#[non_exhaustive] pub struct milgraphics::Budget
+pub milgraphics::Budget::max_control_points: usize
+pub milgraphics::Budget::max_labels: usize
+pub milgraphics::Budget::max_modifier_values: usize
+pub milgraphics::Budget::max_text_chars: usize
+pub milgraphics::Budget::max_vertices: usize
+impl core::default::Default for milgraphics::budget::Budget
+pub fn milgraphics::budget::Budget::default() -> Self
+#[non_exhaustive] pub struct milgraphics::CatalogEntry
+pub milgraphics::CatalogEntry::draw_rule: milgraphics::catalog::CatalogDrawRule
+pub milgraphics::CatalogEntry::entity: u32
+pub milgraphics::CatalogEntry::geometry: milgraphics::catalog::GeometryKind
+pub milgraphics::CatalogEntry::modifiers: &'static [milgraphics::ModifierField]
+pub milgraphics::CatalogEntry::name: &'static str
+pub milgraphics::CatalogEntry::path: &'static [&'static str]
+pub milgraphics::CatalogEntry::symbol_set: u8
+pub milgraphics::CatalogEntry::versions: milgraphics::catalog::VersionSet
+#[non_exhaustive] pub struct milgraphics::Config
+pub milgraphics::Config::budget: milgraphics::budget::Budget
+pub milgraphics::Config::geodesic_step_m: f64
+impl core::default::Default for milgraphics::Config
+pub fn milgraphics::Config::default() -> Self
+#[non_exhaustive] pub struct milgraphics::Construction
+pub milgraphics::Construction::decorations: alloc::vec::Vec<milgraphics::construction::ScreenDecoration>
+pub milgraphics::Construction::definition: milgraphics::definition::GraphicId
+pub milgraphics::Construction::handles: alloc::vec::Vec<milgraphics::construction::HandleSpec>
+pub milgraphics::Construction::labels: alloc::vec::Vec<milgraphics::construction::LabelSpec>
+pub milgraphics::Construction::parts: alloc::vec::Vec<milgraphics::construction::GeoPart>
+pub milgraphics::Construction::renderer_version: &'static str
+pub milgraphics::Construction::revision: u64
+#[non_exhaustive] pub struct milgraphics::ControlPoint
+pub milgraphics::ControlPoint::altitude: core::option::Option<milgraphics::geo::Altitude>
+pub milgraphics::ControlPoint::position: milgraphics::geo::GeoPoint
+pub milgraphics::ControlPoint::unknown: alloc::collections::btree::map::BTreeMap<alloc::string::String, serde_json::value::Value>
+impl milgraphics::definition::ControlPoint
+pub fn milgraphics::definition::ControlPoint::ground(milgraphics::geo::GeoPoint) -> Self
+impl core::convert::From<milgraphics::definition::ControlPoint> for serde_json::map::Map<alloc::string::String, serde_json::value::Value>
+pub fn serde_json::map::Map<alloc::string::String, serde_json::value::Value>::from(milgraphics::definition::ControlPoint) -> Self
+impl core::convert::TryFrom<serde_json::map::Map<alloc::string::String, serde_json::value::Value>> for milgraphics::definition::ControlPoint
+pub type milgraphics::definition::ControlPoint::Error = milgraphics::definition::ControlPointError
+pub fn milgraphics::definition::ControlPoint::try_from(serde_json::map::Map<alloc::string::String, serde_json::value::Value>) -> core::result::Result<Self, milgraphics::definition::ControlPointError>
+pub struct milgraphics::EntityCode(_)
+impl milgraphics::sidc::EntityCode
+pub const fn milgraphics::sidc::EntityCode::get(self) -> u32
+pub const fn milgraphics::sidc::EntityCode::new(u32) -> core::option::Option<Self>
+impl core::fmt::Display for milgraphics::sidc::EntityCode
+pub fn milgraphics::sidc::EntityCode::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+pub struct milgraphics::GeoPoint
+impl milgraphics::geo::GeoPoint
+pub fn milgraphics::geo::GeoPoint::lat(self) -> f64
+pub fn milgraphics::geo::GeoPoint::lon(self) -> f64
+pub fn milgraphics::geo::GeoPoint::new(f64, f64) -> core::result::Result<Self, milgraphics::geo::GeoError>
+#[non_exhaustive] pub struct milgraphics::GraphicDefinition
+pub milgraphics::GraphicDefinition::id: milgraphics::definition::GraphicId
+pub milgraphics::GraphicDefinition::modifiers: milgraphics::modifier::Modifiers
+pub milgraphics::GraphicDefinition::points: alloc::vec::Vec<milgraphics::definition::ControlPoint>
+pub milgraphics::GraphicDefinition::revision: u64
+pub milgraphics::GraphicDefinition::style: milgraphics::definition::StyleOverrides
+pub milgraphics::GraphicDefinition::symbol: milgraphics::sidc::SymbolId
+pub milgraphics::GraphicDefinition::unknown: alloc::collections::btree::map::BTreeMap<alloc::string::String, serde_json::value::Value>
+pub milgraphics::GraphicDefinition::validity: core::option::Option<milgraphics::definition::Validity>
+impl milgraphics::definition::GraphicDefinition
+pub fn milgraphics::definition::GraphicDefinition::new(milgraphics::definition::GraphicId, milgraphics::sidc::SymbolId, alloc::vec::Vec<milgraphics::definition::ControlPoint>) -> Self
+pub fn milgraphics::definition::GraphicDefinition::positions(&self) -> impl core::iter::traits::exact_size::ExactSizeIterator<Item = milgraphics::geo::GeoPoint> + '_
+pub struct milgraphics::GraphicId(_)
+impl milgraphics::definition::GraphicId
+pub fn milgraphics::definition::GraphicId::as_str(&self) -> &str
+pub fn milgraphics::definition::GraphicId::new(impl core::convert::Into<alloc::string::String>) -> core::result::Result<Self, milgraphics::definition::GraphicIdError>
+impl core::convert::From<milgraphics::definition::GraphicId> for alloc::string::String
+pub fn alloc::string::String::from(milgraphics::definition::GraphicId) -> Self
+impl core::convert::TryFrom<alloc::string::String> for milgraphics::definition::GraphicId
+pub type milgraphics::definition::GraphicId::Error = milgraphics::definition::GraphicIdError
+pub fn milgraphics::definition::GraphicId::try_from(alloc::string::String) -> core::result::Result<Self, milgraphics::definition::GraphicIdError>
+impl core::fmt::Display for milgraphics::definition::GraphicId
+pub fn milgraphics::definition::GraphicId::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+#[non_exhaustive] pub struct milgraphics::ModifierSpec
+pub milgraphics::ModifierSpec::field: milgraphics::ModifierField
+pub milgraphics::ModifierSpec::max_count: usize
+pub milgraphics::ModifierSpec::min_count: usize
+pub milgraphics::ModifierSpec::required: bool
+#[non_exhaustive] pub struct milgraphics::Modifiers
+pub milgraphics::Modifiers::additional_info: core::option::Option<alloc::string::String>
+pub milgraphics::Modifiers::additional_info2: core::option::Option<alloc::string::String>
+pub milgraphics::Modifiers::altitudes: alloc::vec::Vec<milgraphics::geo::Altitude>
+pub milgraphics::Modifiers::azimuths_deg: alloc::vec::Vec<f64>
+pub milgraphics::Modifiers::country: core::option::Option<alloc::string::String>
+pub milgraphics::Modifiers::designation: core::option::Option<alloc::string::String>
+pub milgraphics::Modifiers::designation2: core::option::Option<alloc::string::String>
+pub milgraphics::Modifiers::designation3: core::option::Option<alloc::string::String>
+pub milgraphics::Modifiers::direction_deg: core::option::Option<f64>
+pub milgraphics::Modifiers::distances_m: alloc::vec::Vec<f64>
+pub milgraphics::Modifiers::dtg_end: core::option::Option<alloc::string::String>
+pub milgraphics::Modifiers::dtg_start: core::option::Option<alloc::string::String>
+pub milgraphics::Modifiers::echelon: core::option::Option<alloc::string::String>
+pub milgraphics::Modifiers::equipment_type: core::option::Option<alloc::string::String>
+pub milgraphics::Modifiers::hostile: core::option::Option<alloc::string::String>
+pub milgraphics::Modifiers::location: core::option::Option<alloc::string::String>
+pub milgraphics::Modifiers::quantity: core::option::Option<alloc::string::String>
+pub milgraphics::Modifiers::symbol_icon: core::option::Option<alloc::string::String>
+pub milgraphics::Modifiers::target_number: core::option::Option<alloc::string::String>
+pub milgraphics::Modifiers::target_number_extension: core::option::Option<alloc::string::String>
+pub milgraphics::Modifiers::unknown: alloc::collections::btree::map::BTreeMap<alloc::string::String, serde_json::value::Value>
+impl milgraphics::modifier::Modifiers
+pub fn milgraphics::modifier::Modifiers::clear(&mut self, milgraphics::ModifierField)
+pub fn milgraphics::modifier::Modifiers::count(&self, milgraphics::ModifierField) -> usize
+pub fn milgraphics::modifier::Modifiers::designation(&self) -> core::option::Option<&str>
+pub fn milgraphics::modifier::Modifiers::get(&self, milgraphics::ModifierField) -> core::option::Option<milgraphics::modifier::ModifierValue>
+pub fn milgraphics::modifier::Modifiers::is_empty(&self) -> bool
+pub fn milgraphics::modifier::Modifiers::is_set(&self, milgraphics::ModifierField) -> bool
+pub fn milgraphics::modifier::Modifiers::set(&mut self, milgraphics::ModifierField, milgraphics::modifier::ModifierValue) -> core::result::Result<(), milgraphics::modifier::ModifierValueError>
+impl core::convert::From<milgraphics::modifier::Modifiers> for serde_json::map::Map<alloc::string::String, serde_json::value::Value>
+pub fn serde_json::map::Map<alloc::string::String, serde_json::value::Value>::from(milgraphics::modifier::Modifiers) -> Self
+impl core::convert::From<serde_json::map::Map<alloc::string::String, serde_json::value::Value>> for milgraphics::modifier::Modifiers
+pub fn milgraphics::modifier::Modifiers::from(serde_json::map::Map<alloc::string::String, serde_json::value::Value>) -> Self
+#[non_exhaustive] pub struct milgraphics::PersistedGraphic
+impl milgraphics::persist::PersistedGraphic
+pub fn milgraphics::persist::PersistedGraphic::as_json(&self) -> &str
+pub fn milgraphics::persist::PersistedGraphic::decode(&self) -> core::result::Result<milgraphics::definition::GraphicDefinition, milgraphics::persist::PersistError>
+pub fn milgraphics::persist::PersistedGraphic::from_definition(&milgraphics::definition::GraphicDefinition) -> core::result::Result<Self, milgraphics::persist::PersistError>
+pub fn milgraphics::persist::PersistedGraphic::from_json(&str) -> core::result::Result<Self, milgraphics::persist::PersistError>
+#[non_exhaustive] pub struct milgraphics::PickRef
+pub milgraphics::PickRef::definition: milgraphics::definition::GraphicId
+pub milgraphics::PickRef::target: milgraphics::pick::PickTarget
+#[non_exhaustive] pub struct milgraphics::RenderPlan
+pub milgraphics::RenderPlan::geo: alloc::vec::Vec<milgraphics::render::GeoItem>
+pub milgraphics::RenderPlan::handles: alloc::vec::Vec<milgraphics::render::Handle>
+pub milgraphics::RenderPlan::labels: alloc::vec::Vec<milgraphics::render::Label>
+pub milgraphics::RenderPlan::metrics: alloc::string::String
+pub milgraphics::RenderPlan::renderer_version: &'static str
+pub milgraphics::RenderPlan::revision: u64
+pub milgraphics::RenderPlan::screen: alloc::vec::Vec<milgraphics::render::ScreenItem>
+pub milgraphics::RenderPlan::surface_revision: u64
+pub milgraphics::RenderPlan::view_revision: u64
+#[non_exhaustive] pub struct milgraphics::StandardRef
+pub milgraphics::StandardRef::document: &'static str
+pub milgraphics::StandardRef::pdf_page: u16
+pub milgraphics::StandardRef::table: &'static str
+#[non_exhaustive] pub struct milgraphics::StyleOverrides
+pub milgraphics::StyleOverrides::fill_color: core::option::Option<alloc::string::String>
+pub milgraphics::StyleOverrides::line_color: core::option::Option<alloc::string::String>
+pub milgraphics::StyleOverrides::unknown: alloc::collections::btree::map::BTreeMap<alloc::string::String, serde_json::value::Value>
+impl milgraphics::definition::StyleOverrides
+pub fn milgraphics::definition::StyleOverrides::is_empty(&self) -> bool
+pub struct milgraphics::SymbolId
+impl milgraphics::sidc::SymbolId
+pub fn milgraphics::sidc::SymbolId::amplifier(&self) -> u8
+pub fn milgraphics::sidc::SymbolId::as_str(&self) -> &str
+pub fn milgraphics::sidc::SymbolId::context(&self) -> u8
+pub fn milgraphics::sidc::SymbolId::entity(&self) -> milgraphics::sidc::EntityCode
+pub fn milgraphics::sidc::SymbolId::hq_tf_dummy(&self) -> u8
+pub fn milgraphics::sidc::SymbolId::identity(&self) -> u8
+pub fn milgraphics::sidc::SymbolId::modifier1(&self) -> u8
+pub fn milgraphics::sidc::SymbolId::modifier2(&self) -> u8
+pub fn milgraphics::sidc::SymbolId::parse(&str) -> core::result::Result<Self, milgraphics::sidc::SidcError>
+pub fn milgraphics::sidc::SymbolId::standard(&self) -> core::option::Option<milgraphics::standard::StandardVersion>
+pub fn milgraphics::sidc::SymbolId::status(&self) -> u8
+pub fn milgraphics::sidc::SymbolId::symbol_set(&self) -> u8
+pub fn milgraphics::sidc::SymbolId::version_code(&self) -> u8
+impl core::fmt::Display for milgraphics::sidc::SymbolId
+pub fn milgraphics::sidc::SymbolId::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::str::traits::FromStr for milgraphics::sidc::SymbolId
+pub type milgraphics::sidc::SymbolId::Err = milgraphics::sidc::SidcError
+pub fn milgraphics::sidc::SymbolId::from_str(&str) -> core::result::Result<Self, Self::Err>
+impl serde_core::ser::Serialize for milgraphics::sidc::SymbolId
+pub fn milgraphics::sidc::SymbolId::serialize<S: serde_core::ser::Serializer>(&self, S) -> core::result::Result<<S as serde_core::ser::Serializer>::Ok, <S as serde_core::ser::Serializer>::Error>
+impl<'de> serde_core::de::Deserialize<'de> for milgraphics::sidc::SymbolId
+pub fn milgraphics::sidc::SymbolId::deserialize<D: serde_core::de::Deserializer<'de>>(D) -> core::result::Result<Self, <D as serde_core::de::Deserializer>::Error>
+#[non_exhaustive] pub struct milgraphics::SymbolSpec
+pub milgraphics::SymbolSpec::catalog_divergence: core::option::Option<&'static str>
+pub milgraphics::SymbolSpec::draw_rule: &'static str
+pub milgraphics::SymbolSpec::entity: u32
+pub milgraphics::SymbolSpec::max_points: usize
+pub milgraphics::SymbolSpec::min_points: usize
+pub milgraphics::SymbolSpec::modifiers: &'static [milgraphics::support::ModifierSpec]
+pub milgraphics::SymbolSpec::name: &'static str
+pub milgraphics::SymbolSpec::reference: milgraphics::support::StandardRef
+pub milgraphics::SymbolSpec::standard: milgraphics::standard::StandardVersion
+pub milgraphics::SymbolSpec::symbol_set: u8
+impl milgraphics::support::SymbolSpec
+pub fn milgraphics::support::SymbolSpec::allows_vertex_edits(&self) -> bool
+pub fn milgraphics::support::SymbolSpec::catalog_entry(&self) -> core::option::Option<&'static milgraphics::catalog::CatalogEntry>
+pub fn milgraphics::support::SymbolSpec::modifier(&self, milgraphics::ModifierField) -> core::option::Option<&'static milgraphics::support::ModifierSpec>
+pub fn milgraphics::support::SymbolSpec::required(&self) -> impl core::iter::traits::iterator::Iterator<Item = milgraphics::ModifierField> + 'static
+#[non_exhaustive] pub struct milgraphics::Validity
+pub milgraphics::Validity::end: core::option::Option<alloc::string::String>
+pub milgraphics::Validity::start: core::option::Option<alloc::string::String>
+pub milgraphics::Validity::unknown: alloc::collections::btree::map::BTreeMap<alloc::string::String, serde_json::value::Value>
+pub struct milgraphics::VersionSet(_)
+impl milgraphics::catalog::VersionSet
+pub const fn milgraphics::catalog::VersionSet::contains(self, u8) -> bool
+pub fn milgraphics::catalog::VersionSet::iter(self) -> impl core::iter::traits::iterator::Iterator<Item = u8>
+#[non_exhaustive] pub struct milgraphics::View
+pub milgraphics::View::label_font: milgraphics::render::Font
+pub milgraphics::View::surface_revision: u64
+pub milgraphics::View::view_revision: u64
+impl milgraphics::render::View
+pub fn milgraphics::render::View::new(u64, u64) -> Self
+pub const milgraphics::RENDERER_VERSION: &str
+pub fn milgraphics::apply_edit(&milgraphics::definition::GraphicDefinition, &milgraphics::edit::Edit) -> core::result::Result<milgraphics::definition::GraphicDefinition, milgraphics::edit::EditError>
+pub fn milgraphics::construct(&milgraphics::definition::GraphicDefinition, &milgraphics::Config) -> core::result::Result<milgraphics::construction::Construction, milgraphics::ConstructError>
+pub fn milgraphics::render(&milgraphics::construction::Construction, &milgraphics::render::View, &dyn milgraphics::render::Projection, &dyn milgraphics::render::FontMetrics, &milgraphics::budget::Budget) -> core::result::Result<milgraphics::render::RenderPlan, milgraphics::render::RenderError>

@@ -3,16 +3,20 @@
 //! The generated catalog lists what upstream knows; only symbols listed here,
 //! each with its acceptance tests, are drawn.
 
+use crate::catalog::CatalogEntry;
 use crate::family::Family;
 use crate::modifier::ModifierField;
 use crate::sidc::SymbolId;
 use crate::standard::StandardVersion;
+
+mod table;
 
 #[cfg(test)]
 mod tests;
 
 /// Where the standard defines a symbol.
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
+#[non_exhaustive]
 pub struct StandardRef {
     /// Document identifier, as in `tools/oracle/pin.json`.
     pub document: &'static str,
@@ -22,35 +26,106 @@ pub struct StandardRef {
     pub pdf_page: u16,
 }
 
-/// Everything the library declares about one supported symbol.
+/// How a symbol uses one amplifier field.
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+#[non_exhaustive]
+pub struct ModifierSpec {
+    /// The field.
+    pub field: ModifierField,
+    /// Whether the symbol cannot be drawn without it.
+    pub required: bool,
+    /// Fewest values when set; 1 for single-valued fields.
+    pub min_count: usize,
+    /// Most values; 1 for single-valued fields.
+    pub max_count: usize,
+}
+
+impl ModifierSpec {
+    /// An optional single-valued field.
+    pub(crate) const fn optional(field: ModifierField) -> Self {
+        Self::counted(field, false, 1, 1)
+    }
+
+    /// A required single-valued field.
+    pub(crate) const fn required(field: ModifierField) -> Self {
+        Self::counted(field, true, 1, 1)
+    }
+
+    /// A field holding `min_count..=max_count` values.
+    pub(crate) const fn counted(
+        field: ModifierField,
+        required: bool,
+        min_count: usize,
+        max_count: usize,
+    ) -> Self {
+        Self {
+            field,
+            required,
+            min_count,
+            max_count,
+        }
+    }
+}
+
+/// Everything the library declares about one supported symbol: enough for an
+/// editor to offer it in a palette and build its amplifier form.
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[non_exhaustive]
 pub struct SymbolSpec {
     /// Standard edition.
     pub standard: StandardVersion,
-    /// Six-digit entity code in symbol set 25.
+    /// Two-digit symbol set: 25 for control measures, 45 and 46 for METOC.
+    pub symbol_set: u8,
+    /// Six-digit entity code.
     pub entity: u32,
     /// Name as the standard gives it.
     pub name: &'static str,
-    /// Construction family.
-    pub family: Family,
     /// Fewest control points.
     pub min_points: usize,
     /// Most control points.
     pub max_points: usize,
-    /// Amplifiers that are drawn.
-    pub modifiers: &'static [ModifierField],
-    /// Amplifiers without which the symbol cannot be drawn.
-    pub required: &'static [ModifierField],
+    /// Amplifiers that are drawn, with their constraints. A field not listed
+    /// here is refused.
+    pub modifiers: &'static [ModifierSpec],
     /// Draw rule printed in the standard.
     pub draw_rule: &'static str,
     /// Why the upstream catalog's draw rule differs, if it does.
     pub catalog_divergence: Option<&'static str>,
     /// Where the standard defines it.
     pub reference: StandardRef,
+    /// Construction family.
+    pub(crate) family: Family,
+}
+
+impl SymbolSpec {
+    /// How the symbol uses `field`, or `None` when it does not draw it.
+    pub fn modifier(&self, field: ModifierField) -> Option<&'static ModifierSpec> {
+        self.modifiers.iter().find(|m| m.field == field)
+    }
+
+    /// The fields without which the symbol cannot be drawn.
+    pub fn required(&self) -> impl Iterator<Item = ModifierField> + 'static {
+        self.modifiers
+            .iter()
+            .filter(|m| m.required)
+            .map(|m| m.field)
+    }
+
+    /// Whether control points may be inserted and deleted.
+    pub fn allows_vertex_edits(&self) -> bool {
+        self.family.allows_vertex_edits()
+    }
+
+    /// The upstream catalog row for this symbol: its hierarchy path and
+    /// geometry, for grouping a palette.
+    pub fn catalog_entry(&self) -> Option<&'static CatalogEntry> {
+        crate::catalog::lookup(self.standard.code(), self.symbol_set, self.entity)
+    }
 }
 
 /// Why a symbol cannot be drawn.
 #[derive(Clone, Debug, PartialEq, Eq, thiserror::Error)]
+#[non_exhaustive]
 pub enum Unsupported {
     /// The version code is not a known edition.
     #[error("standard version code {code} is not supported")]
@@ -75,9 +150,8 @@ pub fn spec(symbol: &SymbolId) -> Result<&'static SymbolSpec, Unsupported> {
     let code = symbol.version_code();
     let standard = symbol.standard().ok_or(Unsupported::Standard { code })?;
     let (symbol_set, entity) = (symbol.symbol_set(), symbol.entity().get());
-    SPECS
-        .iter()
-        .find(|s| symbol_set == 25 && s.standard == standard && s.entity == entity)
+    all()
+        .find(|s| s.symbol_set == symbol_set && s.standard == standard && s.entity == entity)
         .ok_or(Unsupported::Symbol {
             standard,
             symbol_set,
@@ -86,182 +160,6 @@ pub fn spec(symbol: &SymbolId) -> Result<&'static SymbolSpec, Unsupported> {
 }
 
 /// Every declared symbol.
-pub fn all() -> &'static [SymbolSpec] {
-    SPECS
+pub fn all() -> impl Iterator<Item = &'static SymbolSpec> + Clone {
+    table::TABLES.iter().flat_map(|t| t.iter())
 }
-
-const D: &str = "mil-std-2525d-ch1";
-const E: &str = "mil-std-2525e-ch1";
-const MAX: usize = 10_000;
-
-const fn r(document: &'static str, table: &'static str, pdf_page: u16) -> StandardRef {
-    StandardRef {
-        document,
-        table,
-        pdf_page,
-    }
-}
-
-use ModifierField as M;
-use StandardVersion::{Mil2525Dch1, Mil2525Ech1};
-
-static SPECS: &[SymbolSpec] = &[
-    SymbolSpec {
-        standard: Mil2525Dch1,
-        entity: 140_300,
-        name: "Phase Line",
-        family: Family::PhaseLine,
-        min_points: 2,
-        max_points: MAX,
-        modifiers: &[M::T],
-        required: &[],
-        draw_rule: "Line2",
-        catalog_divergence: None,
-        reference: r(D, "TABLE H-VII", 446),
-    },
-    SymbolSpec {
-        standard: Mil2525Ech1,
-        entity: 140_300,
-        name: "Phase Line",
-        family: Family::PhaseLine,
-        min_points: 2,
-        max_points: MAX,
-        modifiers: &[M::T],
-        required: &[],
-        draw_rule: "Line1",
-        catalog_divergence: None,
-        reference: r(E, "TABLE L-VII", 478),
-    },
-    SymbolSpec {
-        standard: Mil2525Dch1,
-        entity: 120_200,
-        name: "Named Area of Interest",
-        family: Family::LabelledArea { prefix: "NAI" },
-        min_points: 3,
-        max_points: MAX,
-        modifiers: &[M::T],
-        required: &[],
-        draw_rule: "Area1",
-        catalog_divergence: None,
-        reference: r(D, "TABLE H-V", 436),
-    },
-    SymbolSpec {
-        standard: Mil2525Ech1,
-        entity: 120_200,
-        name: "Named Area of Interest",
-        family: Family::LabelledArea { prefix: "NAI" },
-        min_points: 3,
-        max_points: MAX,
-        modifiers: &[M::T],
-        required: &[],
-        draw_rule: "Area1",
-        catalog_divergence: None,
-        reference: r(E, "TABLE L-V", 468),
-    },
-    SymbolSpec {
-        standard: Mil2525Dch1,
-        entity: 151403,
-        name: "Main Attack",
-        family: Family::Axis,
-        min_points: 3,
-        max_points: 50,
-        modifiers: &[M::T],
-        required: &[],
-        draw_rule: "Axis2",
-        catalog_divergence: None,
-        reference: r(D, "TABLE H-X", 455),
-    },
-    SymbolSpec {
-        standard: Mil2525Ech1,
-        entity: 151403,
-        name: "Main Attack",
-        family: Family::Axis,
-        min_points: 3,
-        max_points: 50,
-        modifiers: &[M::T],
-        required: &[],
-        draw_rule: "Axis1",
-        catalog_divergence: Some(
-            "mil-sym-java mse.txt files 151403 under Axis2; 2525E change 1 TABLE L-X gives Axis1 and marks Axis2 disused",
-        ),
-        reference: r(E, "TABLE L-X", 496),
-    },
-    SymbolSpec {
-        standard: Mil2525Dch1,
-        entity: 170100,
-        name: "Air Corridor",
-        family: Family::Corridor,
-        min_points: 2,
-        max_points: 99,
-        modifiers: &[M::T, M::AM, M::X, M::W, M::W1],
-        required: &[M::AM],
-        draw_rule: "Corridor1",
-        catalog_divergence: None,
-        reference: r(D, "TABLE H-XIII", 463),
-    },
-    SymbolSpec {
-        standard: Mil2525Ech1,
-        entity: 170100,
-        name: "Air Corridor",
-        family: Family::Corridor,
-        min_points: 2,
-        max_points: 99,
-        modifiers: &[M::T, M::AM, M::X, M::W, M::W1],
-        required: &[M::AM],
-        draw_rule: "Corridor1",
-        catalog_divergence: None,
-        reference: r(E, "TABLE L-XI", 498),
-    },
-    SymbolSpec {
-        standard: Mil2525Dch1,
-        entity: 242200,
-        name: "Weapon/Sensor Range Fan, Sector",
-        family: Family::RangeFanSector,
-        min_points: 1,
-        max_points: 1,
-        modifiers: &[M::AM, M::AN],
-        required: &[M::AM, M::AN],
-        draw_rule: "Arc1",
-        catalog_divergence: None,
-        reference: r(D, "TABLE H-XVII", 528),
-    },
-    SymbolSpec {
-        standard: Mil2525Ech1,
-        entity: 242200,
-        name: "Weapon/Sensor Range Fan, Sector",
-        family: Family::RangeFanSector,
-        min_points: 1,
-        max_points: 1,
-        modifiers: &[M::AM, M::AN],
-        required: &[M::AM, M::AN],
-        draw_rule: "Arc1",
-        catalog_divergence: None,
-        reference: r(E, "TABLE L-XV", 573),
-    },
-    SymbolSpec {
-        standard: Mil2525Dch1,
-        entity: 270601,
-        name: "Obstacle Bypass, Easy",
-        family: Family::Bypass,
-        min_points: 3,
-        max_points: 3,
-        modifiers: &[],
-        required: &[],
-        draw_rule: "Point12",
-        catalog_divergence: None,
-        reference: r(D, "TABLE H-XVIII", 533),
-    },
-    SymbolSpec {
-        standard: Mil2525Ech1,
-        entity: 270601,
-        name: "Obstacle Bypass, Easy",
-        family: Family::Bypass,
-        min_points: 3,
-        max_points: 3,
-        modifiers: &[],
-        required: &[],
-        draw_rule: "Point12",
-        catalog_divergence: None,
-        reference: r(E, "TABLE L-XVI", 576),
-    },
-];

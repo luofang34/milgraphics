@@ -225,25 +225,11 @@ fn antimeridian_cuts_count_against_the_vertex_budget() {
     // The tightest budget that still constructs.
     let (max, c) = (built..built + 8)
         .find_map(|max| {
-            let budget = Budget {
-                max_vertices: max,
-                ..Budget::default()
-            };
-            construct(
-                &d,
-                &Config {
-                    budget,
-                    ..Config::default()
-                },
-            )
-            .ok()
-            .map(|c| (max, c))
+            let budget = budget_of(max);
+            construct(&d, &config_of(budget)).ok().map(|c| (max, c))
         })
         .unwrap();
-    let budget = Budget {
-        max_vertices: max,
-        ..Budget::default()
-    };
+    let budget = budget_of(max);
     let projection = &projections(&d, SCALE)[0];
     if let Ok(plan) = rendered(&c, projection.as_ref(), &budget) {
         let (geo, _) = vertex_counts(&plan);
@@ -260,25 +246,11 @@ fn screen_decorations_count_against_the_vertex_budget() {
     let d = definition(BYPASS_EASY, &[(0.0, 0.0), (0.1, 0.1), (0.2, 0.0)]);
     let (max, c) = (1..64)
         .find_map(|max| {
-            let budget = Budget {
-                max_vertices: max,
-                ..Budget::default()
-            };
-            construct(
-                &d,
-                &Config {
-                    budget,
-                    ..Config::default()
-                },
-            )
-            .ok()
-            .map(|c| (max, c))
+            let budget = budget_of(max);
+            construct(&d, &config_of(budget)).ok().map(|c| (max, c))
         })
         .unwrap();
-    let budget = Budget {
-        max_vertices: max,
-        ..Budget::default()
-    };
+    let budget = budget_of(max);
     let projection = &projections(&d, SCALE)[0];
     if let Ok(plan) = rendered(&c, projection.as_ref(), &budget) {
         let (_, screen) = vertex_counts(&plan);
@@ -287,4 +259,18 @@ fn screen_decorations_count_against_the_vertex_budget() {
             "{screen} screen vertices exceed the budget {max}"
         );
     }
+}
+
+/// The default budget with at most `max` vertices.
+fn budget_of(max: usize) -> Budget {
+    let mut budget = Budget::default();
+    budget.max_vertices = max;
+    budget
+}
+
+/// The default configuration with `budget`.
+fn config_of(budget: Budget) -> Config {
+    let mut config = Config::default();
+    config.budget = budget;
+    config
 }

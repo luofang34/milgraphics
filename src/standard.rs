@@ -9,6 +9,7 @@ use core::fmt;
 /// definitions with any other version code are kept verbatim and reported as
 /// unsupported rather than mapped to a nearby edition.
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord)]
+#[non_exhaustive]
 pub enum StandardVersion {
     /// APP-6(D), version code 10. Upstream also files base MIL-STD-2525D here.
     App6D,

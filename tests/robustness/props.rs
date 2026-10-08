@@ -168,12 +168,11 @@ fn definition(sym: Sym) -> impl Strategy<Value = GraphicDefinition> {
 /// A coarser geodesic step and a smaller vertex budget than the defaults, so
 /// continent-scale cases stay fast; oversized output is a budget error.
 fn config() -> Config {
-    Config {
-        budget: Budget {
-            max_vertices: 20_000,
-            ..Budget::default()
-        },
-        geodesic_step_m: 100_000.0,
+    {
+        let mut config = Config::default();
+        config.budget.max_vertices = 20_000;
+        config.geodesic_step_m = 100_000.0;
+        config
     }
 }
 
@@ -208,11 +207,10 @@ fn under_small_budget(check_counts: impl Fn((usize, usize), usize) -> Result<(),
         check(
             (definition(sym), 1usize..400, scale()),
             |(def, max, scale)| {
-                let budget = Budget {
-                    max_vertices: max,
-                    ..Budget::default()
-                };
-                let config = Config { budget, ..config() };
+                let mut budget = Budget::default();
+                budget.max_vertices = max;
+                let mut config = config();
+                config.budget = budget;
                 // Err is a typed budget (or validation) error; Ok must fit.
                 let Ok(c) = built(&def, &config) else {
                     return Ok(());

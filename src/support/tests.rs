@@ -1,8 +1,9 @@
 use super::*;
+use crate::modifier::ModifierKind;
 
 #[test]
 fn each_symbol_is_declared_once_per_standard() {
-    let mut keys: Vec<_> = all().iter().map(|s| (s.standard, s.entity)).collect();
+    let mut keys: Vec<_> = all().map(|s| (s.standard, s.entity)).collect();
     let count = keys.len();
     keys.sort();
     keys.dedup();
@@ -17,9 +18,33 @@ fn declarations_are_internally_consistent() {
             "{}",
             s.name
         );
-        for r in s.required {
-            assert!(s.modifiers.contains(r), "{} requires undrawn {r:?}", s.name);
+        for m in s.modifiers {
+            assert!(
+                m.min_count >= 1 && m.min_count <= m.max_count,
+                "{} {}",
+                s.name,
+                m.field
+            );
+            let single = !matches!(
+                m.field.kind(),
+                ModifierKind::Distances | ModifierKind::Azimuths | ModifierKind::Altitudes
+            );
+            assert!(
+                !single || m.max_count == 1,
+                "{} {} is single-valued",
+                s.name,
+                m.field
+            );
         }
+        let mut fields: Vec<_> = s.modifiers.iter().map(|m| m.field).collect();
+        fields.sort();
+        fields.dedup();
+        assert_eq!(
+            fields.len(),
+            s.modifiers.len(),
+            "{} lists a field twice",
+            s.name
+        );
         let doc_matches = match s.standard {
             StandardVersion::Mil2525Dch1 => s.reference.document == "mil-std-2525d-ch1",
             StandardVersion::Mil2525Ech1 => s.reference.document == "mil-std-2525e-ch1",
@@ -54,7 +79,7 @@ fn lookup_by_symbol_id() {
 fn draw_rules_agree_with_the_catalog_or_declare_why_not() {
     use crate::catalog::{CatalogDrawRule, lookup};
     for s in all() {
-        let entry = lookup(s.standard.code(), 25, s.entity).unwrap_or_else(|| {
+        let entry = lookup(s.standard.code(), s.symbol_set, s.entity).unwrap_or_else(|| {
             panic!(
                 "{} {} missing from the upstream catalog",
                 s.standard, s.entity

@@ -7,7 +7,7 @@ use std::error::Error;
 use std::fs;
 use std::path::PathBuf;
 
-use milgraphics::render::{FixedAdvanceMetrics, Font, LocalEquirectangular, ScreenShape};
+use milgraphics::render::{FixedAdvanceMetrics, LocalEquirectangular, ScreenShape};
 use milgraphics::{
     Altitude, Budget, Config, ControlPoint, GeoPoint, GraphicDefinition, GraphicId, SymbolId,
     VerticalDatum, View, construct, render,
@@ -116,11 +116,7 @@ fn definition(case: &Case) -> Result<GraphicDefinition, Box<dyn Error>> {
 /// on a white background so it reads on light and dark pages.
 fn svg(case: &Case) -> Result<String, Box<dyn Error>> {
     let construction = construct(&definition(case)?, &Config::default())?;
-    let view = View {
-        view_revision: 0,
-        surface_revision: 0,
-        label_font: Font::default(),
-    };
+    let view = View::new(0, 0);
     let frame = LocalEquirectangular::new(case.west_north.0, case.west_north.1, SCALE, 96.0);
     let plan = render(
         &construction,

@@ -2,6 +2,7 @@ use super::*;
 use crate::construction::HandleKind;
 use crate::definition::{ControlPoint, GraphicId};
 use crate::geo::GeoPoint;
+use crate::modifier::ModifierField;
 use crate::sidc::SymbolId;
 
 fn def(sidc: &str, points: &[(f64, f64)]) -> GraphicDefinition {
@@ -58,7 +59,10 @@ fn definitions_are_validated_before_construction() {
     pl.modifiers.distances_m = vec![5.0];
     assert!(matches!(
         construct(&pl, &Config::default()),
-        Err(ConstructError::UnsupportedModifier { field, .. }) if field == "AM"
+        Err(ConstructError::UnsupportedModifier {
+            field: ModifierField::AM,
+            ..
+        })
     ));
     pl.modifiers.distances_m.clear();
     pl.modifiers
@@ -66,19 +70,26 @@ fn definitions_are_validated_before_construction() {
         .insert("Q9".to_owned(), serde_json::json!("x"));
     assert!(matches!(
         construct(&pl, &Config::default()),
-        Err(ConstructError::UnsupportedModifier { field, .. }) if field == "Q9"
+        Err(ConstructError::UnknownModifier { key, .. }) if key == "Q9"
     ));
     let corridor = def("11032500001701000000", &[(20.0, 50.0), (20.1, 50.0)]);
     assert!(matches!(
         construct(&corridor, &Config::default()),
-        Err(ConstructError::MissingModifier { field: "AM", .. })
+        Err(ConstructError::MissingModifier {
+            field: ModifierField::AM,
+            ..
+        })
     ));
     let mut fan = def("11032500002422000000", &[(20.0, 50.0)]);
     fan.modifiers.distances_m = vec![f64::NAN];
     fan.modifiers.azimuths_deg = vec![0.0, 90.0];
     assert!(matches!(
         construct(&fan, &Config::default()),
-        Err(ConstructError::InvalidModifier { field: "AM", .. })
+        Err(ConstructError::InvalidModifier {
+            field: ModifierField::AM,
+            index: 0,
+            ..
+        })
     ));
     let short = def("11032500001202000000", &[(20.0, 50.0), (20.1, 50.0)]);
     assert!(matches!(
@@ -94,13 +105,8 @@ fn definitions_are_validated_before_construction() {
 #[test]
 fn budgets_bound_input_and_output() {
     let pl = def("11032500001403000000", &[(0.0, 0.0), (179.0, 0.0)]);
-    let config = Config {
-        budget: Budget {
-            max_vertices: 100,
-            ..Budget::default()
-        },
-        ..Config::default()
-    };
+    let mut config = Config::default();
+    config.budget.max_vertices = 100;
     assert!(matches!(
         construct(&pl, &config),
         Err(ConstructError::Budget(BudgetError::Vertices { .. }))
@@ -109,7 +115,10 @@ fn budgets_bound_input_and_output() {
     long.modifiers.designation = Some("x".repeat(257));
     assert!(matches!(
         construct(&long, &Config::default()),
-        Err(ConstructError::Budget(BudgetError::Text { field: "T", .. }))
+        Err(ConstructError::Budget(BudgetError::Text {
+            field: ModifierField::T,
+            ..
+        }))
     ));
 }
 

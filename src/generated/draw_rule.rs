@@ -6,6 +6,7 @@
 
 /// Draw rule of a control measure (symbol set 25), named as in upstream's `DrawRules`.
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord)]
+#[non_exhaustive]
 pub enum DrawRule {
     /// Upstream draw rule `DONOTDRAW`.
     DoNotDraw,
@@ -244,6 +245,7 @@ impl DrawRule {
 
 /// Draw rule of a METOC symbol (sets 45 and 46), named as in upstream's `MODrawRules`.
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord)]
+#[non_exhaustive]
 pub enum MoDrawRule {
     /// Upstream draw rule `DONOTDRAW`.
     DoNotDraw,

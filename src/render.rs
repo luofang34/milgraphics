@@ -25,6 +25,7 @@ mod tests;
 /// The view a plan is rendered for. The host bumps the revisions whenever
 /// anything they summarise changes; they are part of every plan's cache key.
 #[derive(Clone, Debug, PartialEq)]
+#[non_exhaustive]
 pub struct View {
     /// Changes with camera position or orientation, viewport, projection or DPI.
     pub view_revision: u64,
@@ -32,6 +33,17 @@ pub struct View {
     pub surface_revision: u64,
     /// Font for labels.
     pub label_font: Font,
+}
+
+impl View {
+    /// A view with these revisions and the default label font.
+    pub fn new(view_revision: u64, surface_revision: u64) -> Self {
+        Self {
+            view_revision,
+            surface_revision,
+            label_font: Font::default(),
+        }
+    }
 }
 
 /// Geographic-tier geometry, split at the antimeridian.
@@ -45,6 +57,7 @@ pub enum GeoShape {
 
 /// An item the map engine projects and drapes itself.
 #[derive(Clone, Debug, PartialEq)]
+#[non_exhaustive]
 pub struct GeoItem {
     /// What it is.
     pub pick: PickRef,
@@ -69,6 +82,7 @@ pub enum ScreenShape {
 
 /// An item already projected, densified and clipped for this view.
 #[derive(Clone, Debug, PartialEq)]
+#[non_exhaustive]
 pub struct ScreenItem {
     /// What it is.
     pub pick: PickRef,
@@ -88,6 +102,7 @@ pub struct ScreenItem {
 
 /// An edit handle for this view.
 #[derive(Clone, Debug, PartialEq)]
+#[non_exhaustive]
 pub struct Handle {
     /// What it is.
     pub pick: PickRef,
@@ -103,6 +118,7 @@ pub struct Handle {
 
 /// A construction resolved for one view.
 #[derive(Clone, Debug, PartialEq)]
+#[non_exhaustive]
 pub struct RenderPlan {
     /// Renderer version that built it.
     pub renderer_version: &'static str,
@@ -126,6 +142,7 @@ pub struct RenderPlan {
 
 /// Why a plan could not be built.
 #[derive(Debug, thiserror::Error)]
+#[non_exhaustive]
 pub enum RenderError {
     /// A size limit would be exceeded.
     #[error(transparent)]

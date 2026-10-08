@@ -38,6 +38,7 @@ impl fmt::Display for EntityCode {
 
 /// Why a symbol identification code was rejected.
 #[derive(Clone, Debug, PartialEq, Eq, thiserror::Error)]
+#[non_exhaustive]
 pub enum SidcError {
     /// The code is not 20 or 30 ASCII digits.
     #[error("symbol ID {code:?} must be 20 or 30 digits")]

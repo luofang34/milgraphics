@@ -27,6 +27,7 @@ struct RawPoint {
 
 /// Why a coordinate was rejected.
 #[derive(Clone, Copy, Debug, PartialEq, thiserror::Error)]
+#[non_exhaustive]
 pub enum GeoError {
     /// A coordinate is NaN or infinite.
     #[error("coordinate ({lon}, {lat}) is not finite")]
@@ -103,6 +104,7 @@ pub(crate) fn wrap_longitude(lon: f64) -> f64 {
 
 /// The surface an altitude is measured from.
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, Serialize, Deserialize)]
+#[non_exhaustive]
 pub enum VerticalDatum {
     /// Height above the terrain at the point.
     #[serde(rename = "agl")]
@@ -117,6 +119,7 @@ pub enum VerticalDatum {
 
 /// An altitude in metres with an explicit vertical datum.
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct Altitude {
     /// Metres above the datum; negative below it.
     pub metres: f64,

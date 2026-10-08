@@ -10,7 +10,7 @@ fn main() {}
 #[cfg(not(target_arch = "wasm32"))]
 mod native {
     use criterion::{BenchmarkId, Criterion, criterion_group};
-    use milgraphics::render::{FixedAdvanceMetrics, Font, LocalEquirectangular};
+    use milgraphics::render::{FixedAdvanceMetrics, LocalEquirectangular};
     use milgraphics::{
         Budget, Config, Construction, ControlPoint, GeoPoint, GraphicDefinition, GraphicId,
         SymbolId, View, construct, render,
@@ -74,11 +74,7 @@ mod native {
 
     fn bench(c: &mut Criterion) {
         let config = Config::default();
-        let view = View {
-            view_revision: 0,
-            surface_revision: 0,
-            label_font: Font::default(),
-        };
+        let view = View::new(0, 0);
         let frame = LocalEquirectangular::new(19.99, 51.01, 50_000.0, 96.0);
         let metrics = FixedAdvanceMetrics::default();
         let budget = Budget::default();

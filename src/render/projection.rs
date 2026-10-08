@@ -51,6 +51,7 @@ pub trait Projection {
 
 /// A label font.
 #[derive(Clone, Debug, PartialEq)]
+#[non_exhaustive]
 pub struct Font {
     /// Family name, e.g. "PT Sans".
     pub family: String,
@@ -58,6 +59,17 @@ pub struct Font {
     pub size_px: f64,
     /// Bold weight.
     pub bold: bool,
+}
+
+impl Font {
+    /// A font of `family` at `size_px`.
+    pub fn new(family: impl Into<String>, size_px: f64, bold: bool) -> Self {
+        Self {
+            family: family.into(),
+            size_px,
+            bold,
+        }
+    }
 }
 
 impl Default for Font {
@@ -87,6 +99,7 @@ pub trait FontMetrics {
 /// Deterministic metrics for tests and headless use: every character
 /// advances by the same fraction of the font size.
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[non_exhaustive]
 pub struct FixedAdvanceMetrics {
     /// Advance per character, in ems.
     pub advance_em: f64,

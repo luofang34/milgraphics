@@ -41,7 +41,7 @@ def.modifiers.designation = Some("ALPHA".into());
 // own projection and font metrics; this fixed frame suits tests and SVG.
 let construction = construct(&def, &Config::default())?;
 let frame = LocalEquirectangular::new(19.95, 50.07, 50_000.0, 96.0);
-let view = View { view_revision: 0, surface_revision: 0, label_font: Font::default() };
+let view = View::new(0, 0);
 let plan = render(&construction, &view, &frame, &FixedAdvanceMetrics::default(), &Budget::default())?;
 
 let svg = milgraphics::svg::to_svg(&plan, 1100.0, 900.0);

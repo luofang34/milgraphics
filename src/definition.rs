@@ -23,6 +23,7 @@ pub struct GraphicId(String);
 
 /// Why a graphic ID was rejected.
 #[derive(Clone, Debug, PartialEq, Eq, thiserror::Error)]
+#[non_exhaustive]
 pub enum GraphicIdError {
     /// The ID is empty.
     #[error("graphic ID is empty")]
@@ -80,6 +81,7 @@ impl fmt::Display for GraphicId {
 /// any fields a newer version added, which are kept as JSON content.
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 #[serde(try_from = "Map<String, Value>", into = "Map<String, Value>")]
+#[non_exhaustive]
 pub struct ControlPoint {
     /// Horizontal position.
     pub position: GeoPoint,
@@ -102,6 +104,7 @@ impl ControlPoint {
 
 /// Why a stored control point was rejected.
 #[derive(Debug, thiserror::Error)]
+#[non_exhaustive]
 pub enum ControlPointError {
     /// `lon` or `lat` is missing or not a number.
     #[error("control point needs numeric lon and lat")]
@@ -155,6 +158,7 @@ impl From<ControlPoint> for Map<String, Value> {
 
 /// Display overrides chosen by the operator; absent fields follow the standard.
 #[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct StyleOverrides {
     /// Line colour as `#rrggbb` or `#rrggbbaa`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -176,6 +180,7 @@ impl StyleOverrides {
 
 /// The time span in which a graphic applies, as ISO 8601 strings.
 #[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct Validity {
     /// Start of the span, if bounded.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -194,6 +199,7 @@ pub struct Validity {
 /// Fields this version does not understand are carried in `unknown`, so an
 /// edit made by an older version does not drop data written by a newer one.
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[non_exhaustive]
 pub struct GraphicDefinition {
     /// Stable identifier.
     pub id: GraphicId,

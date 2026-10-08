@@ -3,8 +3,9 @@
 //! upstream's data tables (see `UPSTREAM.md`); this module holds their types
 //! and lookup.
 
-use crate::generated::catalog::{ENTRIES, ModifierKey};
+use crate::generated::catalog::ENTRIES;
 use crate::generated::draw_rule::{DrawRule, MoDrawRule};
+use crate::modifier::ModifierField;
 
 #[cfg(test)]
 mod tests;
@@ -33,6 +34,7 @@ impl VersionSet {
 
 /// Spatial form of a graphic.
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
+#[non_exhaustive]
 pub enum GeometryKind {
     /// Anchored at one or more discrete points.
     Point,
@@ -44,6 +46,7 @@ pub enum GeometryKind {
 
 /// The draw rule of a catalog row, from the rule family of its symbol set.
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
+#[non_exhaustive]
 pub enum CatalogDrawRule {
     /// Control measures (symbol set 25).
     Standard(DrawRule),
@@ -53,6 +56,7 @@ pub enum CatalogDrawRule {
 
 /// One graphic as listed in upstream's data tables.
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
+#[non_exhaustive]
 pub struct CatalogEntry {
     /// Two-digit symbol set.
     pub symbol_set: u8,
@@ -70,7 +74,7 @@ pub struct CatalogEntry {
     pub draw_rule: CatalogDrawRule,
     /// Modifiers the standard allows. Empty for METOC rows, whose modifier
     /// column upstream uses for colour instead.
-    pub modifiers: &'static [ModifierKey],
+    pub modifiers: &'static [ModifierField],
 }
 
 /// Every catalog row, ordered by `(symbol_set, entity, first version)`.

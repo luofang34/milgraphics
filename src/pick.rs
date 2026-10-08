@@ -10,6 +10,7 @@ use crate::edit::HandleId;
 /// those IDs to `PickRef`, bound to the plan that produced them, so a pick
 /// against an outdated plan can be recognised and rejected.
 #[derive(Clone, Debug, PartialEq, Eq, Hash)]
+#[non_exhaustive]
 pub struct PickRef {
     /// The graphic.
     pub definition: GraphicId,
@@ -19,6 +20,7 @@ pub struct PickRef {
 
 /// The element of a graphic a pick refers to.
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
+#[non_exhaustive]
 pub enum PickTarget {
     /// A drawn part (line, boundary, arrowhead, label of that part, …).
     Part(PartId),

@@ -3,7 +3,7 @@ use crate::Budget;
 use crate::definition::{ControlPoint, GraphicDefinition, GraphicId};
 use crate::family::{Config, construct};
 use crate::geo::GeoPoint;
-use crate::render::{FixedAdvanceMetrics, Font, LocalEquirectangular, View, render};
+use crate::render::{FixedAdvanceMetrics, LocalEquirectangular, View, render};
 use crate::sidc::SymbolId;
 
 fn geojson_for(sidc: &str, points: &[(f64, f64)]) -> Value {
@@ -16,11 +16,7 @@ fn geojson_for(sidc: &str, points: &[(f64, f64)]) -> Value {
             .collect(),
     );
     let c = construct(&d, &Config::default()).unwrap();
-    let view = View {
-        view_revision: 0,
-        surface_revision: 0,
-        label_font: Font::default(),
-    };
+    let view = View::new(0, 0);
     let frame = LocalEquirectangular::new(points[0].0 - 1.0, 60.0, 50_000.0, 96.0);
     to_geojson(
         &render(

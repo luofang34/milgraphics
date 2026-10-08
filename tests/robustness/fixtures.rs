@@ -1,7 +1,7 @@
 //! Definitions, projections and output checks shared by the robustness tests.
 
 use milgraphics::render::{
-    FixedAdvanceMetrics, Font, GeoShape, LocalEquirectangular, Projection, ScreenPoint, ScreenShape,
+    FixedAdvanceMetrics, GeoShape, LocalEquirectangular, Projection, ScreenPoint, ScreenShape,
 };
 use milgraphics::{
     Budget, Config, Construction, ControlPoint, GeoPoint, GraphicDefinition, GraphicId, RenderPlan,
@@ -76,11 +76,7 @@ impl Projection for Globe {
 }
 
 pub(crate) fn view() -> View {
-    View {
-        view_revision: 0,
-        surface_revision: 0,
-        label_font: Font::default(),
-    }
+    View::new(0, 0)
 }
 
 /// A construction result that can be compared: errors by their message.

@@ -19,6 +19,7 @@ mod context;
 mod corridor;
 mod phase_line;
 mod range_fan;
+mod validate;
 
 #[cfg(test)]
 mod tests;
@@ -27,7 +28,7 @@ pub(crate) use context::Ctx;
 
 /// How a family of symbols is constructed and edited.
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
-pub enum Family {
+pub(crate) enum Family {
     /// A line labelled "PL T" at both ends.
     PhaseLine,
     /// A closed area labelled "`prefix` T" at its centre.
@@ -47,7 +48,7 @@ pub enum Family {
 
 impl Family {
     /// Whether control points may be inserted and deleted.
-    pub fn allows_vertex_edits(self) -> bool {
+    pub(crate) fn allows_vertex_edits(self) -> bool {
         match self {
             Self::PhaseLine | Self::LabelledArea { .. } | Self::Corridor => true,
             Self::Axis | Self::RangeFanSector | Self::Bypass => false,
@@ -57,6 +58,7 @@ impl Family {
 
 /// Construction settings.
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[non_exhaustive]
 pub struct Config {
     /// Limits on input and output size.
     pub budget: Budget,
@@ -77,6 +79,7 @@ impl Default for Config {
 
 /// Why a construction could not be built.
 #[derive(Debug, thiserror::Error)]
+#[non_exhaustive]
 pub enum ConstructError {
     /// The symbol is not supported.
     #[error(transparent)]
@@ -98,22 +101,46 @@ pub enum ConstructError {
     UnsupportedModifier {
         /// Symbol name.
         symbol: &'static str,
-        /// Field name.
-        field: String,
+        /// The field.
+        field: ModifierField,
+    },
+    /// An amplifier this version does not model is set.
+    #[error("{symbol} does not support amplifier {key}")]
+    UnknownModifier {
+        /// Symbol name.
+        symbol: &'static str,
+        /// The stored key.
+        key: String,
     },
     /// A required amplifier is missing.
     #[error("{symbol} requires amplifier {field}")]
     MissingModifier {
         /// Symbol name.
         symbol: &'static str,
-        /// Field name.
-        field: &'static str,
+        /// The field.
+        field: ModifierField,
+    },
+    /// An amplifier holds more or fewer values than the symbol takes.
+    #[error("{symbol} takes {min}..={max} values of amplifier {field}; {count} given")]
+    ModifierCount {
+        /// Symbol name.
+        symbol: &'static str,
+        /// The field.
+        field: ModifierField,
+        /// Values given.
+        count: usize,
+        /// Minimum.
+        min: usize,
+        /// Maximum.
+        max: usize,
     },
     /// An amplifier value is not usable.
-    #[error("amplifier {field} value {value} is invalid: {reason}")]
+    #[error("amplifier {field} value {value} at position {index} is invalid: {reason}")]
     InvalidModifier {
-        /// Field name.
-        field: &'static str,
+        /// The field.
+        field: ModifierField,
+        /// Position of the value in the field.
+        index: usize,
         /// The value.
         value: f64,
         /// Why.
@@ -150,7 +177,7 @@ pub fn construct(
     config: &Config,
 ) -> Result<Construction, ConstructError> {
     let spec = support::spec(&definition.symbol)?;
-    validate(spec, definition, &config.budget)?;
+    validate::validate(spec, definition, &config.budget)?;
     let palette: Palette = style::palette(&definition.symbol, &definition.style);
     let earth = Earth::wgs84();
     let mut ctx = Ctx::new(&earth, config, palette, spec);
@@ -201,119 +228,4 @@ pub(crate) fn move_handle(
         }
         _ => Err(EditError::NoSuchHandle { handle }),
     }
-}
-
-fn validate(
-    spec: &SymbolSpec,
-    def: &GraphicDefinition,
-    budget: &Budget,
-) -> Result<(), ConstructError> {
-    let count = def.points.len();
-    if count > budget.max_control_points {
-        return Err(BudgetError::ControlPoints {
-            count,
-            limit: budget.max_control_points,
-        }
-        .into());
-    }
-    if count < spec.min_points || count > spec.max_points {
-        return Err(ConstructError::PointCount {
-            symbol: spec.name,
-            count,
-            min: spec.min_points,
-            max: spec.max_points,
-        });
-    }
-    if let Some(index) = def.points.iter().position(|p| p.altitude.is_some()) {
-        return Err(ConstructError::UnsupportedAltitude {
-            symbol: spec.name,
-            index,
-        });
-    }
-    let m = &def.modifiers;
-    if let Some(field) = m.unknown.keys().next() {
-        return Err(ConstructError::UnsupportedModifier {
-            symbol: spec.name,
-            field: field.clone(),
-        });
-    }
-    for field in ModifierField::ALL {
-        if field.is_set(m) && !spec.modifiers.contains(&field) {
-            return Err(ConstructError::UnsupportedModifier {
-                symbol: spec.name,
-                field: field.name().to_owned(),
-            });
-        }
-    }
-    if let Some(field) = spec.required.iter().find(|f| !f.is_set(m)) {
-        return Err(ConstructError::MissingModifier {
-            symbol: spec.name,
-            field: field.name(),
-        });
-    }
-    validate_sizes(def, budget)
-}
-
-fn validate_sizes(def: &GraphicDefinition, budget: &Budget) -> Result<(), ConstructError> {
-    let m = &def.modifiers;
-    let texts = [
-        ("T", &m.designation),
-        ("T1", &m.designation2),
-        ("H", &m.additional_info),
-        ("W", &m.dtg_start),
-        ("W1", &m.dtg_end),
-    ];
-    for (field, text) in texts {
-        let count = text.as_deref().map_or(0, |t| t.chars().count());
-        if count > budget.max_text_chars {
-            let limit = budget.max_text_chars;
-            return Err(BudgetError::Text {
-                field,
-                count,
-                limit,
-            }
-            .into());
-        }
-    }
-    let lists = [
-        ("AM", m.distances_m.len()),
-        ("AN", m.azimuths_deg.len()),
-        ("X", m.altitudes.len()),
-    ];
-    for (field, count) in lists {
-        if count > budget.max_modifier_values {
-            let limit = budget.max_modifier_values;
-            return Err(BudgetError::ModifierValues {
-                field,
-                count,
-                limit,
-            }
-            .into());
-        }
-    }
-    for &value in &m.distances_m {
-        if !(value.is_finite() && value >= 0.0) {
-            let reason = "distances must be finite and non-negative";
-            return Err(ConstructError::InvalidModifier {
-                field: "AM",
-                value,
-                reason,
-            });
-        }
-    }
-    for &value in m
-        .azimuths_deg
-        .iter()
-        .chain(m.altitudes.iter().map(|a| &a.metres))
-    {
-        if !value.is_finite() {
-            let reason = "must be finite";
-            return Err(ConstructError::InvalidModifier {
-                field: "AN/X",
-                value,
-                reason,
-            });
-        }
-    }
-    Ok(())
 }

@@ -9,7 +9,7 @@ wasm_bindgen_test::wasm_bindgen_test_configure!(run_in_browser);
 // test exemptions in clippy.toml reach them only through a `cfg(test)` module.
 #[cfg(test)]
 mod golden {
-    use milgraphics::render::{FixedAdvanceMetrics, Font, LocalEquirectangular, ScreenShape};
+    use milgraphics::render::{FixedAdvanceMetrics, LocalEquirectangular, ScreenShape};
     use milgraphics::{
         Altitude, Budget, Config, ControlPoint, GeoPoint, GraphicDefinition, GraphicId, SymbolId,
         VerticalDatum, View, construct, render,
@@ -208,11 +208,7 @@ mod golden {
     fn svg(case: &Case, version: &str, status: &str) -> String {
         let construction =
             construct(&definition(case, version, status), &Config::default()).unwrap();
-        let view = View {
-            view_revision: 0,
-            surface_revision: 0,
-            label_font: Font::default(),
-        };
+        let view = View::new(0, 0);
         let frame = LocalEquirectangular::new(case.west_north.0, case.west_north.1, SCALE, 96.0);
         let plan = render(
             &construction,

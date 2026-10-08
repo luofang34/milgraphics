@@ -76,6 +76,19 @@ jobs:
       - run: cargo hack check -p milgraphics --feature-powerset --no-dev-deps
       - run: cargo hack check -p milgraphics --feature-powerset --no-dev-deps --target wasm32-unknown-unknown
 
+  public-api:
+    name: public API matches its snapshot
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: dtolnay/rust-toolchain@nightly
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: taiki-e/install-action@v2
+        with:
+          tool: cargo-public-api
+      - uses: Swatinem/rust-cache@v2
+      - run: tools/ci/public-api.sh
+
   oracle:
     name: regenerate oracle fixtures from pinned mil-sym-java and diff
     runs-on: ubuntu-latest
