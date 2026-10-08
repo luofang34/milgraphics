@@ -35,6 +35,19 @@ def same(a, b):
     return a == b
 
 
+def detail(a, b):
+    """The first differing element of two shape lists, for the log."""
+    if not (isinstance(a, list) and isinstance(b, list)):
+        return ""
+    if len(a) != len(b):
+        return f" ({len(a)} vs {len(b)} items)"
+    for i, (x, y) in enumerate(zip(a, b)):
+        if not same(x, y) and isinstance(x, dict) and isinstance(y, dict):
+            keys = [k for k in x if not same(x.get(k), y.get(k))]
+            return f" (item {i}: " + ", ".join(f"{k} {x.get(k)!r} vs {y.get(k)!r}" for k in keys)[:300] + ")"
+    return ""
+
+
 def without_positions(shapes):
     return [{k: v for k, v in s.items() if k != "position"} for s in shapes or []]
 
@@ -67,7 +80,7 @@ def main():
             if key == "font_probe":
                 notices.append(f"{a['case']}: font metrics differ: {a.get(key)} vs {b.get(key)}")
             else:
-                problems.append(f"{a['case']}: field {key!r} differs")
+                problems.append(f"{a['case']}: field {key!r} differs{detail(a.get(key), b.get(key))}")
     if notices:
         print(f"notice: {notices[0]} ({len(notices)} notices)")
     if problems:
