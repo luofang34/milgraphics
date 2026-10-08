@@ -18,8 +18,10 @@ serde = { version = "1.0.229", features = ["derive"] }
 serde_json = { version = "1.0.151", features = ["float_roundtrip", "raw_value"] }
 thiserror = "2"
 
+# Benchmarks and property-based robustness tests run natively only.
 [target.'cfg(not(target_arch = "wasm32"))'.dev-dependencies]
 criterion = { version = "0.8.2", default-features = false }
+proptest = "1"
 
 [[bench]]
 name = "plan"

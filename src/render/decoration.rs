@@ -85,6 +85,10 @@ pub(crate) fn resolve(
             }
         }
     };
+    let count = match &item.shape {
+        ScreenShape::Polyline(p) | ScreenShape::Polygon(p) => p.len(),
+    };
+    ctx.take(count)?;
     Ok(Some(item))
 }
 

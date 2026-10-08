@@ -12,7 +12,9 @@ pub struct Budget {
     pub max_text_chars: usize,
     /// Values in one multi-valued amplifier (`AM`, `AN`, `X`).
     pub max_modifier_values: usize,
-    /// Vertices generated for one graphic, over all parts and both tiers.
+    /// Vertices generated for one graphic, counted separately for its
+    /// construction and for each render (geographic and screen tiers
+    /// together, decorations and antimeridian cuts included).
     pub max_vertices: usize,
     /// Labels generated for one graphic.
     pub max_labels: usize,

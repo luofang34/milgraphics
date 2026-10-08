@@ -152,6 +152,8 @@ pub fn render(
             GeoGeometry::Line(p) => GeoShape::Lines(antimeridian::split_line(p)),
             GeoGeometry::Ring(p) => GeoShape::Polygons(antimeridian::split_ring(p)),
         };
+        let (GeoShape::Lines(pieces) | GeoShape::Polygons(pieces)) = &shape;
+        ctx.take(pieces.iter().map(Vec::len).sum())?;
         geo.push(GeoItem {
             pick: pick(PickTarget::Part(part.id)),
             role: part.role,

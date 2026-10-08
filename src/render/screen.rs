@@ -34,6 +34,11 @@ impl<'a> ScreenCtx<'a> {
         }
     }
 
+    /// Reserves `count` output vertices from the render budget.
+    pub(crate) fn take(&mut self, count: usize) -> Result<(), BudgetError> {
+        self.meter.take(count)
+    }
+
     pub(crate) fn terrain_missing(&self) -> bool {
         self.terrain_missing
     }
