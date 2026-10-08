@@ -17,6 +17,7 @@ struct JShape {
 }
 
 struct Case {
+    ok: bool,
     line_type: i32,
     name: String,
     dpi: i32,
@@ -35,11 +36,15 @@ where
 }
 
 fn color(t: &mut std::slice::Iter<'_, &str>) -> Option<i64> {
-    let s = t.next().unwrap();
-    (*s != "-").then(|| s.parse().unwrap())
+    let s: &str = t.next().unwrap();
+    if s == "-" {
+        None
+    } else {
+        Some(s.parse().unwrap())
+    }
 }
 
-fn parse(line: &str) -> Option<Case> {
+fn parse_tokens(line: &str) -> Case {
     let toks: Vec<&str> = line.split(' ').collect();
     let mut t = toks.iter();
     let line_type = num(&mut t);
@@ -54,7 +59,17 @@ fn parse(line: &str) -> Option<Case> {
     }
     assert_eq!(*t.next().unwrap(), "=>");
     if *t.next().unwrap() != "OK" {
-        return None;
+        return Case {
+            ok: false,
+            line_type,
+            name,
+            dpi,
+            thick,
+            control,
+            points: Vec::new(),
+            cap: 0,
+            shapes: Vec::new(),
+        };
     }
     assert_eq!(*t.next().unwrap(), "P");
     let k: usize = num(&mut t);
@@ -79,7 +94,8 @@ fn parse(line: &str) -> Option<Case> {
         }
         shapes.push(JShape { head, colors, path });
     }
-    Some(Case {
+    Case {
+        ok: true,
         line_type,
         name,
         dpi,
@@ -88,7 +104,11 @@ fn parse(line: &str) -> Option<Case> {
         points,
         cap,
         shapes,
-    })
+    }
+}
+
+fn parse(line: &str) -> Option<Case> {
+    Some(parse_tokens(line)).filter(|c| c.ok)
 }
 
 fn java_rgb(c: Option<Rgba>) -> Option<i64> {
@@ -142,8 +162,10 @@ fn compare_shape(got: &Shape, want: &JShape) -> Result<(), String> {
 }
 
 fn run(case: &Case) -> Result<(), String> {
-    let mut settings = Settings::default();
-    settings.dpi = case.dpi;
+    let settings = Settings {
+        dpi: case.dpi,
+        ..Settings::default()
+    };
     let mut tg = Tg::new(&settings);
     tg.line_type = case.line_type;
     tg.line_thickness = case.thick;
