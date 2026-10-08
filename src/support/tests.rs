@@ -142,3 +142,30 @@ fn draw_rules_agree_with_the_catalog_or_are_listed_divergences() {
         }
     }
 }
+
+#[test]
+fn point_counts_follow_the_standards_text_where_upstream_differs() {
+    let points = |code: &str| {
+        let s = spec(&SymbolId::parse(code).unwrap()).unwrap();
+        (s.min_points, s.max_points)
+    };
+    // Withdraw and Withdraw Under Pressure: three, as Line24.
+    for code in [
+        "15032500003424000000",
+        "16032500003424000000",
+        "15032500003425000000",
+        "16032500003425000000",
+    ] {
+        assert_eq!(points(code), (3, 3), "{code}");
+    }
+    // Trip Wire (2525D Line15, APP-6(E)), Bearing Line and Linear Target
+    // (APP-6(E)): two.
+    for code in [
+        "11032500002905000000",
+        "16032500002905000000",
+        "16032500002201000000",
+        "16032500002407010000",
+    ] {
+        assert_eq!(points(code), (2, 2), "{code}");
+    }
+}

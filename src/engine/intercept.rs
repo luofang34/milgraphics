@@ -1,7 +1,8 @@
 //! Port of mil-sym-java web/render/WebRenderer.java `interceptAndAdjustCode`:
 //! APP-6 codes that duplicate another graphic drawn as a feint or dummy are
-//! drawn as that graphic with the feint/dummy indicator. Two version 16
-//! codes are drawn with other digits of their code changed in the same way.
+//! drawn as that graphic with the feint/dummy indicator. A few version 15
+//! and 16 codes are drawn with other digits of their code changed in the
+//! same way.
 
 use crate::sidc::SymbolId;
 
@@ -28,8 +29,8 @@ const DUPLICATES: [(u32, u32); 6] = [
 const ANTICIPATED: char = '1';
 
 /// The code the renderer draws `symbol` as: itself, for a duplicate the
-/// graphic it duplicates, marked as a feint or dummy, or for a version 16
-/// code drawn as another edition draws it, that code.
+/// graphic it duplicates, marked as a feint or dummy, or for a version 15
+/// or 16 code drawn as another edition draws it, that code.
 pub(crate) fn engine_symbol(symbol: &SymbolId) -> SymbolId {
     if let Some(adjusted) = app6e(symbol) {
         return adjusted;
@@ -56,17 +57,20 @@ pub(crate) fn engine_symbol(symbol: &SymbolId) -> SymbolId {
     SymbolId::parse(&digits).unwrap_or_else(|_| symbol.clone())
 }
 
-/// Version 16 codes drawn by rewriting digits of their code: the
+/// Version 15 and 16 codes drawn by rewriting digits of their code: the
 /// Rectangular Target – Single Target, which upstream draws only for
-/// 2525D, as its 2525D code; and the Zone of Fire, whose boundary is a
-/// broken line in every status, as anticipated.
+/// 2525D, as its 2525D code; the Zone of Fire, whose boundary is a broken
+/// line in every status, as anticipated; and Withdraw and Withdraw Under
+/// Pressure, which the 2525E and APP-6(E) templates draw from three points
+/// as 2525D does (Line24) while upstream's catalog gives them two, as their
+/// 2525D codes.
 fn app6e(symbol: &SymbolId) -> Option<SymbolId> {
-    if (symbol.version_code(), symbol.symbol_set()) != (16, 25) {
+    if symbol.symbol_set() != 25 {
         return None;
     }
-    let (index, digit) = match symbol.entity().get() {
-        240_804 => (1, '1'),
-        242_600 => (6, ANTICIPATED),
+    let (index, digit) = match (symbol.version_code(), symbol.entity().get()) {
+        (16, 240_804) | (15 | 16, 342_400 | 342_500) => (1, '1'),
+        (16, 242_600) => (6, ANTICIPATED),
         _ => return None,
     };
     let digits: String = symbol

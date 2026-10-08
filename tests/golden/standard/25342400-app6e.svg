@@ -1,7 +1,7 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="947" height="603" viewBox="0 0 947 603">
-<polyline points="270.8,496.46 649.4,420.74" fill="none" stroke="#000000ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt"/>
-<polyline points="270.8,496.46 296.48,457.93" fill="none" stroke="#000000ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt"/>
-<polyline points="270.8,496.46 309.32,522.14" fill="none" stroke="#000000ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt"/>
-<polyline points="649.4,420.74 700.03,405.33 746.68,380.33 787.55,346.72 821.08,305.77 845.98,259.08 861.29,208.42 866.43,155.75 861.18,103.08 845.77,52.46 820.77,5.81 787.16,-35.06 746.22,-68.6 699.52,-93.49 648.86,-108.8 596.19,-113.94 543.52,-108.7" fill="none" stroke="#000000ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt"/>
-<text transform="translate(460 458.5) rotate(-11.22)" x="0" y="-3.6" text-anchor="middle" dominant-baseline="central" font-family="PT Sans" font-size="12" font-weight="bold">W</text>
+<svg xmlns="http://www.w3.org/2000/svg" width="711" height="630" viewBox="0 0 711 630">
+<polyline points="270.77,534.33 573.73,534.33" fill="none" stroke="#000000ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt"/>
+<polyline points="270.77,534.33 285.48,519.59" fill="none" stroke="#000000ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt"/>
+<polyline points="270.77,534.33 285.51,549.06" fill="none" stroke="#000000ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt"/>
+<polyline points="573.73,534.33 584.8,533.25 595.44,530.02 605.24,524.77 613.84,517.72 620.88,509.11 626.12,499.3 629.34,488.64 630.42,477.56 629.31,466.48 626.07,455.83 620.82,446.01 613.75,437.4 605.15,430.33 595.33,425.08 584.68,421.84 573.61,420.74" fill="none" stroke="#000000ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt"/>
+<text transform="translate(422.5 534) rotate(0)" x="0" y="-3.6" text-anchor="middle" dominant-baseline="central" font-family="PT Sans" font-size="12" font-weight="bold">W</text>
 </svg>

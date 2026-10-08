@@ -5,6 +5,23 @@
 /// Upper bound written for "any number of points".
 pub(super) const MANY: &str = "MANY";
 
+/// Control points a standard's text gives a control measure where
+/// upstream's catalog rule gives others:
+/// - Withdraw and Withdraw Under Pressure take three, as 2525D's Line24:
+///   MIL-STD-2525E change 1 prints Line24 (Table L-XXI) and APP-6(E)
+///   Table 8-26 says three, where the catalog gives two;
+/// - Trip Wire takes two: 2525D change 1 prints Line15 (Table H-XVIII),
+///   "requires two anchor points", as APP-6(E) Table 8-17 does;
+/// - Bearing Line and Linear Target take two in APP-6(E) (Tables 8-12 and
+///   8-15), which 2525E's Line1 leaves open.
+pub(super) fn standard_points(version: u32, entity: u32) -> Option<(u32, &'static str)> {
+    match (version, entity) {
+        (15 | 16, 342_400 | 342_500) => Some((3, "3")),
+        (11 | 16, 290_500) | (16, 220_100 | 240_701) => Some((2, "2")),
+        _ => None,
+    }
+}
+
 /// `(min, max)` control points for a control-measure draw rule; `max` is a
 /// Rust expression.
 pub(super) fn cm_points(rule: &str, version: u8) -> (u32, &'static str) {
