@@ -4,7 +4,7 @@
 use crate::construction::{GeoGeometry, LabelPlacement, PartRole};
 use crate::definition::{ControlPoint, GraphicDefinition, GraphicId};
 use crate::family::{Config, construct};
-use crate::geo::{Altitude, GeoPoint, VerticalDatum};
+use crate::geo::GeoPoint;
 use crate::render::{FixedAdvanceMetrics, LocalEquirectangular, View, render};
 use crate::sidc::SymbolId;
 use crate::style::{DashPattern, Fill, Motif, Rgba};
@@ -53,11 +53,7 @@ fn a_depth_contour_carries_its_depth() {
     d.modifiers.designation = Some("30 M".to_owned());
     let c = construct(&d, &Config::default()).unwrap();
     assert_eq!(c.labels.len(), 3);
-    assert!(
-        c.labels.iter().all(|l| l.text == "30 M"),
-        "{:?}",
-        c.labels
-    );
+    assert!(c.labels.iter().all(|l| l.text == "30 M"), "{:?}", c.labels);
 }
 
 #[test]
