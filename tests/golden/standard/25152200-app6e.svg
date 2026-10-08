@@ -5,4 +5,5 @@
 <polyline points="498.19,647.91 633.03,534.32 590.23,534.35 725.07,420.76" fill="none" stroke="#000000ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt"/>
 <polyline points="292.16,420.75 270.76,420.76 270.77,442.16 292.16,420.75" fill="none" stroke="#000000ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt"/>
 <polyline points="703.67,420.77 725.07,420.76 725.08,442.16 703.67,420.77" fill="none" stroke="#000000ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt"/>
+<rect x="483.19" y="632.91" width="30" height="30" fill="none" stroke="#808080" stroke-dasharray="3 2"/><text x="498.19" y="647.91" text-anchor="middle" dominant-baseline="central" font-family="sans-serif" font-size="6">10031000001211000000</text>
 </svg>

@@ -84,6 +84,6 @@ fn label_feature(label: &Label) -> Value {
 fn part(pick: &PickRef) -> Value {
     match pick.target {
         PickTarget::Part(p) => json!(p.0),
-        PickTarget::Handle(_) => Value::Null,
+        _ => Value::Null,
     }
 }

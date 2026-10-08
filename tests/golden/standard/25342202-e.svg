@@ -5,4 +5,5 @@
 <polyline points="274.83,780.04 270.96,799.36 290.29,803.23" fill="none" stroke="#000000ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt"/>
 <text transform="translate(498 578) rotate(0)" x="0" y="-3.6" text-anchor="middle" dominant-baseline="central" font-family="PT Sans" font-size="12" font-weight="bold">G</text>
 <text transform="translate(498 654) rotate(0)" x="0" y="-3.6" text-anchor="middle" dominant-baseline="central" font-family="PT Sans" font-size="12" font-weight="bold">G</text>
+<rect x="483.05" y="595.07" width="30" height="30" fill="none" stroke="#808080" stroke-dasharray="3 2"/><text x="498.05" y="610.07" text-anchor="middle" dominant-baseline="central" font-family="sans-serif" font-size="6">10031000001211000000</text>
 </svg>

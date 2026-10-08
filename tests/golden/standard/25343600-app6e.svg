@@ -3,4 +3,5 @@
 <polyline points="497.12,420.75 649.46,420.75 649.46,496.47" fill="none" stroke="#000000ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt"/>
 <text transform="translate(423 421) rotate(0)" x="0" y="-3.6" text-anchor="start" dominant-baseline="central" font-family="PT Sans" font-size="12" font-weight="bold">E</text>
 <text transform="translate(497 421) rotate(0)" x="0" y="-3.6" text-anchor="end" dominant-baseline="central" font-family="PT Sans" font-size="12" font-weight="bold">E</text>
+<rect x="445.03" y="405.75" width="30" height="30" fill="none" stroke="#808080" stroke-dasharray="3 2"/><text x="460.03" y="420.75" text-anchor="middle" dominant-baseline="central" font-family="sans-serif" font-size="6">10031000001211000000</text>
 </svg>

@@ -2,8 +2,8 @@
 
 use crate::budget::{BudgetError, VertexMeter};
 use crate::construction::{
-    Construction, Decoration, GeoGeometry, GeoPart, HandleSpec, LabelSpec, PartId, PartRole,
-    ScreenDecoration,
+    Construction, Decoration, EmbeddedSymbol, GeoGeometry, GeoPart, HandleSpec, LabelSpec, PartId,
+    PartRole, ScreenDecoration,
 };
 use crate::definition::GraphicDefinition;
 use crate::family::{Config, ConstructError};
@@ -24,6 +24,7 @@ pub(crate) struct Ctx<'a> {
     decorations: Vec<ScreenDecoration>,
     labels: Vec<LabelSpec>,
     handles: Vec<HandleSpec>,
+    symbols: Vec<EmbeddedSymbol>,
 }
 
 impl<'a> Ctx<'a> {
@@ -43,7 +44,13 @@ impl<'a> Ctx<'a> {
             decorations: Vec::new(),
             labels: Vec::new(),
             handles: Vec::new(),
+            symbols: Vec::new(),
         }
+    }
+
+    /// Adds a single-point symbol the graphic embeds.
+    pub(crate) fn add_symbol(&mut self, symbol: EmbeddedSymbol) {
+        self.symbols.push(symbol);
     }
 
     /// The id the next part will get.
@@ -142,6 +149,7 @@ impl<'a> Ctx<'a> {
             decorations: self.decorations,
             labels: self.labels,
             handles: self.handles,
+            symbols: self.symbols,
         })
     }
 }

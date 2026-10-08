@@ -46,6 +46,23 @@ pub fn to_svg(plan: &RenderPlan, width_px: f64, height_px: f64) -> String {
         )
         .ok();
     }
+    for symbol in &plan.symbols {
+        let Some(at) = symbol.screen else { continue };
+        // A single-point symbol is the host's to draw; mark where and how
+        // large it goes.
+        let half = symbol.size_px / 2.0;
+        writeln!(
+            out,
+            r##"<rect x="{x}" y="{y}" width="{s}" height="{s}" fill="none" stroke="#808080" stroke-dasharray="3 2"/><text x="{cx}" y="{cy}" text-anchor="middle" dominant-baseline="central" font-family="sans-serif" font-size="6">{code}</text>"##,
+            x = num(at.x - half),
+            y = num(at.y - half),
+            s = num(symbol.size_px),
+            cx = num(at.x),
+            cy = num(at.y),
+            code = escape(symbol.symbol.as_str()),
+        )
+        .ok();
+    }
     out.push_str("</svg>\n");
     out
 }

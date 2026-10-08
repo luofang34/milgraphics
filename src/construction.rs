@@ -248,4 +248,34 @@ pub struct Construction {
     pub labels: Vec<LabelSpec>,
     /// Edit handles.
     pub handles: Vec<HandleSpec>,
+    /// Single-point symbols the graphic embeds, for the host to draw.
+    pub symbols: Vec<EmbeddedSymbol>,
+}
+
+/// A single-point symbol drawn as part of a graphic: the unit assigned a
+/// task (amplifier `A`) or an icon the standard puts inside an area.
+#[derive(Clone, Debug, PartialEq)]
+#[non_exhaustive]
+pub struct EmbeddedSymbol {
+    /// The symbol to draw.
+    pub symbol: crate::sidc::SymbolId,
+    /// Where its centre goes.
+    pub anchor: GeoPoint,
+    /// Pixels to move it from the anchor once projected, y downward.
+    pub offset_px: [f64; 2],
+    /// How large it is drawn.
+    pub size: SymbolSize,
+}
+
+/// How large an embedded symbol is drawn.
+#[derive(Clone, Copy, Debug, PartialEq)]
+#[non_exhaustive]
+pub enum SymbolSize {
+    /// A fixed size in pixels.
+    Pixels(f64),
+    /// Fitted inside the circle centred on the anchor through `edge`.
+    WithinCircle {
+        /// A point on the circle.
+        edge: GeoPoint,
+    },
 }
