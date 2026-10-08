@@ -9,6 +9,7 @@ use crate::engine::lineutility::extend::{
 use crate::engine::lineutility::slope::reverse_direction;
 use crate::engine::tactical_lines as lt;
 use crate::engine::tg::Tg;
+use crate::engine::visible::PixelBox;
 
 use super::fortl::store_all;
 use crate::engine::arraysupport::inside_outside::get_inside_outside_double2;
@@ -26,8 +27,15 @@ fn back(v: &[Pt], n: usize) -> Result<Pt, EngineError> {
     )
 }
 
-/// Upstream `GetZONEPointsDouble2`: returns the point count.
-pub(super) fn zone_points2(tg: &Tg, p: &mut [Pt], save: i32) -> Result<i32, EngineError> {
+/// Upstream `GetZONEPointsDouble2`: returns the point count. With a
+/// `visible` box, spikes far outside it are left out and their stretch of
+/// the outline is drawn plain.
+pub(super) fn zone_points2(
+    tg: &Tg,
+    p: &mut [Pt],
+    save: i32,
+    visible: Option<&PixelBox>,
+) -> Result<i32, EngineError> {
     let line_type = tg.line_type;
     let increment = scaled_size(tg, 20.0);
     let mut pt0 = get(p, 0)?;
@@ -46,7 +54,8 @@ pub(super) fn zone_points2(tg: &Tg, p: &mut [Pt], save: i32) -> Result<i32, Engi
         }
         let n = (length / increment) as i32;
         let remainder = length - f64::from(n) * increment;
-        for k in 0..n {
+        let near = (remainder / 2.0, increment, n);
+        for k in PixelBox::repeats(visible, (pt1, pt2), near, 2.0 * increment) {
             let kf = f64::from(k);
             if k > 0 {
                 spikes.push(extend_line2_double(

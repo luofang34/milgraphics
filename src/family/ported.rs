@@ -172,6 +172,7 @@ fn run(
         text_width: &width,
         ms_info: crate::family::ported::ms_info(symbol),
         style: crate::engine::api::Style::of(&def.style),
+        visible: None,
     })
 }
 

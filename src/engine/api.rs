@@ -24,6 +24,9 @@ pub(crate) struct Input<'a> {
     pub(crate) ms_info: Option<super::line_type::classes::MsInfo>,
     /// The operator's colours, in place of the symbol's.
     pub(crate) style: Style,
+    /// Where the view shows; repeated decorations far outside it may be
+    /// left out.
+    pub(crate) visible: Option<super::visible::PixelBox>,
 }
 
 /// Colours chosen by the operator; absent ones follow the symbol.
@@ -87,7 +90,10 @@ pub(crate) struct Output {
 
 /// Draws `input`, or says why upstream would draw nothing.
 pub(crate) fn draw(input: &Input<'_>) -> Result<Output, EngineError> {
-    let mut out = super::pipeline::render(input)?;
+    let mut out = match super::edition::upstream_pixels(input) {
+        Some(pixels) => super::pipeline::render(&Input { pixels, ..*input })?,
+        None => super::pipeline::render(input)?,
+    };
     super::edition::adjust(input, &mut out);
     Ok(out)
 }

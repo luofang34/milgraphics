@@ -51,7 +51,9 @@ pub(crate) fn resolve(
     };
     let width = |t: &str| metrics.text_width_px(font, t);
     let (mut items, mut labels) = (Vec::new(), Vec::new());
-    for run in clip::runs(*line_type, projected, ctx.viewport()) {
+    let near = clip::near(ctx.viewport());
+    let kind = (*line_type, clip::limits_itself(*line_type, symbol));
+    for run in clip::runs(kind, projected, near) {
         let input = Input {
             line_type: *line_type,
             symbol,
@@ -61,6 +63,7 @@ pub(crate) fn resolve(
             text_width: &width,
             ms_info: crate::family::ms_info(symbol),
             style: *style,
+            visible: near,
         };
         let Ok(out) = api::draw(&input) else {
             continue;

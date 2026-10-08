@@ -25,6 +25,23 @@ mod wire;
 #[cfg(test)]
 mod tests;
 
+/// The control points upstream is given in place of `input`'s, when a
+/// change below replaces its output whatever it draws.
+pub(crate) fn upstream_pixels(input: &Input<'_>) -> Option<Vec<Pt>> {
+    if spreads_wire(input.symbol) {
+        return wire::stub(input);
+    }
+    None
+}
+
+/// Whether `symbol` is drawn as spaced wire marks, which keep to the
+/// visible box whatever the line's length.
+pub(crate) fn spreads_wire(symbol: &crate::sidc::SymbolId) -> bool {
+    symbol.symbol_set() == 25
+        && matches!(symbol.version_code(), 15 | 16)
+        && symbol.entity().get() == 290_301
+}
+
 /// Applies the template of `input`'s version to `out`.
 pub(crate) fn adjust(input: &Input<'_>, out: &mut Output) {
     let symbol = input.symbol;

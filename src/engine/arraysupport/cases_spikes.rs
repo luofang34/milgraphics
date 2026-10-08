@@ -24,7 +24,9 @@ pub(crate) fn build(w: &mut Work<'_>) -> Result<bool, EngineError> {
         | lt::OBSFAREA
         | lt::STRONG
         | lt::FORT_REVD
-        | lt::FORT => w.ac = zone::zone_points2(w.tg, &mut w.p, w.save)?,
+        | lt::FORT => {
+            w.ac = zone::zone_points2(w.tg, &mut w.p, w.save, w.settings.visible.as_ref())?;
+        }
         lt::ISOLATE | lt::CORDONKNOCK | lt::CORDONSEARCH | lt::DENY => isolated(w, 50)?,
         lt::AREA_DEFENSE => isolated(w, 67)?,
         lt::OCCUPY | lt::CONTROL | lt::LOCATE => isolated(w, 32)?,

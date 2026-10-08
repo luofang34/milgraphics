@@ -3,35 +3,66 @@
 //! view can stretch a short line across millions of them.
 
 use crate::engine::render_utility::interpolate::repeats_along_open_line;
+use crate::engine::tactical_lines as lt;
+use crate::engine::visible::PixelBox;
 use crate::render::{ScreenPoint, ScreenRect};
+use crate::sidc::SymbolId;
 
 /// Longest line, in pixels, drawn whole.
 pub(super) const MAX_LINE_PX: f64 = 100_000.0;
 
+/// The viewport grown by its own size on every side: repeats, cut ends and
+/// labels kept beyond the viewport are drawn only this far out.
+pub(super) fn near(viewport: Option<ScreenRect>) -> Option<PixelBox> {
+    let v = viewport?;
+    let grow = (v.max.x - v.min.x).max(v.max.y - v.min.y);
+    Some(PixelBox {
+        min_x: v.min.x - grow,
+        min_y: v.min.y - grow,
+        max_x: v.max.x + grow,
+        max_y: v.max.y + grow,
+    })
+}
+
+/// Whether the generator of `line_type` for `symbol` emits only the repeats
+/// near the view, so the graphic is drawn whole at any length when the view
+/// is known.
+pub(super) fn limits_itself(line_type: i32, symbol: &SymbolId) -> bool {
+    matches!(
+        line_type,
+        lt::OBSAREA
+            | lt::OBSFAREA
+            | lt::ZONE
+            | lt::ENCIRCLE
+            | lt::STRONG
+            | lt::FORT_REVD
+            | lt::FORT
+    ) || crate::engine::edition::spreads_wire(symbol)
+}
+
 /// The stretches of the projected control points to draw: the whole line
-/// when it is short enough; otherwise, for an open line repeating its glyph,
-/// the parts inside the viewport grown by its own size on every side, so cut
-/// ends stay off screen; otherwise nothing.
+/// when it is short enough or, `whole`, its generator keeps to `near`; otherwise, for
+/// an open line repeating its glyph, the parts inside `near`, so cut ends
+/// stay off screen; otherwise nothing.
 pub(super) fn runs(
-    line_type: i32,
+    (line_type, whole): (i32, bool),
     points: Vec<ScreenPoint>,
-    viewport: Option<ScreenRect>,
+    near: Option<PixelBox>,
 ) -> Vec<Vec<ScreenPoint>> {
-    if length(&points) <= MAX_LINE_PX {
+    if length(&points) <= MAX_LINE_PX || (near.is_some() && whole) {
         return vec![points];
     }
-    let Some(v) = viewport.filter(|_| repeats_along_open_line(line_type)) else {
+    let Some(b) = near.filter(|_| repeats_along_open_line(line_type)) else {
         return Vec::new();
     };
-    let grow = (v.max.x - v.min.x).max(v.max.y - v.min.y);
     let bounds = ScreenRect {
         min: ScreenPoint {
-            x: v.min.x - grow,
-            y: v.min.y - grow,
+            x: b.min_x,
+            y: b.min_y,
         },
         max: ScreenPoint {
-            x: v.max.x + grow,
-            y: v.max.y + grow,
+            x: b.max_x,
+            y: b.max_y,
         },
     };
     clip(&points, bounds)

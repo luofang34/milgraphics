@@ -50,6 +50,9 @@ pub(crate) struct Settings {
     /// `getUseLineInterpolation`: upstream's default is true, and nothing in
     /// the web path overrides it.
     pub(crate) use_line_interpolation: bool,
+    /// Where the view shows: not an upstream setting; generators that can
+    /// leave out repeats far outside it do.
+    pub(crate) visible: Option<super::visible::PixelBox>,
 }
 
 impl Default for Settings {
@@ -67,6 +70,7 @@ impl Default for Settings {
             two_label_only: false,
             pattern_scale: 1.0,
             use_line_interpolation: true,
+            visible: None,
         }
     }
 }
