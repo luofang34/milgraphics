@@ -47,11 +47,12 @@ fn declarations_are_internally_consistent() {
             "{} lists a field twice",
             s.name()
         );
-        // The APP-6 texts are not available: APP-6 symbols are declared on
+        // The APP-6(D) text is not available: its symbols are declared on
         // agreement with the oracle alone and cite nothing.
         let document = match s.standard {
             StandardVersion::Mil2525Dch1 => Some("mil-std-2525d-ch1"),
             StandardVersion::Mil2525Ech1 => Some("mil-std-2525e-ch1"),
+            StandardVersion::App6Ech2 => Some("app-06-e-v2"),
             _ => None,
         };
         assert_eq!(
@@ -81,9 +82,14 @@ fn lookup_by_symbol_id() {
         spec(&other_set),
         Err(Unsupported::Symbol { symbol_set: 10, .. })
     ));
-    let app6 = SymbolId::parse("10032500001403000000").unwrap();
-    assert_eq!(spec(&app6).unwrap().reference(), None);
-    // Upstream draws this APP-6(E) Supporting Attack as its bare control points.
+    let app6d = SymbolId::parse("10032500001403000000").unwrap();
+    assert_eq!(spec(&app6d).unwrap().reference(), None);
+    let app6e = SymbolId::parse("16032500001412000000").unwrap();
+    let app6e = spec(&app6e).unwrap();
+    assert_eq!(app6e.reference().map(|r| r.table), Some("Table 8-9"));
+    // The standard's name, where upstream's catalog has another graphic's.
+    assert_eq!(app6e.name(), "Probable Line of Deployment");
+    // Upstream draws this APP-6(E) Avenue of Approach as its bare control points.
     let unmapped = SymbolId::parse("16032500001523000000").unwrap();
     assert!(matches!(spec(&unmapped), Err(Unsupported::Symbol { .. })));
 }

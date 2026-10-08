@@ -25,13 +25,22 @@ so a file hash identifies one copy only; documents are identified by revision,
 cover date and page count. Each first-milestone graphic has its table and PDF
 page in 2525D change 1 and 2525E change 1, and the draw rule printed there.
 
-APP-6(D) and APP-6(E) need an ASSIST account and are not referenced. APP-6
-symbols (version codes 10 and 16) are therefore declared on agreement with
-the oracle alone: every multipoint graphic upstream draws for them is
-declared when the ported renderer matches it, with upstream's catalog draw
-rule, and `SymbolSpec::reference` is `None`. They are drawn by the ported
-renderer throughout, including the six graphics that 2525D/E change 1 draw
-with milgraphics' own families.
+APP-06 Edition E Version 2 (`app-06-e-v2` in `pin.json`, version code 16) is
+referenced from its Chapter 8 control measure plates: table, PDF page and,
+where the plate and Annex A Table A-32 agree, the standard's name, which
+`SymbolSpec::name` prefers over upstream's catalog (upstream files 152300
+Avenue of Approach as "Supporting Attack" and 141200 Probable Line of
+Deployment as "Name Area of Interest Line"). Its draw rules are prose, so
+point limits follow upstream's catalog rule. It defines no METOC symbol sets
+(Table A-4: "not used by NATO or within this standard").
+
+APP-6(D) needs an ASSIST account and is not referenced. Its symbols (version
+code 10) are declared on agreement with the oracle alone: every multipoint
+graphic upstream draws for them is declared when the ported renderer matches
+it, with upstream's catalog draw rule, and `SymbolSpec::reference` is `None`.
+
+APP-6 symbols are drawn by the ported renderer throughout, including the six
+graphics that 2525D/E change 1 draw with milgraphics' own families.
 
 Draw rules are per edition. Phase Line is Line2 in 2525D change 1 and Line1 in
 2525E change 1; Main Attack is Axis2 and Axis1 respectively (2525E change 1
@@ -47,9 +56,10 @@ undeclared symbol (`tests/fixtures/oracle/unimplemented.txt`):
 |---|---|---|
 | Line of Contact 25 140200 | 2525D change 1, 2525E change 1 | No row: reserved in 2525D, a Combat Support code in 2525E |
 | Wind Plot 45 140200 | 2525E change 1 | No row (2525D change 1 defines it in TABLE I-II) |
+| Line of Contact 25 140200, Kill Zone 25 242800, Fighting Position 25 291000 | APP-6(E)(2) | No row |
 
-Some APP-6(E) change 2 codes have no line type in upstream's `getCMLineType`
-(Bridgehead, Mobility Corridor, Supporting Attack 152300, Restricted Terrain,
+Some APP-6(E)(2) codes have no line type in upstream's `getCMLineType`
+(Bridgehead, Mobility Corridor, Avenue of Approach 152300, Restricted Terrain,
 Severely Restricted Terrain, Navigational Rhumb Line, Rectangular Target 240804,
 AMA, ARA, Zone of Fire, the 242700 areas, Recover, Human Terrain). Upstream
 draws only their control points as a line, which is not the graphic, so they

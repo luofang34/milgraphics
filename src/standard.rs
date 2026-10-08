@@ -17,7 +17,7 @@ pub enum StandardVersion {
     Mil2525Dch1,
     /// MIL-STD-2525E change 1, version code 15.
     Mil2525Ech1,
-    /// APP-6(E) change 2, version code 16.
+    /// APP-6(E)(2) — Edition E, Version 2 — version code 16.
     App6Ech2,
 }
 
@@ -58,7 +58,7 @@ impl fmt::Display for StandardVersion {
             Self::App6D => "APP-6(D)",
             Self::Mil2525Dch1 => "MIL-STD-2525D change 1",
             Self::Mil2525Ech1 => "MIL-STD-2525E change 1",
-            Self::App6Ech2 => "APP-6(E) change 2",
+            Self::App6Ech2 => "APP-6(E)(2)",
         })
     }
 }
