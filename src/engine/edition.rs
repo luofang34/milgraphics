@@ -52,8 +52,12 @@ pub(crate) fn adjust(input: &Input<'_>, out: &mut Output) {
     match (version, symbol.entity().get()) {
         // Fix: an open arrowhead.
         (_, 270_503) => arrowheads::open_fix(out),
-        // Control: solid arrowheads at both ends of the opening.
-        (16, 343_200) => arrowheads::fill_control(out),
+        // Control: solid arrowheads at both ends of the opening, and the C
+        // outside the circle.
+        (16, 343_200) => {
+            arrowheads::fill_control(out);
+            arrowheads::control_label_outside(input, out);
+        }
         // Frontal Attack: the bar at the tip is twice the arrowhead's base.
         (_, 152_700) => frontal::widen_bar(out),
         // Trip Wire: the trip wire glyph at point 1, without the "t".
