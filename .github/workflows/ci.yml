@@ -1,0 +1,75 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+env:
+  CARGO_TERM_COLOR: always
+  RUSTFLAGS: -D warnings
+
+jobs:
+  native:
+    name: fmt → clippy → test → doc → release build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt, clippy
+          targets: wasm32-unknown-unknown
+      - uses: Swatinem/rust-cache@v2
+      - run: tools/ci/check.sh
+
+  wasm-browser:
+    name: behaviour tests in headless Chrome
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: wasm32-unknown-unknown
+      - uses: Swatinem/rust-cache@v2
+      - uses: taiki-e/install-action@v2
+        with:
+          tool: wasm-bindgen@0.2.129
+      - run: tools/ci/wasm-test.sh
+        env:
+          CHROMEDRIVER: ${{ env.CHROMEWEBDRIVER }}/chromedriver
+
+  lint:
+    name: clippy on beta
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: dtolnay/rust-toolchain@beta
+        with:
+          components: clippy
+      - uses: Swatinem/rust-cache@v2
+      - run: cargo clippy --locked --workspace --all-targets -- -D warnings
+
+  msrv:
+    name: builds and tests on rust-version (1.85)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: dtolnay/rust-toolchain@1.85
+        with:
+          targets: wasm32-unknown-unknown
+      - run: cargo build --locked --lib
+      - run: cargo build --locked --lib --target wasm32-unknown-unknown
+      - run: cargo test --locked --all-targets
+
+  features:
+    name: every feature combination builds
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: wasm32-unknown-unknown
+      - uses: taiki-e/install-action@cargo-hack
+      - uses: Swatinem/rust-cache@v2
+      - run: cargo hack check --locked -p milgraphics --feature-powerset --no-dev-deps
+      - run: cargo hack check --locked -p milgraphics --feature-powerset --no-dev-deps --target wasm32-unknown-unknown
