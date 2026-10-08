@@ -67,6 +67,28 @@ fn contact_sheet() {
     }
 }
 
+/// `CASE_DIR=<dir> CASE_SUFFIX=-app6e cargo test --test oracle_catalog case_cells`
+/// writes each base case with that suffix as its own 200×300 cell, for
+/// comparing graphics one by one with the standard's plates.
+#[test]
+fn case_cells() {
+    let (Ok(dir), Ok(suffix)) = (std::env::var("CASE_DIR"), std::env::var("CASE_SUFFIX")) else {
+        return;
+    };
+    for r in records() {
+        let case = r["case"].as_str().unwrap_or_default();
+        if !case.ends_with(&suffix) {
+            continue;
+        }
+        if let Some(c) = cell(&r) {
+            let svg = format!(
+                r#"<svg xmlns="http://www.w3.org/2000/svg" width="200" height="300"><rect width="200" height="300" fill="white"/>{c}</svg>"#
+            );
+            std::fs::write(format!("{dir}/{case}.svg"), svg).unwrap();
+        }
+    }
+}
+
 /// One 200×300 cell: the case drawn in a 200×260 box with its name.
 fn cell(r: &Value) -> Option<String> {
     let case = r["case"].as_str()?;

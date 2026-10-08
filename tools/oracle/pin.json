@@ -122,8 +122,7 @@
       }
     },
     "unavailable": {
-      "app-6d": "ASSIST ident 275338 lists Rev D Amd 1 (2017-10-16); download requires an ASSIST account",
-      "app-6e": "ASSIST ident 275338 lists Rev E (2023-11-10) and Rev E Amd 2 (2025-10-16, Distribution C); download requires an ASSIST account"
+      "app-6d": "ASSIST ident 275338 lists Rev D Amd 1 (2017-10-16); download requires an ASSIST account"
     },
     "graphics": {
       "140300": {

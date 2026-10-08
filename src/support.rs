@@ -27,6 +27,9 @@ pub struct StandardRef {
     pub pdf_page: u16,
     /// Draw rule printed in the symbol's row, when the row prints one.
     pub draw_rule: Option<&'static str>,
+    /// The symbol's name in the standard, when its code table and its
+    /// template agree on it.
+    pub name: Option<&'static str>,
 }
 
 /// How a symbol uses one amplifier field.
@@ -93,15 +96,19 @@ pub struct SymbolSpec {
 }
 
 impl SymbolSpec {
-    /// The symbol's name, as upstream's catalog gives it.
+    /// The symbol's name: the standard's, where its reference records one,
+    /// else upstream's catalog's.
     pub fn name(&self) -> &'static str {
-        self.catalog_entry().map_or("unnamed symbol", |e| e.name)
+        self.reference()
+            .and_then(|r| r.name)
+            .or_else(|| self.catalog_entry().map(|e| e.name))
+            .unwrap_or("unnamed symbol")
     }
 
     /// Where the standard defines the symbol, including the draw rule it
-    /// prints. Every declared MIL-STD-2525 symbol has one. The APP-6 texts
-    /// are not available, so APP-6 symbols are declared because they match
-    /// the reference renderer and have none.
+    /// prints. Every declared symbol has one except those of APP-6(D), whose
+    /// text is not available: they are declared because they match the
+    /// reference renderer.
     pub fn reference(&self) -> Option<&'static StandardRef> {
         REFERENCES
             .iter()

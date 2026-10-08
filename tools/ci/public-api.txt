@@ -533,6 +533,7 @@ pub milgraphics::support::ModifierSpec::required: bool
 #[non_exhaustive] pub struct milgraphics::support::StandardRef
 pub milgraphics::support::StandardRef::document: &'static str
 pub milgraphics::support::StandardRef::draw_rule: core::option::Option<&'static str>
+pub milgraphics::support::StandardRef::name: core::option::Option<&'static str>
 pub milgraphics::support::StandardRef::pdf_page: u16
 pub milgraphics::support::StandardRef::table: &'static str
 #[non_exhaustive] pub struct milgraphics::support::SymbolSpec
@@ -983,6 +984,7 @@ pub milgraphics::RenderPlan::view_revision: u64
 #[non_exhaustive] pub struct milgraphics::StandardRef
 pub milgraphics::StandardRef::document: &'static str
 pub milgraphics::StandardRef::draw_rule: core::option::Option<&'static str>
+pub milgraphics::StandardRef::name: core::option::Option<&'static str>
 pub milgraphics::StandardRef::pdf_page: u16
 pub milgraphics::StandardRef::table: &'static str
 #[non_exhaustive] pub struct milgraphics::StyleOverrides

@@ -72,7 +72,7 @@ Initial scope, by Mission Command version code:
 | 11 | MIL-STD-2525D change 1 | Primary target |
 | 15 | MIL-STD-2525E change 1 | Primary target |
 | 10 | APP-6D (upstream also maps base 2525D here, deprecated in favour of 11) | Declared per symbol on oracle agreement alone (the text is unavailable); some entries exist only in 10 (e.g. Decision Line 110500) |
-| 16 | APP-6E change 2 | Declared per symbol on oracle agreement alone (the text is unavailable). Upstream's README says "icons only", but its `mse.txt` has line/area entries. |
+| 16 | APP-6E | Declared per symbol. Upstream's README says "icons only", but its `mse.txt` has line/area entries. |
 
 Legacy 2525B/C letter codes are out of scope unless a `2525C → D` conversion is explicitly requested.
 
@@ -80,7 +80,7 @@ Rules:
 
 - The generated catalog lists what upstream knows. It is not a support claim. Support is declared symbol by symbol, after that symbol's acceptance tests pass.
 - Each supported symbol declares, in exactly one place, its control-point constraints (min/max count, roles, required modifiers such as `AM`/`AN`), its supported modifiers, which dimensions are geographic and which are screen-space, its handle contract, and its standard reference (document and section).
-- APP-6 (codes 10 and 16) is the exception while its texts are unavailable: a symbol is declared when it matches the pinned oracle, carries no standard reference, and uses upstream's catalog draw rule. A symbol upstream draws only as its bare control points is not declared.
+- APP-6(D) (code 10) is the exception while its text is unavailable: a symbol is declared when it matches the pinned oracle, carries no standard reference, and uses upstream's catalog draw rule. A symbol upstream draws only as its bare control points is not declared.
 - Unsupported (version, symbol) combinations and unsupported modifiers return typed errors. Never fall back to a generic line or arrow that means something different.
 
 ## Data model and pipeline
@@ -217,7 +217,7 @@ Tests ship with the code they cover. A symbol is not delivered without its tests
 
 | Area | Target |
 |---|---|
-| Standard coverage | Every declared (version, symbol) has control-point tests, modifier tests, a reviewed golden SVG, an oracle fixture and a standard reference (APP-6: oracle agreement only, see "Standards and coverage"). Undeclared combinations fail explicitly. |
+| Standard coverage | Every declared (version, symbol) has control-point tests, modifier tests, a reviewed golden SVG, an oracle fixture and a standard reference (APP-6(D): oracle agreement only, see "Standards and coverage"). Undeclared combinations fail explicitly. |
 | Reference comparison | The same inputs are compared with the pinned oracle under the comparison policy, plus human review against the standard's figures. |
 | Cross-platform | Behaviour tests **execute** on native and in browser WASM (`wasm-bindgen-test`), not only compile. Semantics, item order, labels and handles match; coordinates match within tolerance. |
 | Geometric robustness | Coincident points, zero-length and very short segments, sharp turns, reversed order, antimeridian crossing, poles, continent-scale extents, segments crossing the horizon. No NaN, no infinite loop, no runaway allocation. Property tests and fuzzing. |

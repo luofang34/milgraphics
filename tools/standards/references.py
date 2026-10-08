@@ -1,12 +1,17 @@
 #!/usr/bin/env python3
-"""Locate each multipoint graphic's row in the standards' appendix tables.
+"""Locate each multipoint graphic's row in the standards' symbol tables.
 
-Usage: python3 -I tools/standards/references.py D_CH1.pdf E_CH1.pdf [CATALOG.rs] [OUT.json]
+Usage: python3 -I tools/standards/references.py D_CH1.pdf E_CH1.pdf APP6E_V2.pdf [CATALOG.rs] [OUT.json]
 
 Emits, per (standard, symbol set, entity), the table heading in force, the PDF
-file page (1-based) of the entity's code row, and the draw rule printed there.
-Only those three fields are written; no standard text is retained. The tool
-reads the catalog solely to decide which entities to look for.
+file page (1-based) of the entity's code row, the draw rule printed there and,
+for APP-6, the name its code table gives. Only these fields are written; no
+standard text is retained. The tool reads the catalog solely to decide which
+entities to look for.
+
+APP-6(E) prints draw rules as prose rather than rule names, so its rows carry
+no draw rule. It defines no METOC symbol sets ("not used by NATO or within
+this standard", Table A-4), so only control measures are looked for there.
 """
 
 import bisect
@@ -32,7 +37,24 @@ STANDARDS = {
         "table_prefix": {25: "L", 45: "M", 46: "M"},
     },
 }
+# APP-06 Edition E Version 2 (version code 16): control measure plates in
+# Chapter 8, and the names of Annex A Table A-32.
+APP6 = {
+    "app-06-e-v2": {
+        "version_bit": 16,
+        "ranges": {25: (437, 708)},
+        "names": (796, 823),
+    },
+}
 SINGLE_POINT_RULES = {"Point1", "Point2", "Point3", "Point7"}
+APP6_TABLE_RE = re.compile(r"Table (8-[0-9A-Z-]+?):")
+CODE_ONLY_RE = re.compile(r"^(.*?)\s*\b(\d{6})\s*$")
+
+
+def name_cell(line, code_col):
+    """The last cell of `line` left of the code column: a name or part of one."""
+    cells = [(m.start(), m.group(0)) for m in re.finditer(r"\S+(?: \S+)*", line[:code_col])]
+    return cells[-1][1] if cells and cells[-1][0] < code_col - 4 else ""
 
 CATALOG_RE = re.compile(
     r"symbol_set: (\d+), entity: (\d+), name: \"((?:[^\"\\]|\\.)*)\".*?"
@@ -61,7 +83,7 @@ def load_catalog(path):
             continue
         if sset == 25 and rule in SINGLE_POINT_RULES:
             continue
-        for std in STANDARDS.values():
+        for std in list(STANDARDS.values()) + list(APP6.values()):
             bit = std["version_bit"]
             if bits >> bit & 1:
                 targets[(bit, sset, entity)] = (name, rule)
@@ -108,13 +130,93 @@ def scan(pages, std):
     return found
 
 
+PLATE_STOP_RE = re.compile(r"^(Code:|Measure|Static|Edition|APP-06|Note|Table|Control)")
+
+
+def plate_names(text):
+    """{entity: name} from a plate's left column: the lines above "Symbol Set"."""
+    lines = text.splitlines()
+    out = {}
+    for i, line in enumerate(lines):
+        m = re.match(r"\s?Code:\s*(\d{6})", line)
+        if not m:
+            continue
+        cell, j = [], i - 1
+        while j >= 0:
+            raw, j = lines[j], j - 1
+            left = re.split(r"\s{2,}", raw.strip())[0] if raw[:2].strip() else ""
+            if not left or re.match(r"(Symbol Set|Code: \d\d$)", left) or "TYPE:" in left.upper():
+                continue
+            if PLATE_STOP_RE.match(left) or left.endswith("."):
+                break
+            cell.append(left)
+        out[int(m.group(1))] = " ".join(reversed(cell))
+    return out
+
+
+def normalized(name):
+    return re.sub(r"[^a-z]", "", name.lower())
+
+
+def standard_name(plate, candidates):
+    """The name, when the plate's name cell and a Table A-32 entry spell the
+    same words; the table's capitalisation is kept. Layout breaks words in
+    other cases, so those carry no name and keep the catalog's."""
+    if not plate:
+        return None
+    want = normalized(plate)
+    for c in candidates:
+        if c and normalized(c) == want:
+            return re.sub(r"/ ", "/", c)
+    return None
+
+
+def scan_app6(pages, std):
+    """Return {(25, entity): [{table, pdf_page, draw_rule, name, _rules}]}."""
+    candidates = {}
+    first, last = std["names"]
+    for p in range(first, last + 1):
+        lines = pages[p - 1].splitlines()
+        for i, line in enumerate(lines):
+            m = CODE_ONLY_RE.match(line)
+            if not m:
+                continue
+            col = m.start(2)
+            near = [name_cell(lines[k], col) if 0 <= k < len(lines) else "" for k in (i - 1, i + 1)]
+            own = name_cell(m.group(1), col)
+            above, below = near
+            options = [own, " ".join(x for x in (above, own) if x),
+                       " ".join(x for x in (own, below) if x),
+                       " ".join(x for x in (above, own, below) if x)]
+            candidates.setdefault(int(m.group(2)), []).extend(options)
+    found = {}
+    first, last = std["ranges"][25]
+    table = None
+    for p in range(first, last + 1):
+        text = pages[p - 1]
+        heads = [(m.start(), m.group(1)) for m in APP6_TABLE_RE.finditer(text)]
+        plates = plate_names(text)
+        for m in CODE_RE.finditer(text):
+            before = [h for pos, h in heads if pos < m.start()]
+            table = before[-1] if before else table
+            entity = int(m.group(1))
+            found.setdefault((25, entity), []).append({
+                "table": f"Table {table}" if table else None,
+                "pdf_page": p,
+                "draw_rule": None,
+                "name": standard_name(plates.get(entity), candidates.get(entity, [])),
+                "_rules": [],
+            })
+    return found
+
+
 def main(argv):
-    if len(argv) < 3:
+    if len(argv) < 4:
         sys.stderr.write(__doc__)
         return 2
     here = Path(__file__).resolve().parent
-    catalog = argv[3] if len(argv) > 3 else here.parent.parent / "src/generated/catalog.rs"
-    out_path = Path(argv[4]) if len(argv) > 4 else here.parent / "oracle/references.json"
+    catalog = argv[4] if len(argv) > 4 else here.parent.parent / "src/generated/catalog.rs"
+    out_path = Path(argv[5]) if len(argv) > 5 else here.parent / "oracle/references.json"
     targets = load_catalog(catalog)
     result, missing, ambiguous, divergent = {}, [], [], []
     for doc, pdf in zip(STANDARDS, argv[1:3]):
@@ -136,6 +238,25 @@ def main(argv):
             refs[f"{sset}:{entity}"] = {k: h[k] for k in ("table", "pdf_page", "draw_rule")}
             if h["draw_rule"] != rule:
                 divergent.append((doc, sset, entity, name, rule, h["draw_rule"]))
+    for doc, pdf in zip(APP6, argv[3:4]):
+        std = APP6[doc]
+        found = scan_app6(read_pages(pdf), std)
+        refs = result.setdefault(doc, {})
+        for (bit, sset, entity), (name, rule) in sorted(targets.items()):
+            if bit != std["version_bit"]:
+                continue
+            hits = found.get((sset, entity))
+            if not hits:
+                missing.append((doc, sset, entity, name, rule))
+                continue
+            if len(hits) > 1:
+                ambiguous.append((doc, sset, entity, f"{len(hits)} rows"))
+            h = hits[0]
+            if h["table"] is None:
+                ambiguous.append((doc, sset, entity, "no table"))
+            refs[f"{sset}:{entity}"] = {
+                k: h[k] for k in ("table", "pdf_page", "draw_rule", "name")
+            }
     write_json(out_path, result)
     emit(targets, result, missing, ambiguous, divergent)
     return 0
@@ -154,7 +275,7 @@ def write_json(path, result):
 
 
 def emit(targets, result, missing, ambiguous, divergent):
-    for doc, std in STANDARDS.items():
+    for doc, std in list(STANDARDS.items()) + list(APP6.items()):
         for sset in (25, 45, 46):
             total = sum(1 for (b, s, _) in targets if b == std["version_bit"] and s == sset)
             got = sum(1 for k in result[doc] if k.startswith(f"{sset}:"))

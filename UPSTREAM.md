@@ -25,13 +25,13 @@ so a file hash identifies one copy only; documents are identified by revision,
 cover date and page count. Each first-milestone graphic has its table and PDF
 page in 2525D change 1 and 2525E change 1, and the draw rule printed there.
 
-APP-6(D) and APP-6(E) need an ASSIST account and are not referenced. APP-6
-symbols (version codes 10 and 16) are therefore declared on agreement with
-the oracle alone: every multipoint graphic upstream draws for them is
-declared when the ported renderer matches it, with upstream's catalog draw
-rule, and `SymbolSpec::reference` is `None`. They are drawn by the ported
-renderer throughout, including the six graphics that 2525D/E change 1 draw
-with milgraphics' own families.
+APP-6(D) needs an ASSIST account and is not referenced. Its symbols (version
+code 10) are declared on agreement with the oracle alone: every multipoint
+graphic upstream draws for them is declared when the ported renderer matches
+it, with upstream's catalog draw rule, and `SymbolSpec::reference` is `None`.
+
+APP-6 symbols are drawn by the ported renderer throughout, including the six
+graphics that 2525D/E change 1 draw with milgraphics' own families.
 
 Draw rules are per edition. Phase Line is Line2 in 2525D change 1 and Line1 in
 2525E change 1; Main Attack is Axis2 and Axis1 respectively (2525E change 1
@@ -48,8 +48,8 @@ undeclared symbol (`tests/fixtures/oracle/unimplemented.txt`):
 | Line of Contact 25 140200 | 2525D change 1, 2525E change 1 | No row: reserved in 2525D, a Combat Support code in 2525E |
 | Wind Plot 45 140200 | 2525E change 1 | No row (2525D change 1 defines it in TABLE I-II) |
 
-Some APP-6(E) change 2 codes have no line type in upstream's `getCMLineType`
-(Bridgehead, Mobility Corridor, Supporting Attack 152300, Restricted Terrain,
+Some version 16 codes have no line type in upstream's `getCMLineType`
+(Bridgehead, Mobility Corridor, Avenue of Approach 152300, Restricted Terrain,
 Severely Restricted Terrain, Navigational Rhumb Line, Rectangular Target 240804,
 AMA, ARA, Zone of Fire, the 242700 areas, Recover, Human Terrain). Upstream
 draws only their control points as a line, which is not the graphic, so they

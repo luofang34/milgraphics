@@ -6,9 +6,10 @@
 //! standard does not define as multipoint graphics (no row, or a
 //! single-point rule in its row), which stay in the unimplemented list.
 //!
-//! The APP-6 texts are not available, so APP-6 graphics are declared on
-//! agreement with the oracle alone, with the draw rule upstream's catalog
-//! gives in place of the printed one, and are drawn by the ported renderer
+//! The APP-6(D) text is not available, so APP-6(D) graphics are declared on
+//! agreement with the oracle alone. APP-6(E) graphics need a row in its
+//! text, which prints draw rules as prose, so both use the draw rule
+//! upstream's catalog gives. APP-6 graphics are drawn by the ported renderer
 //! throughout.
 
 mod rules;
@@ -60,7 +61,7 @@ pub(crate) fn run() -> Result<String, XtaskError> {
             Some(document) => in_standard(&references, document, set, entity),
             None => !SINGLE_POINT_RULES.contains(&row.draw_rule.as_str()),
         };
-        let hand_built = set == 25 && HAND_BUILT.contains(&entity) && document(version).is_some();
+        let hand_built = set == 25 && HAND_BUILT.contains(&entity) && matches!(version, 11 | 15);
         if pending.contains(case) || hand_built || !multipoint {
             continue;
         }
@@ -92,6 +93,7 @@ fn document(version: u32) -> Option<&'static str> {
     match version {
         11 => Some("mil-std-2525d-ch1"),
         15 => Some("mil-std-2525e-ch1"),
+        16 => Some("app-06-e-v2"),
         _ => None,
     }
 }
