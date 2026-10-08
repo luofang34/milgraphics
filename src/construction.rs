@@ -12,6 +12,7 @@ pub struct PartId(pub u16);
 
 /// What a part represents in the symbol.
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
+#[non_exhaustive]
 pub enum PartRole {
     /// The main line of a line graphic.
     Line,
@@ -47,6 +48,7 @@ impl GeoGeometry {
 
 /// A drawn part in geographic space.
 #[derive(Clone, Debug, PartialEq)]
+#[non_exhaustive]
 pub struct GeoPart {
     /// Index of the part.
     pub id: PartId,
@@ -62,9 +64,7 @@ pub struct GeoPart {
 
 /// How large a pixel-sized decoration is.
 #[derive(Clone, Copy, Debug, PartialEq)]
-pub enum DecorationSize {
-    /// A fixed number of pixels.
-    Px(f64),
+pub(crate) enum DecorationSize {
     /// A fraction of the summed on-screen lengths of two geographic
     /// segments, clamped to a pixel range.
     Proportional {
@@ -80,9 +80,14 @@ pub enum DecorationSize {
 }
 
 /// A decoration whose size is set in screen pixels, so it can only be
-/// resolved once a projection is known.
+/// resolved once a projection is known. Rendering turns it into screen-tier
+/// items marked as decorations; its contents are internal.
 #[derive(Clone, Debug, PartialEq)]
-pub enum ScreenDecoration {
+pub struct ScreenDecoration(pub(crate) Decoration);
+
+/// The kinds of pixel-sized decoration.
+#[derive(Clone, Debug, PartialEq)]
+pub(crate) enum Decoration {
     /// A two-winged arrowhead at `tip`, opening back toward `toward`.
     Arrowhead {
         /// Index of the part.
@@ -119,6 +124,7 @@ pub enum ScreenDecoration {
 
 /// How a label is positioned relative to its anchor.
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[non_exhaustive]
 pub enum LabelPlacement {
     /// Horizontal text centred on the anchor.
     Centered,
@@ -147,6 +153,7 @@ pub enum LabelPlacement {
 
 /// A label in geographic terms.
 #[derive(Clone, Debug, PartialEq)]
+#[non_exhaustive]
 pub struct LabelSpec {
     /// The part the label belongs to.
     pub part: PartId,
@@ -165,6 +172,7 @@ pub struct LabelSpec {
 
 /// What dragging a handle changes.
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
+#[non_exhaustive]
 pub enum HandleKind {
     /// A control point.
     Vertex,
@@ -178,6 +186,7 @@ pub enum HandleKind {
 
 /// An edit handle in geographic terms.
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[non_exhaustive]
 pub struct HandleSpec {
     /// Stable identity, used to apply an edit.
     pub id: HandleId,
@@ -190,6 +199,7 @@ pub struct HandleSpec {
 /// A graphic constructed in geographic space. Depends only on the
 /// definition and configuration, so it is cached across view changes.
 #[derive(Clone, Debug, PartialEq)]
+#[non_exhaustive]
 pub struct Construction {
     /// [`crate::RENDERER_VERSION`] that built it.
     pub renderer_version: &'static str,

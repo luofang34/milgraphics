@@ -8,7 +8,7 @@ use thiserror::Error;
 #[derive(Debug, Error)]
 pub(crate) enum XtaskError {
     /// Unknown or missing subcommand.
-    #[error("usage: cargo xtask catalog")]
+    #[error("usage: cargo xtask catalog | references")]
     Usage,
     /// The workspace root could not be derived from the manifest directory.
     #[error("cannot locate the workspace root from {0}")]
@@ -44,6 +44,15 @@ pub(crate) enum XtaskError {
     /// The extracted data violates an invariant the generator relies on.
     #[error("{0}")]
     Invariant(String),
+    /// A JSON input is malformed.
+    #[error("{path}: {source}")]
+    Json {
+        /// The file.
+        path: PathBuf,
+        /// What is wrong.
+        #[source]
+        source: serde_json::Error,
+    },
     /// Formatting generated source failed.
     #[error("formatting generated source: {0}")]
     Format(#[from] std::fmt::Error),

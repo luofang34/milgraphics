@@ -3,8 +3,8 @@
 use std::collections::BTreeSet;
 use std::fmt::Write;
 
-use super::emit_enum::{Variant, emit_enum};
-use super::java_consts::{JavaConst, camel_case};
+use super::emit_enum::emit_enum;
+use super::java_consts::JavaConst;
 use super::{Geometry, Row, rule_variants};
 use crate::error::XtaskError;
 
@@ -43,20 +43,13 @@ pub(super) fn catalog_module(
     modifiers: &BTreeSet<&str>,
 ) -> Result<String, XtaskError> {
     let mut out = String::from(HEADER);
-    out.push_str(
-        "\n//! Catalog rows and modifier keys extracted from upstream's symbol tables.\n\n",
-    );
+    out.push_str("\n//! Catalog rows extracted from upstream's symbol tables.\n\n");
     out.push_str("use super::draw_rule::{DrawRule, MoDrawRule};\n");
     out.push_str(
-        "use crate::catalog::{CatalogDrawRule, CatalogEntry, GeometryKind, VersionSet};\n\n",
+        "use crate::catalog::{CatalogDrawRule, CatalogEntry, GeometryKind, VersionSet};\n",
     );
-    let variants = modifier_variants(modifiers)?;
-    emit_enum(
-        &mut out,
-        "ModifierKey",
-        "Modifier key a catalog entry accepts, named as in upstream's data tables.",
-        &variants,
-    )?;
+    out.push_str("use crate::modifier::ModifierField;\n");
+    check_modifiers(modifiers)?;
     out.push_str("\n/// Catalog rows ordered by `(symbol_set, entity, first version)`.\n");
     out.push_str("pub(crate) static ENTRIES: &[CatalogEntry] = &[\n");
     for row in rows {
@@ -66,22 +59,20 @@ pub(super) fn catalog_module(
     Ok(out)
 }
 
-fn modifier_variants(modifiers: &BTreeSet<&str>) -> Result<Vec<Variant>, XtaskError> {
-    let variants: Vec<Variant> = modifiers
-        .iter()
-        .map(|token| Variant {
-            ident: camel_case(token),
-            name: (*token).to_owned(),
-            doc: format!("Upstream modifier `{token}`."),
-        })
-        .collect();
-    let idents: BTreeSet<&str> = variants.iter().map(|v| v.ident.as_str()).collect();
-    if idents.len() != variants.len() {
-        return Err(XtaskError::Invariant(
-            "two modifier tokens map to the same variant".to_owned(),
-        ));
+/// Upstream modifier tokens that `ModifierField` names; a token outside this
+/// list needs a new field before the catalog can be regenerated.
+const FIELDS: &[&str] = &[
+    "A", "AM", "AN", "AP", "AP1", "AS", "B", "C", "H", "H1", "N", "Q", "T", "T1", "T2", "V", "W",
+    "W1", "X", "Y",
+];
+
+fn check_modifiers(modifiers: &BTreeSet<&str>) -> Result<(), XtaskError> {
+    match modifiers.iter().find(|m| !FIELDS.contains(m)) {
+        Some(token) => Err(XtaskError::Invariant(format!(
+            "upstream modifier {token} has no ModifierField"
+        ))),
+        None => Ok(()),
     }
-    Ok(variants)
 }
 
 fn entry(row: &Row) -> String {
@@ -89,7 +80,7 @@ fn entry(row: &Row) -> String {
     let mods: Vec<String> = row
         .modifiers
         .iter()
-        .map(|m| format!("ModifierKey::{}", camel_case(m)))
+        .map(|m| format!("ModifierField::{m}"))
         .collect();
     let geometry = match row.geometry {
         Geometry::Point => "Point",

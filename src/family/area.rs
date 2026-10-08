@@ -15,7 +15,7 @@ pub(crate) fn construct(
     let control: Vec<GeoPoint> = def.positions().collect();
     let ring = ctx.geodesic_ring(&control)?;
     let center = bounds_center(&control).ok_or(ConstructError::Degenerate {
-        symbol: ctx.spec.name,
+        symbol: ctx.spec.name(),
         reason: "an area needs at least three points",
     })?;
     let text = match def.modifiers.designation() {

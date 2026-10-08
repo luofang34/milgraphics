@@ -29,7 +29,7 @@ fn round_trips_through_json() {
             r#"{"id":"pl-1","symbol":"11032500001403000000","points":["#,
             r#"{"lat":50.0,"lon":20.0},"#,
             r#"{"altitude":{"datum":"msl","metres":10.0},"lat":50.02,"lon":20.1}],"#,
-            r#""modifiers":{"T":"ALPHA","AM":[1000.0,5000.5]},"revision":0}"#
+            r#""modifiers":{"AM":[1000.0,5000.5],"T":"ALPHA"},"revision":0}"#
         )
     );
     assert_eq!(

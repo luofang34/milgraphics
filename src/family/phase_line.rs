@@ -22,7 +22,7 @@ pub(crate) fn construct(ctx: &mut Ctx<'_>, def: &GraphicDefinition) -> Result<()
         (Some(&start), Some(&after), Some(&end), Some(&before)) => [(start, after), (end, before)],
         _ => {
             return Err(ConstructError::Degenerate {
-                symbol: ctx.spec.name,
+                symbol: ctx.spec.name(),
                 reason: "a line needs two distinct points",
             });
         }

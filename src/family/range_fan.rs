@@ -2,12 +2,12 @@
 //! `AM` ranges (metres) and `AN` azimuth pairs (degrees from true north).
 
 use crate::construction::{
-    GeoGeometry, HandleKind, HandleSpec, LabelPlacement, LabelSpec, PartRole, ScreenDecoration,
+    Decoration, GeoGeometry, HandleKind, HandleSpec, LabelPlacement, LabelSpec, PartId, PartRole,
 };
 use crate::definition::GraphicDefinition;
 use crate::edit::{EditError, HandleId};
 use crate::family::{ConstructError, Ctx, vertex_handles};
-use crate::geo::GeoPoint;
+use crate::geo::{Altitude, GeoPoint};
 use crate::geodesy::Earth;
 use crate::style::Fill;
 
@@ -76,7 +76,7 @@ fn arc(earth: &Earth, center: GeoPoint, from: f64, to: f64, radius: f64) -> Vec<
 
 pub(crate) fn construct(ctx: &mut Ctx<'_>, def: &GraphicDefinition) -> Result<(), ConstructError> {
     let degenerate = |reason| ConstructError::Degenerate {
-        symbol: ctx.spec.name,
+        symbol: ctx.spec.name(),
         reason,
     };
     let center = def
@@ -109,16 +109,44 @@ pub(crate) fn construct(ctx: &mut Ctx<'_>, def: &GraphicDefinition) -> Result<()
     let part = first.ok_or(degenerate("no sector"))?;
     let bearing = main.left + (main.right - main.left) / 2.0;
     let pointer = ctx.next_part();
-    ctx.add_decoration(ScreenDecoration::Pointer {
+    ctx.add_decoration(Decoration::Pointer {
         id: pointer,
         from: center,
         through: ctx.earth.direct(center, bearing, 1.1 * main.max_m),
         head_px: POINTER_HEAD_PX,
         stroke: ctx.palette.line,
     });
+    add_labels(ctx, &fan, center, bearing, part, &m.altitudes);
     let earth = ctx.earth;
-    for s in &fan {
+    ctx.add_handles(vertex_handles(def));
+    let handles = handles(earth, center, &m.distances_m, &m.azimuths_deg, bearing);
+    ctx.add_handles(handles);
+    Ok(())
+}
+
+/// Per sector: `ALT` and `RG` stacked on the orientation bearing at mid
+/// range, and its azimuths on its edges.
+fn add_labels(
+    ctx: &mut Ctx<'_>,
+    fan: &[Sector],
+    center: GeoPoint,
+    bearing: f64,
+    part: PartId,
+    altitudes: &[Altitude],
+) {
+    let earth = ctx.earth;
+    for (k, s) in fan.iter().enumerate() {
         let mid = (s.min_m + s.max_m) / 2.0;
+        if let Some(a) = altitudes.get(k) {
+            ctx.add_label(LabelSpec {
+                part,
+                text: format!("ALT {}", super::corridor::altitude_text(a)),
+                anchor: earth.direct(center, bearing, mid),
+                placement: LabelPlacement::Centered,
+                line_offset: 0.0,
+                may_hide: true,
+            });
+        }
         let labels = [
             (
                 format!("RG {}", s.max_m.round()),
@@ -143,10 +171,6 @@ pub(crate) fn construct(ctx: &mut Ctx<'_>, def: &GraphicDefinition) -> Result<()
             });
         }
     }
-    ctx.add_handles(vertex_handles(def));
-    let handles = handles(earth, center, &m.distances_m, &m.azimuths_deg, bearing);
-    ctx.add_handles(handles);
-    Ok(())
 }
 
 fn handles(

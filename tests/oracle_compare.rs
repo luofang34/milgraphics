@@ -11,8 +11,7 @@ wasm_bindgen_test::wasm_bindgen_test_configure!(run_in_browser);
 #[cfg(test)]
 mod compare {
     use milgraphics::render::{
-        FixedAdvanceMetrics, Font, LocalEquirectangular, Projection, ScreenPoint, ScreenShape,
-        TextAlign,
+        FixedAdvanceMetrics, LocalEquirectangular, Projection, ScreenPoint, ScreenShape, TextAlign,
     };
     use milgraphics::style::DashPattern;
     use milgraphics::{
@@ -121,11 +120,7 @@ mod compare {
 
     fn ours(r: &Value) -> Ours {
         let c = construct(&definition(r), &Config::default()).unwrap();
-        let view = View {
-            view_revision: 0,
-            surface_revision: 0,
-            label_font: Font::default(),
-        };
+        let view = View::new(0, 0);
         let plan = render(
             &c,
             &view,

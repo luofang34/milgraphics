@@ -1,7 +1,7 @@
 //! Resolving pixel-sized decorations for a view.
 
 use crate::budget::BudgetError;
-use crate::construction::{DecorationSize, PartRole, ScreenDecoration};
+use crate::construction::{Decoration, DecorationSize, PartRole, ScreenDecoration};
 use crate::pick::{PickRef, PickTarget};
 use crate::render::screen::ScreenCtx;
 use crate::render::{ScreenItem, ScreenPoint, ScreenShape};
@@ -12,8 +12,8 @@ pub(crate) fn resolve(
     decoration: &ScreenDecoration,
     pick: &impl Fn(PickTarget) -> PickRef,
 ) -> Result<Option<ScreenItem>, BudgetError> {
-    let item = match *decoration {
-        ScreenDecoration::Arrowhead {
+    let item = match decoration.0 {
+        Decoration::Arrowhead {
             id,
             tip,
             toward,
@@ -51,7 +51,7 @@ pub(crate) fn resolve(
                 decoration: true,
             }
         }
-        ScreenDecoration::Pointer {
+        Decoration::Pointer {
             id,
             from,
             through,
@@ -101,7 +101,6 @@ fn unit((dx, dy): (f64, f64)) -> Option<(f64, f64)> {
 
 fn resolve_size(ctx: &mut ScreenCtx<'_>, size: DecorationSize) -> Option<f64> {
     match size {
-        DecorationSize::Px(px) => Some(px),
         DecorationSize::Proportional {
             segments,
             fraction,

@@ -33,6 +33,8 @@ import java.util.Map;
  */
 public final class Oracle {
     static final String PROBE = "PL ALPHA 0123456789";
+    /** Large case sets drop the GeoJSON output and round geographic coordinates to 1e-7 degrees (about 1 cm). */
+    static final boolean COMPACT = Boolean.getBoolean("oracle.compact");
 
     public static void main(String[] args) throws Exception {
         // Upstream logs through stdout; keep stdout for the record alone.
@@ -47,6 +49,8 @@ public final class Oracle {
         settings.setTextBackgroundMethod(RendererSettings.TextBackgroundMethod_NONE);
         settings.setLabelFont(family, Font.BOLD, 12);
         settings.setMPLabelFont(family, Font.BOLD, 12);
+        // Render at the case's scale; upstream otherwise clamps it to the bbox width.
+        settings.setAutoAdjustScale(false);
 
         String[] f = args[1].split("\t", -1);
         String id = f[0], symbol = f[1], points = f[2], bbox = f[4];
@@ -71,10 +75,10 @@ public final class Oracle {
         MilStdSymbol mss = WebRenderer.RenderMultiPointAsMilStdSymbol(id, "", "", symbol, points, "",
                 scale, bbox, new LinkedHashMap<>(modifiers), new LinkedHashMap<>());
         field(out, "symbol_shapes", shapes(mss == null ? null : mss.getSymbolShapes())).append(',');
-        field(out, "modifier_shapes", shapes(mss == null ? null : mss.getModifierShapes())).append(',');
-        String geojson = WebRenderer.RenderSymbol(id, "", "", symbol, points, "clampToGround", scale, bbox,
+        field(out, "modifier_shapes", shapes(mss == null ? null : mss.getModifierShapes()));
+        String geojson = COMPACT ? null : WebRenderer.RenderSymbol(id, "", "", symbol, points, "clampToGround", scale, bbox,
                 new LinkedHashMap<>(modifiers), new LinkedHashMap<>(), WebRenderer.OUTPUT_FORMAT_GEOJSON);
-        field(out, "geojson", str(geojson));
+        if (!COMPACT) field(out.append(','), "geojson", str(geojson));
         record.println(out.append('}'));
     }
 
@@ -104,7 +108,7 @@ public final class Oracle {
             field(b, "polylines", polylines(s.getPolylines())).append(',');
             field(b, "text", str(s.getModifierString())).append(',');
             Point2D p = s.getModifierPosition();
-            field(b, "position", p == null ? "null" : "[" + num(p.getX()) + "," + num(p.getY()) + "]").append(',');
+            field(b, "position", p == null ? "null" : "[" + coord(p.getX()) + "," + coord(p.getY()) + "]").append(',');
             field(b, "angle", num(s.getModifierAngle())).append(',');
             field(b, "justify", Integer.toString(s.getTextJustify()));
             b.append('}');
@@ -121,7 +125,7 @@ public final class Oracle {
             ArrayList<Point2D> line = lines.get(i);
             for (int j = 0; j < line.size(); j++) {
                 if (j > 0) b.append(',');
-                b.append('[').append(num(line.get(j).getX())).append(',').append(num(line.get(j).getY())).append(']');
+                b.append('[').append(coord(line.get(j).getX())).append(',').append(coord(line.get(j).getY())).append(']');
             }
             b.append(']');
         }
@@ -152,6 +156,10 @@ public final class Oracle {
         if (Double.isNaN(v) || Double.isInfinite(v)) return "null";
         if (v == Math.rint(v) && Math.abs(v) < 1e15) return Long.toString((long) v);
         return Double.toString(v);
+    }
+
+    static String coord(double v) {
+        return num(COMPACT && Double.isFinite(v) ? Math.round(v * 1e7) / 1e7 : v);
     }
 
     static StringBuilder field(StringBuilder b, String key, String json) {

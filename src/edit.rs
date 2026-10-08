@@ -11,6 +11,7 @@ mod tests;
 
 /// Identity of an edit handle, stable across renders of one revision.
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, Serialize, Deserialize)]
+#[non_exhaustive]
 pub enum HandleId {
     /// Control point `n` (0-based).
     Vertex(u16),
@@ -25,6 +26,7 @@ pub enum HandleId {
 /// A change requested by the user, in geographic terms. Hosts convert the
 /// cursor to a geographic position with their projection before editing.
 #[derive(Clone, Debug, PartialEq)]
+#[non_exhaustive]
 pub enum Edit {
     /// Drag a handle to a new position.
     Move {
@@ -49,6 +51,7 @@ pub enum Edit {
 
 /// Why an edit was refused. The original definition is never modified.
 #[derive(Debug, thiserror::Error)]
+#[non_exhaustive]
 pub enum EditError {
     /// The symbol is not supported, so its edit rules are unknown.
     #[error(transparent)]

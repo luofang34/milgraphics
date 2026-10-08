@@ -18,12 +18,14 @@ pub const SCHEMA_VERSION: u64 = 1;
 /// byte for byte. Decoding produces a [`GraphicDefinition`] whose unknown
 /// fields keep their JSON content through edits.
 #[derive(Clone, Debug)]
+#[non_exhaustive]
 pub struct PersistedGraphic {
     raw: Box<RawValue>,
 }
 
 /// Why stored JSON could not be accepted or decoded.
 #[derive(Debug, thiserror::Error)]
+#[non_exhaustive]
 pub enum PersistError {
     /// The input is not a JSON object.
     #[error("stored graphic is not a JSON object: {0}")]

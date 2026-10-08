@@ -2,7 +2,8 @@
 
 use crate::budget::{BudgetError, VertexMeter};
 use crate::construction::{
-    Construction, GeoGeometry, GeoPart, HandleSpec, LabelSpec, PartId, PartRole, ScreenDecoration,
+    Construction, Decoration, GeoGeometry, GeoPart, HandleSpec, LabelSpec, PartId, PartRole,
+    ScreenDecoration,
 };
 use crate::definition::GraphicDefinition;
 use crate::family::{Config, ConstructError};
@@ -111,8 +112,8 @@ impl<'a> Ctx<'a> {
         id
     }
 
-    pub(crate) fn add_decoration(&mut self, decoration: ScreenDecoration) {
-        self.decorations.push(decoration);
+    pub(crate) fn add_decoration(&mut self, decoration: Decoration) {
+        self.decorations.push(ScreenDecoration(decoration));
     }
 
     pub(crate) fn add_label(&mut self, label: LabelSpec) {

@@ -57,6 +57,7 @@ impl Rgba {
 /// Dash patterns the engine can draw as fixed layers. Lengths are in
 /// multiples of the line width, matching how map engines scale dashes.
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord)]
+#[non_exhaustive]
 pub enum DashPattern {
     /// Continuous.
     Solid,
@@ -77,6 +78,7 @@ impl DashPattern {
 /// A line style. Width is in screen pixels: the standard scales line width
 /// with the display, not with the ground.
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[non_exhaustive]
 pub struct Stroke {
     /// Colour.
     pub color: Rgba,
@@ -88,6 +90,7 @@ pub struct Stroke {
 
 /// How an area or arrowhead interior is painted.
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[non_exhaustive]
 pub enum Fill {
     /// Not filled.
     None,

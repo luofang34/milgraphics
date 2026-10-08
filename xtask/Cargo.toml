@@ -4,11 +4,12 @@ version = "0.0.0"
 authors = ["Fang Luo"]
 edition = "2024"
 rust-version = "1.85"
-description = "Repository automation for milgraphics: regenerates src/generated from the pinned upstream data"
+description = "Repository automation for milgraphics: regenerates src/generated from the pinned upstream data and the standard references"
 license = "AGPL-3.0-or-later"
 publish = false
 
 [dependencies]
+serde_json = "1.0.151"
 thiserror = "2"
 
 [lints]

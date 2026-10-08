@@ -8,6 +8,7 @@ use crate::render::{Font, FontMetrics, ScreenPoint};
 
 /// Horizontal alignment of text on its anchor.
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
+#[non_exhaustive]
 pub enum TextAlign {
     /// Text starts at the anchor.
     Left,
@@ -23,6 +24,7 @@ pub enum TextAlign {
 /// baseline, y downward), in ems, which is how map engines take symbol
 /// text offsets. The anchor is the vertical middle of the text line.
 #[derive(Clone, Debug, PartialEq)]
+#[non_exhaustive]
 pub struct Label {
     /// What it belongs to.
     pub pick: PickRef,

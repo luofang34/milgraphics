@@ -76,6 +76,22 @@ jobs:
       - run: cargo hack check -p milgraphics --feature-powerset --no-dev-deps
       - run: cargo hack check -p milgraphics --feature-powerset --no-dev-deps --target wasm32-unknown-unknown
 
+  public-api:
+    name: public API matches its snapshot
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      # cargo-public-api reads one rustdoc JSON format version: pin both.
+      - uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: nightly-2026-08-06
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: taiki-e/install-action@v2
+        with:
+          tool: cargo-public-api@0.52.0
+      - uses: Swatinem/rust-cache@v2
+      - run: tools/ci/public-api.sh
+
   oracle:
     name: regenerate oracle fixtures from pinned mil-sym-java and diff
     runs-on: ubuntu-latest
@@ -91,11 +107,17 @@ jobs:
         run: |
           for cases in tools/oracle/cases/*.tsv; do
             name=$(basename "$cases" .tsv)
+            # The large set is stored without GeoJSON and with 0.01 px coordinates.
+            if [ "$name" = all ]; then export ORACLE_COMPACT=1; else unset ORACLE_COMPACT; fi
             tools/oracle/oracle.sh "$cases" > "/tmp/$name.jsonl"
             python3 -I tools/oracle/diff-fixtures.py "tests/fixtures/oracle/$name.jsonl" "/tmp/$name.jsonl"
           done
+      - name: Generated case list matches the pinned catalog
+        run: |
+          tools/oracle/oracle.sh --cases 2>/dev/null | diff - tools/oracle/cases/all.tsv
       - name: Generated catalog matches the pinned data
         run: |
           tools/oracle/fetch-upstream.sh
           cargo xtask catalog
+          cargo xtask references
           git diff --exit-code -- src/generated

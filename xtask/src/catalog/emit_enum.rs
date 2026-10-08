@@ -29,6 +29,7 @@ pub(super) fn emit_enum(
         out,
         "#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord)]"
     )?;
+    writeln!(out, "#[non_exhaustive]")?;
     writeln!(out, "pub enum {name} {{")?;
     for v in variants {
         writeln!(out, "    /// {}", v.doc)?;

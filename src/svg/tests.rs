@@ -3,7 +3,7 @@ use crate::Budget;
 use crate::definition::{ControlPoint, GraphicDefinition, GraphicId};
 use crate::family::{Config, construct};
 use crate::geo::GeoPoint;
-use crate::render::{FixedAdvanceMetrics, Font, LocalEquirectangular, View, render};
+use crate::render::{FixedAdvanceMetrics, LocalEquirectangular, View, render};
 use crate::sidc::SymbolId;
 
 fn svg_for(sidc: &str, t: &str) -> String {
@@ -17,11 +17,7 @@ fn svg_for(sidc: &str, t: &str) -> String {
     );
     d.modifiers.designation = Some(t.to_owned());
     let c = construct(&d, &Config::default()).unwrap();
-    let view = View {
-        view_revision: 0,
-        surface_revision: 0,
-        label_font: Font::default(),
-    };
+    let view = View::new(0, 0);
     let frame = LocalEquirectangular::new(19.95, 50.07, 50_000.0, 96.0);
     let plan = render(
         &c,

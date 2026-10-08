@@ -1,10 +1,13 @@
 //! Limits on input size and generated output.
 
+use crate::modifier::ModifierField;
+
 /// Limits that bound the work and memory a single graphic may cause.
 ///
 /// Every limit is checked before the work it guards, and exceeding one is a
 /// typed error rather than a truncated result.
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
+#[non_exhaustive]
 pub struct Budget {
     /// Control points per graphic.
     pub max_control_points: usize,
@@ -34,6 +37,7 @@ impl Default for Budget {
 
 /// A [`Budget`] limit that an input or its output would exceed.
 #[derive(Clone, Copy, Debug, PartialEq, Eq, thiserror::Error)]
+#[non_exhaustive]
 pub enum BudgetError {
     /// Too many control points.
     #[error("{count} control points; the limit is {limit}")]
@@ -46,8 +50,8 @@ pub enum BudgetError {
     /// A text amplifier is too long.
     #[error("amplifier {field} has {count} characters; the limit is {limit}")]
     Text {
-        /// Field letter, e.g. `T`.
-        field: &'static str,
+        /// The field.
+        field: ModifierField,
         /// Characters supplied.
         count: usize,
         /// The limit.
@@ -56,8 +60,8 @@ pub enum BudgetError {
     /// A multi-valued amplifier has too many values.
     #[error("amplifier {field} has {count} values; the limit is {limit}")]
     ModifierValues {
-        /// Field letter, e.g. `AM`.
-        field: &'static str,
+        /// The field.
+        field: ModifierField,
         /// Values supplied.
         count: usize,
         /// The limit.
