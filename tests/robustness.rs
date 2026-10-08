@@ -12,6 +12,9 @@ mod edge;
 #[cfg(test)]
 #[path = "robustness/fixtures.rs"]
 mod fixtures;
+#[cfg(test)]
+#[path = "robustness/pan.rs"]
+mod pan;
 #[cfg(all(test, not(target_arch = "wasm32")))]
 #[path = "robustness/props.rs"]
 mod props;
