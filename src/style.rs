@@ -63,6 +63,9 @@ pub enum DashPattern {
     Solid,
     /// Equal dashes and gaps of two line widths: planned or anticipated.
     Dashed,
+    /// Round dots one line width across, two line widths apart centre to
+    /// centre: zero-length dashes drawn with round caps.
+    Dotted,
 }
 
 impl DashPattern {
@@ -71,7 +74,14 @@ impl DashPattern {
         match self {
             Self::Solid => &[],
             Self::Dashed => &[2.0, 2.0],
+            Self::Dotted => &[0.0, 2.0],
         }
+    }
+
+    /// Whether the line is drawn with round caps, which turn the
+    /// zero-length dashes of [`DashPattern::Dotted`] into dots.
+    pub fn round_caps(self) -> bool {
+        self == Self::Dotted
     }
 }
 
@@ -100,6 +110,62 @@ pub enum Fill {
     /// render plan's screen tier carries the lines, clipped to the area, as
     /// decorations; the outline is the item's stroke.
     Hatch(Hatch),
+    /// Covered with copies of a small figure on a fixed pixel grid. As for
+    /// [`Fill::Hatch`], the screen tier carries the figures inside the area
+    /// as decorations.
+    Pattern(Pattern),
+}
+
+/// A figure repeated over an area.
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
+#[non_exhaustive]
+pub enum Motif {
+    /// A filled round dot.
+    Dot,
+    /// A pound sign (`#`).
+    Hash,
+    /// A sprig of kelp: a stem with side branches.
+    Kelp,
+    /// A fish trap: a rectangle under a slanting line.
+    FishTrap,
+}
+
+/// Copies of a [`Motif`] on a grid fixed to the screen, sized in pixels.
+#[derive(Clone, Copy, Debug, PartialEq)]
+#[non_exhaustive]
+pub struct Pattern {
+    /// The figure.
+    pub motif: Motif,
+    /// Its colour.
+    pub color: Rgba,
+    /// Width of one figure, in pixels.
+    pub size_px: f64,
+    /// Horizontal and vertical distance between figures in a row and
+    /// between rows, in pixels.
+    pub spacing_px: [f64; 2],
+    /// Whether a second figure sits in the middle of each grid cell, so rows
+    /// alternate.
+    pub staggered: bool,
+}
+
+impl Pattern {
+    /// `motif` in `color`, `size_px` wide, every `spacing_px`, with or without
+    /// a figure in the middle of each cell.
+    pub const fn new(
+        motif: Motif,
+        color: Rgba,
+        size_px: f64,
+        spacing_px: [f64; 2],
+        staggered: bool,
+    ) -> Self {
+        Self {
+            motif,
+            color,
+            size_px,
+            spacing_px,
+            staggered,
+        }
+    }
 }
 
 /// Parallel lines filling an area, sized in pixels.

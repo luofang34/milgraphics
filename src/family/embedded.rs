@@ -1,6 +1,6 @@
 //! Single-point symbols a graphic embeds: the unit a task is assigned to
-//! (amplifier `A`), placed where the standard's template puts it, and the
-//! event icon of a contaminated area.
+//! (amplifier `A`), placed where the standard's template puts it, the event
+//! icon of a contaminated area, and the anchor of an anchorage.
 
 use crate::construction::{EmbeddedSymbol, SymbolSize};
 use crate::definition::GraphicDefinition;
@@ -22,6 +22,8 @@ enum Anchor {
     Rear,
     /// The centre of the area the points outline.
     Centre,
+    /// Halfway along the line through the points.
+    Middle,
 }
 
 #[derive(Clone, Copy)]
@@ -69,9 +71,33 @@ const EVENTS: &[(u32, u32)] = &[
 /// Editions whose templates put the event symbol in the area.
 const EVENT_VERSIONS: [u8; 2] = [15, 16];
 
+/// METOC graphics drawn with a symbol of their own set, per edition: the
+/// Anchorage - Point symbol (46 120304) halfway along an Anchorage - Line and
+/// in an Anchorage - Area (MIL-STD-2525E change 1, TABLE M-III).
+const METOC: &[(u8, u8, u32, u32, Anchor)] = &[
+    (15, 46, 120_305, 120_304, Anchor::Middle),
+    (15, 46, 120_306, 120_304, Anchor::Centre),
+];
+
 pub(crate) fn add(ctx: &mut Ctx<'_>, def: &GraphicDefinition) -> Result<(), ConstructError> {
     let points: Vec<GeoPoint> = def.positions().collect();
     let symbol = &def.symbol;
+    let metoc = METOC.iter().find(|m| {
+        (m.0, m.1, m.2)
+            == (
+                symbol.version_code(),
+                symbol.symbol_set(),
+                symbol.entity().get(),
+            )
+    });
+    if let Some(&(_, set, _, icon, anchor)) = metoc {
+        let placed = SymbolId::parse(&same_kind(symbol, set, icon))
+            .ok()
+            .and_then(|icon| place(ctx, &points, icon, anchor, Size::Fixed, [0.0, 0.0]));
+        if let Some(placed) = placed {
+            ctx.add_symbol(placed);
+        }
+    }
     if symbol.symbol_set() != 25 {
         return Ok(());
     }
@@ -92,15 +118,7 @@ pub(crate) fn add(ctx: &mut Ctx<'_>, def: &GraphicDefinition) -> Result<(), Cons
     }
     let event = EVENTS.iter().find(|e| e.0 == entity).map(|e| e.1);
     if let (Some(event), true) = (event, EVENT_VERSIONS.contains(&symbol.version_code())) {
-        let code = format!(
-            "{:02}{}{}25{}000{:06}0000",
-            symbol.version_code(),
-            symbol.context(),
-            symbol.identity(),
-            symbol.status(),
-            event
-        );
-        let placed = SymbolId::parse(&code)
+        let placed = SymbolId::parse(&same_kind(symbol, 25, event))
             .ok()
             .and_then(|icon| place(ctx, &points, icon, Anchor::Centre, Size::Fixed, [0.0, 0.0]));
         if let Some(placed) = placed {
@@ -108,6 +126,20 @@ pub(crate) fn add(ctx: &mut Ctx<'_>, def: &GraphicDefinition) -> Result<(), Cons
         }
     }
     Ok(())
+}
+
+/// The code of `entity` in `set`, with the edition, context, identity and
+/// status of `symbol`.
+fn same_kind(symbol: &SymbolId, set: u8, entity: u32) -> String {
+    format!(
+        "{:02}{}{}{:02}{}000{:06}0000",
+        symbol.version_code(),
+        symbol.context(),
+        symbol.identity(),
+        set,
+        symbol.status(),
+        entity
+    )
 }
 
 fn place(
@@ -124,6 +156,7 @@ fn place(
         Anchor::Between(i, j) => ctx.earth.interpolate(at(i)?, at(j)?, 0.5),
         Anchor::Rear => at(points.len().checked_sub(2)?)?,
         Anchor::Centre => centre(ctx, points)?,
+        Anchor::Middle => middle(ctx, points)?,
     };
     let size = match size {
         Size::Fixed => SymbolSize::Pixels(SYMBOL_PX),
@@ -148,6 +181,36 @@ fn centre(ctx: &Ctx<'_>, points: &[GeoPoint]) -> Option<GeoPoint> {
         .map(|&p| plane.to_xy(p))
         .fold(Xy::new(0.0, 0.0), |a, p| Xy::new(a.x + p.x, a.y + p.y));
     Some(plane.to_geo(Xy::new(sum.x / n, sum.y / n)))
+}
+
+/// The point halfway along the line through `points`, measured in a plane
+/// around the first.
+fn middle(ctx: &Ctx<'_>, points: &[GeoPoint]) -> Option<GeoPoint> {
+    let origin = *points.first()?;
+    let plane = LocalPlane::new(ctx.earth, origin);
+    let xy: Vec<Xy> = points.iter().map(|&p| plane.to_xy(p)).collect();
+    let total: f64 = xy.windows(2).map(|w| segment(w).len()).sum();
+    let mut left = total / 2.0;
+    for w in xy.windows(2) {
+        let (Some(&a), d) = (w.first(), segment(w)) else {
+            continue;
+        };
+        let len = d.len();
+        if len > 0.0 && left <= len {
+            let t = left / len;
+            return Some(plane.to_geo(Xy::new(a.x + d.x * t, a.y + d.y * t)));
+        }
+        left -= len;
+    }
+    points.last().copied()
+}
+
+/// The vector along a two-point window.
+fn segment(w: &[Xy]) -> Xy {
+    match w {
+        [a, b] => b.sub(*a),
+        _ => Xy::new(0.0, 0.0),
+    }
 }
 
 #[cfg(test)]

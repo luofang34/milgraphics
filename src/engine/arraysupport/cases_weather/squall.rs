@@ -228,8 +228,12 @@ pub(super) fn itd(w: &mut Work<'_>) -> Result<(), EngineError> {
     Ok(())
 }
 
+/// The ticks alternate sides every half `length`. MIL-STD-2525E change 1
+/// (TABLE M-II) spaces them about three times as far apart as upstream,
+/// with ticks as long; the buffer sized for upstream's spacing holds them.
 pub(super) fn convergence(w: &mut Work<'_>) -> Result<(), EngineError> {
-    let length = w.scaled(10.0);
+    let version = crate::engine::modifier::center_label::symbol_version(&w.tg.symbol_id);
+    let length = w.scaled(if version == Some(15) { 30.0 } else { 10.0 });
     w.ac = get_convergence_points_double(&mut w.p, length, w.save)?;
     Ok(())
 }

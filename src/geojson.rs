@@ -54,6 +54,9 @@ fn stroke_props(props: &mut Map<String, Value>, stroke: Option<Stroke>) {
         props.insert("stroke-width".into(), json!(s.width_px));
         props.insert("dash".into(), json!(format!("{:?}", s.dash)));
         props.insert("dasharray".into(), json!(s.dash.array()));
+        if s.dash.round_caps() {
+            props.insert("line-cap".into(), json!("round"));
+        }
     }
 }
 

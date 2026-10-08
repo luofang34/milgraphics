@@ -41,6 +41,14 @@ fn weather_ignores_version_and_set() {
 }
 
 #[test]
+fn version_15_troughs_are_smooth_curves() {
+    assert_eq!(line_type(15, 45, 110_401), Some(ESTIMATED_ICE_EDGE));
+    assert_eq!(line_type(15, 45, 110_402), Some(UPPER_AIR));
+    assert_eq!(line_type(11, 45, 110_401), Some(TROUGH));
+    assert_eq!(is_weather(45, 110_402), Some(UPPER_TROUGH));
+}
+
+#[test]
 fn classes() {
     assert!(is_change1_area(RANGE_FAN));
     assert!(!is_change1_area(PL));

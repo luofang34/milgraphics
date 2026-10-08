@@ -3,8 +3,8 @@
 use crate::budget::BudgetError;
 use crate::construction::{Decoration, PartRole};
 use crate::engine::api::{self, Input, Justify};
-use crate::engine::base::{Pt, Shape, shape_type};
-use crate::family::{shape_fill, shape_stroke};
+use crate::engine::base::{Pt, Shape};
+use crate::family::{shape_fill, shape_outline};
 use crate::pick::{PickRef, PickTarget};
 use crate::render::label::{self, Label, TextAlign};
 use crate::render::screen::ScreenCtx;
@@ -117,10 +117,7 @@ fn screen_items(
             .into_iter()
             .map(|(x, y)| ScreenPoint { x, y })
             .collect();
-        // Upstream fills any shape with a fill colour; a fill shape has no
-        // outline of its own.
-        let outline =
-            (shape.shape_type != shape_type::FILL).then(|| shape_stroke(shape, Rgba::BLACK));
+        let outline = shape_outline(shape, Rgba::BLACK);
         let fill = shape_fill(shape);
         let shape = if fill == Fill::None {
             ScreenShape::Polyline(points)

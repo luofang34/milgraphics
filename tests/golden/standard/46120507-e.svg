@@ -1,3 +1,13 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="730" height="728" viewBox="0 0 730 728">
-<polyline points="270.85,647.91 649.65,647.91 649.28,420.76 270.69,420.76 270.85,647.91" fill="none" stroke="#000000ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt"/>
+<polygon points="270.85,647.91 649.65,647.91 649.28,420.76 270.69,420.76" fill="none" stroke="none"/>
+<polyline points="323.85,512.41 336.85,517.41 353.85,523.41 369.85,518.41 385.85,525.41 398.85,524.41 410.85,523.41 416.85,519.41" fill="none" stroke="#808080ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt"/>
+<polyline points="333.85,516.41 327.85,521.41" fill="none" stroke="#808080ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt"/>
+<polyline points="353.85,523.41 337.85,534.41" fill="none" stroke="#808080ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt"/>
+<polyline points="369.85,518.41 362.85,507.41" fill="none" stroke="#808080ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt"/>
+<polyline points="385.85,525.41 370.85,537.41" fill="none" stroke="#808080ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt"/>
+<polyline points="523.85,512.41 536.85,517.41 553.85,523.41 569.85,518.41 585.85,525.41 598.85,524.41 610.85,523.41 616.85,519.41" fill="none" stroke="#808080ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt"/>
+<polyline points="533.85,516.41 527.85,521.41" fill="none" stroke="#808080ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt"/>
+<polyline points="553.85,523.41 537.85,534.41" fill="none" stroke="#808080ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt"/>
+<polyline points="569.85,518.41 562.85,507.41" fill="none" stroke="#808080ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt"/>
+<polyline points="585.85,525.41 570.85,537.41" fill="none" stroke="#808080ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt"/>
 </svg>

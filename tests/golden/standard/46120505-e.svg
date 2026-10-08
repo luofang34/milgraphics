@@ -1,3 +1,15 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="730" height="728" viewBox="0 0 730 728">
-<polyline points="270.85,647.91 649.65,647.91 649.28,420.76 270.69,420.76 270.85,647.91" fill="none" stroke="#000000ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt"/>
+<polygon points="270.85,647.91 649.65,647.91 649.28,420.76 270.69,420.76" fill="none" stroke="none"/>
+<polyline points="367.91,525.65 359.51,570.17" fill="none" stroke="#808080ff" stroke-width="5.88" stroke-linejoin="miter" stroke-linecap="butt"/>
+<polyline points="382.19,525.65 373.79,570.17" fill="none" stroke="#808080ff" stroke-width="5.88" stroke-linejoin="miter" stroke-linecap="butt"/>
+<polyline points="354.05,540.77 391.85,540.77" fill="none" stroke="#808080ff" stroke-width="5.88" stroke-linejoin="miter" stroke-linecap="butt"/>
+<polyline points="349.85,556.31 387.65,556.31" fill="none" stroke="#808080ff" stroke-width="5.88" stroke-linejoin="miter" stroke-linecap="butt"/>
+<polyline points="467.91,425.65 459.51,470.17" fill="none" stroke="#808080ff" stroke-width="5.88" stroke-linejoin="miter" stroke-linecap="butt"/>
+<polyline points="482.19,425.65 473.79,470.17" fill="none" stroke="#808080ff" stroke-width="5.88" stroke-linejoin="miter" stroke-linecap="butt"/>
+<polyline points="454.05,440.77 491.85,440.77" fill="none" stroke="#808080ff" stroke-width="5.88" stroke-linejoin="miter" stroke-linecap="butt"/>
+<polyline points="449.85,456.31 487.65,456.31" fill="none" stroke="#808080ff" stroke-width="5.88" stroke-linejoin="miter" stroke-linecap="butt"/>
+<polyline points="567.91,525.65 559.51,570.17" fill="none" stroke="#808080ff" stroke-width="5.88" stroke-linejoin="miter" stroke-linecap="butt"/>
+<polyline points="582.19,525.65 573.79,570.17" fill="none" stroke="#808080ff" stroke-width="5.88" stroke-linejoin="miter" stroke-linecap="butt"/>
+<polyline points="554.05,540.77 591.85,540.77" fill="none" stroke="#808080ff" stroke-width="5.88" stroke-linejoin="miter" stroke-linecap="butt"/>
+<polyline points="549.85,556.31 587.65,556.31" fill="none" stroke="#808080ff" stroke-width="5.88" stroke-linejoin="miter" stroke-linecap="butt"/>
 </svg>

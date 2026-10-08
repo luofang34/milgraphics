@@ -20,6 +20,7 @@
 pub(crate) mod bezier;
 pub(crate) mod get_shape;
 pub(crate) mod ice_openings;
+pub(crate) mod itcz;
 pub(crate) mod parallel_lines;
 pub(crate) mod path;
 pub(crate) mod properties;

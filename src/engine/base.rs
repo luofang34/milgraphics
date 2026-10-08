@@ -150,6 +150,9 @@ pub(crate) struct Hatch {
 pub(crate) struct Shape {
     /// Upstream's pattern fill image, as the parameters that make it.
     pub(crate) pattern_fill: Option<Hatch>,
+    /// The METOC type whose raster pattern upstream paints this shape with
+    /// (`PatternFillRenderer.MakeMetocPatternFill`).
+    pub(crate) metoc_pattern: Option<i32>,
     pub(crate) shape_type: i32,
     pub(crate) style: i32,
     pub(crate) fill_style: i32,

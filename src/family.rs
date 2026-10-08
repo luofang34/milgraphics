@@ -27,7 +27,7 @@ mod validate;
 mod tests;
 
 pub(crate) use context::Ctx;
-pub(crate) use ported::{ms_info, shape_fill, shape_stroke};
+pub(crate) use ported::{ms_info, shape_fill, shape_outline};
 
 /// How a family of symbols is constructed and edited.
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]

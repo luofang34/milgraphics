@@ -81,6 +81,7 @@ pub milgraphics::construction::PartRole::Decoration
 pub milgraphics::construction::PartRole::Hatch
 pub milgraphics::construction::PartRole::Line
 pub milgraphics::construction::PartRole::Orientation
+pub milgraphics::construction::PartRole::Pattern
 #[non_exhaustive] pub enum milgraphics::construction::SymbolSize
 pub milgraphics::construction::SymbolSize::Pixels(f64)
 pub milgraphics::construction::SymbolSize::WithinCircle
@@ -514,13 +515,21 @@ pub fn milgraphics::standard::StandardVersion::fmt(&self, &mut core::fmt::Format
 pub mod milgraphics::style
 #[non_exhaustive] pub enum milgraphics::style::DashPattern
 pub milgraphics::style::DashPattern::Dashed
+pub milgraphics::style::DashPattern::Dotted
 pub milgraphics::style::DashPattern::Solid
 impl milgraphics::style::DashPattern
 pub fn milgraphics::style::DashPattern::array(self) -> &'static [f64]
+pub fn milgraphics::style::DashPattern::round_caps(self) -> bool
 #[non_exhaustive] pub enum milgraphics::style::Fill
 pub milgraphics::style::Fill::Hatch(milgraphics::style::Hatch)
 pub milgraphics::style::Fill::None
+pub milgraphics::style::Fill::Pattern(milgraphics::style::Pattern)
 pub milgraphics::style::Fill::Solid(milgraphics::style::Rgba)
+#[non_exhaustive] pub enum milgraphics::style::Motif
+pub milgraphics::style::Motif::Dot
+pub milgraphics::style::Motif::FishTrap
+pub milgraphics::style::Motif::Hash
+pub milgraphics::style::Motif::Kelp
 #[non_exhaustive] pub struct milgraphics::style::Hatch
 pub milgraphics::style::Hatch::angle_deg: f64
 pub milgraphics::style::Hatch::color: milgraphics::style::Rgba
@@ -528,6 +537,14 @@ pub milgraphics::style::Hatch::spacing_px: f64
 pub milgraphics::style::Hatch::width_px: f64
 impl milgraphics::style::Hatch
 pub const fn milgraphics::style::Hatch::new(milgraphics::style::Rgba, f64, f64, f64) -> Self
+#[non_exhaustive] pub struct milgraphics::style::Pattern
+pub milgraphics::style::Pattern::color: milgraphics::style::Rgba
+pub milgraphics::style::Pattern::motif: milgraphics::style::Motif
+pub milgraphics::style::Pattern::size_px: f64
+pub milgraphics::style::Pattern::spacing_px: [f64; 2]
+pub milgraphics::style::Pattern::staggered: bool
+impl milgraphics::style::Pattern
+pub const fn milgraphics::style::Pattern::new(milgraphics::style::Motif, milgraphics::style::Rgba, f64, [f64; 2], bool) -> Self
 pub struct milgraphics::style::Rgba
 pub milgraphics::style::Rgba::a: u8
 pub milgraphics::style::Rgba::b: u8

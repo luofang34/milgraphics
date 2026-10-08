@@ -24,7 +24,22 @@ pub(crate) fn line_type(version: u8, symbol_set: u8, entity: u32) -> Option<i32>
     if symbol_set == SYMBOL_SET_CONTROL_MEASURES {
         cm_line_type(version, entity)
     } else {
-        is_weather(symbol_set, entity)
+        edition_metoc(version, symbol_set, entity).or_else(|| is_weather(symbol_set, entity))
+    }
+}
+
+/// METOC lines whose MIL-STD-2525E change 1 template (TABLE M-II) differs
+/// from what upstream draws for the code, and the line type that draws the
+/// template: Trough Axis is a black dashed smooth curve and Trough a black
+/// solid one, as upstream draws the estimated ice edge and the upper-air
+/// contour; the Inter-Tropical Convergence Zone is a ladder.
+fn edition_metoc(version: u8, symbol_set: u8, entity: u32) -> Option<i32> {
+    use crate::engine::tactical_lines::{ESTIMATED_ICE_EDGE, ITCZ_LADDER, UPPER_AIR};
+    match (version, symbol_set, entity) {
+        (15, 45, 110_401) => Some(ESTIMATED_ICE_EDGE),
+        (15, 45, 110_402) => Some(UPPER_AIR),
+        (15, 45, 110_407) => Some(ITCZ_LADDER),
+        _ => None,
     }
 }
 

@@ -20,6 +20,9 @@ use crate::render::{FixedAdvanceMetrics, Font, FontMetrics};
 use crate::style::{DashPattern, Fill, Hatch, Rgba, Stroke};
 
 mod classify;
+mod labels;
+mod pattern;
+mod storm;
 
 /// Pixel extents the graphic is drawn at for classification. They lie on
 /// either side of the range where upstream sizes decorations in proportion
@@ -32,6 +35,9 @@ const REFERENCE_EXTENTS_PX: [f64; 2] = [50.0, 1500.0];
 pub(super) const ORIGIN_PX: f64 = 2000.0;
 
 pub(crate) fn construct(ctx: &mut Ctx<'_>, def: &GraphicDefinition) -> Result<(), ConstructError> {
+    if storm::applies(def) {
+        return storm::construct(ctx, def);
+    }
     let symbol = &crate::engine::intercept::engine_symbol(&def.symbol);
     let line_type = crate::engine::line_type::line_type(
         symbol.version_code(),
@@ -79,6 +85,15 @@ pub(crate) fn construct(ctx: &mut Ctx<'_>, def: &GraphicDefinition) -> Result<()
         }
     }
     let part = first.unwrap_or_else(|| ctx.next_part());
+    // The larger run follows a curve more closely.
+    let drawn: Vec<GeoPoint> = b
+        .shapes
+        .iter()
+        .flat_map(Shape::polylines)
+        .flatten()
+        .map(|p| plane.to_geo(from_px(p, mpp_b)))
+        .collect();
+    labels::add(ctx, def, part, &drawn);
     ctx.add_decoration(Decoration::Engine {
         line_type,
         anchors,
@@ -161,10 +176,7 @@ fn add_part(
         .collect();
     let mut first = None;
     for mut line in lines {
-        // Upstream fills any shape with a fill colour; a fill shape has no
-        // outline of its own.
-        let outline = (shape.shape_type != shape_type::FILL)
-            .then(|| shape_stroke(shape, ctx.palette.line.color));
+        let outline = shape_outline(shape, ctx.palette.line.color);
         let fill = shape_fill(shape);
         let (geometry, role) = if fill == Fill::None {
             (GeoGeometry::Line(line), PartRole::Line)
@@ -181,15 +193,29 @@ fn add_part(
     Ok(first)
 }
 
-/// How an engine shape's interior is painted: the hatch upstream paints
-/// from an image where it has one, else its fill colour.
+/// How an engine shape's interior is painted: the hatch or figures upstream
+/// paints from an image where it has one, else its fill colour.
 pub(crate) fn shape_fill(shape: &Shape) -> Fill {
     shape
         .pattern_fill
         .and_then(hatch)
         .map(Fill::Hatch)
+        .or_else(|| {
+            shape
+                .metoc_pattern
+                .and_then(pattern::metoc)
+                .map(Fill::Pattern)
+        })
         .or_else(|| shape.fill_color.map(Fill::Solid))
         .unwrap_or(Fill::None)
+}
+
+/// The outline of an engine shape: none for a fill shape, nor for a
+/// pattern-filled area whose type clears the line colour, which upstream
+/// paints without a boundary.
+pub(crate) fn shape_outline(shape: &Shape, fallback: Rgba) -> Option<Stroke> {
+    let unlined = shape.metoc_pattern.is_some() && shape.line_color.is_none();
+    (shape.shape_type != shape_type::FILL && !unlined).then(|| shape_stroke(shape, fallback))
 }
 
 /// Upstream tiles a square `spacing` pixels wide with one diagonal line
@@ -210,13 +236,17 @@ fn hatch(h: EngineHatch) -> Option<Hatch> {
     ))
 }
 
+/// Upstream's dotted line style (`clsUtility.getLineStroke`).
+const DOTTED_STYLE: i32 = 2;
+
 pub(crate) fn shape_stroke(shape: &Shape, fallback: Rgba) -> Stroke {
     Stroke {
         color: shape.line_color.unwrap_or(fallback),
         width_px: shape.stroke.width,
-        dash: match shape.stroke.dash {
-            Some(_) => DashPattern::Dashed,
-            None => DashPattern::Solid,
+        dash: match (&shape.stroke.dash, shape.style) {
+            (None, _) => DashPattern::Solid,
+            (Some(_), DOTTED_STYLE) => DashPattern::Dotted,
+            (Some(_), _) => DashPattern::Dashed,
         },
     }
 }
@@ -260,3 +290,6 @@ fn rule_number(name: &str) -> i32 {
         })
         .unwrap_or(0)
 }
+
+#[cfg(test)]
+mod tests;
