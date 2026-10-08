@@ -1,7 +1,7 @@
 //! Port of mil-sym-java JavaLineArray/lineutility.java: the pixel-space
 //! geometry primitives the line builders share (distances, slopes, line
-//! extension, arrowheads, arcs and circles, ditch spikes, stroke outlines,
-//! bounding and hull helpers).
+//! extension, arrowheads, arcs and circles, ditch spikes, bounding
+//! boxes and exterior offsets).
 //!
 //! Java overloads get distinct Rust names: the four-argument
 //! `ExtendAlongLineDouble` is `extend_along_line_double_style`, the
