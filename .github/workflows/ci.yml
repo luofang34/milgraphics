@@ -50,16 +50,19 @@ jobs:
       - run: cargo clippy --locked --workspace --all-targets -- -D warnings
 
   msrv:
-    name: builds and tests on rust-version (1.85)
+    name: library builds on rust-version (1.85)
     runs-on: ubuntu-latest
+    # Dev-dependencies (criterion, proptest) may need a newer toolchain;
+    # the promise to consumers covers the library.
     steps:
       - uses: actions/checkout@v5
       - uses: dtolnay/rust-toolchain@1.85
         with:
+          components: clippy
           targets: wasm32-unknown-unknown
       - run: cargo build --locked --lib
       - run: cargo build --locked --lib --target wasm32-unknown-unknown
-      - run: cargo test --locked --all-targets
+      - run: cargo clippy --locked --lib -- -D warnings
 
   features:
     name: every feature combination builds
