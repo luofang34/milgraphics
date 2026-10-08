@@ -57,3 +57,17 @@
 45110408-e Convergence Line ticks are about three times as far apart (2525E ch1 TABLE M-II)
 45110408-e-anticipated Convergence Line ticks are about three times as far apart (2525E ch1 TABLE M-II)
 45110408-e-s100k Convergence Line ticks are about three times as far apart (2525E ch1 TABLE M-II)
+25110500-app6e the version 16 template puts a star holding T/AS at each end of the line
+25152700-e the bar at the tip is twice as long as the arrowhead's base
+25152700-app6e the bar at the tip is twice as long as the arrowhead's base
+25240502-e the circle breaks where each PAA label sits on it
+25240502-app6e the circle breaks where each PAA label sits on it
+25272100-e the rings break where their numbers sit on them
+25272100-e-anticipated the rings break where their numbers sit on them
+25272100-e-s100k the rings break where their numbers sit on them
+25272100-app6e the rings break where their numbers sit on them
+25272100-app6e-anticipated the rings break where their numbers sit on them
+25272100-app6e-s100k the rings break where their numbers sit on them
+25290301-e the X marks stand apart, with clear space between them
+25290301-app6e the X marks stand apart, with clear space between them
+25290500-app6e the version 16 template draws the trip wire glyph at point 1 and no "t"

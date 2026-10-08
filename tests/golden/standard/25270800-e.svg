@@ -1,9 +1,16 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="730" height="746" viewBox="0 0 730 746">
-<polyline points="270.85,647.91 649.65,647.91 649.28,420.76 270.69,420.76 270.85,647.91" fill="none" stroke="#00ff00ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt"/>
+<polyline points="270.85,647.91 456.4,647.91" fill="none" stroke="#00ff00ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt"/>
+<polyline points="463.6,647.91 649.65,647.91 649.47,537.6" fill="none" stroke="#00ff00ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt"/>
+<polyline points="649.45,523.2 649.28,420.76 463.6,420.76" fill="none" stroke="#00ff00ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt"/>
+<polyline points="456.4,420.76 270.69,420.76 270.76,523.2" fill="none" stroke="#00ff00ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt"/>
+<polyline points="270.77,537.6 270.85,647.91" fill="none" stroke="#00ff00ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt"/>
 <text transform="translate(460.5 403) rotate(0)" x="0" y="-3.6" text-anchor="middle" dominant-baseline="central" font-family="PT Sans" font-size="12" font-weight="bold">HH</text>
 <text transform="translate(460.5 666) rotate(0)" x="0" y="-3.6" text-anchor="middle" dominant-baseline="central" font-family="PT Sans" font-size="12" font-weight="bold">W0800Z</text>
 <text transform="translate(271 534) rotate(0)" x="0" y="-3.6" text-anchor="middle" dominant-baseline="central" font-family="PT Sans" font-size="12" font-weight="bold">M</text>
 <text transform="translate(649 534) rotate(0)" x="0" y="-3.6" text-anchor="middle" dominant-baseline="central" font-family="PT Sans" font-size="12" font-weight="bold">M</text>
 <text transform="translate(460 648) rotate(0)" x="0" y="-3.6" text-anchor="middle" dominant-baseline="central" font-family="PT Sans" font-size="12" font-weight="bold">M</text>
 <text transform="translate(460 421) rotate(0)" x="0" y="-3.6" text-anchor="middle" dominant-baseline="central" font-family="PT Sans" font-size="12" font-weight="bold">M</text>
+<rect x="426.12" y="524.29" width="20" height="20" fill="none" stroke="#808080" stroke-dasharray="3 2"/><text x="436.12" y="534.29" text-anchor="middle" dominant-baseline="central" font-family="sans-serif" font-size="6">15032500002806000000</text>
+<rect x="450.12" y="524.29" width="20" height="20" fill="none" stroke="#808080" stroke-dasharray="3 2"/><text x="460.12" y="534.29" text-anchor="middle" dominant-baseline="central" font-family="sans-serif" font-size="6">15032500002806000000</text>
+<rect x="474.12" y="524.29" width="20" height="20" fill="none" stroke="#808080" stroke-dasharray="3 2"/><text x="484.12" y="534.29" text-anchor="middle" dominant-baseline="central" font-family="sans-serif" font-size="6">15032500002806000000</text>
 </svg>

@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="730" height="595" viewBox="0 0 730 595">
-<polygon points="635.96,440.95 649.4,420.74 629.2,407.26" fill="#00ff00ff" stroke="none"/>
+<polyline points="635.96,440.95 649.4,420.74 629.2,407.26" fill="none" stroke="#00ff00ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt"/>
 <polyline points="270.8,496.46 296.04,491.4" fill="none" stroke="#00ff00ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt"/>
 <polyline points="309.52,514.98 296.04,491.4" fill="none" stroke="#00ff00ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt"/>
 <polyline points="309.52,514.98 316.2,461.08 343.18,508.24" fill="none" stroke="#00ff00ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt"/>

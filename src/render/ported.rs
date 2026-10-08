@@ -86,6 +86,7 @@ pub(crate) fn resolve(
                     anchor,
                     rotation_deg: l.angle_deg,
                     align,
+                    knockout: l.knockout,
                 },
                 font,
                 metrics,

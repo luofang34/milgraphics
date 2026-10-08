@@ -74,6 +74,8 @@ pub(crate) struct Label {
     /// Rotation in degrees, clockwise on screen.
     pub(crate) angle_deg: f64,
     pub(crate) justify: Justify,
+    /// The graphic's outline is left out under the text.
+    pub(crate) knockout: bool,
 }
 
 /// What the engine draws for one graphic.
@@ -85,5 +87,7 @@ pub(crate) struct Output {
 
 /// Draws `input`, or says why upstream would draw nothing.
 pub(crate) fn draw(input: &Input<'_>) -> Result<Output, EngineError> {
-    super::pipeline::render(input)
+    let mut out = super::pipeline::render(input)?;
+    super::edition::adjust(input, &mut out);
+    Ok(out)
 }

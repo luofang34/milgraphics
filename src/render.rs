@@ -12,6 +12,7 @@ use crate::style::{Fill, Stroke};
 mod decoration;
 mod extent;
 mod hatch;
+mod knockout;
 mod label;
 mod local;
 mod pattern;
@@ -351,6 +352,14 @@ pub fn render(
         .collect();
     labels.extend(engine_labels);
     if detailed {
+        let gaps: Vec<[ScreenPoint; 4]> = labels
+            .iter()
+            .filter(|l| l.knockout)
+            .filter_map(|l| l.corners)
+            .collect();
+        if !gaps.is_empty() {
+            items = knockout::cut(&mut ctx, items, &gaps)?;
+        }
         let boxes: Vec<[ScreenPoint; 4]> = labels.iter().filter_map(|l| l.corners).collect();
         let lines = hatch::items(items.iter().chain(&hatched), &boxes);
         ctx.take(lines.len() * 2)?;
