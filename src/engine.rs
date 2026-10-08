@@ -14,6 +14,7 @@ pub(crate) mod flot;
 pub(crate) mod line_type;
 pub(crate) mod lineutility;
 pub(crate) mod metoc;
+pub(crate) mod modifier;
 pub(crate) mod settings;
 pub(crate) mod tactical_lines;
 pub(crate) mod tg;
