@@ -177,21 +177,28 @@ impl<'a> Chan<'a> {
     }
 }
 
-/// Upstream `GetChannel1Double`: appends the channel's shapes to `shapes`.
-/// Nothing is added when an edge has fewer than two points or a line of
-/// contact has no flot points. Upstream's alternate point-array output
-/// (no shapes) is not used by the "ge" client and is not ported.
-pub(crate) fn get_channel1_double<E: ChannelExternals>(
+/// Upstream `GetChannel1Double` with `shapes == null`: the channel's points
+/// (`x, y, style` per point upstream; here the points themselves). `None`
+/// when an edge has fewer than two points or a line of contact has no flot
+/// points, where upstream writes nothing.
+pub(crate) fn get_channel1_points<E: ChannelExternals>(
     req: &ChannelRequest<'_>,
     ext: &E,
-    shapes: &mut Vec<Shape>,
-) -> Result<(), EngineError> {
+) -> Result<Option<Vec<Pt>>, EngineError> {
+    Ok(build_points(req, ext)?.map(|ch| ch.points))
+}
+
+/// Loads and builds the point list shared by the shape and point outputs.
+fn build_points<'a, E: ChannelExternals>(
+    req: &'a ChannelRequest<'a>,
+    ext: &E,
+) -> Result<Option<Chan<'a>>, EngineError> {
     let Some(mut ch) = Chan::load(req)? else {
-        return Ok(());
+        return Ok(None);
     };
     ch.build_edges()?;
     if !ch.load_points(ext)? {
-        return Ok(());
+        return Ok(None);
     }
     if ch.draw == lt::CHANNEL_DASHED {
         for k in 0..ch.counter {
@@ -201,6 +208,20 @@ pub(crate) fn get_channel1_double<E: ChannelExternals>(
             }
         }
     }
+    Ok(Some(ch))
+}
+
+/// Upstream `GetChannel1Double`: appends the channel's shapes to `shapes`.
+/// Nothing is added when an edge has fewer than two points or a line of
+/// contact has no flot points.
+pub(crate) fn get_channel1_double<E: ChannelExternals>(
+    req: &ChannelRequest<'_>,
+    ext: &E,
+    shapes: &mut Vec<Shape>,
+) -> Result<(), EngineError> {
+    let Some(ch) = build_points(req, ext)? else {
+        return Ok(());
+    };
     shapes::points_to_shapes(&ch, shapes)?;
     if req.tg.fill_color.is_some() {
         if let Some(fill) = get_axad_fill_shapes(ch.draw, &ch.points)? {
