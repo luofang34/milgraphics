@@ -155,6 +155,22 @@ pub(crate) enum Decoration {
         /// Outline style.
         stroke: Stroke,
     },
+    /// A small figure drawn in pixels around a point: `points` are offsets
+    /// from the anchor's screen position moved by `offset_px`, y downward.
+    Glyph {
+        /// Index of the part.
+        id: PartId,
+        /// Where the figure is drawn.
+        anchor: GeoPoint,
+        /// Shift from the anchor's screen position, in pixels.
+        offset_px: [f64; 2],
+        /// The outline, in pixels.
+        points: Vec<[f64; 2]>,
+        /// Whether the last point joins back to the first.
+        closed: bool,
+        /// Outline style.
+        stroke: Stroke,
+    },
 }
 
 /// How a label is positioned relative to its anchor.
