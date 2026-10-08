@@ -225,3 +225,32 @@ fn ported_graphics_allow_vertex_edits_unless_their_point_count_is_fixed() {
     );
     assert!(apply_edit(&task, &Edit::InsertVertex { index: 1, at }).is_err());
 }
+
+/// Edition changes add pixel-sized shapes; the shapes upstream draws in
+/// proportion to the control points must stay in the geographic tier.
+#[test]
+fn edition_shapes_keep_the_proportional_ones_geographic() {
+    use crate::construction::{Decoration, GeoGeometry, PartRole};
+    type Case<'a> = (&'a str, &'a [(f64, f64)], usize);
+    let cases: [Case<'_>; 2] = [
+        ("16032500003432000000", &[(20.0, 50.0), (20.03, 50.0)], 3),
+        (
+            "16032500001105000000",
+            &[(20.0, 50.0), (20.03, 50.01), (20.06, 50.0)],
+            2,
+        ),
+    ];
+    for (code, points, shapes) in cases {
+        let c = construct(&def(code, points), &Config::default()).unwrap();
+        let line = c
+            .parts
+            .iter()
+            .any(|p| p.role == PartRole::Line && matches!(p.geometry, GeoGeometry::Line(_)));
+        assert!(line, "{code}: no geographic line");
+        let counted = c.decorations.iter().find_map(|d| match &d.0 {
+            Decoration::Engine { shape_count, .. } => Some(*shape_count),
+            _ => None,
+        });
+        assert_eq!(counted, Some(shapes), "{code}");
+    }
+}

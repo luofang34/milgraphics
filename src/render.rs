@@ -12,6 +12,7 @@ use crate::style::{Fill, Stroke};
 mod decoration;
 mod extent;
 mod hatch;
+mod knockout;
 mod label;
 mod local;
 mod pattern;
@@ -303,6 +304,33 @@ fn parts(
     Ok(out)
 }
 
+/// The screen tier once labels are placed: outlines cut where knockout
+/// labels sit, and hatch lines and pattern figures added clear of every
+/// label.
+fn fills_and_gaps(
+    ctx: &mut screen::ScreenCtx<'_>,
+    mut items: Vec<ScreenItem>,
+    hatched: &[ScreenItem],
+    labels: &[Label],
+) -> Result<Vec<ScreenItem>, RenderError> {
+    let gaps: Vec<[ScreenPoint; 4]> = labels
+        .iter()
+        .filter(|l| l.knockout)
+        .filter_map(|l| l.corners)
+        .collect();
+    if !gaps.is_empty() {
+        items = knockout::cut(ctx, items, &gaps)?;
+    }
+    let boxes: Vec<[ScreenPoint; 4]> = labels.iter().filter_map(|l| l.corners).collect();
+    let lines = hatch::items(items.iter().chain(hatched), &boxes);
+    ctx.take(lines.len() * 2)?;
+    let figures = pattern::items(items.iter().chain(hatched), &boxes);
+    ctx.take(figures.iter().map(|f| f.shape.points().len()).sum())?;
+    items.extend(lines);
+    items.extend(figures);
+    Ok(items)
+}
+
 /// Resolves `construction` for `view`.
 pub fn render(
     construction: &Construction,
@@ -351,13 +379,7 @@ pub fn render(
         .collect();
     labels.extend(engine_labels);
     if detailed {
-        let boxes: Vec<[ScreenPoint; 4]> = labels.iter().filter_map(|l| l.corners).collect();
-        let lines = hatch::items(items.iter().chain(&hatched), &boxes);
-        ctx.take(lines.len() * 2)?;
-        let figures = pattern::items(items.iter().chain(&hatched), &boxes);
-        ctx.take(figures.iter().map(|f| f.shape.points().len()).sum())?;
-        items.extend(lines);
-        items.extend(figures);
+        items = fills_and_gaps(&mut ctx, items, &hatched, &labels)?;
     }
     let symbols = if detailed {
         symbols::resolve(&mut ctx, construction, &pick)

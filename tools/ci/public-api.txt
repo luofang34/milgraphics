@@ -390,6 +390,7 @@ pub milgraphics::render::Label::align: milgraphics::render::TextAlign
 pub milgraphics::render::Label::anchor: milgraphics::geo::GeoPoint
 pub milgraphics::render::Label::corners: core::option::Option<[milgraphics::render::ScreenPoint; 4]>
 pub milgraphics::render::Label::font: milgraphics::render::Font
+pub milgraphics::render::Label::knockout: bool
 pub milgraphics::render::Label::may_hide: bool
 pub milgraphics::render::Label::offset_em: [f64; 2]
 pub milgraphics::render::Label::pick: milgraphics::pick::PickRef

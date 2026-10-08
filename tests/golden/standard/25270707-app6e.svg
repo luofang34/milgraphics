@@ -1,3 +1,8 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="730" height="728" viewBox="0 0 730 728">
+<svg xmlns="http://www.w3.org/2000/svg" width="730" height="744" viewBox="0 0 730 744">
 <polyline points="270.85,647.91 649.65,647.91 649.28,420.76 270.69,420.76 270.85,647.91" fill="none" stroke="#00ff00ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt"/>
+<text transform="translate(460.17 412.36) rotate(0)" x="0" y="-3.6" text-anchor="middle" dominant-baseline="central" font-family="PT Sans" font-size="12" font-weight="bold">H</text>
+<text transform="translate(460.17 663.51) rotate(0)" x="0" y="-3.6" text-anchor="middle" dominant-baseline="central" font-family="PT Sans" font-size="12" font-weight="bold">W</text>
+<rect x="426.12" y="524.29" width="20" height="20" fill="none" stroke="#808080" stroke-dasharray="3 2"/><text x="436.12" y="534.29" text-anchor="middle" dominant-baseline="central" font-family="sans-serif" font-size="6">16032500002806000000</text>
+<rect x="450.12" y="524.29" width="20" height="20" fill="none" stroke="#808080" stroke-dasharray="3 2"/><text x="460.12" y="534.29" text-anchor="middle" dominant-baseline="central" font-family="sans-serif" font-size="6">16032500002806000000</text>
+<rect x="474.12" y="524.29" width="20" height="20" fill="none" stroke="#808080" stroke-dasharray="3 2"/><text x="484.12" y="534.29" text-anchor="middle" dominant-baseline="central" font-family="sans-serif" font-size="6">16032500002806000000</text>
 </svg>

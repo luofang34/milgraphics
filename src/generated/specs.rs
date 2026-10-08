@@ -716,7 +716,7 @@ pub(crate) static SPECS: &[SymbolSpec] = &[
     ported(App6D, 25, 270707).points(3, MANY).amplifiers(&[]),
     ported(Mil2525Dch1, 25, 270707).points(3, MANY).amplifiers(&[]),
     ported(Mil2525Ech1, 25, 270707).points(3, MANY).amplifiers(&[]),
-    ported(App6Ech2, 25, 270707).points(3, MANY).amplifiers(&[]),
+    ported(App6Ech2, 25, 270707).points(3, MANY).amplifiers(&[opt(M::H), opt(M::N), opt(M::W)]),
     ported(App6D, 25, 270800).points(3, MANY).amplifiers(&[opt(M::H), opt(M::N), opt(M::W)]),
     ported(Mil2525Dch1, 25, 270800).points(3, MANY).amplifiers(&[opt(M::H), opt(M::N), opt(M::W)]),
     ported(Mil2525Ech1, 25, 270800).points(3, MANY).amplifiers(&[opt(M::H), opt(M::N), opt(M::W)]),

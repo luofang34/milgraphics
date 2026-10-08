@@ -99,7 +99,7 @@ pub(crate) fn items<'a>(
 }
 
 /// The parts of `line` outside every convex quadrilateral in `boxes`.
-fn outside(line: [ScreenPoint; 2], boxes: &[[ScreenPoint; 4]]) -> Vec<[ScreenPoint; 2]> {
+pub(super) fn outside(line: [ScreenPoint; 2], boxes: &[[ScreenPoint; 4]]) -> Vec<[ScreenPoint; 2]> {
     let [a, b] = line;
     // Parameter intervals of the line hidden by a box, merged in order.
     let mut hidden: Vec<(f64, f64)> = boxes.iter().filter_map(|q| inside(a, b, q)).collect();

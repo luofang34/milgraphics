@@ -125,6 +125,12 @@ pub(crate) fn add(ctx: &mut Ctx<'_>, def: &GraphicDefinition) -> Result<(), Cons
             ctx.add_symbol(placed);
         }
     }
+    // Decoy and dummy minefields are drawn as the minefield they duplicate.
+    mines::add(
+        ctx,
+        &crate::engine::intercept::engine_symbol(symbol),
+        &points,
+    );
     Ok(())
 }
 
@@ -212,6 +218,7 @@ fn segment(w: &[Xy]) -> Xy {
         _ => Xy::new(0.0, 0.0),
     }
 }
+mod mines;
 
 #[cfg(test)]
 mod tests;

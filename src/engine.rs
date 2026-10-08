@@ -11,6 +11,7 @@ pub(crate) mod channel_utility;
 pub(crate) mod channels;
 pub(crate) mod cpof;
 pub(crate) mod dism;
+pub(crate) mod edition;
 pub(crate) mod flot;
 pub(crate) mod intercept;
 pub(crate) mod java_text;

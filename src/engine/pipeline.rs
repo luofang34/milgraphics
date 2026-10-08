@@ -147,5 +147,6 @@ fn label(l: PlacedLabel) -> Label {
             modifier::JUSTIFY_RIGHT => Justify::Right,
             _ => Justify::Left,
         },
+        knockout: false,
     }
 }

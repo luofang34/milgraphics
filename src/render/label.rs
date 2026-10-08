@@ -49,6 +49,11 @@ pub struct Label {
     /// Screen corners of the text box (for picking and overlap checks), if
     /// visible.
     pub corners: Option<[ScreenPoint; 4]>,
+    /// The standard sets the text into a gap in the graphic's outline. The
+    /// screen tier leaves the outline out under the text box; a host that
+    /// draws the geographic tier, which cannot carry a gap sized in pixels,
+    /// draws this text on a background (e.g. a halo) instead.
+    pub knockout: bool,
 }
 
 /// Gap between a line end and its label, in ems.
@@ -87,6 +92,7 @@ pub(crate) fn place(
         may_hide: spec.may_hide,
         width_px,
         corners,
+        knockout: false,
     }
 }
 
@@ -101,6 +107,8 @@ pub(crate) struct PlacedText {
     pub(crate) anchor: GeoPoint,
     pub(crate) rotation_deg: f64,
     pub(crate) align: TextAlign,
+    /// Whether the outline is left out under the text.
+    pub(crate) knockout: bool,
 }
 
 pub(crate) fn at_screen(
@@ -115,6 +123,7 @@ pub(crate) fn at_screen(
         anchor,
         rotation_deg,
         align,
+        knockout,
     } = placed;
     let width_px = metrics.text_width_px(font, &text);
     let height_px = metrics.line_height_px(font);
@@ -138,9 +147,10 @@ pub(crate) fn at_screen(
         align,
         offset_em,
         font: font.clone(),
-        may_hide: true,
+        may_hide: !knockout,
         width_px,
         corners: Some(corners),
+        knockout,
     }
 }
 
