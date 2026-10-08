@@ -1,5 +1,9 @@
 //! Drawing graphics of the ported upstream renderer for a view.
 
+mod clip;
+#[cfg(test)]
+mod tests;
+
 use crate::budget::BudgetError;
 use crate::construction::{Decoration, PartRole};
 use crate::engine::api::{self, Input, Justify};
@@ -46,29 +50,49 @@ pub(crate) fn resolve(
         return Ok((Vec::new(), Vec::new()));
     };
     let width = |t: &str| metrics.text_width_px(font, t);
-    let input = Input {
-        line_type: *line_type,
-        symbol,
-        pixels: projected.iter().map(|p| Pt::new(p.x, p.y)).collect(),
-        modifiers,
-        meters_per_pixel: mpp,
-        text_width: &width,
-        ms_info: crate::family::ms_info(symbol),
-        style: *style,
-    };
-    let Ok(out) = api::draw(&input) else {
-        return Ok((Vec::new(), Vec::new()));
-    };
-    let paired = out.shapes.len() == *shape_count;
-    let mut items = Vec::new();
-    for (i, shape) in out.shapes.iter().enumerate() {
-        if paired && geographic.get(i).copied().unwrap_or(false) {
+    let (mut items, mut labels) = (Vec::new(), Vec::new());
+    for run in clip::runs(*line_type, projected, ctx.viewport()) {
+        let input = Input {
+            line_type: *line_type,
+            symbol,
+            pixels: run.iter().map(|p| Pt::new(p.x, p.y)).collect(),
+            modifiers,
+            meters_per_pixel: mpp,
+            text_width: &width,
+            ms_info: crate::family::ms_info(symbol),
+            style: *style,
+        };
+        let Ok(out) = api::draw(&input) else {
             continue;
+        };
+        let paired = out.shapes.len() == *shape_count;
+        for (i, shape) in out.shapes.iter().enumerate() {
+            if paired && geographic.get(i).copied().unwrap_or(false) {
+                continue;
+            }
+            items.extend(screen_items(ctx, shape, pick(PickTarget::Part(*part)))?);
         }
-        items.extend(screen_items(ctx, shape, pick(PickTarget::Part(*part)))?);
+        labels.extend(placed_labels(
+            ctx,
+            out.labels,
+            first,
+            font,
+            metrics,
+            &|| pick(PickTarget::Part(*part)),
+        ));
     }
-    let labels = out
-        .labels
+    Ok((items, labels))
+}
+
+fn placed_labels(
+    ctx: &mut ScreenCtx<'_>,
+    labels: Vec<api::Label>,
+    first: crate::geo::GeoPoint,
+    font: &Font,
+    metrics: &dyn FontMetrics,
+    pick: &dyn Fn() -> PickRef,
+) -> Vec<Label> {
+    labels
         .into_iter()
         .map(|l| {
             let screen = ScreenPoint { x: l.x, y: l.y };
@@ -78,7 +102,6 @@ pub(crate) fn resolve(
                 Justify::Center => TextAlign::Center,
                 Justify::Right => TextAlign::Right,
             };
-            let pick = pick(PickTarget::Part(*part));
             label::at_screen(
                 label::PlacedText {
                     text: l.text,
@@ -90,11 +113,10 @@ pub(crate) fn resolve(
                 },
                 font,
                 metrics,
-                pick,
+                pick(),
             )
         })
-        .collect();
-    Ok((items, labels))
+        .collect()
 }
 
 /// Ground metres per screen pixel eastward of `at`.

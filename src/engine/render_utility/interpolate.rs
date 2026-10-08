@@ -20,6 +20,32 @@ fn glyph_size(tg: &Tg) -> Option<f64> {
     })
 }
 
+/// Whether `line_type` is an open line that repeats a glyph along its whole
+/// length, so any stretch of it can be drawn on its own.
+pub(crate) fn repeats_along_open_line(line_type: i32) -> bool {
+    matches!(
+        line_type,
+        ATDITCH
+            | ATDITCHC
+            | ATDITCHM
+            | FLOT
+            | LC
+            | FORTL
+            | DOUBLEA
+            | LWFENCE
+            | HWFENCE
+            | BBS_LINE
+            | SINGLEC
+            | DOUBLEC
+            | TRIPLE
+            | UNSP
+            | LINE
+            | ATWALL
+            | SFENCE
+            | DFENCE
+    )
+}
+
 /// Upstream `InterpolatePixels`: thins out points that are closer than the
 /// glyph size to the last kept point, keeping the end points and the points
 /// where the line turns by more than 20 degrees. Does nothing unless the
