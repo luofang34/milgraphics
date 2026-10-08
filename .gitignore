@@ -1,0 +1,58 @@
+# Rust build output
+/target/
+**/*.rs.bk
+*.pdb
+
+# Cargo.lock is committed: reproducible CI, examples and dev tooling.
+
+# Oracle / codegen tooling (Node and JVM are dev-only)
+node_modules/
+/tools/**/node_modules/
+/tools/oracle/upstream/
+/tools/oracle/out/
+/tools/codegen/out/
+*.class
+.gradle/
+*.log
+
+# Fuzzing
+/fuzz/target/
+/fuzz/corpus/
+/fuzz/artifacts/
+/fuzz/coverage/
+
+# Profiling / benchmarks
+/target-bench/
+perf.data*
+flamegraph*.svg
+*.profraw
+*.profdata
+
+# Snapshot-test scratch output
+*.pending-snap
+*.snap.new
+
+# Editors
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.\#*
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+.Spotlight-V100
+.Trashes
+
+# Windows
+Thumbs.db
+Desktop.ini
+
+# Stray files from interactive cp/rm
+* 2.*
+*.bak
+*.orig
