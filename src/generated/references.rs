@@ -328,6 +328,7 @@ pub(crate) static REFERENCES: &[(StandardVersion, u8, u32, StandardRef)] = &[
     (Mil2525Dch1, 45, 110407, StandardRef { document: "mil-std-2525d-ch1", table: "TABLE I-II", pdf_page: 598, draw_rule: Some("Line5") }),
     (Mil2525Dch1, 45, 110408, StandardRef { document: "mil-std-2525d-ch1", table: "TABLE I-II", pdf_page: 598, draw_rule: Some("Line6") }),
     (Mil2525Dch1, 45, 110409, StandardRef { document: "mil-std-2525d-ch1", table: "TABLE I-II", pdf_page: 598, draw_rule: Some("Line7") }),
+    (Mil2525Dch1, 45, 140200, StandardRef { document: "mil-std-2525d-ch1", table: "TABLE I-II", pdf_page: 605, draw_rule: Some("Point5") }),
     (Mil2525Dch1, 45, 140300, StandardRef { document: "mil-std-2525d-ch1", table: "TABLE I-II", pdf_page: 606, draw_rule: Some("Line1") }),
     (Mil2525Dch1, 45, 140400, StandardRef { document: "mil-std-2525d-ch1", table: "TABLE I-II", pdf_page: 606, draw_rule: Some("Line1") }),
     (Mil2525Dch1, 45, 162004, StandardRef { document: "mil-std-2525d-ch1", table: "TABLE I-II", pdf_page: 626, draw_rule: Some("Area1") }),

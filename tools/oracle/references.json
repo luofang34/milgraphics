@@ -320,6 +320,7 @@
   "45:110407": {"table": "TABLE I-II", "pdf_page": 598, "draw_rule": "Line5"},
   "45:110408": {"table": "TABLE I-II", "pdf_page": 598, "draw_rule": "Line6"},
   "45:110409": {"table": "TABLE I-II", "pdf_page": 598, "draw_rule": "Line7"},
+  "45:140200": {"table": "TABLE I-II", "pdf_page": 605, "draw_rule": "Point5"},
   "45:140300": {"table": "TABLE I-II", "pdf_page": 606, "draw_rule": "Line1"},
   "45:140400": {"table": "TABLE I-II", "pdf_page": 606, "draw_rule": "Line1"},
   "45:162004": {"table": "TABLE I-II", "pdf_page": 626, "draw_rule": "Area1"},

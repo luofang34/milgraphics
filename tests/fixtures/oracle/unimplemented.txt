@@ -1,2 +1,11 @@
-# Oracle cases (tools/oracle/cases/all.tsv) whose symbol is not yet declared.
-# tests/oracle_catalog.rs requires this list to be exact.
+# Oracle cases (tools/oracle/cases/all.tsv) whose symbol is not declared.
+# tests/oracle_catalog.rs requires this list to be exact. Each is drawn by
+# upstream but not defined as a multipoint graphic by its standard edition
+# (see UPSTREAM.md, "Standards"):
+# Line of Contact 25 140200 has no row in 2525D change 1 or 2525E change 1.
+25140200-d
+25140200-e
+# Wind Plot 45 140200 is defined in 2525D change 1 only.
+45140200-e
+45140200-e-anticipated
+45140200-e-s100k

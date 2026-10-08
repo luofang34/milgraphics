@@ -41,16 +41,19 @@ fn plain_line_takes_graphic_properties() {
 }
 
 #[test]
-fn unfilled_axis_of_advance_loses_its_fill_shapes() {
+fn unfilled_axis_of_advance_keeps_its_fill_shapes_unstyled() {
     let mut tg = Tg::new(&Settings::default());
     tg.line_type = MAIN;
     tg.line_thickness = 2;
     let mut fill = polyline();
     fill.shape_type = shape_type::FILL;
+    let untouched = fill.clone();
     let mut shapes = vec![fill, polyline()];
     set_shape_properties(&mut tg, &mut shapes);
-    assert_eq!(shapes.len(), 1);
-    assert_eq!(shapes[0].shape_type, shape_type::POLYLINE);
+    // Upstream filters them into a list only the rest of the method sees.
+    assert_eq!(shapes.len(), 2);
+    assert_eq!(shapes[0], untouched);
+    assert_eq!(shapes[1].stroke.width, 2.0);
 }
 
 #[test]

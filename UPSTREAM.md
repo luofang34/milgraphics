@@ -32,11 +32,29 @@ Draw rules are per edition. Phase Line is Line2 in 2525D change 1 and Line1 in
 2525E change 1; Main Attack is Axis2 and Axis1 respectively (2525E change 1
 marks Axis2 "Disused").
 
+## Graphics upstream draws that are not declared
+
+Upstream's catalog lists some graphics the standard edition does not define
+as multipoint graphics; they are not declared, so they are refused like any
+undeclared symbol (`tests/fixtures/oracle/unimplemented.txt`):
+
+| Graphic | Edition | Standard |
+|---|---|---|
+| Line of Contact 25 140200 | 2525D change 1, 2525E change 1 | No row: reserved in 2525D, a Combat Support code in 2525E |
+| Wind Plot 45 140200 | 2525E change 1 | No row (2525D change 1 defines it in TABLE I-II) |
+
 ## Divergences under review
 
 | Symbol | Standard | mil-sym-java | Status |
 |---|---|---|---|
-| Main Attack 151403, 2525E change 1 | TABLE L-X: draw rule Axis1 | `mse.txt`: Axis2 | Listed in `src/support/tests.rs` (`DIVERGENCES`); the standard's rule is followed; geometry is the same for both editions and matches the oracle |
+| Main Attack 151403, 2525E change 1 | TABLE L-X: draw rule Axis1 | `mse.txt`: Axis2 | The standard's rule is followed; geometry is the same for both editions and matches the oracle |
+| Trip Wire 290500, 2525D change 1 | Line15 | `msd.txt`: Line1 | Drawn as upstream draws it (matches the oracle); point limits follow upstream's rule |
+| Rectangular Target 240802, 2525E change 1 | Rectangular1 | `mse.txt`: Rectangular2 | As above |
+| Ferry 290700, 2525E change 1 | Line14 | `mse.txt`: Line18 | As above |
+| Withdraw 342400 and Withdraw Under Pressure 342500, 2525E change 1 | Line24 | `mse.txt`: Line14 | As above |
+
+Each is listed in `src/support/tests.rs` (`DIVERGENCES`), which fails if a
+declared symbol's printed and catalog rules differ without being listed.
 
 ## Accepted differences from the oracle
 

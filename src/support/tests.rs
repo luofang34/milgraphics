@@ -3,7 +3,9 @@ use crate::modifier::ModifierKind;
 
 #[test]
 fn each_symbol_is_declared_once_per_standard() {
-    let mut keys: Vec<_> = all().map(|s| (s.standard, s.entity)).collect();
+    let mut keys: Vec<_> = all()
+        .map(|s| (s.standard, s.symbol_set, s.entity))
+        .collect();
     let count = keys.len();
     keys.sort();
     keys.dedup();
@@ -82,9 +84,15 @@ fn lookup_by_symbol_id() {
 }
 
 /// Declared symbols whose standard prints a different draw rule than
-/// upstream's catalog; each is explained in UPSTREAM.md, and the standard's
-/// rule is followed.
-const DIVERGENCES: &[(StandardVersion, u32)] = &[(StandardVersion::Mil2525Ech1, 151403)];
+/// upstream's catalog; each is listed in UPSTREAM.md.
+const DIVERGENCES: &[(StandardVersion, u32)] = &[
+    (StandardVersion::Mil2525Dch1, 290500),
+    (StandardVersion::Mil2525Ech1, 151403),
+    (StandardVersion::Mil2525Ech1, 240802),
+    (StandardVersion::Mil2525Ech1, 290700),
+    (StandardVersion::Mil2525Ech1, 342400),
+    (StandardVersion::Mil2525Ech1, 342500),
+];
 
 #[test]
 fn draw_rules_agree_with_the_catalog_or_are_listed_divergences() {
