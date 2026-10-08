@@ -24,6 +24,10 @@ thiserror = "2"
 [target.'cfg(target_arch = "wasm32")'.dev-dependencies]
 wasm-bindgen-test = "=0.3.79"
 
+# Property-based robustness tests run natively only.
+[target.'cfg(not(target_arch = "wasm32"))'.dev-dependencies]
+proptest = "1"
+
 [lints]
 workspace = true
 
