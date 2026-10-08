@@ -31,7 +31,7 @@ const REFERENCE_EXTENTS_PX: [f64; 2] = [50.0, 1500.0];
 pub(super) const ORIGIN_PX: f64 = 2000.0;
 
 pub(crate) fn construct(ctx: &mut Ctx<'_>, def: &GraphicDefinition) -> Result<(), ConstructError> {
-    let symbol = &def.symbol;
+    let symbol = &crate::engine::intercept::engine_symbol(&def.symbol);
     let line_type = crate::engine::line_type::line_type(
         symbol.version_code(),
         symbol.symbol_set(),
@@ -57,7 +57,7 @@ pub(crate) fn construct(ctx: &mut Ctx<'_>, def: &GraphicDefinition) -> Result<()
         let mpp = extent / px;
         runs.push((
             mpp,
-            run(def, line_type, &xy, mpp).map_err(|e| ConstructError::Unrenderable {
+            run(def, symbol, line_type, &xy, mpp).map_err(|e| ConstructError::Unrenderable {
                 symbol: ctx.spec.name(),
                 reason: e.to_string(),
             })?,
@@ -81,12 +81,13 @@ pub(crate) fn construct(ctx: &mut Ctx<'_>, def: &GraphicDefinition) -> Result<()
     ctx.add_decoration(Decoration::Engine {
         line_type,
         anchors,
-        symbol: def.symbol.clone(),
+        symbol: symbol.clone(),
         modifiers: Box::new(def.modifiers.clone()),
         style: crate::engine::api::Style::of(&def.style),
         geographic,
         shape_count: a.shapes.len(),
         part,
+        reach_m: extent,
     });
     ctx.add_handles(vertex_handles(def));
     Ok(())
@@ -120,6 +121,7 @@ pub(crate) fn from_px((x, y): (f64, f64), mpp: f64) -> Xy {
 
 fn run(
     def: &GraphicDefinition,
+    symbol: &crate::sidc::SymbolId,
     line_type: i32,
     xy: &[Xy],
     mpp: f64,
@@ -129,12 +131,12 @@ fn run(
     let width = |t: &str| metrics.text_width_px(&font, t);
     api::draw(&Input {
         line_type,
-        symbol: &def.symbol,
+        symbol,
         pixels: xy.iter().map(|&p| to_px(p, mpp)).collect(),
         modifiers: &def.modifiers,
         meters_per_pixel: mpp,
         text_width: &width,
-        ms_info: crate::family::ported::ms_info(&def.symbol),
+        ms_info: crate::family::ported::ms_info(symbol),
         style: crate::engine::api::Style::of(&def.style),
     })
 }

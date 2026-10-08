@@ -5,6 +5,11 @@
 //! families are declared by hand and left out, and so are graphics the
 //! standard does not define as multipoint graphics (no row, or a
 //! single-point rule in its row), which stay in the unimplemented list.
+//!
+//! The APP-6 texts are not available, so APP-6 graphics are declared on
+//! agreement with the oracle alone, with the draw rule upstream's catalog
+//! gives in place of the printed one, and are drawn by the ported renderer
+//! throughout.
 
 mod rules;
 
@@ -47,23 +52,25 @@ pub(crate) fn run() -> Result<String, XtaskError> {
         let Some((set, entity, version)) = base_case(case) else {
             continue;
         };
-        if pending.contains(case)
-            || (set == 25 && HAND_BUILT.contains(&entity))
-            || !in_standard(&references, set, entity, version)
-        {
-            continue;
-        }
         let row = rows
             .iter()
             .find(|r| r.symbol_set == set && r.entity == entity && r.versions >> version & 1 == 1)
             .ok_or_else(|| XtaskError::Invariant(format!("{case} is not in the catalog")))?;
+        let multipoint = match document(version) {
+            Some(document) => in_standard(&references, document, set, entity),
+            None => !SINGLE_POINT_RULES.contains(&row.draw_rule.as_str()),
+        };
+        let hand_built = set == 25 && HAND_BUILT.contains(&entity) && document(version).is_some();
+        if pending.contains(case) || hand_built || !multipoint {
+            continue;
+        }
         writeln!(body, "    {},", declaration(row, version))?;
         count += 1;
     }
     if count > 0 {
         out.push_str(
             "use crate::modifier::ModifierField as M;\n\
-             use crate::standard::StandardVersion::{Mil2525Dch1, Mil2525Ech1};\n\
+             use crate::standard::StandardVersion::{App6D, App6Ech2, Mil2525Dch1, Mil2525Ech1};\n\
              use crate::support::table::{MANY, list, opt, ported};\n",
         );
     }
@@ -80,14 +87,18 @@ pub(crate) fn run() -> Result<String, XtaskError> {
     Ok(format!("specs: {count} ported graphics declared"))
 }
 
+/// The standard text cited for a version code, if one is available.
+fn document(version: u32) -> Option<&'static str> {
+    match version {
+        11 => Some("mil-std-2525d-ch1"),
+        15 => Some("mil-std-2525e-ch1"),
+        _ => None,
+    }
+}
+
 /// Whether the standard defines the graphic as one drawn from several
 /// points: it has a row, and the row does not print a single-point rule.
-fn in_standard(references: &serde_json::Value, set: u8, entity: u32, version: u32) -> bool {
-    let document = if version == 11 {
-        "mil-std-2525d-ch1"
-    } else {
-        "mil-std-2525e-ch1"
-    };
+fn in_standard(references: &serde_json::Value, document: &str, set: u8, entity: u32) -> bool {
     let Some(row) = references
         .get(document)
         .and_then(|d| d.get(format!("{set}:{entity}")))
@@ -113,8 +124,10 @@ fn lines(text: &str) -> impl Iterator<Item = &str> {
 fn base_case(id: &str) -> Option<(u8, u32, u32)> {
     let (code, edition) = id.split_once('-')?;
     let version = match edition {
+        "app6d" => 10,
         "d" => 11,
         "e" => 15,
+        "app6e" => 16,
         _ => return None,
     };
     let set = code.get(..2)?.parse().ok()?;
@@ -123,10 +136,11 @@ fn base_case(id: &str) -> Option<(u8, u32, u32)> {
 }
 
 fn declaration(row: &Row, version: u32) -> String {
-    let edition = if version == 11 {
-        "Mil2525Dch1"
-    } else {
-        "Mil2525Ech1"
+    let edition = match version {
+        10 => "App6D",
+        11 => "Mil2525Dch1",
+        15 => "Mil2525Ech1",
+        _ => "App6Ech2",
     };
     let (min, max) = if row.symbol_set == 25 {
         rules::cm_points(&row.draw_rule, u8::try_from(version).unwrap_or(0))

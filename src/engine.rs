@@ -12,6 +12,7 @@ pub(crate) mod channels;
 pub(crate) mod cpof;
 pub(crate) mod dism;
 pub(crate) mod flot;
+pub(crate) mod intercept;
 pub(crate) mod java_text;
 pub(crate) mod line_type;
 pub(crate) mod lineutility;

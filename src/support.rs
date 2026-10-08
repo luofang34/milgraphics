@@ -99,7 +99,9 @@ impl SymbolSpec {
     }
 
     /// Where the standard defines the symbol, including the draw rule it
-    /// prints. Every declared symbol has one.
+    /// prints. Every declared MIL-STD-2525 symbol has one. The APP-6 texts
+    /// are not available, so APP-6 symbols are declared because they match
+    /// the reference renderer and have none.
     pub fn reference(&self) -> Option<&'static StandardRef> {
         REFERENCES
             .iter()

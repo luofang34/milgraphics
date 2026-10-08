@@ -33,6 +33,7 @@ pub(crate) fn resolve(
         geographic,
         shape_count,
         part,
+        ..
     } = decoration
     else {
         return Ok((Vec::new(), Vec::new()));

@@ -1,6 +1,6 @@
 //! How large a graphic appears and whether it can reach the viewport.
 
-use crate::construction::Construction;
+use crate::construction::{Construction, Decoration};
 use crate::geo::GeoPoint;
 use crate::render::screen::ScreenCtx;
 
@@ -18,6 +18,26 @@ pub(crate) struct Extent {
     pub(crate) detailed: bool,
     /// May have something inside the viewport.
     pub(crate) in_view: bool,
+}
+
+/// Points around each ported graphic's first anchor at half the ground size
+/// it spans: a range fan has one control point and may have no geographic
+/// parts.
+fn engine_reach(ctx: &ScreenCtx<'_>, construction: &Construction) -> Vec<GeoPoint> {
+    let mut out = Vec::new();
+    for d in &construction.decorations {
+        if let Decoration::Engine {
+            anchors, reach_m, ..
+        } = &d.0
+        {
+            if let Some(&first) = anchors.first() {
+                for azimuth in [0.0, 90.0, 180.0, 270.0] {
+                    out.push(ctx.earth().direct(first, azimuth, reach_m / 2.0));
+                }
+            }
+        }
+    }
+    out
 }
 
 /// The on-screen extent of a graphic, from its handles (control points and,
@@ -41,6 +61,7 @@ pub(crate) fn of(ctx: &mut ScreenCtx<'_>, construction: &Construction) -> Extent
         .iter()
         .map(|h| h.at)
         .chain(corners)
+        .chain(engine_reach(ctx, construction))
         .collect();
     let (mut lo, mut hi) = ((f64::MAX, f64::MAX), (f64::MIN, f64::MIN));
     for at in points {
