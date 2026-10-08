@@ -94,7 +94,6 @@ pub(crate) fn get_true_end_point_double(
 struct SegmentLines {
     vertical: i32,
     m: f64,
-    b: f64,
     upper_b: f64,
     lower_b: f64,
 }
@@ -107,7 +106,6 @@ fn segment_lines(n_width: i32, from: Pt, to: Pt) -> SegmentLines {
     SegmentLines {
         vertical,
         m: r[0],
-        b: r[1],
         upper_b: r[5],
         lower_b: r[3],
     }

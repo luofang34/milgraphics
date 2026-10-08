@@ -30,6 +30,14 @@ mod catalog {
     /// own pixel path, ours on the ellipsoid.
     const TOLERANCE_PX: f64 = 2.0;
 
+    /// Accepted differences (UPSTREAM.md, "Ported renderer"): symbol code
+    /// prefix of the case, the Hausdorff tolerance in pixels, and why.
+    const ACCEPTED: &[(&str, f64, &str)] = &[(
+        "46120104",
+        7.5,
+        "DEPTH_AREA bands are drawn as lines along their centres, not as fills with a hole",
+    )];
+
     /// mil-sym modifier keys and the fields they fill.
     const KEYS: &[(&str, ModifierField)] = &[
         ("A_SYMBOL_ICON", ModifierField::A),
@@ -196,7 +204,12 @@ mod catalog {
             .collect();
         let oracle = oracle_lines(r, &f);
         let h = hausdorff(&ours, &oracle);
-        if h > TOLERANCE_PX {
+        let case = r["case"].as_str().unwrap_or_default();
+        let tolerance = ACCEPTED
+            .iter()
+            .find(|(prefix, _, _)| case.starts_with(prefix))
+            .map_or(TOLERANCE_PX, |(_, t, _)| *t);
+        if h > tolerance {
             let worst =
                 |x: &[Vec<ScreenPoint>], y: &[Vec<ScreenPoint>]| {
                     x.iter().flatten().map(|&p| (dist_to(p, y), p)).fold(

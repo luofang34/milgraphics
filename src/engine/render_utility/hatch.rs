@@ -11,9 +11,6 @@ use crate::style::Rgba;
 pub(crate) const HATCH_FORWARD_DIAGONAL: i32 = 2;
 /// `clsUtility.Hatch_BackwardDiagonal`.
 pub(crate) const HATCH_BACKWARD_DIAGONAL: i32 = 3;
-/// `clsUtility.Hatch_Cross`.
-pub(crate) const HATCH_CROSS: i32 = 8;
-
 const YELLOW: Rgba = Rgba::opaque(255, 255, 0);
 const GRAY: Rgba = Rgba::opaque(128, 128, 128);
 

@@ -14,5 +14,8 @@ Upstream work: mil-sym-java (Apache-2.0)
 The files in src/generated/ are mechanically extracted from the symbol tables
 and draw-rule definitions of mil-sym-java,
 https://github.com/missioncommand/mil-sym-java, commit
-6634a2e916fb3513953ecc8d90a93371f05e6f4a. The Apache License, Version 2.0
-under which it is distributed is in LICENSE-APACHE-mil-sym.
+6634a2e916fb3513953ecc8d90a93371f05e6f4a. The files in src/engine/ are a
+translation into Rust, with modifications, of its multipoint renderer at the
+same commit (the upstream source of each module is named in its
+documentation and in UPSTREAM.md). The Apache License, Version 2.0 under
+which it is distributed is in LICENSE-APACHE-mil-sym.

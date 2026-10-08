@@ -80,7 +80,6 @@ fn run_case(c: &Case, pts: &mut Vec<Pt>, s: &Settings) -> Result<(i32, Vec<Pt>),
         }
         "sptbyfire" => fire::get_dism_support_by_fire_double(pts, s).and_then(|n| done(n, pts)),
         "atkbyfire" => fire::get_dism_atk_by_fire_double(pts, s).and_then(|n| done(n, pts)),
-        "paa" => target::get_dism_paa_double(pts).and_then(|()| done(5, pts)),
         "ambush" => escort::ambush_points_double(pts, s).and_then(|n| done(n, pts)),
         "cover" => cover::get_dism_cover_double(pts, lt, s).and_then(|n| done(n, pts)),
         "coverc" => {

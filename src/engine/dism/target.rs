@@ -207,18 +207,3 @@ pub(crate) fn get_dism_block_double2(
     }
     Ok(())
 }
-
-/// Upstream `GetDISMPAADouble`: PAA_RECTANGULAR, 5 points.
-pub(crate) fn get_dism_paa_double(points: &mut Vec<Pt>) -> Result<(), EngineError> {
-    let (pt0, pt1) = (points.at(0)?, points.at(1)?);
-    let d = calc_distance_double(pt0, pt1);
-    let mid = mid_point_double(pt0, pt1, 0);
-    let pt2 = extend_true_line_perp_double(pt0, pt1, mid, d / 2.0, 0)?;
-    let pt3 = extend_true_line_perp_double(pt0, pt1, mid, -d / 2.0, 0)?;
-    put(points, 0, styled(pt0, 14));
-    put(points, 1, styled(pt2, 14));
-    put(points, 2, styled(pt1, 14));
-    put(points, 3, styled(pt3, 14));
-    put(points, 4, styled(pt0, 5));
-    Ok(())
-}

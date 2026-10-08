@@ -1,7 +1,7 @@
 //! Port of the small point-array helpers of lineutility.java: distance,
 //! centre, bounds, reversal, midpoint and quadrant.
 
-use crate::engine::base::{At, EngineError, Pt, Shape, idx};
+use crate::engine::base::{At, EngineError, Pt, idx};
 
 /// Upstream `ResizeArray`: the first `length` points, or the input unchanged
 /// when it is not longer than `length`.
@@ -13,42 +13,6 @@ pub(crate) fn resize_array(pts: &[Pt], length: i32) -> Result<Vec<Pt>, EngineErr
     Ok(pts.iter().take(n).copied().collect())
 }
 
-/// Upstream `SegmentLineShape`: appends the segment to the shape in 25 pixel
-/// steps. Every step extends from `pt0` by the same 25, as upstream does.
-pub(crate) fn segment_line_shape(pt0: Pt, pt1: Pt, shape: &mut Shape) {
-    let dist = calc_distance_double(pt0, pt1);
-    let n = (dist / 25.0) as i32;
-    shape.line_to(pt0);
-    for _ in 1..=n {
-        shape.line_to(super::extend::extend_along_line_double(pt0, pt1, 25.0));
-    }
-    shape.line_to(pt1);
-}
-
-/// Upstream `GetDirAtkAirMiddleSegment`: the segment (counted from the end)
-/// that first brings the accumulated length past 60 pixels.
-pub(crate) fn get_dir_atk_air_middle_segment(
-    pts: &[Pt],
-    vbl_save_counter: i32,
-) -> Result<i32, EngineError> {
-    let mut d = 0.0;
-    let mut k = vbl_save_counter - 1;
-    while k > 0 {
-        d += calc_distance_double(pts.at(idx(k, pts.len())?)?, pts.at(idx(k - 1, pts.len())?)?);
-        if d > 60.0 {
-            break;
-        }
-        k -= 1;
-    }
-    if d > 60.0 {
-        Ok(k)
-    } else if vbl_save_counter <= 3 {
-        Ok(1)
-    } else {
-        Ok(2)
-    }
-}
-
 /// Upstream `CalcSegmentAngleDouble`: the segment angle in radians.
 pub(crate) fn calc_segment_angle_double(pt0: Pt, pt1: Pt) -> f64 {
     let (n_temp, m) = super::slope::calc_true_slope_double(pt0, pt1);
@@ -56,13 +20,6 @@ pub(crate) fn calc_segment_angle_double(pt0: Pt, pt1: Pt) -> f64 {
         std::f64::consts::FRAC_PI_2
     } else {
         m.atan()
-    }
-}
-
-/// Upstream `InitializePOINT2Array`: resets every point to the origin.
-pub(crate) fn initialize_point2_array(pts: &mut [Pt]) {
-    for p in pts.iter_mut() {
-        *p = Pt::default();
     }
 }
 
@@ -135,13 +92,6 @@ pub(crate) fn reverse_points_double2(pts: &mut [Pt], vbl_counter: i32) -> Result
 pub(crate) fn get_pixels_min(pts: &[Pt], vbl_counter: i32) -> Result<(f64, f64), EngineError> {
     let b = bounds(pts, vbl_counter)?;
     Ok((b.0, b.1))
-}
-
-/// Upstream `GetPixelsMax`: the largest x and y of the first `vbl_counter`
-/// points.
-pub(crate) fn get_pixels_max(pts: &[Pt], vbl_counter: i32) -> Result<(f64, f64), EngineError> {
-    let b = bounds(pts, vbl_counter)?;
-    Ok((b.2, b.3))
 }
 
 /// Upstream `MidPointDouble`: the midpoint carrying `styl`.

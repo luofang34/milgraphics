@@ -5,42 +5,6 @@ use super::extend::{extend_directed_line, extend_line2_double};
 use super::slope::calc_true_slope_double;
 use crate::engine::base::{At, EngineError, Pt};
 
-/// Upstream `GetSAAFRMiddleLine`: the shortened centre line of each leg, two
-/// points per leg. A segment point's `style` holds the leg's half width.
-pub(crate) fn get_saafr_middle_line(pts: &[Pt]) -> Result<Vec<Pt>, EngineError> {
-    let legs = pts
-        .iter()
-        .take(pts.len().saturating_sub(1))
-        .filter(|p| p.style > 0)
-        .count();
-    let capacity = legs * 2;
-    let mut out: Vec<Pt> = Vec::with_capacity(capacity);
-    let mut last_seg: Option<Pt> = None;
-    for (j, p) in pts.iter().enumerate() {
-        if p.style < 0 && j + 1 != pts.len() {
-            continue;
-        }
-        if let Some(first_seg) = last_seg {
-            let last = *p;
-            last_seg = Some(last);
-            let d_mrr = f64::from(first_seg.style);
-            let pt0 = extend_line2_double(last, first_seg, -d_mrr, 0);
-            let pt1 = extend_line2_double(first_seg, last, -d_mrr, 5);
-            if out.len() + 2 > capacity {
-                return Err(EngineError::Index {
-                    index: i64::try_from(out.len() + 1).unwrap_or(i64::MAX),
-                    len: capacity,
-                });
-            }
-            out.push(pt0);
-            out.push(pt1);
-        } else {
-            last_seg = Some(*p);
-        }
-    }
-    Ok(out)
-}
-
 /// The four side points of a leg: the first leg point and the second, each
 /// offset in `first` and `second` directions by `d_mrr`.
 fn side_points(pts: &[Pt], d_mrr: f64) -> Result<[Pt; 4], EngineError> {

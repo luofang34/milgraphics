@@ -82,13 +82,4 @@ impl GeneralPath {
             ..Shape::new(shape_type::POLYLINE)
         }
     }
-
-    /// Number of cubic segments, for tests and callers that need to know a
-    /// curve was dropped.
-    pub(crate) fn cubic_count(&self) -> usize {
-        self.segments
-            .iter()
-            .filter(|s| matches!(s, Segment::Cubic(_)))
-            .count()
-    }
 }

@@ -11,9 +11,6 @@ pub(crate) const GREEN: Rgba = Rgba::opaque(0, 255, 0);
 pub(crate) const BLUE: Rgba = Rgba::opaque(0, 0, 255);
 /// `java.awt.Color.RED`.
 pub(crate) const RED: Rgba = Rgba::opaque(255, 0, 0);
-/// `java.awt.Color.WHITE`.
-pub(crate) const WHITE: Rgba = Rgba::opaque(255, 255, 255);
-
 /// `Shape2.moveTo`: starts a subpath (the shape replaces a move that has
 /// no line after it).
 pub(crate) fn move_to(shape: &mut Shape, p: Pt) {

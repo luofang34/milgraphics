@@ -30,12 +30,3 @@ pub(crate) fn new_pts(n: i32) -> Result<Vec<Pt>, EngineError> {
     })?;
     Ok(vec![Pt::default(); len])
 }
-
-/// The first `n` points of `pts` as a new array.
-pub(crate) fn first_n(pts: &[Pt], n: i32) -> Result<Vec<Pt>, EngineError> {
-    let mut out = Vec::new();
-    for k in 0..n {
-        out.push(at_i(pts, k)?);
-    }
-    Ok(out)
-}

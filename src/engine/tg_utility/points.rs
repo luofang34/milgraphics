@@ -122,33 +122,6 @@ pub(crate) fn filter_vertical_segments(tg: &mut Tg) {
     }
 }
 
-/// Upstream `ComputeLastPoint`: the point that gives a channel its width,
-/// 30 px to the left of the line from the second to the first point at 85 %
-/// of its length.
-pub(crate) fn compute_last_point(points: &[Pt]) -> Result<Pt, EngineError> {
-    let loc_a = points.at(1)?;
-    let loc_b = points.at(0)?;
-    let dx = loc_b.x - loc_a.x;
-    let dy = loc_b.y - loc_a.y;
-    let theta = (-dy).atan2(dx);
-    let loc_c = Pt::new(
-        f64::from((loc_a.x + 0.85 * dx) as i32),
-        f64::from((loc_a.y + 0.85 * dy) as i32),
-    );
-    let mut angle = theta + std::f64::consts::FRAC_PI_2;
-    if angle > std::f64::consts::PI {
-        angle -= 2.0 * std::f64::consts::PI;
-    }
-    if angle < -std::f64::consts::PI {
-        angle += 2.0 * std::f64::consts::PI;
-    }
-    let width = 30.0;
-    Ok(Pt::new(
-        loc_c.x + width * angle.cos(),
-        loc_c.y - width * angle.sin(),
-    ))
-}
-
 /// Upstream `RemoveDuplicatePoints` (RenderMultipoints): drops points within
 /// half a pixel of their predecessor, keeping at least the minimum a line
 /// (2) or area (3) needs. `ms_info` is the catalog entry for `isAutoshape`.

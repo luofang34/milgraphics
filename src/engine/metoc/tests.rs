@@ -105,7 +105,6 @@ fn solid_curve_types_draw_only_the_cubic() {
     let p = |x| Pt::new(x, 0.0);
     let samples = draw_cubic_bezier2(&tg, &mut path, p(0.0), p(30.0), p(90.0), p(120.0));
     assert_eq!(samples.map(|s| s.len()), Ok(0));
-    assert_eq!(path.cubic_count(), 1);
     assert_eq!(path.into_path_ops(), vec![PathOp::MoveTo(0.0, 0.0)]);
 }
 
@@ -127,7 +126,6 @@ fn bezier_samples_a_straight_curve_at_the_increment() {
     assert_eq!(xs.get(8).copied(), Some(92.8125));
     assert!(xs.windows(2).all(|w| w[0] < w[1]));
     assert!(samples.iter().all(|s| s.y == 0.0));
-    assert_eq!(path.cubic_count(), 1);
 }
 
 #[test]

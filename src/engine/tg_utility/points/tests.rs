@@ -60,15 +60,6 @@ fn vertical_segments_are_nudged_for_listed_types_only() {
 }
 
 #[test]
-fn last_point_is_left_of_the_line() {
-    let p = compute_last_point(&[Pt::new(100.0, 0.0), Pt::new(0.0, 0.0)]).unwrap();
-    // 85 % of the way from (0,0) to (100,0) is x = 85; "left" is up (y < 0).
-    assert!((p.x - 85.0).abs() < 1e-9);
-    assert!((p.y + 30.0).abs() < 1e-9);
-    assert!(compute_last_point(&[Pt::new(0.0, 0.0)]).is_err());
-}
-
-#[test]
 fn duplicates_are_removed_down_to_the_minimum() {
     let mut tg = tg_with(PL, &[(0.0, 0.0), (0.2, 0.2), (10.0, 0.0), (10.1, 0.1)]);
     remove_duplicate_points(&mut tg, None);

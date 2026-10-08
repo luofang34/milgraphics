@@ -87,8 +87,3 @@ pub(crate) fn msr_segment_colors(tg: &Tg) -> Option<BTreeMap<i32, Option<Rgba>>>
             .collect()
     })
 }
-
-/// Upstream `getMSRSegmentColorStrings`: segment index to the colour text.
-pub(crate) fn msr_segment_color_strings(tg: &Tg) -> Option<BTreeMap<i32, String>> {
-    segment_values(tg)
-}

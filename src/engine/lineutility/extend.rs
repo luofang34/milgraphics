@@ -2,7 +2,7 @@
 //! beyond, above, below and beside a line.
 
 use super::basics::calc_distance_double;
-use super::slope::{calc_true_slope_double, reverse_direction};
+use super::slope::calc_true_slope_double;
 use super::{EXTEND_ABOVE, EXTEND_BELOW, EXTEND_LEFT, EXTEND_RIGHT};
 use crate::engine::base::Pt;
 
@@ -138,33 +138,6 @@ pub(crate) fn extend_directed_line(pt1: Pt, pt2: Pt, pt0: Pt, direction: i32, d:
         r.y = y;
     }
     r
-}
-
-/// Upstream `ExtendDirectedLineText`: like [`extend_directed_line`] for text
-/// offsets. A negative distance flips the direction, and left/right become
-/// above/below on horizontal segments (above/below become left/right on
-/// vertical ones).
-pub(crate) fn extend_directed_line_text(pt1: Pt, pt2: Pt, pt0: Pt, direction: i32, d: f64) -> Pt {
-    let (mut direction, mut d) = (direction, d);
-    if d < 0.0 {
-        direction = reverse_direction(direction);
-        d = d.abs();
-    }
-    if pt1.y == pt2.y {
-        direction = match direction {
-            0 => EXTEND_ABOVE,
-            1 => EXTEND_BELOW,
-            o => o,
-        };
-    }
-    if pt1.x == pt2.x {
-        direction = match direction {
-            2 => EXTEND_LEFT,
-            3 => EXTEND_RIGHT,
-            o => o,
-        };
-    }
-    extend_directed_line(pt1, pt2, pt0, direction, d)
 }
 
 /// Upstream `ExtendDirectedLine(pt1, pt2, pt0, direction, d, style)`: as

@@ -3,7 +3,7 @@
 
 use super::extend::extend_directed_line;
 use super::slope::{calc_true_intersect_double2, calc_true_slope_double2, reverse_direction};
-use crate::engine::base::{At, EngineError, PathOp, Pt, idx};
+use crate::engine::base::{At, EngineError, Pt, idx};
 
 /// Upstream `getExteriorPoints`: replaces the first `vbl_counter` points with
 /// the corners of the offset polygon (outside, or inside when `interior`).
@@ -81,9 +81,4 @@ where
 /// reset.
 pub(crate) fn get_deep_copy(pts: &[Pt]) -> Vec<Pt> {
     pts.iter().map(|p| Pt::styled(p.x, p.y, p.style)).collect()
-}
-
-/// Upstream `createStrokedShape`: despite its name, a plain copy of the path.
-pub(crate) fn create_stroked_shape(path: &[PathOp]) -> Vec<PathOp> {
-    path.to_vec()
 }

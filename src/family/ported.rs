@@ -20,10 +20,12 @@ use crate::style::{DashPattern, Fill, Rgba, Stroke};
 
 mod classify;
 
-/// Pixel extents the graphic is drawn at for classification: both inside
-/// the range where upstream sizes decorations in proportion to the graphic
-/// (`arraysupport` clamps proportional sizes to 150–500 px of extent).
-const REFERENCE_EXTENTS_PX: [f64; 2] = [300.0, 450.0];
+/// Pixel extents the graphic is drawn at for classification. They lie on
+/// either side of the range where upstream sizes decorations in proportion
+/// to the graphic (its clamps act between tens and hundreds of pixels), so
+/// a shape that a clamp holds to a pixel size at some zoom differs between
+/// the two and is drawn per view.
+const REFERENCE_EXTENTS_PX: [f64; 2] = [50.0, 1500.0];
 /// Offset of the local plane's origin in the renderer's pixel frame, which
 /// keeps coordinates positive as upstream's are.
 pub(super) const ORIGIN_PX: f64 = 2000.0;

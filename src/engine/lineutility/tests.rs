@@ -4,7 +4,6 @@
 use super::arc::{arc_array_double, calc_clockwise_center_double, get_arc_points_double};
 use super::arrow::get_arrow_head4_double;
 use super::basics::*;
-use super::bound::bound_one_segment;
 use super::bounds::mbr_distance;
 use super::channel_pixels::move_channel_pixels;
 use super::circle::calc_circle_double;
@@ -167,16 +166,6 @@ fn clockwise_center_of_horizontal_pair() {
 }
 
 #[test]
-fn bounding_segment_to_a_rectangle() {
-    let (ul, lr) = (Pt::new(0.0, 0.0), Pt::new(10.0, 10.0));
-    let r = bound_one_segment(Pt::new(-5.0, 5.0), Pt::new(15.0, 5.0), ul, lr).unwrap();
-    assert!(near(r[0], 0.0, 5.0) && near(r[1], 10.0, 5.0));
-    assert!(bound_one_segment(Pt::new(-5.0, -5.0), Pt::new(-1.0, 20.0), ul, lr).is_none());
-    let v = bound_one_segment(Pt::new(5.0, -5.0), Pt::new(5.0, 20.0), ul, lr).unwrap();
-    assert!(near(v[0], 5.0, 0.0) && near(v[1], 5.0, 10.0));
-}
-
-#[test]
 fn closest_point_clamps_to_the_segment() {
     let (a, b) = (Pt::new(0.0, 0.0), Pt::new(10.0, 0.0));
     assert!(near(
@@ -196,7 +185,6 @@ fn bounds_and_small_array_helpers() {
     let pts = [Pt::new(0.0, 0.0), Pt::new(3.0, 4.0), Pt::new(1.0, 1.0)];
     assert_eq!(mbr_distance(&pts, 3).unwrap(), 5.0);
     assert_eq!(get_pixels_min(&pts, 3).unwrap(), (0.0, 0.0));
-    assert_eq!(get_pixels_max(&pts, 3).unwrap(), (3.0, 4.0));
     assert!(near(calc_center_point_double(&pts, 3).unwrap(), 1.5, 2.0));
     assert_eq!(resize_array(&pts, 2).unwrap().len(), 2);
     assert_eq!(resize_array(&pts, 5).unwrap().len(), 3);

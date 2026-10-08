@@ -3,10 +3,6 @@
 //! milgraphics drives it in a local frame for the geographic tier and in the
 //! view's projection for the screen tier.
 
-// Items become reachable as milgraphics' construction dispatches line types
-// to the pipeline.
-#![allow(dead_code)]
-
 pub(crate) mod api;
 pub(crate) mod arraysupport;
 pub(crate) mod base;

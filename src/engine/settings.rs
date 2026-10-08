@@ -15,10 +15,6 @@ pub(crate) const CLIENT: &str = "ge";
 /// arrowhead.
 pub(crate) const SHIFT_LINES: bool = true;
 
-/// Upstream `Modifier2.fillAlphaCanObscureText`: a fill with at least this
-/// alpha can hide label text.
-pub(crate) const FILL_ALPHA_CAN_OBSCURE_TEXT: f64 = 50.0;
-
 /// The DPI at which upstream's pixel constants are defined.
 pub(crate) const BASE_DPI: i32 = 96;
 

@@ -12,7 +12,6 @@
 pub(crate) mod arc;
 pub(crate) mod arrow;
 pub(crate) mod basics;
-pub(crate) mod bound;
 pub(crate) mod bounds;
 pub(crate) mod channel_pixels;
 pub(crate) mod circle;

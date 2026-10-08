@@ -104,8 +104,6 @@ pub(crate) fn java_round(v: f64) -> f64 {
 pub(crate) mod shape_type {
     pub(crate) const POLYLINE: i32 = 0;
     pub(crate) const FILL: i32 = 1;
-    pub(crate) const MODIFIER: i32 = 2;
-    pub(crate) const MODIFIER_FILL: i32 = 3;
 }
 
 /// One step of a shape's path, in pixels.
