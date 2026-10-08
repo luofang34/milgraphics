@@ -23,7 +23,7 @@ struct Shape {
 pub(crate) fn construct(ctx: &mut Ctx<'_>, def: &GraphicDefinition) -> Result<(), ConstructError> {
     let control: Vec<GeoPoint> = def.positions().collect();
     let degenerate = |reason| ConstructError::Degenerate {
-        symbol: ctx.spec.name,
+        symbol: ctx.spec.name(),
         reason,
     };
     let origin = *control.first().ok_or(degenerate("an axis needs a tip"))?;

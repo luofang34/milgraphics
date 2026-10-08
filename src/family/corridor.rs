@@ -23,7 +23,7 @@ pub(crate) fn construct(ctx: &mut Ctx<'_>, def: &GraphicDefinition) -> Result<()
     let max_width = widths.iter().copied().fold(0.0_f64, f64::max);
     if max_width.is_nan() || max_width <= 0.0 {
         return Err(ConstructError::Degenerate {
-            symbol: ctx.spec.name,
+            symbol: ctx.spec.name(),
             reason: "AM width must be positive",
         });
     }
@@ -61,7 +61,7 @@ pub(crate) fn construct(ctx: &mut Ctx<'_>, def: &GraphicDefinition) -> Result<()
         }
     }
     let part = first.ok_or(ConstructError::Degenerate {
-        symbol: ctx.spec.name,
+        symbol: ctx.spec.name(),
         reason: "a corridor needs two distinct points",
     })?;
     for (i, &p) in control.iter().enumerate() {

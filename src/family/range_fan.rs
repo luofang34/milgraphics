@@ -76,7 +76,7 @@ fn arc(earth: &Earth, center: GeoPoint, from: f64, to: f64, radius: f64) -> Vec<
 
 pub(crate) fn construct(ctx: &mut Ctx<'_>, def: &GraphicDefinition) -> Result<(), ConstructError> {
     let degenerate = |reason| ConstructError::Degenerate {
-        symbol: ctx.spec.name,
+        symbol: ctx.spec.name(),
         reason,
     };
     let center = def

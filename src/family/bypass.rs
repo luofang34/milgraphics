@@ -19,7 +19,7 @@ const HEAD_PX: (f64, f64) = (2.5, 20.0);
 
 pub(crate) fn construct(ctx: &mut Ctx<'_>, def: &GraphicDefinition) -> Result<(), ConstructError> {
     let degenerate = ConstructError::Degenerate {
-        symbol: ctx.spec.name,
+        symbol: ctx.spec.name(),
         reason: "a bypass needs two arrow tips and a rear point",
     };
     let mut points = def.positions();

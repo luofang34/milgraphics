@@ -5,6 +5,7 @@
 
 use crate::catalog::CatalogEntry;
 use crate::family::Family;
+use crate::generated::references::REFERENCES;
 use crate::modifier::ModifierField;
 use crate::sidc::SymbolId;
 use crate::standard::StandardVersion;
@@ -24,6 +25,8 @@ pub struct StandardRef {
     pub table: &'static str,
     /// 1-based page of the PDF file.
     pub pdf_page: u16,
+    /// Draw rule printed in the symbol's row, when the row prints one.
+    pub draw_rule: Option<&'static str>,
 }
 
 /// How a symbol uses one amplifier field.
@@ -78,8 +81,6 @@ pub struct SymbolSpec {
     pub symbol_set: u8,
     /// Six-digit entity code.
     pub entity: u32,
-    /// Name as the standard gives it.
-    pub name: &'static str,
     /// Fewest control points.
     pub min_points: usize,
     /// Most control points.
@@ -87,17 +88,27 @@ pub struct SymbolSpec {
     /// Amplifiers that are drawn, with their constraints. A field not listed
     /// here is refused.
     pub modifiers: &'static [ModifierSpec],
-    /// Draw rule printed in the standard.
-    pub draw_rule: &'static str,
-    /// Why the upstream catalog's draw rule differs, if it does.
-    pub catalog_divergence: Option<&'static str>,
-    /// Where the standard defines it.
-    pub reference: StandardRef,
     /// Construction family.
     pub(crate) family: Family,
 }
 
 impl SymbolSpec {
+    /// The symbol's name, as upstream's catalog gives it.
+    pub fn name(&self) -> &'static str {
+        self.catalog_entry().map_or("unnamed symbol", |e| e.name)
+    }
+
+    /// Where the standard defines the symbol, including the draw rule it
+    /// prints. Every declared symbol has one.
+    pub fn reference(&self) -> Option<&'static StandardRef> {
+        REFERENCES
+            .iter()
+            .find(|(standard, set, entity, _)| {
+                (*standard, *set, *entity) == (self.standard, self.symbol_set, self.entity)
+            })
+            .map(|(_, _, _, r)| r)
+    }
+
     /// How the symbol uses `field`, or `None` when it does not draw it.
     pub fn modifier(&self, field: ModifierField) -> Option<&'static ModifierSpec> {
         self.modifiers.iter().find(|m| m.field == field)

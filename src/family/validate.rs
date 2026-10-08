@@ -20,7 +20,7 @@ pub(super) fn validate(
     }
     if count < spec.min_points || count > spec.max_points {
         return Err(ConstructError::PointCount {
-            symbol: spec.name,
+            symbol: spec.name(),
             count,
             min: spec.min_points,
             max: spec.max_points,
@@ -28,13 +28,13 @@ pub(super) fn validate(
     }
     if let Some(index) = def.points.iter().position(|p| p.altitude.is_some()) {
         return Err(ConstructError::UnsupportedAltitude {
-            symbol: spec.name,
+            symbol: spec.name(),
             index,
         });
     }
     if let Some(key) = def.modifiers.unknown.keys().next() {
         return Err(ConstructError::UnknownModifier {
-            symbol: spec.name,
+            symbol: spec.name(),
             key: key.clone(),
         });
     }
@@ -52,7 +52,7 @@ fn check_field(
     budget: &Budget,
     field: ModifierField,
 ) -> Result<(), ConstructError> {
-    let symbol = spec.name;
+    let symbol = spec.name();
     let value = def.modifiers.get(field);
     let Some(declared) = spec.modifier(field) else {
         return match value {
