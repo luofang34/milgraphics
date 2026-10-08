@@ -119,15 +119,6 @@
         "distribution": "Distribution A: Approved for public release, distribution is unlimited.",
         "listing": "https://quicksearch.dla.mil/qsDocDetails.aspx?ident_number=114934",
         "download": "https://quicksearch.dla.mil/WMX/Default.aspx?token=5795656"
-      },
-      "app-06-e-v2": {
-        "title": "APP-06 NATO Joint Military Symbology, Edition E, Version 2",
-        "cover_date": "2025-10",
-        "promulgated": "2025-10-16",
-        "pages": 868,
-        "distribution": "No classification marking; handled in accordance with C-M(2002)60; \u00a9 NATO/OTAN. Only table and page references are recorded here.",
-        "listing": "ASSIST ident 275338 (Rev E Amd 2, 2025-10-16)",
-        "version_code": 16
       }
     },
     "unavailable": {
