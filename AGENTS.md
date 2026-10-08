@@ -235,14 +235,16 @@ Keep each PR to one issue.
 2. **Core types.** Standard versions, symbol identity, `PersistedGraphic`, `GraphicDefinition`, typed modifiers, errors, budgets, `Projection` and `FontMetrics`, and the catalog generated from `msd.txt` / `mse.txt` (data only, no support claim).
 3. **First milestone: six representative graphics plus a minimal real map integration.** Each graphic is delivered complete — rules, construction, both plan tiers, handles and edits, oracle fixture, edge-case tests, golden SVG — and verified in this repository first. Then a minimal Sokoly-App adapter, with the fork and host changes it needs, verifies display, picking and editing on native and in the browser.
 
-   | Graphic | 2525D entity | Draw rule | Exercises |
+   | Graphic | Entity | Draw rule (2525D ch1 / 2525E ch1) | Exercises |
    |---|---|---|---|
-   | Phase Line | 140300 | LINE2 | open polyline, end labels |
-   | Named Area of Interest | 120200 | AREA1 | closed area, interior label |
-   | Main Attack | 151403 | AXIS2 | axis of advance, arrowhead, 3–50 points |
-   | Air Corridor | 170100 | CORRIDOR1 | geographic width (`AM`), multi-field labels |
-   | Weapon/Sensor Range Fan, Sector | 242200 | ARC1 | geodesic arcs, `AM`/`AN` arrays |
-   | Bypass Easy | 270601 | POINT12 | fixed 3-point mission task with decorations |
+   | Phase Line | 140300 | Line2 / Line1 | open polyline, end labels |
+   | Named Area of Interest | 120200 | Area1 | closed area, interior label |
+   | Main Attack | 151403 | Axis2 / Axis1 | axis of advance, arrowhead, 3–50 points |
+   | Air Corridor | 170100 | Corridor1 | geographic width (`AM`), multi-field labels |
+   | Weapon/Sensor Range Fan, Sector | 242200 | Arc1 | geodesic arcs, `AM`/`AN` arrays |
+   | Bypass Easy | 270601 | Point12 | fixed 3-point mission task with decorations |
+
+   Draw rules are per edition; table and page references are in `tools/oracle/pin.json`.
 
 4. **Stabilize.** Review the public interfaces against what the integration showed, change them where the evidence says so, and only then treat them as stable.
 5. **Extend** coverage family by family, reusing the shared primitives. Each family is accepted with its tests before the next starts.

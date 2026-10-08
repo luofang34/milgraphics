@@ -16,6 +16,28 @@ project derives from or calls, and the oracle's runtime jars and font.
 The standards decide correctness; a reference's output is evidence, not proof
 (see the comparison policy in `AGENTS.md`).
 
+## Standards
+
+The standards are identified in `pin.json` under `standards`: MIL-STD-2525D,
+2525D change 1, 2525E and 2525E change 1, from the DLA ASSIST QuickSearch
+listing, all Distribution A. ASSIST stamps every page with the download time,
+so a file hash identifies one copy only; documents are identified by revision,
+cover date and page count. Each first-milestone graphic has its table and PDF
+page in 2525D change 1 and 2525E change 1, and the draw rule printed there.
+
+APP-6(D) and APP-6(E) need an ASSIST account and are not yet referenced, so no
+APP-6 symbol can be declared supported.
+
+Draw rules are per edition. Phase Line is Line2 in 2525D change 1 and Line1 in
+2525E change 1; Main Attack is Axis2 and Axis1 respectively (2525E change 1
+marks Axis2 "Disused").
+
+## Divergences under review
+
+| Symbol | Standard | mil-sym-java | Status |
+|---|---|---|---|
+| Main Attack 151403, 2525E change 1 | TABLE L-X: draw rule Axis1 | `mse.txt`: Axis2 | Open: settle against the TABLE L-X figure when Main Attack is implemented |
+
 No upstream code or data is incorporated in the library. When a file is
 ported or generated from upstream, it is listed here with its source file and
 regeneration command, and the upstream license is added to `NOTICE`.

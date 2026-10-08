@@ -82,5 +82,161 @@
     "settings": {
       "device_dpi": 96
     }
+  },
+  "standards": {
+    "note": "ASSIST stamps every page with the download time, so file hashes identify one copy only; documents are identified by revision, cover date and page count, and references by table and PDF page (file page, 1-based).",
+    "documents": {
+      "mil-std-2525d": {
+        "title": "MIL-STD-2525D Joint Military Symbology",
+        "cover_date": "2014-06-10",
+        "pages": 885,
+        "distribution": "Distribution A: Approved for public release, distribution is unlimited.",
+        "listing": "https://quicksearch.dla.mil/qsDocDetails.aspx?ident_number=114934",
+        "download": "https://quicksearch.dla.mil/WMX/Default.aspx?token=5730409"
+      },
+      "mil-std-2525d-ch1": {
+        "title": "MIL-STD-2525D w/CHANGE 1 Joint Military Symbology",
+        "cover_date": "2018-08-02",
+        "pages": 786,
+        "distribution": "Distribution A: Approved for public release, distribution is unlimited.",
+        "listing": "https://quicksearch.dla.mil/qsDocDetails.aspx?ident_number=114934",
+        "download": "https://quicksearch.dla.mil/WMX/Default.aspx?token=5770835"
+      },
+      "mil-std-2525e": {
+        "title": "MIL-STD-2525E Joint Military Symbology",
+        "cover_date": "2022-12-31",
+        "pages": 765,
+        "distribution": "Distribution A: Approved for public release, distribution is unlimited.",
+        "listing": "https://quicksearch.dla.mil/qsDocDetails.aspx?ident_number=114934",
+        "download": "https://quicksearch.dla.mil/WMX/Default.aspx?token=5782656"
+      },
+      "mil-std-2525e-ch1": {
+        "title": "MIL-STD-2525E w/Change 1 Joint Military Symbology",
+        "cover_date": "2025-03-02",
+        "pages": 749,
+        "distribution": "Distribution A: Approved for public release, distribution is unlimited.",
+        "listing": "https://quicksearch.dla.mil/qsDocDetails.aspx?ident_number=114934",
+        "download": "https://quicksearch.dla.mil/WMX/Default.aspx?token=5795656"
+      }
+    },
+    "unavailable": {
+      "app-6d": "ASSIST ident 275338 lists Rev D Amd 1 (2017-10-16); download requires an ASSIST account",
+      "app-6e": "ASSIST ident 275338 lists Rev E (2023-11-10) and Rev E Amd 2 (2025-10-16, Distribution C); download requires an ASSIST account"
+    },
+    "graphics": {
+      "140300": {
+        "name": "Phase Line",
+        "refs": [
+          {
+            "doc": "mil-std-2525d-ch1",
+            "table": "TABLE H-VII",
+            "pdf_page": 446,
+            "draw_rule": "Line2"
+          },
+          {
+            "doc": "mil-std-2525e-ch1",
+            "table": "TABLE L-VII",
+            "pdf_page": 478,
+            "draw_rule": "Line1"
+          }
+        ]
+      },
+      "120200": {
+        "name": "Named Area of Interest",
+        "refs": [
+          {
+            "doc": "mil-std-2525d-ch1",
+            "table": "TABLE H-V",
+            "pdf_page": 436,
+            "draw_rule": "Area1"
+          },
+          {
+            "doc": "mil-std-2525e-ch1",
+            "table": "TABLE L-V",
+            "pdf_page": 468,
+            "draw_rule": "Area1"
+          }
+        ]
+      },
+      "151403": {
+        "name": "Main Attack",
+        "refs": [
+          {
+            "doc": "mil-std-2525d-ch1",
+            "table": "TABLE H-X",
+            "pdf_page": 455,
+            "draw_rule": "Axis2"
+          },
+          {
+            "doc": "mil-std-2525e-ch1",
+            "table": "TABLE L-X",
+            "pdf_page": 496,
+            "draw_rule": "Axis1"
+          }
+        ]
+      },
+      "170100": {
+        "name": "Air Corridor",
+        "refs": [
+          {
+            "doc": "mil-std-2525d-ch1",
+            "table": "TABLE H-XIII",
+            "pdf_page": 463,
+            "draw_rule": "Corridor1"
+          },
+          {
+            "doc": "mil-std-2525e-ch1",
+            "table": "TABLE L-XI",
+            "pdf_page": 498,
+            "draw_rule": "Corridor1"
+          }
+        ]
+      },
+      "242200": {
+        "name": "Weapon/Sensor Range Fan, Sector",
+        "refs": [
+          {
+            "doc": "mil-std-2525d-ch1",
+            "table": "TABLE H-XVII",
+            "pdf_page": 528,
+            "draw_rule": "Arc1"
+          },
+          {
+            "doc": "mil-std-2525e-ch1",
+            "table": "TABLE L-XV",
+            "pdf_page": 573,
+            "draw_rule": "Arc1"
+          }
+        ]
+      },
+      "270601": {
+        "name": "Obstacle Bypass, Easy",
+        "refs": [
+          {
+            "doc": "mil-std-2525d-ch1",
+            "table": "TABLE H-XVIII",
+            "pdf_page": 533,
+            "draw_rule": "Point12"
+          },
+          {
+            "doc": "mil-std-2525e-ch1",
+            "table": "TABLE L-XVI",
+            "pdf_page": 576,
+            "draw_rule": "Point12"
+          }
+        ]
+      }
+    },
+    "draw_rule_definitions": [
+      {
+        "doc": "mil-std-2525d-ch1",
+        "section": "Appendix H, TABLE H-IV"
+      },
+      {
+        "doc": "mil-std-2525e-ch1",
+        "section": "Appendix L, TABLE L-III",
+        "pdf_pages": "457-463"
+      }
+    ]
   }
 }
