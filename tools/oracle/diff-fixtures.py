@@ -1,6 +1,9 @@
 """Compares two oracle JSON Lines files record by record.
 
-Usage: diff-fixtures.py COMMITTED.jsonl REGENERATED.jsonl
+Usage: diff-fixtures.py COMMITTED.jsonl REGENERATED.jsonl [--tolerance T]
+
+With --tolerance, numbers within T of each other are equal, which compares a
+compact record with a full one.
 
 Exits non-zero on any difference in the oracle's output and names each
 differing case and field. `font_probe` describes the platform's font
@@ -17,7 +20,25 @@ def load(path):
         return [json.loads(line) for line in f if line.strip()]
 
 
+TOL = 0.0
+
+
+def same(a, b):
+    if isinstance(a, (int, float)) and isinstance(b, (int, float)) and not isinstance(a, bool):
+        return abs(a - b) <= TOL
+    if isinstance(a, list) and isinstance(b, list):
+        return len(a) == len(b) and all(same(x, y) for x, y in zip(a, b))
+    if isinstance(a, dict) and isinstance(b, dict):
+        return a.keys() == b.keys() and all(same(a[k], b[k]) for k in a)
+    return a == b
+
+
 def main():
+    global TOL
+    if "--tolerance" in sys.argv:
+        i = sys.argv.index("--tolerance")
+        TOL = float(sys.argv[i + 1])
+        del sys.argv[i:i + 2]
     old, new = load(sys.argv[1]), load(sys.argv[2])
     problems = []
     notices = []
@@ -27,7 +48,9 @@ def main():
         problems.append(f"case lists differ: only committed {only_old[:10]}, only regenerated {only_new[:10]}")
     for a, b in zip(old, new):
         for key in sorted(set(a) | set(b)):
-            if a.get(key) == b.get(key):
+            if TOL and key == "geojson" and key not in b:
+                continue
+            if same(a.get(key), b.get(key)):
                 continue
             if key == "font_probe":
                 notices.append(f"{a['case']}: font metrics differ: {a.get(key)} vs {b.get(key)}")

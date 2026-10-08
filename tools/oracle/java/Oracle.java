@@ -33,7 +33,7 @@ import java.util.Map;
  */
 public final class Oracle {
     static final String PROBE = "PL ALPHA 0123456789";
-    /** Large case sets drop the GeoJSON output and keep pixel coordinates to 0.01 px. */
+    /** Large case sets drop the GeoJSON output and round geographic coordinates to 1e-7 degrees (about 1 cm). */
     static final boolean COMPACT = Boolean.getBoolean("oracle.compact");
 
     public static void main(String[] args) throws Exception {
@@ -157,7 +157,7 @@ public final class Oracle {
     }
 
     static String coord(double v) {
-        return num(COMPACT && Double.isFinite(v) ? Math.round(v * 100.0) / 100.0 : v);
+        return num(COMPACT && Double.isFinite(v) ? Math.round(v * 1e7) / 1e7 : v);
     }
 
     static StringBuilder field(StringBuilder b, String key, String json) {

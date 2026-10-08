@@ -4,7 +4,7 @@
 # case in its own JVM, because mil-sym keeps renderer settings in static state.
 # `oracle.sh --cases` prints the generated case list (tools/oracle/cases/all.tsv) instead.
 # Cases run ORACLE_JOBS at a time (default: CPU count); output keeps input order.
-# ORACLE_COMPACT=1 drops the GeoJSON field and rounds pixel coordinates to 0.01.
+# ORACLE_COMPACT=1 drops the GeoJSON field and rounds coordinates to 1e-7 degrees.
 set -euo pipefail
 here="$(cd "$(dirname "$0")" && pwd)"
 "$here/fetch-upstream.sh" >&2
