@@ -20,6 +20,7 @@ pub(crate) mod lineutility;
 pub(crate) mod metoc;
 pub(crate) mod modifier;
 pub(crate) mod partition;
+pub(crate) mod render_utility;
 pub(crate) mod settings;
 pub(crate) mod tactical_lines;
 pub(crate) mod tg;
