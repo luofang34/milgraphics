@@ -7,7 +7,6 @@ use crate::modifier::Modifiers;
 use crate::sidc::SymbolId;
 
 /// One graphic to draw.
-#[derive(Debug)]
 pub(crate) struct Input<'a> {
     /// Upstream line type (a `tactical_lines` constant).
     pub(crate) line_type: i32,
@@ -21,6 +20,18 @@ pub(crate) struct Input<'a> {
     pub(crate) meters_per_pixel: f64,
     /// Width of `text` in pixels in the label font.
     pub(crate) text_width: &'a dyn Fn(&str) -> f64,
+}
+
+impl core::fmt::Debug for Input<'_> {
+    fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
+        f.debug_struct("Input")
+            .field("line_type", &self.line_type)
+            .field("symbol", &self.symbol)
+            .field("pixels", &self.pixels)
+            .field("modifiers", &self.modifiers)
+            .field("meters_per_pixel", &self.meters_per_pixel)
+            .finish_non_exhaustive()
+    }
 }
 
 /// Label justification, as upstream's `ShapeInfo` gives it.
