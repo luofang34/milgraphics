@@ -88,12 +88,12 @@ impl Chan<'_> {
         let mid2 = extend_directed_line(pt1, tip, mid2, direction2, eighth);
 
         let width = f64::from(self.width);
-        let mut cover = [Pt::default(); 16];
+        let mut cover = vec![Pt::default(); 16];
         cover[0] = extend_directed_line(pt0, tip, mid1, direction1, width);
         cover[1] = mid1;
         cover[2] = mid2;
         cover[3] = extend_directed_line(pt1, tip, mid2, direction2, width);
-        let count = ext.dism_cover_rev_c(&mut cover, self.draw, 4)?;
+        let count = ext.dism_cover_rev_c(&mut cover, self.draw, 4, self.req.settings)?;
         for i in 0..count {
             set_i(&mut self.points, base + 8 + i, at_i(&cover, i)?)?;
         }
