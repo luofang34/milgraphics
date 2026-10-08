@@ -83,6 +83,7 @@ pub(crate) fn construct(ctx: &mut Ctx<'_>, def: &GraphicDefinition) -> Result<()
         anchors,
         symbol: def.symbol.clone(),
         modifiers: Box::new(def.modifiers.clone()),
+        style: crate::engine::api::Style::of(&def.style),
         geographic,
         shape_count: a.shapes.len(),
         part,
@@ -134,6 +135,7 @@ fn run(
         meters_per_pixel: mpp,
         text_width: &width,
         ms_info: crate::family::ported::ms_info(&def.symbol),
+        style: crate::engine::api::Style::of(&def.style),
     })
 }
 
@@ -156,7 +158,6 @@ fn add_part(
         .collect();
     let mut first = None;
     for mut line in lines {
-        ctx.take_vertices(line.len())?;
         // Upstream fills any shape with a fill colour; a fill shape has no
         // outline of its own.
         let outline = (shape.shape_type != shape_type::FILL)

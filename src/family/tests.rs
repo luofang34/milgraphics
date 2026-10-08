@@ -196,3 +196,32 @@ fn control_point_altitudes_are_refused_not_ignored() {
         Err(ConstructError::UnsupportedAltitude { index: 1, .. })
     ));
 }
+
+#[test]
+fn ported_graphics_take_the_operators_colour() {
+    // Light Line, drawn by the ported renderer.
+    let mut d = def("11032500001102000000", &[(20.0, 50.0), (20.1, 50.0)]);
+    d.style.line_color = Some("#0000ff".to_owned());
+    let c = construct(&d, &Config::default()).unwrap();
+    let blue = crate::style::Rgba::opaque(0, 0, 255);
+    assert!(
+        c.parts
+            .iter()
+            .all(|p| p.stroke.is_some_and(|s| s.color == blue))
+    );
+    assert!(!c.parts.is_empty());
+}
+
+#[test]
+fn ported_graphics_allow_vertex_edits_unless_their_point_count_is_fixed() {
+    use crate::edit::{Edit, apply_edit};
+    let line = def("11032500001102000000", &[(20.0, 50.0), (20.1, 50.0)]);
+    let at = crate::geo::GeoPoint::new(20.05, 50.01).unwrap();
+    assert!(apply_edit(&line, &Edit::InsertVertex { index: 1, at }).is_ok());
+    // A bypass task takes exactly three points.
+    let task = def(
+        "11032500002705010000",
+        &[(20.0, 50.0), (20.1, 50.0), (20.05, 50.05)],
+    );
+    assert!(apply_edit(&task, &Edit::InsertVertex { index: 1, at }).is_err());
+}

@@ -18,6 +18,7 @@ fn a_phase_line_draws_its_line_and_both_end_labels() {
         meters_per_pixel: 10.0,
         text_width: &width,
         ms_info: None,
+        style: crate::engine::api::Style::default(),
     })
     .unwrap();
     let lines: Vec<_> = out.shapes.iter().flat_map(Shape::polylines).collect();

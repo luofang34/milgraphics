@@ -124,7 +124,12 @@ impl SymbolSpec {
 
     /// Whether control points may be inserted and deleted.
     pub fn allows_vertex_edits(&self) -> bool {
-        self.family.allows_vertex_edits()
+        match self.family {
+            // Upstream allows editing the points of any graphic that does
+            // not take a fixed number of them.
+            Family::Ported => self.max_points > self.min_points,
+            family => family.allows_vertex_edits(),
+        }
     }
 
     /// The upstream catalog row for this symbol: its hierarchy path and

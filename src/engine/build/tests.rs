@@ -26,6 +26,7 @@ fn build_with(
         meters_per_pixel: mpp,
         text_width: &width,
         ms_info: None,
+        style: crate::engine::api::Style::default(),
     };
     build_tg(&input, &Settings::default(), &Overrides::default()).unwrap()
 }
@@ -230,6 +231,7 @@ fn overrides_replace_the_symbol_colours() {
         meters_per_pixel: 1.0,
         text_width: &width,
         ms_info: None,
+        style: crate::engine::api::Style::default(),
     };
     let o = Overrides {
         line_color: Some(Rgba::opaque(1, 2, 3)),

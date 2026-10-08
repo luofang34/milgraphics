@@ -29,6 +29,7 @@ pub(crate) fn resolve(
         anchors,
         symbol,
         modifiers,
+        style,
         geographic,
         shape_count,
         part,
@@ -52,6 +53,7 @@ pub(crate) fn resolve(
         meters_per_pixel: mpp,
         text_width: &width,
         ms_info: crate::family::ms_info(symbol),
+        style: *style,
     };
     let Ok(out) = api::draw(&input) else {
         return Ok((Vec::new(), Vec::new()));

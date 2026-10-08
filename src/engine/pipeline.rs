@@ -36,7 +36,12 @@ mod tests;
 /// Draws one graphic as `render_GE` does.
 pub(crate) fn render(input: &Input<'_>) -> Result<Output, EngineError> {
     let settings = Settings::default();
-    let mut tg = build_tg(input, &settings, &Overrides::default())?;
+    let overrides = Overrides {
+        line_color: input.style.line_color,
+        fill_color: input.style.fill_color,
+        ..Overrides::default()
+    };
+    let mut tg = build_tg(input, &settings, &overrides)?;
     let control = tg.pixels.clone();
     prepare(&mut tg, input, &settings)?;
     let fill_shapes = fills_of_original(&mut tg, &control);

@@ -22,6 +22,26 @@ pub(crate) struct Input<'a> {
     pub(crate) text_width: &'a dyn Fn(&str) -> f64,
     /// The symbol's draw rule and point range, as upstream's `MSInfo` has them.
     pub(crate) ms_info: Option<super::line_type::classes::MsInfo>,
+    /// The operator's colours, in place of the symbol's.
+    pub(crate) style: Style,
+}
+
+/// Colours chosen by the operator; absent ones follow the symbol.
+#[derive(Clone, Copy, Debug, Default, PartialEq)]
+pub(crate) struct Style {
+    pub(crate) line_color: Option<crate::style::Rgba>,
+    pub(crate) fill_color: Option<crate::style::Rgba>,
+}
+
+impl Style {
+    /// The overrides of a definition.
+    pub(crate) fn of(style: &crate::definition::StyleOverrides) -> Self {
+        let parse = |c: &Option<String>| c.as_deref().and_then(crate::style::Rgba::parse_hex);
+        Self {
+            line_color: parse(&style.line_color),
+            fill_color: parse(&style.fill_color),
+        }
+    }
 }
 
 impl core::fmt::Debug for Input<'_> {

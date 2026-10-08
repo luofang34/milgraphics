@@ -98,6 +98,7 @@ pub(crate) enum Decoration {
         anchors: Vec<GeoPoint>,
         symbol: crate::sidc::SymbolId,
         modifiers: Box<crate::modifier::Modifiers>,
+        style: crate::engine::api::Style,
         geographic: Vec<bool>,
         shape_count: usize,
         part: PartId,
