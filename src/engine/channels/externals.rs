@@ -16,7 +16,12 @@ pub(crate) trait ChannelExternals {
     /// Upstream `flot.GetFlotDouble`: replaces `pts` (pre-sized to the larger
     /// of `counter` and the flot count) with the flot and returns its point
     /// count.
-    fn flot(&self, pts: &mut [Pt], segment_length: f64, counter: i32) -> Result<i32, EngineError>;
+    fn flot(
+        &self,
+        pts: &mut Vec<Pt>,
+        segment_length: f64,
+        counter: i32,
+    ) -> Result<i32, EngineError>;
 
     /// Upstream `DISMSupport.GetDISMCoverDoubleRevC`: the cover glyph for the
     /// first `counter` points of `pts`, returning its point count.
