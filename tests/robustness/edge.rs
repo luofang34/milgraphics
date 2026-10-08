@@ -8,7 +8,7 @@ use milgraphics::{
 
 use crate::fixtures::{
     AIR_CORRIDOR, BYPASS_EASY, MAIN_ATTACK, NAMED_AREA, PHASE_LINE, RANGE_FAN, definition,
-    projections, rendered, run_everywhere, vertex_counts,
+    projections, rendered, run_everywhere, symbol, vertex_counts,
 };
 
 const SCALE: f64 = 250_000.0;
@@ -255,6 +255,32 @@ fn screen_decorations_count_against_the_vertex_budget() {
             screen <= max,
             "{screen} screen vertices exceed the budget {max}"
         );
+    }
+}
+
+/// A wire's marks are screen-sized, so a close zoom stretches a few
+/// kilometres of wire across hundreds of thousands of pixels; its marks
+/// must spread out rather than fill the vertex budget.
+#[cfg_attr(not(target_arch = "wasm32"), test)]
+#[cfg_attr(target_arch = "wasm32", wasm_bindgen_test::wasm_bindgen_test)]
+fn wire_marks_stay_few_at_close_zoom() {
+    let points = [
+        (34.438074, 50.175501),
+        (34.466025, 50.187199),
+        (34.493975, 50.1782),
+        (34.521926, 50.188098),
+    ];
+    for version in [15, 16] {
+        let mut d = definition("290301", &points);
+        d.symbol = symbol(version, 0, "290301");
+        let c = construct(&d, &Config::default()).unwrap();
+        for scale in [SCALE, 1_000.0, 50.0] {
+            for p in projections(&d, scale) {
+                let plan = rendered(&c, p.as_ref(), &Budget::default()).unwrap();
+                let (_, screen) = vertex_counts(&plan);
+                assert!(screen <= 10_000, "v{version} at 1:{scale}: {screen}");
+            }
+        }
     }
 }
 
