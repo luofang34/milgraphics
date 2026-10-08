@@ -26,3 +26,4 @@ pub(crate) mod settings;
 pub(crate) mod tactical_lines;
 pub(crate) mod tg;
 pub(crate) mod tg_utility;
+pub(crate) mod visible;

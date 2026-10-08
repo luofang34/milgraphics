@@ -6,6 +6,7 @@ use crate::engine::base::{EngineError, Pt};
 use crate::engine::lineutility::basics::calc_distance_double;
 use crate::engine::tactical_lines as lt;
 use crate::engine::tg::Tg;
+use crate::engine::visible::PixelBox;
 
 use super::work::{MAX_LENGTH, MIN_LENGTH, get, scaled_size};
 
@@ -159,6 +160,30 @@ pub(crate) fn fortl_count(tg: &Tg, pts: &[Pt], vbl: i32) -> Result<i32, EngineEr
         if c < 4.0 {
             c = 4.0;
         }
+        counter = (i64::from(counter) + c as i64) as i32;
+    }
+    Ok(counter + 10 + vbl)
+}
+
+/// [`fortl_count`] for the zones, which with a `visible` box spike only the
+/// part of each segment near it.
+pub(crate) fn zone_count(
+    tg: &Tg,
+    pts: &[Pt],
+    vbl: i32,
+    visible: Option<&PixelBox>,
+) -> Result<i32, EngineError> {
+    let Some(bx) = visible else {
+        return fortl_count(tg, pts, vbl);
+    };
+    let increment = scaled_size(tg, 20.0);
+    let mut counter = 0_i32;
+    for j in 0..vbl - 1 {
+        let (a, b) = (get(pts, j)?, get(pts, j + 1)?);
+        let near = bx
+            .span(a, b)
+            .map_or(0.0, |(lo, hi)| hi - lo + 6.0 * increment);
+        let c = (calc_distance_double(a, b).min(near) / increment * 10.0).max(4.0);
         counter = (i64::from(counter) + c as i64) as i32;
     }
     Ok(counter + 10 + vbl)

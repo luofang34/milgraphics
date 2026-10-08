@@ -152,17 +152,14 @@ fn measured_count(tg: &Tg, pts: &[Pt], vbl: i32, settings: &Settings) -> Result<
         lt::OCCLUDED | lt::UOF => get_occluded_count_double(pts, vbl)? + vbl,
         lt::FORDIF => fordif_count(tg, pts)?,
         lt::ATDITCH | lt::ATDITCHC | lt::ATDITCHM => sz::ditch_count(pts, vbl, line_type)?,
-        lt::RIDGE
-        | lt::ATWALL
-        | lt::LINE
-        | lt::OBSAREA
+        lt::RIDGE | lt::ATWALL | lt::LINE | lt::FORTL => sz::fortl_count(tg, pts, vbl)?,
+        lt::OBSAREA
         | lt::OBSFAREA
         | lt::STRONG
         | lt::ZONE
         | lt::ENCIRCLE
         | lt::FORT_REVD
-        | lt::FORT
-        | lt::FORTL => sz::fortl_count(tg, pts, vbl)?,
+        | lt::FORT => sz::zone_count(tg, pts, vbl, settings.visible.as_ref())?,
         lt::FIX | lt::MNFLDFIX | lt::BYDIF => dism_fix(pts, settings)?,
         _ => vbl,
     })

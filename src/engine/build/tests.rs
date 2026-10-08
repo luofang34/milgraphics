@@ -27,6 +27,7 @@ fn build_with(
         text_width: &width,
         ms_info: None,
         style: crate::engine::api::Style::default(),
+        visible: None,
     };
     build_tg(&input, &Settings::default(), &Overrides::default()).unwrap()
 }
@@ -232,6 +233,7 @@ fn overrides_replace_the_symbol_colours() {
         text_width: &width,
         ms_info: None,
         style: crate::engine::api::Style::default(),
+        visible: None,
     };
     let o = Overrides {
         line_color: Some(Rgba::opaque(1, 2, 3)),

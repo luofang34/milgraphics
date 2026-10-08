@@ -35,7 +35,10 @@ mod tests;
 
 /// Draws one graphic as `render_GE` does.
 pub(crate) fn render(input: &Input<'_>) -> Result<Output, EngineError> {
-    let settings = Settings::default();
+    let settings = Settings {
+        visible: input.visible,
+        ..Settings::default()
+    };
     let overrides = Overrides {
         line_color: input.style.line_color,
         fill_color: input.style.fill_color,
