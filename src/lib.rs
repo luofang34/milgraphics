@@ -20,6 +20,7 @@ pub mod geojson;
 pub mod modifier;
 pub mod persist;
 pub mod pick;
+mod plane;
 pub mod render;
 pub mod sidc;
 pub mod standard;

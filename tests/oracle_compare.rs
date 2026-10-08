@@ -12,11 +12,12 @@ wasm_bindgen_test::wasm_bindgen_test_configure!(run_in_browser);
 mod compare {
     use milgraphics::render::{
         FixedAdvanceMetrics, Font, LocalEquirectangular, Projection, ScreenPoint, ScreenShape,
+        TextAlign,
     };
     use milgraphics::style::DashPattern;
     use milgraphics::{
-        Budget, Config, ControlPoint, GeoPoint, GraphicDefinition, GraphicId, SymbolId, View,
-        construct, render,
+        Altitude, Budget, Config, ControlPoint, GeoPoint, GraphicDefinition, GraphicId, SymbolId,
+        VerticalDatum, View, construct, render,
     };
     use serde_json::Value;
 
@@ -47,9 +48,22 @@ mod compare {
             SymbolId::parse(r["symbol"].as_str().unwrap()).unwrap(),
             points,
         );
-        d.modifiers.designation = r["modifiers"]["T_UNIQUE_DESIGNATION_1"]
-            .as_str()
-            .map(str::to_owned);
+        let m = &r["modifiers"];
+        d.modifiers.designation = m["T_UNIQUE_DESIGNATION_1"].as_str().map(str::to_owned);
+        let list = |key: &str| -> Vec<f64> {
+            m[key].as_str().map_or_else(Vec::new, |v| {
+                v.split(',').map(|x| x.parse().unwrap()).collect()
+            })
+        };
+        d.modifiers.distances_m = list("AM_DISTANCE");
+        d.modifiers.azimuths_deg = list("AN_AZIMUTH");
+        d.modifiers.altitudes = list("X_ALTITUDE_DEPTH")
+            .into_iter()
+            .map(|metres| Altitude {
+                metres,
+                datum: VerticalDatum::MeanSeaLevel,
+            })
+            .collect();
         d
     }
 
@@ -136,10 +150,26 @@ mod compare {
             .iter()
             .filter_map(|i| i.stroke.map(|s| s.dash))
             .collect();
+        // Where the text centre line is: the anchor moved by the label's
+        // offset in its rotated frame (x along the text, y down).
         let labels = plan
             .labels
             .iter()
-            .map(|l| (l.text.clone(), l.screen.unwrap(), l.rotation_deg))
+            .map(|l| {
+                let s = l.screen.unwrap();
+                let (sin, cos) = l.rotation_deg.to_radians().sin_cos();
+                let [ox, oy] = l.offset_em.map(|v| v * l.font.size_px);
+                let ox = if l.align == TextAlign::Center {
+                    ox
+                } else {
+                    0.0
+                };
+                let at = ScreenPoint {
+                    x: s.x + ox * cos - oy * sin,
+                    y: s.y + ox * sin + oy * cos,
+                };
+                (l.text.clone(), at, l.rotation_deg)
+            })
             .collect();
         Ours {
             lines,
@@ -159,12 +189,23 @@ mod compare {
             .collect()
     }
 
-    fn oracle_dashed(r: &Value) -> bool {
-        r["symbol_shapes"]
+    /// The dash patterns used, as a set: mil-sym dashes at 6 px on 3 px lines.
+    fn oracle_dashes(r: &Value) -> Vec<DashPattern> {
+        let mut d: Vec<DashPattern> = r["symbol_shapes"]
             .as_array()
             .unwrap()
             .iter()
-            .all(|s| s["dash"] == serde_json::json!([6, 6]))
+            .map(|s| {
+                if s["dash"] == serde_json::json!([6, 6]) {
+                    DashPattern::Dashed
+                } else {
+                    DashPattern::Solid
+                }
+            })
+            .collect();
+        d.sort();
+        d.dedup();
+        d
     }
 
     fn check_geometry(case: &str, tolerance_px: f64) -> (Value, Ours) {
@@ -175,11 +216,10 @@ mod compare {
             h <= tolerance_px,
             "{case}: Hausdorff {h:.3} px > {tolerance_px}"
         );
-        let dashed = oracle_dashed(&r);
-        assert!(
-            o.dash.iter().all(|&d| (d == DashPattern::Dashed) == dashed),
-            "{case}: dash"
-        );
+        let mut ours = o.dash.clone();
+        ours.sort();
+        ours.dedup();
+        assert_eq!(ours, oracle_dashes(&r), "{case}: dash patterns");
         (r, o)
     }
 
@@ -228,6 +268,112 @@ mod compare {
             assert!(
                 d <= 1.5,
                 "{case}: label centre {at:?}, oracle baseline {want:?}"
+            );
+        }
+    }
+
+    /// Every non-empty oracle label must have a label of ours with the same
+    /// text, within `along_px` along the text and `across_px` across it.
+    /// mil-sym gives centred area labels by their baseline, half an em
+    /// below the centre ours marks; `baseline` moves its anchor up to match.
+    fn check_labels(r: &Value, o: &Ours, along_px: f64, across_px: f64, baseline: bool) {
+        let f = frame(r);
+        let case = r["case"].as_str().unwrap();
+        let mut expected = 0;
+        for m in r["modifier_shapes"].as_array().unwrap() {
+            let text = m["text"].as_str().unwrap();
+            if text.trim_end().ends_with(':') {
+                continue;
+            }
+            expected += 1;
+            let mut want = px(&f, &m["position"]);
+            if baseline {
+                want.y -= 6.0;
+            }
+            let fits = o
+                .labels
+                .iter()
+                .filter(|(t, _, _)| t == text)
+                .any(|(_, at, rot)| {
+                    let (s, c) = rot.to_radians().sin_cos();
+                    let (dx, dy) = (want.x - at.x, want.y - at.y);
+                    let (along, across) = (dx * c + dy * s, -dx * s + dy * c);
+                    if std::env::var("ORACLE_REPORT").is_ok() {
+                        eprintln!("{case}: {text:?} along {along:.2} across {across:.2}");
+                    }
+                    along.abs() <= along_px && across.abs() <= across_px
+                });
+            assert!(fits, "{case}: no label {text:?} near the oracle's");
+        }
+        assert_eq!(expected, o.labels.len(), "{case}: label count");
+    }
+
+    #[cfg_attr(not(target_arch = "wasm32"), test)]
+    #[cfg_attr(target_arch = "wasm32", wasm_bindgen_test::wasm_bindgen_test)]
+    fn main_attacks_match_the_oracle() {
+        for case in [
+            "main-attack-3pt-d",
+            "main-attack-5pt-d",
+            "main-attack-3pt-e",
+            "main-attack-3pt-anticipated-d",
+        ] {
+            let (r, o) = check_geometry(case, 1.5);
+            // Accepted difference (UPSTREAM.md): mil-sym anchors the label on
+            // its own adjusted pixel path, up to ~10 px further along.
+            check_labels(&r, &o, 12.0, 2.5, false);
+        }
+    }
+
+    #[cfg_attr(not(target_arch = "wasm32"), test)]
+    #[cfg_attr(target_arch = "wasm32", wasm_bindgen_test::wasm_bindgen_test)]
+    fn air_corridors_match_the_oracle() {
+        for case in [
+            "air-corridor-d",
+            "air-corridor-e",
+            "air-corridor-anticipated-d",
+        ] {
+            let (r, o) = check_geometry(case, 1.5);
+            check_labels(&r, &o, 1.0, 1.0, false);
+        }
+    }
+
+    #[cfg_attr(not(target_arch = "wasm32"), test)]
+    #[cfg_attr(target_arch = "wasm32", wasm_bindgen_test::wasm_bindgen_test)]
+    fn range_fans_match_the_oracle() {
+        for case in [
+            "range-fan-sector-d",
+            "range-fan-sector-2-d",
+            "range-fan-sector-e",
+            "range-fan-sector-anticipated-d",
+        ] {
+            // mil-sym measures ranges on a sphere; ours are on the ellipsoid.
+            let (r, o) = check_geometry(case, 1.5);
+            check_labels(&r, &o, 1.5, 1.5, true);
+        }
+    }
+
+    #[cfg_attr(not(target_arch = "wasm32"), test)]
+    #[cfg_attr(target_arch = "wasm32", wasm_bindgen_test::wasm_bindgen_test)]
+    fn bypasses_match_the_oracle() {
+        for case in [
+            "bypass-easy-d",
+            "bypass-easy-e",
+            "bypass-easy-anticipated-d",
+        ] {
+            let (r, o) = check_geometry(case, 0.5);
+            check_labels(&r, &o, 0.0, 0.0, false);
+        }
+    }
+
+    #[cfg_attr(not(target_arch = "wasm32"), test)]
+    #[cfg_attr(target_arch = "wasm32", wasm_bindgen_test::wasm_bindgen_test)]
+    fn refused_cases_are_refused_here_too() {
+        for case in ["phase-line-1pt-d", "range-fan-no-an-d"] {
+            let r = record(case);
+            assert_ne!(r["can_render"], "true");
+            assert!(
+                construct(&definition(&r), &Config::default()).is_err(),
+                "{case}"
             );
         }
     }

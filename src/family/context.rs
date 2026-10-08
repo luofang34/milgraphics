@@ -14,7 +14,7 @@ use crate::support::SymbolSpec;
 /// Builder for one construction: geodesics, budgets, and the parts so far.
 #[derive(Debug)]
 pub(crate) struct Ctx<'a> {
-    pub(crate) earth: Earth,
+    pub(crate) earth: &'a Earth,
     pub(crate) config: &'a Config,
     pub(crate) palette: Palette,
     pub(crate) spec: &'static SymbolSpec,
@@ -27,7 +27,7 @@ pub(crate) struct Ctx<'a> {
 
 impl<'a> Ctx<'a> {
     pub(crate) fn new(
-        earth: Earth,
+        earth: &'a Earth,
         config: &'a Config,
         palette: Palette,
         spec: &'static SymbolSpec,
@@ -88,6 +88,11 @@ impl<'a> Ctx<'a> {
         Ok(ring)
     }
 
+    /// Reserves vertices for geometry built outside the geodesic helpers.
+    pub(crate) fn take_vertices(&mut self, count: usize) -> Result<(), BudgetError> {
+        self.meter.take(count)
+    }
+
     pub(crate) fn add_part(
         &mut self,
         role: PartRole,
@@ -104,6 +109,10 @@ impl<'a> Ctx<'a> {
             fill,
         });
         id
+    }
+
+    pub(crate) fn add_decoration(&mut self, decoration: ScreenDecoration) {
+        self.decorations.push(decoration);
     }
 
     pub(crate) fn add_label(&mut self, label: LabelSpec) {

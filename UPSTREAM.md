@@ -36,7 +36,22 @@ marks Axis2 "Disused").
 
 | Symbol | Standard | mil-sym-java | Status |
 |---|---|---|---|
-| Main Attack 151403, 2525E change 1 | TABLE L-X: draw rule Axis1 | `mse.txt`: Axis2 | Open: settle against the TABLE L-X figure when Main Attack is implemented |
+| Main Attack 151403, 2525E change 1 | TABLE L-X: draw rule Axis1 | `mse.txt`: Axis2 | Declared in `src/support.rs` (`catalog_divergence`); geometry is the same for both editions and matches the oracle |
+
+## Accepted differences from the oracle
+
+Each is bounded by a test in `tests/oracle_compare.rs`.
+
+| Graphic | Difference | Reason | Bound |
+|---|---|---|---|
+| All | Edges are WGS84 geodesics; mil-sym draws straight lines in its local pixel frame | Geographic correctness across projections; at tactical scale the two agree | Geometry within 0.5–1.5 px |
+| Main Attack | Body half-width is exactly half the width point's offset; mil-sym truncates to whole pixels | Ground-sized geometry must not depend on the display scale | Geometry within 1.5 px |
+| Main Attack | The designation is anchored at the geodesic midpoint of its control-point segment; mil-sym uses a midpoint of its internally adjusted pixel path | Label position must follow the control points, not renderer internals | Up to 12 px along the text, 2.5 px across |
+| Main Attack | `W`/`W1` are not drawn and are refused | Their text format on axes is not yet verified against the standard | Typed error |
+| Air Corridor | Empty `DTG Start:`/`DTG End:` lines are omitted; mil-sym prints them with no value | The standard's information block shows fields that have values | Label sets compared without empty fields |
+| Air Corridor | Control-point circles have 72 vertices and the radius is `AM`/2 on the ground; mil-sym uses 25-gons sized from a pixel scale measured northward at point 1 | Ground-sized geometry | Geometry within 1.5 px |
+| Range Fan, Sector | Ranges are measured on the WGS84 ellipsoid; mil-sym uses a sphere of radius 6,378,137 m | Correct ground distances | Geometry within 1.5 px |
+| Named Area of Interest | The label sits at the centre of the longitude/latitude bounds; mil-sym walks a spherical "minimum bounding rectangle" | Equivalent within a metre at tactical scale | Label within 1.5 px |
 
 ## Generated data
 

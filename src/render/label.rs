@@ -69,6 +69,14 @@ pub(crate) fn place(
                 .filter(|(dx, dy)| dx.hypot(*dy) > 0.0);
             line_end(direction, spec.line_offset)
         }
+        LabelPlacement::Along { toward } => {
+            let direction = screen
+                .zip(ctx.project(toward))
+                .map(|(a, b)| b.sub(a))
+                .filter(|(dx, dy)| dx.hypot(*dy) > 0.0);
+            let rotation = direction.map_or(0.0, |(dx, dy)| upright(dy.atan2(dx).to_degrees()));
+            (rotation, TextAlign::Center, [0.0, spec.line_offset])
+        }
     };
     let width_px = metrics.text_width_px(font, &spec.text);
     let height_px = metrics.line_height_px(font);
@@ -115,6 +123,17 @@ fn line_end(outward: Option<(f64, f64)>, line_offset: f64) -> (f64, TextAlign, [
             angle + 180.0
         };
         (upright, TextAlign::Right, [-LINE_END_GAP_EM, line_offset])
+    }
+}
+
+/// An angle in degrees folded into (-90, 90] so text reads left to right.
+fn upright(angle: f64) -> f64 {
+    if angle > 90.0 {
+        angle - 180.0
+    } else if angle <= -90.0 {
+        angle + 180.0
+    } else {
+        angle
     }
 }
 

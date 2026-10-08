@@ -13,8 +13,12 @@ use crate::support::{self, SymbolSpec, Unsupported};
 use crate::version::RENDERER_VERSION;
 
 mod area;
+mod axis;
+mod bypass;
 mod context;
+mod corridor;
 mod phase_line;
+mod range_fan;
 
 pub(crate) use context::Ctx;
 
@@ -28,13 +32,22 @@ pub enum Family {
         /// Label prefix, e.g. "NAI".
         prefix: &'static str,
     },
+    /// An axis of advance with a notched arrowhead (Main Attack).
+    Axis,
+    /// An air corridor of width `AM`.
+    Corridor,
+    /// A sector range fan from `AM` ranges and `AN` azimuths.
+    RangeFanSector,
+    /// An obstacle bypass box with arrowheads at the opening.
+    Bypass,
 }
 
 impl Family {
     /// Whether control points may be inserted and deleted.
     pub fn allows_vertex_edits(self) -> bool {
         match self {
-            Self::PhaseLine | Self::LabelledArea { .. } => true,
+            Self::PhaseLine | Self::LabelledArea { .. } | Self::Corridor => true,
+            Self::Axis | Self::RangeFanSector | Self::Bypass => false,
         }
     }
 }
@@ -124,10 +137,15 @@ pub fn construct(
     let spec = support::spec(&definition.symbol)?;
     validate(spec, definition, &config.budget)?;
     let palette: Palette = style::palette(&definition.symbol, &definition.style);
-    let mut ctx = Ctx::new(Earth::wgs84(), config, palette, spec);
+    let earth = Earth::wgs84();
+    let mut ctx = Ctx::new(&earth, config, palette, spec);
     match spec.family {
         Family::PhaseLine => phase_line::construct(&mut ctx, definition)?,
         Family::LabelledArea { prefix } => area::construct(&mut ctx, definition, prefix)?,
+        Family::Axis => axis::construct(&mut ctx, definition)?,
+        Family::Corridor => corridor::construct(&mut ctx, definition)?,
+        Family::RangeFanSector => range_fan::construct(&mut ctx, definition)?,
+        Family::Bypass => bypass::construct(&mut ctx, definition)?,
     }
     ctx.finish(definition, RENDERER_VERSION)
 }
@@ -154,9 +172,19 @@ pub(crate) fn move_handle(
 ) -> Result<(), EditError> {
     match (spec.family, handle) {
         (_, HandleId::Vertex(i)) => edit::move_vertex(definition, i, to),
-        (Family::PhaseLine | Family::LabelledArea { .. }, _) => {
-            Err(EditError::NoSuchHandle { handle })
+        (Family::RangeFanSector, HandleId::Range(_) | HandleId::Azimuth(_)) => {
+            range_fan::move_handle(definition, handle, to)
         }
+        (Family::Corridor, HandleId::Width) => {
+            let first = definition
+                .positions()
+                .next()
+                .ok_or(EditError::NoSuchHandle { handle })?;
+            let half = Earth::wgs84().inverse(first, to).distance_m;
+            definition.modifiers.distances_m = vec![2.0 * half];
+            Ok(())
+        }
+        _ => Err(EditError::NoSuchHandle { handle }),
     }
 }
 

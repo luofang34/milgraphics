@@ -60,7 +60,26 @@ pub struct GeoPart {
     pub fill: Fill,
 }
 
-/// A decoration whose size is fixed in screen pixels, so it can only be
+/// How large a pixel-sized decoration is.
+#[derive(Clone, Copy, Debug, PartialEq)]
+pub enum DecorationSize {
+    /// A fixed number of pixels.
+    Px(f64),
+    /// A fraction of the summed on-screen lengths of two geographic
+    /// segments, clamped to a pixel range.
+    Proportional {
+        /// The segments, as (start, end) pairs.
+        segments: [(GeoPoint, GeoPoint); 2],
+        /// Fraction of the summed length.
+        fraction: f64,
+        /// Smallest size in pixels.
+        min_px: f64,
+        /// Largest size in pixels.
+        max_px: f64,
+    },
+}
+
+/// A decoration whose size is set in screen pixels, so it can only be
 /// resolved once a projection is known.
 #[derive(Clone, Debug, PartialEq)]
 pub enum ScreenDecoration {
@@ -72,12 +91,27 @@ pub enum ScreenDecoration {
         tip: GeoPoint,
         /// A point the wings open toward; only its screen direction matters.
         toward: GeoPoint,
-        /// Wing length in pixels.
-        size_px: f64,
+        /// Wing length.
+        size: DecorationSize,
         /// Angle between each wing and the axis, in degrees.
         half_angle_deg: f64,
         /// Solid triangle rather than two strokes.
         filled: bool,
+        /// Outline style.
+        stroke: Stroke,
+    },
+    /// A line from `from` through `through`, continued a short pixel
+    /// distance past it to an open arrowhead: the orientation indicator of a
+    /// range fan.
+    Pointer {
+        /// Index of the part.
+        id: PartId,
+        /// Start of the line.
+        from: GeoPoint,
+        /// Where the arrowhead starts.
+        through: GeoPoint,
+        /// Arrowhead length and half-width in pixels.
+        head_px: f64,
         /// Outline style.
         stroke: Stroke,
     },
@@ -94,6 +128,12 @@ pub enum LabelPlacement {
         /// The neighbouring vertex inside the line, giving its direction.
         inward: GeoPoint,
     },
+    /// Centred on the anchor and rotated along the direction toward
+    /// `toward` (kept upright).
+    Along {
+        /// A point giving the text direction.
+        toward: GeoPoint,
+    },
 }
 
 /// A label in geographic terms.
@@ -107,7 +147,8 @@ pub struct LabelSpec {
     pub anchor: GeoPoint,
     /// How the text sits on the anchor.
     pub placement: LabelPlacement,
-    /// Vertical offset in line heights, positive downward.
+    /// Offset perpendicular to the text in ems, positive downward on screen;
+    /// stacked labels use whole ems.
     pub line_offset: f64,
     /// Whether map label collision may hide it.
     pub may_hide: bool,
