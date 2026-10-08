@@ -60,6 +60,16 @@ impl<'a> ScreenCtx<'a> {
         self.meter.take(count)
     }
 
+    /// The ground point under a screen position.
+    pub(crate) fn unproject(&self, p: ScreenPoint) -> Option<GeoPoint> {
+        self.projection.unproject(p)
+    }
+
+    /// The WGS84 model used for geodesics.
+    pub(crate) fn earth(&self) -> &Earth {
+        self.earth
+    }
+
     /// Screen position of a ground-clamped point.
     pub(crate) fn project(&mut self, p: GeoPoint) -> Option<ScreenPoint> {
         self.projection.project(p)

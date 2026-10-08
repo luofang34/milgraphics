@@ -88,6 +88,20 @@ pub struct ScreenDecoration(pub(crate) Decoration);
 /// The kinds of pixel-sized decoration.
 #[derive(Clone, Debug, PartialEq)]
 pub(crate) enum Decoration {
+    /// Shapes and labels the ported upstream renderer draws in pixels for
+    /// line type `line_type`, from the control points projected for the
+    /// view. Shapes at the indices in `geographic` are already parts of the
+    /// construction and are not drawn again, as long as the renderer gives
+    /// `shape_count` shapes.
+    Engine {
+        line_type: i32,
+        anchors: Vec<GeoPoint>,
+        symbol: crate::sidc::SymbolId,
+        modifiers: Box<crate::modifier::Modifiers>,
+        geographic: Vec<bool>,
+        shape_count: usize,
+        part: PartId,
+    },
     /// A two-winged arrowhead at `tip`, opening back toward `toward`.
     Arrowhead {
         /// Index of the part.

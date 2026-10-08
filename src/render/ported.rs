@@ -1,0 +1,139 @@
+//! Drawing graphics of the ported upstream renderer for a view.
+
+use crate::budget::BudgetError;
+use crate::construction::{Decoration, PartRole};
+use crate::engine::api::{self, Input, Justify};
+use crate::engine::base::{Pt, Shape, shape_type};
+use crate::family::shape_stroke;
+use crate::pick::{PickRef, PickTarget};
+use crate::render::label::{self, Label, TextAlign};
+use crate::render::screen::ScreenCtx;
+use crate::render::{Font, FontMetrics, ScreenItem, ScreenPoint, ScreenShape};
+use crate::style::{Fill, Rgba};
+
+/// Ground distance over which the view's scale at a graphic is measured.
+const SCALE_PROBE_M: f64 = 100.0;
+
+/// Screen items and labels of an engine decoration; nothing when a control
+/// point is hidden, since the renderer's pixel geometry cannot be clipped at
+/// the horizon.
+pub(crate) fn resolve(
+    ctx: &mut ScreenCtx<'_>,
+    decoration: &Decoration,
+    font: &Font,
+    metrics: &dyn FontMetrics,
+    pick: &impl Fn(PickTarget) -> PickRef,
+) -> Result<(Vec<ScreenItem>, Vec<Label>), BudgetError> {
+    let Decoration::Engine {
+        line_type,
+        anchors,
+        symbol,
+        modifiers,
+        geographic,
+        shape_count,
+        part,
+    } = decoration
+    else {
+        return Ok((Vec::new(), Vec::new()));
+    };
+    let projected: Option<Vec<ScreenPoint>> = anchors.iter().map(|&a| ctx.project(a)).collect();
+    let (Some(projected), Some(&first)) = (projected, anchors.first()) else {
+        return Ok((Vec::new(), Vec::new()));
+    };
+    let Some(mpp) = meters_per_pixel(ctx, first) else {
+        return Ok((Vec::new(), Vec::new()));
+    };
+    let width = |t: &str| metrics.text_width_px(font, t);
+    let input = Input {
+        line_type: *line_type,
+        symbol,
+        pixels: projected.iter().map(|p| Pt::new(p.x, p.y)).collect(),
+        modifiers,
+        meters_per_pixel: mpp,
+        text_width: &width,
+    };
+    let Ok(out) = api::draw(&input) else {
+        return Ok((Vec::new(), Vec::new()));
+    };
+    let paired = out.shapes.len() == *shape_count;
+    let mut items = Vec::new();
+    for (i, shape) in out.shapes.iter().enumerate() {
+        if paired && geographic.get(i).copied().unwrap_or(false) {
+            continue;
+        }
+        items.extend(screen_items(ctx, shape, pick(PickTarget::Part(*part)))?);
+    }
+    let labels = out
+        .labels
+        .into_iter()
+        .map(|l| {
+            let screen = ScreenPoint { x: l.x, y: l.y };
+            let anchor = ctx.unproject(screen).unwrap_or(first);
+            let align = match l.justify {
+                Justify::Left => TextAlign::Left,
+                Justify::Center => TextAlign::Center,
+                Justify::Right => TextAlign::Right,
+            };
+            let pick = pick(PickTarget::Part(*part));
+            label::at_screen(
+                l.text,
+                screen,
+                anchor,
+                l.angle_deg,
+                align,
+                font,
+                metrics,
+                pick,
+            )
+        })
+        .collect();
+    Ok((items, labels))
+}
+
+/// Ground metres per screen pixel eastward of `at`.
+fn meters_per_pixel(ctx: &mut ScreenCtx<'_>, at: crate::geo::GeoPoint) -> Option<f64> {
+    let east = ctx.earth().direct(at, 90.0, SCALE_PROBE_M);
+    let (a, b) = (ctx.project(at)?, ctx.project(east)?);
+    let (dx, dy) = b.sub(a);
+    let px = dx.hypot(dy);
+    (px.is_finite() && px > 0.0).then(|| SCALE_PROBE_M / px)
+}
+
+fn screen_items(
+    ctx: &mut ScreenCtx<'_>,
+    shape: &Shape,
+    pick: PickRef,
+) -> Result<Vec<ScreenItem>, BudgetError> {
+    let mut items = Vec::new();
+    for line in shape.polylines() {
+        ctx.take(line.len())?;
+        let mut points: Vec<ScreenPoint> = line
+            .into_iter()
+            .map(|(x, y)| ScreenPoint { x, y })
+            .collect();
+        let item = if shape.shape_type == shape_type::FILL {
+            if points.len() > 1 && points.first() == points.last() {
+                points.pop();
+            }
+            ScreenItem {
+                pick: pick.clone(),
+                role: PartRole::Decoration,
+                shape: ScreenShape::Polygon(points),
+                stroke: None,
+                fill: shape.fill_color.map_or(Fill::None, Fill::Solid),
+                decoration: true,
+            }
+        } else {
+            ScreenItem {
+                pick: pick.clone(),
+                role: PartRole::Decoration,
+                shape: ScreenShape::Polyline(points),
+                stroke: Some(shape_stroke(shape, Rgba::BLACK)),
+                fill: Fill::None,
+                decoration: true,
+            }
+        };
+        items.push(item);
+    }
+    Ok(items)
+}

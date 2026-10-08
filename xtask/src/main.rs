@@ -1,10 +1,13 @@
 //! Repository automation: `cargo xtask catalog` regenerates the catalog in
 //! `src/generated/` from the pinned mil-sym-java data files, and `cargo xtask
-//! references` the standard references from `tools/oracle/references.json`.
+//! references` the standard references from `tools/oracle/references.json`,
+//! and `cargo xtask specs` the declarations of graphics drawn by the ported
+//! renderer.
 
 mod catalog;
 mod error;
 mod references;
+mod specs;
 
 use std::error::Error;
 use std::io::Write;
@@ -21,6 +24,11 @@ fn main() -> Result<(), Box<dyn Error>> {
     {
         ["catalog"] => {
             let summary = catalog::run()?;
+            writeln!(std::io::stdout(), "{summary}")?;
+            Ok(())
+        }
+        ["specs"] => {
+            let summary = specs::run()?;
             writeln!(std::io::stdout(), "{summary}")?;
             Ok(())
         }

@@ -8,7 +8,7 @@ use thiserror::Error;
 #[derive(Debug, Error)]
 pub(crate) enum XtaskError {
     /// Unknown or missing subcommand.
-    #[error("usage: cargo xtask catalog | references")]
+    #[error("usage: cargo xtask catalog | references | specs")]
     Usage,
     /// The workspace root could not be derived from the manifest directory.
     #[error("cannot locate the workspace root from {0}")]

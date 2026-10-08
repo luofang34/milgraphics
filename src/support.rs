@@ -10,7 +10,7 @@ use crate::modifier::ModifierField;
 use crate::sidc::SymbolId;
 use crate::standard::StandardVersion;
 
-mod table;
+pub(crate) mod table;
 
 #[cfg(test)]
 mod tests;
