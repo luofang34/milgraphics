@@ -7,4 +7,5 @@
 // to the pipeline.
 #![allow(dead_code)]
 
+pub(crate) mod api;
 pub(crate) mod base;
