@@ -54,8 +54,10 @@ pub trait Projection {
 
     /// The part of the screen the host draws, if it knows it. Geometry
     /// beyond it is still returned, but chords that cannot reach it are not
-    /// refined, which keeps off-screen graphics cheap. The default `None`
-    /// refines everywhere.
+    /// refined, which keeps off-screen graphics cheap. A line whose
+    /// screen-sized decorations would stretch over more than 100,000 pixels
+    /// keeps them only near the viewport, and loses them without one. The
+    /// default `None` refines everywhere.
     fn viewport(&self) -> Option<ScreenRect> {
         None
     }

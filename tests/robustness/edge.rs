@@ -1,9 +1,10 @@
 //! Explicit degenerate and boundary inputs. Each must give a typed error or
 //! finite output; the ones named as errors must be errors.
 
+use milgraphics::render::{LocalEquirectangular, Projection, ScreenPoint, ScreenRect};
 use milgraphics::{
-    Altitude, Budget, BudgetError, Config, ConstructError, GraphicDefinition, VerticalDatum,
-    construct,
+    Altitude, Budget, BudgetError, Config, ConstructError, GeoPoint, GraphicDefinition,
+    VerticalDatum, construct,
 };
 
 use crate::fixtures::{
@@ -258,9 +259,33 @@ fn screen_decorations_count_against_the_vertex_budget() {
     }
 }
 
+/// The host's screen for [`Screened`].
+const SCREEN: ScreenRect = ScreenRect {
+    min: ScreenPoint { x: 0.0, y: 0.0 },
+    max: ScreenPoint {
+        x: 1600.0,
+        y: 1000.0,
+    },
+};
+
+/// A projection that reports [`SCREEN`] as its viewport.
+struct Screened(LocalEquirectangular);
+
+impl Projection for Screened {
+    fn project(&self, p: GeoPoint) -> Option<ScreenPoint> {
+        self.0.project(p)
+    }
+    fn unproject(&self, s: ScreenPoint) -> Option<GeoPoint> {
+        self.0.unproject(s)
+    }
+    fn viewport(&self) -> Option<ScreenRect> {
+        Some(SCREEN)
+    }
+}
+
 /// A wire's marks are screen-sized, so a close zoom stretches a few
-/// kilometres of wire across hundreds of thousands of pixels; its marks
-/// must spread out rather than fill the vertex budget.
+/// kilometres of wire across millions of pixels; its marks must stay few,
+/// cheap, and still drawn on screen.
 #[cfg_attr(not(target_arch = "wasm32"), test)]
 #[cfg_attr(target_arch = "wasm32", wasm_bindgen_test::wasm_bindgen_test)]
 fn wire_marks_stay_few_at_close_zoom() {
@@ -274,12 +299,21 @@ fn wire_marks_stay_few_at_close_zoom() {
         let mut d = definition("290301", &points);
         d.symbol = symbol(version, 0, "290301");
         let c = construct(&d, &Config::default()).unwrap();
-        for scale in [SCALE, 1_000.0, 50.0] {
-            for p in projections(&d, scale) {
-                let plan = rendered(&c, p.as_ref(), &Budget::default()).unwrap();
-                let (_, screen) = vertex_counts(&plan);
-                assert!(screen <= 10_000, "v{version} at 1:{scale}: {screen}");
-            }
+        for scale in [SCALE, 1_000.0, 50.0, 0.01] {
+            let (west, north) = points[0];
+            let local = LocalEquirectangular::new(west, north, scale, 96.0);
+            let plan = rendered(&c, &Screened(local), &Budget::default()).unwrap();
+            let (_, screen) = vertex_counts(&plan);
+            assert!(screen <= 10_000, "v{version} at 1:{scale}: {screen}");
+            let on_screen = plan.screen.iter().any(|i| {
+                i.shape.points().iter().any(|p| {
+                    (SCREEN.min.x..=SCREEN.max.x).contains(&p.x)
+                        && (SCREEN.min.y..=SCREEN.max.y).contains(&p.y)
+                })
+            });
+            assert!(on_screen, "v{version} at 1:{scale}: no marks on screen");
+            let unbounded = rendered(&c, &local, &Budget::default()).unwrap();
+            assert!(vertex_counts(&unbounded).1 <= 10_000);
         }
     }
 }
