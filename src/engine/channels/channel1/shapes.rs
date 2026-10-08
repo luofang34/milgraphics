@@ -38,9 +38,7 @@ fn line_of_contact_shapes(ch: &Chan<'_>, shapes: &mut Vec<Shape>) -> Result<(), 
         } else if k > 0 {
             shape.line_to(p);
             if p.style == PEN_UP {
-                if !shape.path.is_empty() {
-                    shapes.push(shape.clone());
-                }
+                push_shape(&shape, shapes);
                 begin_path = true;
             }
         } else {
@@ -60,10 +58,10 @@ fn skips_doubled_pen_up(ch: &Chan<'_>, k: i32) -> Result<bool, EngineError> {
         && k != ch.counter - 1)
 }
 
-fn push_if_drawn(shape: &Shape, shapes: &mut Vec<Shape>) {
-    if !shape.path.is_empty() {
-        shapes.push(shape.clone());
-    }
+/// Upstream adds the shape when `getShape() != null`, which holds for a
+/// path with no segments too, so an empty shape is kept.
+fn push_shape(shape: &Shape, shapes: &mut Vec<Shape>) {
+    shapes.push(shape.clone());
 }
 
 /// Arrow types and plain channels: one shape with a subpath per pen-up run.
@@ -104,7 +102,7 @@ fn polyline_shapes(ch: &Chan<'_>, shapes: &mut Vec<Shape>) -> Result<(), EngineE
             }
         }
         if k == ch.counter - 1 {
-            push_if_drawn(&shape, shapes);
+            push_shape(&shape, shapes);
         }
     }
     Ok(())
@@ -137,15 +135,13 @@ fn contact_shapes(ch: &Chan<'_>, shapes: &mut Vec<Shape>) -> Result<(), EngineEr
             if p.style == PEN_UP {
                 begin_line = true;
             } else if p.style == 10 {
-                if !shape.path.is_empty() {
-                    shapes.insert(0, shape.clone());
-                    shape = Shape::new(shape_type::POLYLINE);
-                }
+                shapes.insert(0, shape.clone());
+                shape = Shape::new(shape_type::POLYLINE);
                 begin_line = true;
             }
         }
         if k == ch.counter - 1 {
-            push_if_drawn(&shape, shapes);
+            push_shape(&shape, shapes);
         }
     }
     Ok(())
@@ -178,7 +174,7 @@ fn fence_shapes(ch: &Chan<'_>, shapes: &mut Vec<Shape>) -> Result<(), EngineErro
             }
         }
         if k == ch.counter - 1 {
-            push_if_drawn(&shape, shapes);
+            push_shape(&shape, shapes);
         }
     }
     Ok(())
