@@ -1,5 +1,5 @@
 //! Every declared MIL-STD-2525E change 1 and APP-6(E)(2) graphic, drawn with
-//! all of its amplifiers filled, is compared with a golden SVG reviewed
+//! all of its declared amplifiers filled, is compared with a golden SVG reviewed
 //! against the standard's template. `UPDATE_GOLDEN=1` rewrites
 //! `tests/golden/standard/`; a golden without a declared graphic fails.
 
@@ -24,6 +24,16 @@ fn filled(r: &Value) -> Option<(String, GraphicDefinition)> {
     let symbol = SymbolId::parse(r["symbol"].as_str()?).ok()?;
     let spec = support::spec(&symbol).ok()?;
     let mut d = definition(r);
+    // A case listed as differing from the oracle may give a field the
+    // template does not show, which the graphic then does not declare.
+    let listed = STANDARD
+        .lines()
+        .any(|l| l.split_whitespace().next() == Some(case));
+    for field in ModifierField::ALL {
+        if listed && !spec.modifiers.iter().any(|m| m.field == field) {
+            d.modifiers.clear(field);
+        }
+    }
     for m in spec.modifiers {
         if d.modifiers.is_set(m.field) {
             continue;

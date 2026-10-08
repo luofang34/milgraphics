@@ -15,6 +15,8 @@ use crate::engine::settings::Settings;
 use crate::engine::tactical_lines as tl;
 use crate::engine::tg::{ModifierLabel, Tg};
 
+mod versions;
+
 fn width(text: &str) -> f64 {
     7.0 * text.chars().count() as f64
 }

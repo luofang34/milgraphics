@@ -175,6 +175,8 @@ fn declaration(row: &Row, version: u32) -> String {
     let mut fields: Vec<String> = Vec::new();
     let mut listed: BTreeSet<&str> = row.modifiers.iter().map(String::as_str).collect();
     listed.extend(fields::added(version, row.symbol_set, row.entity));
+    let removed = fields::removed(version, row.symbol_set, row.entity);
+    listed.retain(|f| !removed.contains(f));
     for (field, needed) in [("AM", am), ("AN", an)] {
         if needed > 0 {
             listed.remove(field);

@@ -19,3 +19,33 @@
 25170600-e open sides joined at the bends, no circle at each control point
 25170700-app6e open sides joined at the bends, no circle at each control point
 25170700-e open sides joined at the bends, no circle at each control point
+25120100-app6e the template's label is AOO, not AO
+25120100-app6e-anticipated the template's label is AOO, not AO
+25120100-app6e-s100k the template's label is AOO, not AO
+25140100-app6e the template has no FLOT text
+25151000-app6e the template shows T inside the area, not H
+25240101-app6e the template stacks MIN ALT, MAX ALT, Y and W - W1 without colons, GRID or EFF
+25240102-app6e the template shows H after Grids, not Y
+25240103-app6e the template shows H after Grids, not Y
+25240201-app6e the template shows T2 and AS under the label
+25240202-app6e the template shows T2 and AS under the label
+25240203-app6e the template shows T2 and AS under the label
+25240301-app6e the template shows T2 and AS under the label
+25240302-app6e the template shows T2 and AS under the label
+25240303-app6e the template shows T2 and AS under the label
+25240401-app6e the template shows T2 and AS under the label
+25240402-app6e the template shows T2 and AS under the label
+25240403-app6e the template shows T2 and AS under the label
+25241101-app6e the template's label is ATI followed by T, not ATIZ
+25241101-app6e-anticipated the template's label is ATI followed by T, not ATIZ
+25241101-app6e-s100k the template's label is ATI followed by T, not ATIZ
+25241102-app6e the template's label is ATI ZONE, not ATIZ
+25241103-app6e the template's label is ATI ZONE, not ATIZ
+25260100-app6e the template follows the label with T2 and AS
+25260200-app6e the template follows the label with T2 and AS at both ends
+25272200-app6e the template labels the contour with H, not T
+25290600-app6e the template stacks T, AM, W and W1 beside the lane
+25290600-app6e-anticipated the template stacks T, AM, W and W1 beside the lane
+25290600-app6e-s100k the template stacks T, AM, W and W1 beside the lane
+25300100-app6e the template follows the label with T1, not T
+25310800-app6e the template shows CSA T, W - W1 and N

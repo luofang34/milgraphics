@@ -99,6 +99,8 @@ pub(crate) struct Tg {
     pub(crate) t: String,
     /// Modifier T1.
     pub(crate) t1: String,
+    /// Modifier T2.
+    pub(crate) t2: String,
     /// Modifier AM (distance, metres).
     pub(crate) am: String,
     /// Additional AM values.
@@ -175,6 +177,7 @@ impl Tg {
             line_thickness: 0,
             t: String::new(),
             t1: String::new(),
+            t2: String::new(),
             am: String::new(),
             am1: String::new(),
             an: String::new(),

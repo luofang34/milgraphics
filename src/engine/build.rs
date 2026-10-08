@@ -137,6 +137,7 @@ fn set_text_fields(tg: &mut Tg, input: &Input<'_>) {
     set(&mut tg.h1, &m.additional_info2);
     set(&mut tg.t, &m.designation);
     set(&mut tg.t1, &m.designation2);
+    set(&mut tg.t2, &m.designation3);
     set(&mut tg.v, &m.equipment_type);
     set(&mut tg.as_, &m.country);
     set(&mut tg.ap, &m.target_number);

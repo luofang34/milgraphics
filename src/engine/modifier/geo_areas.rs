@@ -3,7 +3,8 @@
 //! factors.
 
 use super::add::{add_modifier, area_modifier, area_modifier_id};
-use super::geo::{Geo, nudged};
+use super::center_label::is_app6e_2;
+use super::geo::{Geo, establishing_hq, nudged};
 use super::layout::{
     add_dtg, add_modifier_bottom_segment, add_modifier_on_line, add_n_modifier, get_mbr,
     highest_point_left_of_center,
@@ -127,9 +128,21 @@ fn centered_areas(tg: &mut Tg, g: &mut Geo<'_>, line_type: i32) -> Result<bool, 
             add_dtg(tg, AREA, (cs, 2.0 * cs), c, c);
         }
         tl::BS_AREA | tl::BBS_AREA => at_center(tg, g, &name, 0.0, false),
+        tl::CSA if is_app6e_2(tg) => {
+            at_center(tg, g, &format!("{label}{ts}{name}"), -0.5 * cs, false);
+            add_dtg(tg, AREA, (0.5 * cs, 1.5 * cs), c, c);
+            add_n_modifier(tg);
+        }
         tl::BSA | tl::DSA | tl::CSA | tl::RSA => at_center(tg, g, &label, 0.0, false),
         tl::RIP | tl::BOMB | tl::TGMF => at_center(tg, g, &label, 0.0, true),
-        tl::LAA => at_center(tg, g, &label, -cs, false),
+        tl::LAA => {
+            at_center(tg, g, &label, -cs, false);
+            // The version 16 template puts H below the modifier icon, which
+            // the application draws at the centre.
+            if is_app6e_2(tg) {
+                at_center(tg, g, &tg.h.clone(), cs, false);
+            }
+        }
         tl::BATTLE | tl::STRONG => {
             at_center(tg, g, &name, 0.0, false);
             let echelon = tg.echelon_symbol.clone();
@@ -185,6 +198,11 @@ fn point_areas(tg: &mut Tg, g: &mut Geo<'_>, line_type: i32) -> Result<bool, Eng
             get_mbr(tg)?;
             add_n_modifier(tg);
         }
+        tl::FFA | tl::RFA | tl::NFA if is_app6e_2(tg) => {
+            at_center(tg, g, &label, -cs, false);
+            at_center(tg, g, &establishing_hq(tg), 0.0, false);
+            add_dtg(tg, AREA, (cs, 2.0 * cs), c, c);
+        }
         tl::FFA | tl::RFA | tl::NFA => {
             at_center(tg, g, &label, -cs, false);
             at_center(tg, g, &name, 0.0, false);
@@ -205,6 +223,7 @@ fn point_areas(tg: &mut Tg, g: &mut Geo<'_>, line_type: i32) -> Result<bool, Eng
             );
             add_dtg(tg, AREA, (0.5 * cs, 1.5 * cs), c, c);
         }
+        tl::ACA if is_app6e_2(tg) => aca_app6e_2(tg, g),
         tl::ACA => aca(tg, g)?,
         _ => return Ok(false),
     }
@@ -238,6 +257,19 @@ fn aca(tg: &mut Tg, g: &Geo<'_>) -> Result<(), EngineError> {
     Ok(())
 }
 
+/// `ACA` in version 16: the template's stack, without the fixed texts
+/// upstream adds to the location and the times.
+fn aca_app6e_2(tg: &mut Tg, g: &Geo<'_>) {
+    let (label, name) = (g.label.clone(), tg.t.clone());
+    at_center(tg, g, &format!("{label}{}{name}", g.t_space), -2.5, false);
+    at_center(tg, g, &tg.t2.clone(), -1.5, false);
+    at_center_id(tg, g, &format!("MIN ALT {}", tg.x), -0.5, (false, "H"));
+    at_center_id(tg, g, &format!("MAX ALT {}", tg.x1), 0.5, (false, "H1"));
+    at_center_id(tg, g, &tg.y.clone(), 1.5, (false, "H2"));
+    let dtg = format!("{}{}{}", tg.w, g.w_dash, tg.w1);
+    at_center_id(tg, g, &dtg, 2.5, (false, "W"));
+}
+
 /// The altitude, time and zone areas: label over name, DTG at the top
 /// left, or the stacked airspace zones.
 fn zone_areas(tg: &mut Tg, g: &mut Geo<'_>, line_type: i32) -> Result<bool, EngineError> {
@@ -255,8 +287,12 @@ fn zone_areas(tg: &mut Tg, g: &mut Geo<'_>, line_type: i32) -> Result<bool, Engi
         | tl::CENSOR
         | tl::KILLBOXBLUE
         | tl::KILLBOXPURPLE => {
-            at_center(tg, g, &label, -0.5 * cs, false);
-            at_center(tg, g, &name, 0.5 * cs, false);
+            if line_type == tl::ATI && is_app6e_2(tg) {
+                at_center(tg, g, &format!("{label}{}{name}", g.t_space), 0.0, false);
+            } else {
+                at_center(tg, g, &label, -0.5 * cs, false);
+                at_center(tg, g, &name, 0.5 * cs, false);
+            }
             // The DTG goes at the highest point left of centre, upright.
             let highest = highest_point_left_of_center(&tg.pixels, g.center)?;
             let path = (highest, nudged(highest, 0.001));

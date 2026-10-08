@@ -5,9 +5,11 @@ use crate::engine::tactical_lines as tl;
 use crate::engine::tg::Tg;
 
 /// `SymbolID.Version_2525E`.
-const VERSION_2525E: i32 = 13;
+pub(crate) const VERSION_2525E: i32 = 13;
 /// `SymbolID.Version_2525Ech1`.
-const VERSION_2525E_CH1: i32 = 15;
+pub(crate) const VERSION_2525E_CH1: i32 = 15;
+/// `SymbolID.Version_APP6Ech2`.
+pub(crate) const VERSION_APP6E_2: i32 = 16;
 
 /// Upstream `SymbolID.getVersion`: the two-digit version of a symbol code of
 /// at least 20 characters, 11 otherwise. `None` where upstream's parse would
@@ -19,12 +21,25 @@ pub(crate) fn symbol_version(symbol_id: &str) -> Option<i32> {
     symbol_id.get(0..2)?.parse::<i32>().ok()
 }
 
+/// True when the graphic's symbol code is of version 16, whose templates
+/// differ from upstream's labels for some graphics.
+pub(crate) fn is_app6e_2(tg: &Tg) -> bool {
+    symbol_version(&tg.symbol_id) == Some(VERSION_APP6E_2)
+}
+
 /// Upstream `GetCenterLabel`: the generic label per MIL-STD-2525 for the
-/// graphic's line type, or an empty string.
+/// graphic's line type, or an empty string. Version 16 templates name the
+/// area of operations and the artillery target intelligence zones
+/// differently.
 pub(crate) fn get_center_label(tg: &Tg) -> String {
     let version = symbol_version(&tg.symbol_id);
     let lt = tg.line_type;
     let versioned = match lt {
+        tl::AO if version == Some(VERSION_APP6E_2) => Some("AOO"),
+        tl::ATI if version == Some(VERSION_APP6E_2) => Some("ATI"),
+        tl::ATI_CIRCULAR | tl::ATI_RECTANGULAR if version == Some(VERSION_APP6E_2) => {
+            Some("ATI ZONE")
+        }
         tl::BRDGHD | tl::BRDGHD_GE => Some(match version {
             Some(v) if v >= VERSION_2525E => "BL",
             Some(_) => "B",
