@@ -37,9 +37,11 @@ fn is_clockwise(p: &[Pt]) -> Result<bool, EngineError> {
     let (p0, p1, p2, p3) = (p.at(0)?, p.at(1)?, p.at(2)?, p.at(3)?);
     let side01 = side(p0.x, p0.y, p1.x, p1.y, p2.x, p2.y);
     let side12 = side(p1.x, p1.y, p2.x, p2.y, p3.x, p3.y);
-    Ok((side01 == RIGHT_SIDE && side12 == RIGHT_SIDE)
-        || (side01 == RIGHT_SIDE && side12 == COLINEAR)
-        || (side01 == COLINEAR && side12 == RIGHT_SIDE))
+    // Clockwise when both turns are right, or one is right and the other
+    // straight.
+    let right = |s| s == RIGHT_SIDE;
+    let either = |s| s == RIGHT_SIDE || s == COLINEAR;
+    Ok((right(side01) && either(side12)) || (side01 == COLINEAR && right(side12)))
 }
 
 /// An open arrowhead (two barbs) at `from`, pointing along `from -> to`.

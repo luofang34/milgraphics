@@ -14,3 +14,10 @@ step cargo build --locked --release
 step tools/ci/file-size.sh
 step tools/ci/lint-config.sh
 step tools/ci/dep-guard.sh
+# The MSRV and beta jobs, when those toolchains are installed locally.
+if rustup toolchain list | grep -q '^1\.85'; then
+  step cargo +1.85 clippy --locked --lib -- -D warnings
+fi
+if rustup toolchain list | grep -q '^beta'; then
+  step cargo +beta clippy --locked --workspace --all-targets -- -D warnings
+fi

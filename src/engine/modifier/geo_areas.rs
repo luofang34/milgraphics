@@ -36,13 +36,9 @@ pub(super) fn area_labels(
     g: &mut Geo<'_>,
     line_type: i32,
 ) -> Result<bool, EngineError> {
-    if simple_areas(tg, g, line_type)?
+    Ok(simple_areas(tg, g, line_type)?
         || zone_areas(tg, g, line_type)?
-        || point_areas(tg, g, line_type)?
-    {
-        return Ok(true);
-    }
-    Ok(false)
+        || point_areas(tg, g, line_type)?)
 }
 
 /// Areas labelled with a name, label and DTG at the centre.
