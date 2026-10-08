@@ -83,9 +83,7 @@ fn cell(r: &Value) -> Option<String> {
         &Budget::default(),
     )
     .ok()?;
-    let pts = plan.screen.iter().flat_map(|i| match &i.shape {
-        ScreenShape::Polyline(p) | ScreenShape::Polygon(p) => p.clone(),
-    });
+    let pts = plan.screen.iter().flat_map(|i| i.shape.points().to_vec());
     let (mut x0, mut y0, mut x1, mut y1) = (f64::MAX, f64::MAX, f64::MIN, f64::MIN);
     for p in pts.chain(oracle.iter().flatten().copied()) {
         (x0, y0, x1, y1) = (x0.min(p.x), y0.min(p.y), x1.max(p.x), y1.max(p.y));
@@ -143,8 +141,9 @@ fn dump() {
     )
     .unwrap();
     for i in &plan.screen {
-        let (ScreenShape::Polyline(p) | ScreenShape::Polygon(p)) = &i.shape;
-        let pts: Vec<(i64, i64)> = p
+        let pts: Vec<(i64, i64)> = i
+            .shape
+            .points()
             .iter()
             .map(|p| ((p.x * 10.0) as i64, (p.y * 10.0) as i64))
             .collect();

@@ -14,9 +14,7 @@
 mod catalog {
     use std::collections::BTreeSet;
 
-    use milgraphics::render::{
-        FixedAdvanceMetrics, LocalEquirectangular, Projection, ScreenPoint, ScreenShape,
-    };
+    use milgraphics::render::{FixedAdvanceMetrics, LocalEquirectangular, Projection, ScreenPoint};
     use milgraphics::{
         Altitude, Budget, Config, ControlPoint, GeoPoint, GraphicDefinition, GraphicId,
         ModifierField, ModifierValue, SymbolId, VerticalDatum, View, construct, render, support,
@@ -199,9 +197,10 @@ mod catalog {
         let ours: Vec<Vec<ScreenPoint>> = plan
             .screen
             .iter()
-            .map(|i| match &i.shape {
-                ScreenShape::Polyline(p) => p.clone(),
-                ScreenShape::Polygon(p) => p.iter().chain(p.first()).copied().collect(),
+            .map(|i| {
+                let p = i.shape.points();
+                let close = i.shape.is_closed().then(|| p.first()).flatten();
+                p.iter().chain(close).copied().collect()
             })
             .collect();
         let oracle = oracle_lines(r, &f);
@@ -282,7 +281,6 @@ mod catalog {
     /// than three, so the geographic tier never holds them.
     #[test]
     fn geographic_parts_are_drawable() {
-        use milgraphics::construction::GeoGeometry;
         let mut bad = Vec::new();
         for r in records() {
             let Ok(c) = construct(&definition(&r), &Config::default()) else {
@@ -298,10 +296,8 @@ mod catalog {
                     d.dedup();
                     d.len()
                 };
-                let ok = match &p.geometry {
-                    GeoGeometry::Line(pts) => distinct(pts) >= 2,
-                    GeoGeometry::Ring(pts) => distinct(pts) >= 3,
-                };
+                let needed = if p.geometry.is_closed() { 3 } else { 2 };
+                let ok = distinct(p.geometry.points()) >= needed;
                 if !ok {
                     bad.push(format!(
                         "{} part {:?}",

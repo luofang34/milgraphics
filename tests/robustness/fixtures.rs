@@ -1,8 +1,6 @@
 //! Definitions, projections and output checks shared by the robustness tests.
 
-use milgraphics::render::{
-    FixedAdvanceMetrics, GeoShape, LocalEquirectangular, Projection, ScreenPoint, ScreenShape,
-};
+use milgraphics::render::{FixedAdvanceMetrics, LocalEquirectangular, Projection, ScreenPoint};
 use milgraphics::{
     Budget, Config, Construction, ControlPoint, GeoPoint, GraphicDefinition, GraphicId, RenderPlan,
     SymbolId, View, construct, render,
@@ -119,15 +117,17 @@ fn lon_lat(p: [f64; 2], what: &str) {
 /// Every output coordinate is finite and geographic ones are in range.
 pub(crate) fn assert_plan_sane(plan: &RenderPlan) {
     for item in &plan.geo {
-        let (GeoShape::Lines(parts) | GeoShape::Polygons(parts)) = &item.shape;
-        parts
+        item.shape
+            .pieces()
             .iter()
             .flatten()
             .for_each(|&p| lon_lat(p, "geo vertex"));
     }
     for item in &plan.screen {
-        let (ScreenShape::Polyline(p) | ScreenShape::Polygon(p)) = &item.shape;
-        p.iter().for_each(|&p| screen_point(p, "screen vertex"));
+        item.shape
+            .points()
+            .iter()
+            .for_each(|&p| screen_point(p, "screen vertex"));
     }
     for l in &plan.labels {
         lon_lat([l.anchor.lon(), l.anchor.lat()], "label anchor");
@@ -155,17 +155,9 @@ pub(crate) fn vertex_counts(plan: &RenderPlan) -> (usize, usize) {
     let geo = plan
         .geo
         .iter()
-        .map(|i| match &i.shape {
-            GeoShape::Lines(p) | GeoShape::Polygons(p) => p.iter().map(Vec::len).sum::<usize>(),
-        })
+        .map(|i| i.shape.pieces().iter().map(Vec::len).sum::<usize>())
         .sum();
-    let screen = plan
-        .screen
-        .iter()
-        .map(|i| match &i.shape {
-            ScreenShape::Polyline(p) | ScreenShape::Polygon(p) => p.len(),
-        })
-        .sum();
+    let screen = plan.screen.iter().map(|i| i.shape.points().len()).sum();
     (geo, screen)
 }
 

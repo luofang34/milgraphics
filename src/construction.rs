@@ -8,7 +8,14 @@ use crate::style::{Fill, Stroke};
 /// Index of a part within one graphic's construction, stable for a given
 /// symbol and control-point count, so picks and styling can refer to it.
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord)]
-pub struct PartId(pub u16);
+pub struct PartId(pub(crate) u16);
+
+impl PartId {
+    /// The part's index.
+    pub const fn get(self) -> u16 {
+        self.0
+    }
+}
 
 /// What a part represents in the symbol.
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
@@ -30,6 +37,7 @@ pub enum PartRole {
 /// so an engine that draws straight segments in its own projection shows the
 /// geodesic within the construction tolerance.
 #[derive(Clone, Debug, PartialEq)]
+#[non_exhaustive]
 pub enum GeoGeometry {
     /// An open polyline.
     Line(Vec<GeoPoint>),
@@ -43,6 +51,11 @@ impl GeoGeometry {
         match self {
             Self::Line(p) | Self::Ring(p) => p,
         }
+    }
+
+    /// Whether the last vertex joins back to the first.
+    pub fn is_closed(&self) -> bool {
+        matches!(self, Self::Ring(_))
     }
 }
 

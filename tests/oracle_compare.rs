@@ -11,7 +11,7 @@ wasm_bindgen_test::wasm_bindgen_test_configure!(run_in_browser);
 #[cfg(test)]
 mod compare {
     use milgraphics::render::{
-        FixedAdvanceMetrics, LocalEquirectangular, Projection, ScreenPoint, ScreenShape, TextAlign,
+        FixedAdvanceMetrics, LocalEquirectangular, Projection, ScreenPoint, TextAlign,
     };
     use milgraphics::style::DashPattern;
     use milgraphics::{
@@ -132,9 +132,10 @@ mod compare {
         let lines = plan
             .screen
             .iter()
-            .map(|i| match &i.shape {
-                ScreenShape::Polyline(p) => p.clone(),
-                ScreenShape::Polygon(p) => p.iter().chain(p.first()).copied().collect(),
+            .map(|i| {
+                let p = i.shape.points();
+                let close = i.shape.is_closed().then(|| p.first()).flatten();
+                p.iter().chain(close).copied().collect()
             })
             .collect();
         let dash = plan
