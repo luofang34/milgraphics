@@ -11,12 +11,12 @@ use super::circle::calc_circle_double;
 use super::ditch::get_ditch_spike_double;
 use super::extend::*;
 use super::intersect::calc_distance2;
-use super::line_types as lt;
 use super::relative::closest_point_on_line;
 use super::saafr::get_saafr_fill_segment;
 use super::slope::*;
 use super::squall::get_squall_segment;
 use crate::engine::base::Pt;
+use crate::engine::tactical_lines as lt;
 
 const EPS: f64 = 1e-9;
 

@@ -47,6 +47,8 @@ pub(crate) enum Family {
     /// An obstacle bypass box with arrowheads at the opening.
     Bypass,
     /// Drawn by the ported upstream renderer.
+    // Declared for a graphic once it matches the oracle (`cargo xtask specs`).
+    #[allow(dead_code)]
     Ported,
 }
 

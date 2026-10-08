@@ -51,6 +51,8 @@ pub(super) const fn cm(standard: StandardVersion, entity: u32, family: Family) -
 
 /// Graphic `entity` of symbol set `symbol_set` in `standard`, drawn by the
 /// ported upstream renderer.
+// Used by the generated table once a graphic matches the oracle.
+#[allow(dead_code)]
 pub(crate) const fn ported(standard: StandardVersion, symbol_set: u8, entity: u32) -> SymbolSpec {
     SymbolSpec {
         standard,

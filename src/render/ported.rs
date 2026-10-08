@@ -76,11 +76,13 @@ pub(crate) fn resolve(
             };
             let pick = pick(PickTarget::Part(*part));
             label::at_screen(
-                l.text,
-                screen,
-                anchor,
-                l.angle_deg,
-                align,
+                label::PlacedText {
+                    text: l.text,
+                    screen,
+                    anchor,
+                    rotation_deg: l.angle_deg,
+                    align,
+                },
                 font,
                 metrics,
                 pick,

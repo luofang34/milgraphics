@@ -20,7 +20,6 @@ pub(crate) mod ditch;
 pub(crate) mod extend;
 pub(crate) mod exterior;
 pub(crate) mod intersect;
-pub(crate) mod line_types;
 pub(crate) mod relative;
 pub(crate) mod saafr;
 pub(crate) mod slope;

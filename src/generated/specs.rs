@@ -3,9 +3,6 @@
 
 //! Graphics drawn by the ported upstream renderer that match the oracle.
 
-use crate::modifier::ModifierField as M;
-use crate::standard::StandardVersion::{Mil2525Dch1, Mil2525Ech1};
-use crate::support::table::{MANY, list, opt, ported};
 use crate::support::SymbolSpec;
 
 pub(crate) static SPECS: &[SymbolSpec] = &[

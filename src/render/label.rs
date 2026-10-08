@@ -90,18 +90,32 @@ pub(crate) fn place(
     }
 }
 
-/// A label the ported renderer placed in pixels: `screen` is upstream's
-/// text position (the start, centre or end of its baseline, by `align`).
+/// A label the ported renderer placed in pixels.
+#[derive(Debug)]
+pub(crate) struct PlacedText {
+    pub(crate) text: String,
+    /// Upstream's text position: the start, centre or end of the baseline,
+    /// by `align`.
+    pub(crate) screen: ScreenPoint,
+    /// The ground point under `screen`.
+    pub(crate) anchor: GeoPoint,
+    pub(crate) rotation_deg: f64,
+    pub(crate) align: TextAlign,
+}
+
 pub(crate) fn at_screen(
-    text: String,
-    screen: ScreenPoint,
-    anchor: GeoPoint,
-    rotation_deg: f64,
-    align: TextAlign,
+    placed: PlacedText,
     font: &Font,
     metrics: &dyn FontMetrics,
     pick: PickRef,
 ) -> Label {
+    let PlacedText {
+        text,
+        screen,
+        anchor,
+        rotation_deg,
+        align,
+    } = placed;
     let width_px = metrics.text_width_px(font, &text);
     let height_px = metrics.line_height_px(font);
     // Upstream gives the baseline; the anchor here is the middle of the line.

@@ -103,7 +103,9 @@ fn versions_are_known_codes_and_geometry_matches_family() {
             CatalogDrawRule::Standard(_) => assert_eq!(e.symbol_set, 25),
             CatalogDrawRule::Metoc(_) => {
                 assert!(matches!(e.symbol_set, 45 | 46));
-                assert_ne!(e.geometry, GeometryKind::Point);
+                // The only METOC point drawn from several points is the wind plot.
+                let multipoint = e.draw_rule == CatalogDrawRule::Metoc(MoDrawRule::Point5);
+                assert!(e.geometry != GeometryKind::Point || multipoint);
             }
         }
     }

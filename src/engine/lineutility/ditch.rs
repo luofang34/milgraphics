@@ -3,9 +3,9 @@
 
 use super::basics::{calc_distance_double, mid_point_double};
 use super::extend::extend_line_double;
-use super::line_types as lt;
 use super::slope::{calc_true_intersect_double2, calc_true_lines_double, calc_true_slope_double};
 use crate::engine::base::{At, EngineError, Pt, idx};
+use crate::engine::tactical_lines as lt;
 
 /// Truncates both operands to `i32`, adds them as Java `int`s and widens.
 fn trunc_add(a: f64, b: f64) -> f64 {

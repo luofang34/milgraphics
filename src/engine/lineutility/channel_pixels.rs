@@ -1,8 +1,8 @@
 //! Port of `MoveChannelPixels` and `moveSingleCPixels` from lineutility.java:
 //! nudges coincident points apart so slopes stay defined.
 
-use super::line_types as lt;
 use crate::engine::base::{At, EngineError, Pt};
+use crate::engine::tactical_lines as lt;
 
 /// Upstream `MoveChannelPixels`: while two consecutive points coincide, moves
 /// the second one to the next whole pixel in x.

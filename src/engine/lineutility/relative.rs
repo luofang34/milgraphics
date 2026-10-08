@@ -3,9 +3,9 @@
 
 use super::basics::mid_point_double;
 use super::extend::extend_line_double;
-use super::line_types as lt;
 use super::slope::{calc_true_intersect_double2, calc_true_slope_double};
 use crate::engine::base::{At, EngineError, Pt};
+use crate::engine::tactical_lines as lt;
 
 /// Upstream `ClosestPointOnLine`: the point of the segment pt0-pt1 closest to
 /// `pt_relative`.
