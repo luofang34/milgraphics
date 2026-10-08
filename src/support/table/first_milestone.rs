@@ -9,6 +9,7 @@ use crate::support::SymbolSpec;
 
 const NAI: Family = Family::LabelledArea { prefix: "NAI" };
 const T: &[crate::support::ModifierSpec] = &[opt(M::T)];
+const AXIS: &[crate::support::ModifierSpec] = &[opt(M::T), opt(M::W), opt(M::W1)];
 const CORRIDOR: &[crate::support::ModifierSpec] = &[
     opt(M::T),
     req(M::AM),
@@ -17,8 +18,11 @@ const CORRIDOR: &[crate::support::ModifierSpec] = &[
     opt(M::W1),
 ];
 /// Ranges, and a left and right azimuth per sector (see `family::range_fan`).
-const FAN: &[crate::support::ModifierSpec] =
-    &[list(M::AM, true, 1, MANY), list(M::AN, true, 2, MANY)];
+const FAN: &[crate::support::ModifierSpec] = &[
+    list(M::AM, true, 1, MANY),
+    list(M::AN, true, 2, MANY),
+    list(M::X, false, 1, MANY),
+];
 
 pub(super) static SPECS: &[SymbolSpec] = &[
     cm(D1, 140300, Family::PhaseLine)
@@ -29,8 +33,8 @@ pub(super) static SPECS: &[SymbolSpec] = &[
         .amplifiers(T),
     cm(D1, 120200, NAI).points(3, MANY).amplifiers(T),
     cm(E1, 120200, NAI).points(3, MANY).amplifiers(T),
-    cm(D1, 151403, Family::Axis).points(3, 50).amplifiers(T),
-    cm(E1, 151403, Family::Axis).points(3, 50).amplifiers(T),
+    cm(D1, 151403, Family::Axis).points(3, 50).amplifiers(AXIS),
+    cm(E1, 151403, Family::Axis).points(3, 50).amplifiers(AXIS),
     cm(D1, 170100, Family::Corridor)
         .points(2, 99)
         .amplifiers(CORRIDOR),

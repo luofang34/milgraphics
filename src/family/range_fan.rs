@@ -2,12 +2,12 @@
 //! `AM` ranges (metres) and `AN` azimuth pairs (degrees from true north).
 
 use crate::construction::{
-    Decoration, GeoGeometry, HandleKind, HandleSpec, LabelPlacement, LabelSpec, PartRole,
+    Decoration, GeoGeometry, HandleKind, HandleSpec, LabelPlacement, LabelSpec, PartId, PartRole,
 };
 use crate::definition::GraphicDefinition;
 use crate::edit::{EditError, HandleId};
 use crate::family::{ConstructError, Ctx, vertex_handles};
-use crate::geo::GeoPoint;
+use crate::geo::{Altitude, GeoPoint};
 use crate::geodesy::Earth;
 use crate::style::Fill;
 
@@ -116,9 +116,37 @@ pub(crate) fn construct(ctx: &mut Ctx<'_>, def: &GraphicDefinition) -> Result<()
         head_px: POINTER_HEAD_PX,
         stroke: ctx.palette.line,
     });
+    add_labels(ctx, &fan, center, bearing, part, &m.altitudes);
     let earth = ctx.earth;
-    for s in &fan {
+    ctx.add_handles(vertex_handles(def));
+    let handles = handles(earth, center, &m.distances_m, &m.azimuths_deg, bearing);
+    ctx.add_handles(handles);
+    Ok(())
+}
+
+/// Per sector: `ALT` and `RG` stacked on the orientation bearing at mid
+/// range, and its azimuths on its edges.
+fn add_labels(
+    ctx: &mut Ctx<'_>,
+    fan: &[Sector],
+    center: GeoPoint,
+    bearing: f64,
+    part: PartId,
+    altitudes: &[Altitude],
+) {
+    let earth = ctx.earth;
+    for (k, s) in fan.iter().enumerate() {
         let mid = (s.min_m + s.max_m) / 2.0;
+        if let Some(a) = altitudes.get(k) {
+            ctx.add_label(LabelSpec {
+                part,
+                text: format!("ALT {}", super::corridor::altitude_text(a)),
+                anchor: earth.direct(center, bearing, mid),
+                placement: LabelPlacement::Centered,
+                line_offset: 0.0,
+                may_hide: true,
+            });
+        }
         let labels = [
             (
                 format!("RG {}", s.max_m.round()),
@@ -143,10 +171,6 @@ pub(crate) fn construct(ctx: &mut Ctx<'_>, def: &GraphicDefinition) -> Result<()
             });
         }
     }
-    ctx.add_handles(vertex_handles(def));
-    let handles = handles(earth, center, &m.distances_m, &m.azimuths_deg, bearing);
-    ctx.add_handles(handles);
-    Ok(())
 }
 
 fn handles(

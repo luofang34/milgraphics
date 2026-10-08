@@ -49,6 +49,8 @@ public final class Oracle {
         settings.setTextBackgroundMethod(RendererSettings.TextBackgroundMethod_NONE);
         settings.setLabelFont(family, Font.BOLD, 12);
         settings.setMPLabelFont(family, Font.BOLD, 12);
+        // Render at the case's scale; upstream otherwise clamps it to the bbox width.
+        settings.setAutoAdjustScale(false);
 
         String[] f = args[1].split("\t", -1);
         String id = f[0], symbol = f[1], points = f[2], bbox = f[4];

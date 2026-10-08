@@ -156,7 +156,7 @@ fn labels(
 }
 
 /// Altitude in whole feet with its datum, e.g. "3280 FT AMSL".
-fn altitude_text(a: &Altitude) -> String {
+pub(super) fn altitude_text(a: &Altitude) -> String {
     let feet = ((a.metres * FEET_PER_METRE * 10.0).round() / 10.0).trunc();
     let datum = match a.datum {
         VerticalDatum::MeanSeaLevel => "AMSL",

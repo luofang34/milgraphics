@@ -6,7 +6,7 @@
 //! segment) and the arrowhead length (its distance from the tip along that
 //! segment). Everything is sized on the ground, so it scales with the map.
 
-use crate::construction::{GeoGeometry, LabelPlacement, LabelSpec, PartRole};
+use crate::construction::{GeoGeometry, LabelPlacement, LabelSpec, PartId, PartRole};
 use crate::definition::GraphicDefinition;
 use crate::family::{ConstructError, Ctx, vertex_handles};
 use crate::geo::GeoPoint;
@@ -48,25 +48,7 @@ pub(crate) fn construct(ctx: &mut Ctx<'_>, def: &GraphicDefinition) -> Result<()
         stroke,
         Fill::None,
     );
-    if let Some(t) = def.modifiers.designation() {
-        // Below the first segment for one-segment axes, below the second for
-        // two, and just above the third for longer ones (as mil-sym-java).
-        let (segment, line_offset) = match control.len() {
-            0..=3 => (0, 2.0),
-            4 => (1, 2.0),
-            _ => (2, -0.5),
-        };
-        if let (Some(&a), Some(&b)) = (control.get(segment), control.get(segment + 1)) {
-            ctx.add_label(LabelSpec {
-                part: body,
-                text: t.to_owned(),
-                anchor: ctx.earth.interpolate(a, b, 0.5),
-                placement: LabelPlacement::Along { toward: b },
-                line_offset,
-                may_hide: false,
-            });
-        }
-    }
+    add_labels(ctx, def, &control, body);
     ctx.add_handles(
         vertex_handles(def)
             .into_iter()
@@ -111,6 +93,41 @@ fn shape(points: &[Xy]) -> Option<Shape> {
         upper,
         head: vec![tip, barb_l, l, inner, u, barb_u, tip],
     })
+}
+
+/// `W - `, `W1` and `T` above and below the middle of the axis: on the first
+/// segment for one-segment axes and the second for two, as three stacked
+/// lines; for longer ones the date-time groups straddle the second segment
+/// and `T` sits just above the third (as mil-sym-java).
+fn add_labels(ctx: &mut Ctx<'_>, def: &GraphicDefinition, control: &[GeoPoint], part: PartId) {
+    let m = &def.modifiers;
+    let dtg = non_empty(&m.dtg_start).map(|w| format!("{w} - "));
+    let dtg1 = non_empty(&m.dtg_end).map(str::to_owned);
+    let name = m.designation().map(str::to_owned);
+    let lines = match control.len() {
+        0..=3 => [(dtg, 0, 0.0), (dtg1, 0, 1.0), (name, 0, 2.0)],
+        4 => [(dtg, 1, 0.0), (dtg1, 1, 1.0), (name, 1, 2.0)],
+        _ => [(dtg, 1, -0.5), (dtg1, 1, 0.5), (name, 2, -0.5)],
+    };
+    for (text, segment, line_offset) in lines {
+        let (Some(text), Some(&a), Some(&b)) =
+            (text, control.get(segment), control.get(segment + 1))
+        else {
+            continue;
+        };
+        ctx.add_label(LabelSpec {
+            part,
+            text,
+            anchor: ctx.earth.interpolate(a, b, 0.5),
+            placement: LabelPlacement::Along { toward: b },
+            line_offset,
+            may_hide: false,
+        });
+    }
+}
+
+fn non_empty(text: &Option<String>) -> Option<&str> {
+    text.as_deref().filter(|t| !t.is_empty())
 }
 
 #[cfg(test)]
