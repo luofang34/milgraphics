@@ -153,8 +153,13 @@ impl Shape {
         }
     }
 
+    /// Starts a subpath. As Java's `Path2D.moveTo`, a move that directly
+    /// follows another move replaces it, so no one-point subpath remains.
     pub(crate) fn move_to(&mut self, p: Pt) {
-        self.path.push(PathOp::MoveTo(p.x, p.y));
+        match self.path.last_mut() {
+            Some(last @ PathOp::MoveTo(..)) => *last = PathOp::MoveTo(p.x, p.y),
+            _ => self.path.push(PathOp::MoveTo(p.x, p.y)),
+        }
     }
 
     pub(crate) fn line_to(&mut self, p: Pt) {

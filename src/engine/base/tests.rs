@@ -31,3 +31,21 @@ fn paths_split_into_polylines_at_moves() {
         vec![vec![(0.0, 0.0), (1.0, 0.0)], vec![(5.0, 5.0), (6.0, 5.0)]]
     );
 }
+
+#[test]
+fn consecutive_moves_collapse_to_the_last_one() {
+    let mut s = Shape::new(shape_type::POLYLINE);
+    s.move_to(Pt::new(0.0, 0.0));
+    s.move_to(Pt::new(1.0, 1.0));
+    s.line_to(Pt::new(2.0, 2.0));
+    s.move_to(Pt::new(3.0, 3.0));
+    s.move_to(Pt::new(4.0, 4.0));
+    assert_eq!(
+        s.path,
+        vec![
+            PathOp::MoveTo(1.0, 1.0),
+            PathOp::LineTo(2.0, 2.0),
+            PathOp::MoveTo(4.0, 4.0)
+        ]
+    );
+}

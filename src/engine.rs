@@ -10,11 +10,15 @@
 pub(crate) mod api;
 pub(crate) mod arraysupport;
 pub(crate) mod base;
+pub(crate) mod channel_utility;
+pub(crate) mod channels;
 pub(crate) mod dism;
 pub(crate) mod flot;
 pub(crate) mod line_type;
 pub(crate) mod lineutility;
 pub(crate) mod metoc;
+pub(crate) mod modifier;
+pub(crate) mod partition;
 pub(crate) mod settings;
 pub(crate) mod tactical_lines;
 pub(crate) mod tg;
