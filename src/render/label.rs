@@ -59,25 +59,7 @@ pub(crate) fn place(
     metrics: &dyn FontMetrics,
     pick: PickRef,
 ) -> Label {
-    let screen = ctx.project(spec.anchor);
-    let (rotation_deg, align, offset_em) = match spec.placement {
-        LabelPlacement::Centered => (0.0, TextAlign::Center, [0.0, spec.line_offset]),
-        LabelPlacement::LineEnd { inward } => {
-            let direction = screen
-                .zip(ctx.project(inward))
-                .map(|(end, inner)| end.sub(inner))
-                .filter(|(dx, dy)| dx.hypot(*dy) > 0.0);
-            line_end(direction, spec.line_offset)
-        }
-        LabelPlacement::Along { toward } => {
-            let direction = screen
-                .zip(ctx.project(toward))
-                .map(|(a, b)| b.sub(a))
-                .filter(|(dx, dy)| dx.hypot(*dy) > 0.0);
-            let rotation = direction.map_or(0.0, |(dx, dy)| upright(dy.atan2(dx).to_degrees()));
-            (rotation, TextAlign::Center, [0.0, spec.line_offset])
-        }
-    };
+    let (anchor, screen, rotation_deg, align, offset_em) = resolve(ctx, spec);
     let width_px = metrics.text_width_px(font, &spec.text);
     let height_px = metrics.line_height_px(font);
     let corners = screen.map(|s| {
@@ -94,7 +76,7 @@ pub(crate) fn place(
     Label {
         pick,
         text: spec.text.clone(),
-        anchor: spec.anchor,
+        anchor,
         screen,
         rotation_deg,
         align,
@@ -103,6 +85,50 @@ pub(crate) fn place(
         may_hide: spec.may_hide,
         width_px,
         corners,
+    }
+}
+
+/// Anchor (geographic and on screen), rotation, alignment and offset.
+fn resolve(
+    ctx: &mut ScreenCtx<'_>,
+    spec: &LabelSpec,
+) -> (GeoPoint, Option<ScreenPoint>, f64, TextAlign, [f64; 2]) {
+    let along = |ctx: &mut ScreenCtx<'_>, from: Option<ScreenPoint>, toward: GeoPoint| {
+        from.zip(ctx.project(toward))
+            .map(|(a, b)| b.sub(a))
+            .filter(|(dx, dy)| dx.hypot(*dy) > 0.0)
+            .map_or(0.0, |(dx, dy)| upright(dy.atan2(dx).to_degrees()))
+    };
+    let screen = ctx.project(spec.anchor);
+    let centred = [0.0, spec.line_offset];
+    match spec.placement {
+        LabelPlacement::Centered => (spec.anchor, screen, 0.0, TextAlign::Center, centred),
+        LabelPlacement::LineEnd { inward } => {
+            let direction = screen
+                .zip(ctx.project(inward))
+                .map(|(end, inner)| end.sub(inner))
+                .filter(|(dx, dy)| dx.hypot(*dy) > 0.0);
+            let (r, a, o) = line_end(direction, spec.line_offset);
+            (spec.anchor, screen, r, a, o)
+        }
+        LabelPlacement::Along { toward } => {
+            let r = along(ctx, screen, toward);
+            (spec.anchor, screen, r, TextAlign::Center, centred)
+        }
+        LabelPlacement::OutsideEdge { toward, edges } => {
+            let r = along(ctx, screen, toward);
+            let (s, c) = r.to_radians().sin_cos();
+            // Height of a point in the text frame: smaller is further up.
+            let up = |p: ScreenPoint| -p.x * s + p.y * c;
+            let best = edges
+                .into_iter()
+                .filter_map(|e| ctx.project(e).map(|s| (e, s)))
+                .min_by(|a, b| up(a.1).total_cmp(&up(b.1)));
+            match best {
+                Some((edge, at)) => (edge, Some(at), r, TextAlign::Center, centred),
+                None => (spec.anchor, screen, r, TextAlign::Center, centred),
+            }
+        }
     }
 }
 

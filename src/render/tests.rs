@@ -199,3 +199,65 @@ fn local_frame_round_trips() {
     assert!((back.lon() - p.lon()).abs() < 1e-9 && (back.lat() - p.lat()).abs() < 1e-12);
     assert!((frame.metres_per_px() - 13.229_166_6).abs() < 1e-6);
 }
+
+/// `inner` turned upside down on screen.
+struct Rotated180<P>(P);
+
+impl<P: Projection> Projection for Rotated180<P> {
+    fn project(&self, p: GeoPoint, h: f64) -> Option<ScreenPoint> {
+        self.0
+            .project(p, h)
+            .map(|s| ScreenPoint { x: -s.x, y: -s.y })
+    }
+    fn unproject(&self, s: ScreenPoint) -> Option<GeoPoint> {
+        self.0.unproject(ScreenPoint { x: -s.x, y: -s.y })
+    }
+    fn terrain_height_m(&self, p: GeoPoint) -> Option<f64> {
+        self.0.terrain_height_m(p)
+    }
+}
+
+#[test]
+fn corridor_information_block_stays_outside_whatever_the_rotation() {
+    let mut d = def(
+        "11032500001701000000",
+        &[(20.0, 50.0), (20.1, 50.03), (20.2, 50.02)],
+        Some("AC1"),
+    );
+    d.modifiers.distances_m = vec![2000.0];
+    let frame = LocalEquirectangular::new(19.95, 50.1, 50_000.0, 96.0);
+    let half_px = 1000.0 / frame.metres_per_px();
+    for projection in [&frame as &dyn Projection, &Rotated180(frame)] {
+        let p = plan(&d, projection);
+        let (a, b) = (
+            projection.project(d.points[0].position, 0.0).unwrap(),
+            projection.project(d.points[1].position, 0.0).unwrap(),
+        );
+        let (ux, uy) = {
+            let (dx, dy) = b.sub(a);
+            let l = dx.hypot(dy);
+            (dx / l, dy / l)
+        };
+        for l in p.labels.iter().filter(|l| !l.text.starts_with("AC")) {
+            let s = l.screen.unwrap();
+            let (sin, cos) = l.rotation_deg.to_radians().sin_cos();
+            let oy = l.offset_em[1] * l.font.size_px;
+            let centre = ScreenPoint {
+                x: s.x - oy * sin,
+                y: s.y + oy * cos,
+            };
+            let (cx, cy) = centre.sub(a);
+            let across = (cx * uy - cy * ux).abs();
+            assert!(
+                across > half_px + 0.5 * l.font.size_px,
+                "{:?} is inside the corridor ({across:.1} px)",
+                l.text
+            );
+            assert!(
+                centre.y < a.y.max(b.y),
+                "{:?} must be above the corridor on screen",
+                l.text
+            );
+        }
+    }
+}

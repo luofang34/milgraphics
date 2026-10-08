@@ -134,6 +134,15 @@ pub enum LabelPlacement {
         /// A point giving the text direction.
         toward: GeoPoint,
     },
+    /// Like [`LabelPlacement::Along`], but anchored at whichever of `edges`
+    /// is uppermost on screen, so text stacked upward (negative offsets)
+    /// stays outside the symbol whatever the view's rotation.
+    OutsideEdge {
+        /// A point giving the text direction.
+        toward: GeoPoint,
+        /// The two edge points either side of the anchor.
+        edges: [GeoPoint; 2],
+    },
 }
 
 /// A label in geographic terms.

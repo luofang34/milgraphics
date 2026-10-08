@@ -333,7 +333,21 @@ mod compare {
             "air-corridor-anticipated-d",
         ] {
             let (r, o) = check_geometry(case, 1.5);
-            check_labels(&r, &o, 1.0, 1.0, false);
+            // Accepted difference (UPSTREAM.md): the information block sits
+            // outside the first segment as the standard asks, and "AC T"
+            // inside every segment, so only the texts are compared.
+            let ours: Vec<&str> = o.labels.iter().map(|(t, _, _)| t.as_str()).collect();
+            for m in r["modifier_shapes"].as_array().unwrap() {
+                let text = m["text"].as_str().unwrap();
+                if !text.trim_end().ends_with(':') {
+                    assert!(ours.contains(&text), "{case}: missing {text:?}");
+                }
+            }
+            assert_eq!(
+                ours.iter().filter(|t| t.starts_with("AC ")).count(),
+                2,
+                "{case}: one per segment"
+            );
         }
     }
 

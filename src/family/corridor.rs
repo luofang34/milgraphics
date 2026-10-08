@@ -3,7 +3,7 @@
 //! segment.
 
 use crate::construction::{
-    GeoGeometry, HandleKind, HandleSpec, LabelPlacement, LabelSpec, PartRole,
+    GeoGeometry, HandleKind, HandleSpec, LabelPlacement, LabelSpec, PartId, PartRole,
 };
 use crate::definition::GraphicDefinition;
 use crate::edit::HandleId;
@@ -92,55 +92,64 @@ pub(crate) fn construct(ctx: &mut Ctx<'_>, def: &GraphicDefinition) -> Result<()
     Ok(())
 }
 
-/// The information block, stacked above the middle segment, and "AC T" on it.
+/// The information block outside the first segment (between points 1 and
+/// 2, clear of the corridor, as the standard asks), and "AC T" inside each
+/// segment.
 fn labels(
     ctx: &mut Ctx<'_>,
     def: &GraphicDefinition,
     control: &[GeoPoint],
-    part: crate::construction::PartId,
+    part: PartId,
     width: f64,
 ) {
-    let middle = control.len().div_ceil(2).saturating_sub(1);
-    let (Some(&a), Some(&b)) = (control.get(middle), control.get(middle + 1)) else {
-        return;
-    };
-    let anchor = ctx.earth.interpolate(a, b, 0.5);
     let m = &def.modifiers;
     let t = m.designation();
     let altitude = |i: usize| m.altitudes.get(i).map(altitude_text);
-    let lines = [
-        (-7.0, t.map(|t| format!("Name: {t}"))),
-        (-6.0, Some(format!("Width: {} M", width.round()))),
-        (-5.0, altitude(0).map(|a| format!("Min Alt: {a}"))),
-        (-4.0, altitude(1).map(|a| format!("Max Alt: {a}"))),
-        (
-            -3.0,
-            m.dtg_start
-                .as_deref()
-                .filter(|w| !w.is_empty())
-                .map(|w| format!("DTG Start: {w}")),
-        ),
-        (
-            -2.0,
-            m.dtg_end
-                .as_deref()
-                .filter(|w| !w.is_empty())
-                .map(|w| format!("DTG End: {w}")),
-        ),
-        (
-            0.0,
-            Some(t.map_or_else(|| "AC".to_owned(), |t| format!("AC {t}"))),
-        ),
+    let value = |v: &Option<String>| v.as_deref().filter(|w| !w.is_empty()).map(str::to_owned);
+    let block: Vec<String> = [
+        t.map(|t| format!("Name: {t}")),
+        Some(format!("Width: {} M", width.round())),
+        altitude(0).map(|a| format!("Min Alt: {a}")),
+        altitude(1).map(|a| format!("Max Alt: {a}")),
+        value(&m.dtg_start).map(|w| format!("DTG Start: {w}")),
+        value(&m.dtg_end).map(|w| format!("DTG End: {w}")),
+    ]
+    .into_iter()
+    .flatten()
+    .collect();
+    let (Some(&a), Some(&b)) = (control.first(), control.get(1)) else {
+        return;
+    };
+    let mid = ctx.earth.interpolate(a, b, 0.5);
+    let bearing = ctx.earth.inverse(mid, b).azimuth1;
+    let half = width / 2.0;
+    let edges = [
+        ctx.earth.direct(mid, bearing - 90.0, half),
+        ctx.earth.direct(mid, bearing + 90.0, half),
     ];
-    for (line_offset, text) in lines {
-        if let Some(text) = text {
+    let lines = block.len();
+    for (i, text) in block.into_iter().enumerate() {
+        ctx.add_label(LabelSpec {
+            part,
+            text,
+            anchor: mid,
+            placement: LabelPlacement::OutsideEdge { toward: b, edges },
+            // First line on top; lines 1.2 em apart, the last 1.1 em outside
+            // the edge so its descenders clear the stroke.
+            line_offset: -(1.1 + 1.2 * (lines - 1 - i) as f64),
+            may_hide: false,
+        });
+    }
+    let name = t.map_or_else(|| "AC".to_owned(), |t| format!("AC {t}"));
+    for pair in control.windows(2) {
+        if let [a, b] = pair {
             ctx.add_label(LabelSpec {
                 part,
-                text,
-                anchor,
-                placement: LabelPlacement::Along { toward: b },
-                line_offset,
-                may_hide: false,
+                text: name.clone(),
+                anchor: ctx.earth.interpolate(*a, *b, 0.5),
+                placement: LabelPlacement::Along { toward: *b },
+                line_offset: 0.0,
+                may_hide: true,
             });
         }
     }
