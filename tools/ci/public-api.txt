@@ -321,6 +321,9 @@ pub mod milgraphics::render
 pub enum milgraphics::render::GeoShape
 pub milgraphics::render::GeoShape::Lines(alloc::vec::Vec<alloc::vec::Vec<milgraphics::antimeridian::LonLat>>)
 pub milgraphics::render::GeoShape::Polygons(alloc::vec::Vec<alloc::vec::Vec<milgraphics::antimeridian::LonLat>>)
+#[non_exhaustive] pub enum milgraphics::render::PlanContent
+pub milgraphics::render::PlanContent::Full
+pub milgraphics::render::PlanContent::Overlay
 #[non_exhaustive] pub enum milgraphics::render::RenderError
 pub milgraphics::render::RenderError::Budget(milgraphics::budget::BudgetError)
 pub enum milgraphics::render::ScreenShape
@@ -381,6 +384,7 @@ pub fn milgraphics::render::LocalEquirectangular::project(&self, milgraphics::ge
 pub fn milgraphics::render::LocalEquirectangular::segment_may_be_visible(&self, milgraphics::geo::GeoPoint, milgraphics::geo::GeoPoint) -> bool
 pub fn milgraphics::render::LocalEquirectangular::tolerance_px(&self) -> f64
 pub fn milgraphics::render::LocalEquirectangular::unproject(&self, milgraphics::render::ScreenPoint) -> core::option::Option<milgraphics::geo::GeoPoint>
+pub fn milgraphics::render::LocalEquirectangular::viewport(&self) -> core::option::Option<milgraphics::render::ScreenRect>
 #[non_exhaustive] pub struct milgraphics::render::RenderPlan
 pub milgraphics::render::RenderPlan::geo: alloc::vec::Vec<milgraphics::render::GeoItem>
 pub milgraphics::render::RenderPlan::handles: alloc::vec::Vec<milgraphics::render::Handle>
@@ -401,7 +405,11 @@ pub milgraphics::render::ScreenItem::stroke: core::option::Option<milgraphics::s
 pub struct milgraphics::render::ScreenPoint
 pub milgraphics::render::ScreenPoint::x: f64
 pub milgraphics::render::ScreenPoint::y: f64
+pub struct milgraphics::render::ScreenRect
+pub milgraphics::render::ScreenRect::max: milgraphics::render::ScreenPoint
+pub milgraphics::render::ScreenRect::min: milgraphics::render::ScreenPoint
 #[non_exhaustive] pub struct milgraphics::render::View
+pub milgraphics::render::View::content: milgraphics::render::PlanContent
 pub milgraphics::render::View::label_font: milgraphics::render::Font
 pub milgraphics::render::View::surface_revision: u64
 pub milgraphics::render::View::view_revision: u64
@@ -420,11 +428,13 @@ pub fn milgraphics::render::Projection::project(&self, milgraphics::geo::GeoPoin
 pub fn milgraphics::render::Projection::segment_may_be_visible(&self, milgraphics::geo::GeoPoint, milgraphics::geo::GeoPoint) -> bool
 pub fn milgraphics::render::Projection::tolerance_px(&self) -> f64
 pub fn milgraphics::render::Projection::unproject(&self, milgraphics::render::ScreenPoint) -> core::option::Option<milgraphics::geo::GeoPoint>
+pub fn milgraphics::render::Projection::viewport(&self) -> core::option::Option<milgraphics::render::ScreenRect>
 impl milgraphics::render::Projection for milgraphics::render::LocalEquirectangular
 pub fn milgraphics::render::LocalEquirectangular::project(&self, milgraphics::geo::GeoPoint) -> core::option::Option<milgraphics::render::ScreenPoint>
 pub fn milgraphics::render::LocalEquirectangular::segment_may_be_visible(&self, milgraphics::geo::GeoPoint, milgraphics::geo::GeoPoint) -> bool
 pub fn milgraphics::render::LocalEquirectangular::tolerance_px(&self) -> f64
 pub fn milgraphics::render::LocalEquirectangular::unproject(&self, milgraphics::render::ScreenPoint) -> core::option::Option<milgraphics::geo::GeoPoint>
+pub fn milgraphics::render::LocalEquirectangular::viewport(&self) -> core::option::Option<milgraphics::render::ScreenRect>
 pub fn milgraphics::render::geographic(&milgraphics::construction::Construction, &milgraphics::budget::Budget) -> core::result::Result<alloc::vec::Vec<milgraphics::render::GeoItem>, milgraphics::render::RenderError>
 pub fn milgraphics::render::render(&milgraphics::construction::Construction, &milgraphics::render::View, &dyn milgraphics::render::Projection, &dyn milgraphics::render::FontMetrics, &milgraphics::budget::Budget) -> core::result::Result<milgraphics::render::RenderPlan, milgraphics::render::RenderError>
 pub mod milgraphics::sidc
@@ -1019,6 +1029,7 @@ impl milgraphics::catalog::VersionSet
 pub const fn milgraphics::catalog::VersionSet::contains(self, u8) -> bool
 pub fn milgraphics::catalog::VersionSet::iter(self) -> impl core::iter::traits::iterator::Iterator<Item = u8>
 #[non_exhaustive] pub struct milgraphics::View
+pub milgraphics::View::content: milgraphics::render::PlanContent
 pub milgraphics::View::label_font: milgraphics::render::Font
 pub milgraphics::View::surface_revision: u64
 pub milgraphics::View::view_revision: u64

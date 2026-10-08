@@ -10,6 +10,7 @@ use crate::pick::{PickRef, PickTarget};
 use crate::style::{Fill, Stroke};
 
 mod decoration;
+mod extent;
 mod label;
 mod local;
 mod ported;
@@ -18,7 +19,7 @@ mod screen;
 
 pub use label::{Label, TextAlign};
 pub use local::LocalEquirectangular;
-pub use projection::{FixedAdvanceMetrics, Font, FontMetrics, Projection, ScreenPoint};
+pub use projection::{FixedAdvanceMetrics, Font, FontMetrics, Projection, ScreenPoint, ScreenRect};
 
 #[cfg(test)]
 mod tests;
@@ -34,6 +35,24 @@ pub struct View {
     pub surface_revision: u64,
     /// Font for labels.
     pub label_font: Font,
+    /// What the plan resolves.
+    pub content: PlanContent,
+}
+
+/// What a plan resolves.
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq, Hash)]
+#[non_exhaustive]
+pub enum PlanContent {
+    /// Both tiers: the graphic's parts in degrees and projected, with its
+    /// pixel-sized decorations, labels and handles.
+    #[default]
+    Full,
+    /// Only what a map engine drawing the geographic tier cannot draw:
+    /// pixel-sized decorations, labels and handles. `geo` is empty and
+    /// `screen` holds decorations only. For hosts that draw [`geographic`]
+    /// every frame and need projected parts only now and then, such as to
+    /// pick, when they resolve a full plan.
+    Overlay,
 }
 
 impl View {
@@ -43,6 +62,7 @@ impl View {
             view_revision,
             surface_revision,
             label_font: Font::default(),
+            content: PlanContent::Full,
         }
     }
 }
@@ -194,43 +214,6 @@ impl GeoItem {
     }
 }
 
-/// On-screen extent below which a graphic is drawn without decorations or
-/// labels.
-const MIN_DETAIL_PX: f64 = 12.0;
-
-/// The on-screen extent of a graphic: of its handles (control points and,
-/// for graphics sized by ranges or widths, the handles setting them) and of
-/// the corners of its geographic parts' bounds.
-fn extent_px(ctx: &mut screen::ScreenCtx<'_>, construction: &Construction) -> f64 {
-    let (mut west, mut south, mut east, mut north) = (f64::MAX, f64::MAX, f64::MIN, f64::MIN);
-    for q in construction.parts.iter().flat_map(|p| p.geometry.points()) {
-        (west, south) = (west.min(q.lon()), south.min(q.lat()));
-        (east, north) = (east.max(q.lon()), north.max(q.lat()));
-    }
-    let corners = [(west, south), (east, north), (west, north), (east, south)]
-        .into_iter()
-        .filter_map(|(lon, lat)| GeoPoint::new(lon, lat).ok());
-    let points: Vec<GeoPoint> = construction
-        .handles
-        .iter()
-        .map(|h| h.at)
-        .chain(corners)
-        .collect();
-    let (mut lo, mut hi) = ((f64::MAX, f64::MAX), (f64::MIN, f64::MIN));
-    for at in points {
-        // A graphic reaching past the horizon is large in any view.
-        let Some(p) = ctx.project(at) else {
-            return f64::INFINITY;
-        };
-        lo = (lo.0.min(p.x), lo.1.min(p.y));
-        hi = (hi.0.max(p.x), hi.1.max(p.y));
-    }
-    if lo.0 > hi.0 {
-        return 0.0;
-    }
-    (hi.0 - lo.0).hypot(hi.1 - lo.1)
-}
-
 /// Resolves `construction` for `view`.
 pub fn render(
     construction: &Construction,
@@ -246,12 +229,20 @@ pub fn render(
         definition: construction.definition.clone(),
         target,
     };
-    let mut geo = Vec::with_capacity(construction.parts.len());
+    let extent = extent::of(&mut ctx, construction);
+    let mut geo = Vec::new();
     let mut items = Vec::new();
-    for part in &construction.parts {
+    let parts = match view.content {
+        PlanContent::Full => construction.parts.as_slice(),
+        PlanContent::Overlay => &[],
+    };
+    for part in parts {
         let item = geo_item(construction, part);
         ctx.take(item.vertex_count())?;
         geo.push(item);
+        if !extent.in_view {
+            continue;
+        }
         for (shape, fill) in ctx.part(&part.geometry, part.fill)? {
             items.push(ScreenItem {
                 pick: pick(PickTarget::Part(part.id)),
@@ -265,7 +256,7 @@ pub fn render(
     }
     // Decorations and labels have minimum pixel sizes; on a graphic a few
     // pixels across they would dwarf it, so it draws its geographic tier only.
-    let detailed = extent_px(&mut ctx, construction) >= MIN_DETAIL_PX;
+    let detailed = extent.detailed && extent.in_view;
     let mut engine_labels = Vec::new();
     for d in construction.decorations.iter().filter(|_| detailed) {
         items.extend(decoration::resolve(&mut ctx, d, &pick)?);
