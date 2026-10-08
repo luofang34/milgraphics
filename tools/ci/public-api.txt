@@ -78,6 +78,7 @@ pub milgraphics::construction::LabelPlacement::OutsideEdge::toward: milgraphics:
 pub milgraphics::construction::PartRole::Arrowhead
 pub milgraphics::construction::PartRole::Boundary
 pub milgraphics::construction::PartRole::Decoration
+pub milgraphics::construction::PartRole::Hatch
 pub milgraphics::construction::PartRole::Line
 pub milgraphics::construction::PartRole::Orientation
 #[non_exhaustive] pub struct milgraphics::construction::Construction
@@ -499,8 +500,16 @@ pub milgraphics::style::DashPattern::Solid
 impl milgraphics::style::DashPattern
 pub fn milgraphics::style::DashPattern::array(self) -> &'static [f64]
 #[non_exhaustive] pub enum milgraphics::style::Fill
+pub milgraphics::style::Fill::Hatch(milgraphics::style::Hatch)
 pub milgraphics::style::Fill::None
 pub milgraphics::style::Fill::Solid(milgraphics::style::Rgba)
+#[non_exhaustive] pub struct milgraphics::style::Hatch
+pub milgraphics::style::Hatch::angle_deg: f64
+pub milgraphics::style::Hatch::color: milgraphics::style::Rgba
+pub milgraphics::style::Hatch::spacing_px: f64
+pub milgraphics::style::Hatch::width_px: f64
+impl milgraphics::style::Hatch
+pub const fn milgraphics::style::Hatch::new(milgraphics::style::Rgba, f64, f64, f64) -> Self
 pub struct milgraphics::style::Rgba
 pub milgraphics::style::Rgba::a: u8
 pub milgraphics::style::Rgba::b: u8

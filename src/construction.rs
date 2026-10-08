@@ -31,6 +31,8 @@ pub enum PartRole {
     Orientation,
     /// Any other drawn element.
     Decoration,
+    /// A line of a hatched area's fill.
+    Hatch,
 }
 
 /// Geometry in WGS84 degrees. Edges are geodesics and are already densified,

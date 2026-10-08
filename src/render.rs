@@ -11,6 +11,7 @@ use crate::style::{Fill, Stroke};
 
 mod decoration;
 mod extent;
+mod hatch;
 mod label;
 mod local;
 mod ported;
@@ -244,6 +245,58 @@ impl GeoItem {
     }
 }
 
+/// A construction's parts for one plan.
+struct Parts {
+    /// The geographic tier (full plans only).
+    geo: Vec<GeoItem>,
+    /// The parts projected (full plans only).
+    items: Vec<ScreenItem>,
+    /// Hatched parts projected for an overlay plan, which draws their hatch
+    /// lines over the map's outline but not the parts themselves.
+    hatched: Vec<ScreenItem>,
+}
+
+fn parts(
+    ctx: &mut screen::ScreenCtx<'_>,
+    construction: &Construction,
+    full: bool,
+    in_view: bool,
+    pick: &impl Fn(PickTarget) -> PickRef,
+) -> Result<Parts, RenderError> {
+    let mut out = Parts {
+        geo: Vec::new(),
+        items: Vec::new(),
+        hatched: Vec::new(),
+    };
+    for part in &construction.parts {
+        if full {
+            let item = geo_item(construction, part);
+            ctx.take(item.vertex_count())?;
+            out.geo.push(item);
+        }
+        let hatch = matches!(part.fill, Fill::Hatch(_));
+        if !in_view || !(full || hatch) {
+            continue;
+        }
+        for (shape, fill) in ctx.part(&part.geometry, part.fill)? {
+            let item = ScreenItem {
+                pick: pick(PickTarget::Part(part.id)),
+                role: part.role,
+                shape,
+                stroke: part.stroke,
+                fill,
+                decoration: false,
+            };
+            if full {
+                out.items.push(item);
+            } else {
+                out.hatched.push(item);
+            }
+        }
+    }
+    Ok(out)
+}
+
 /// Resolves `construction` for `view`.
 pub fn render(
     construction: &Construction,
@@ -260,30 +313,12 @@ pub fn render(
         target,
     };
     let extent = extent::of(&mut ctx, construction);
-    let mut geo = Vec::new();
-    let mut items = Vec::new();
-    let parts = match view.content {
-        PlanContent::Full => construction.parts.as_slice(),
-        PlanContent::Overlay => &[],
-    };
-    for part in parts {
-        let item = geo_item(construction, part);
-        ctx.take(item.vertex_count())?;
-        geo.push(item);
-        if !extent.in_view {
-            continue;
-        }
-        for (shape, fill) in ctx.part(&part.geometry, part.fill)? {
-            items.push(ScreenItem {
-                pick: pick(PickTarget::Part(part.id)),
-                role: part.role,
-                shape,
-                stroke: part.stroke,
-                fill,
-                decoration: false,
-            });
-        }
-    }
+    let full = view.content == PlanContent::Full;
+    let Parts {
+        geo,
+        mut items,
+        hatched,
+    } = parts(&mut ctx, construction, full, extent.in_view, &pick)?;
     // Decorations and labels have minimum pixel sizes; on a graphic a few
     // pixels across they would dwarf it, so it draws its geographic tier only.
     let detailed = extent.detailed && extent.in_view;
@@ -309,6 +344,12 @@ pub fn render(
         })
         .collect();
     labels.extend(engine_labels);
+    if detailed {
+        let boxes: Vec<[ScreenPoint; 4]> = labels.iter().filter_map(|l| l.corners).collect();
+        let lines = hatch::items(items.iter().chain(&hatched), &boxes);
+        ctx.take(lines.len() * 2)?;
+        items.extend(lines);
+    }
     let handles = construction
         .handles
         .iter()

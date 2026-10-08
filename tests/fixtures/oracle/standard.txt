@@ -1,0 +1,3 @@
+# Oracle cases where the standard's template differs from what the oracle
+# draws: case id, then why. tests/oracle_catalog.rs checks them against their
+# reviewed goldens instead, and fails on a listed case that matches the oracle.

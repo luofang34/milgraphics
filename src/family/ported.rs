@@ -10,13 +10,14 @@ use crate::catalog::CatalogDrawRule;
 use crate::construction::{Decoration, GeoGeometry, PartRole};
 use crate::definition::GraphicDefinition;
 use crate::engine::api::{self, Input, Output};
-use crate::engine::base::{Pt, Shape, shape_type};
+use crate::engine::base::{Hatch as EngineHatch, Pt, Shape, shape_type};
 use crate::engine::line_type::classes::MsInfo;
+use crate::engine::render_utility::hatch::{HATCH_BACKWARD_DIAGONAL, HATCH_FORWARD_DIAGONAL};
 use crate::family::{ConstructError, Ctx, vertex_handles};
 use crate::geo::GeoPoint;
 use crate::plane::{LocalPlane, Xy};
 use crate::render::{FixedAdvanceMetrics, Font, FontMetrics};
-use crate::style::{DashPattern, Fill, Rgba, Stroke};
+use crate::style::{DashPattern, Fill, Hatch, Rgba, Stroke};
 
 mod classify;
 
@@ -164,24 +165,49 @@ fn add_part(
         // outline of its own.
         let outline = (shape.shape_type != shape_type::FILL)
             .then(|| shape_stroke(shape, ctx.palette.line.color));
-        let (geometry, fill, role) = match shape.fill_color {
-            Some(color) => {
-                if line.len() > 1 && line.first() == line.last() {
-                    line.pop();
-                }
-                (
-                    GeoGeometry::Ring(line),
-                    Fill::Solid(color),
-                    PartRole::Decoration,
-                )
+        let fill = shape_fill(shape);
+        let (geometry, role) = if fill == Fill::None {
+            (GeoGeometry::Line(line), PartRole::Line)
+        } else {
+            if line.len() > 1 && line.first() == line.last() {
+                line.pop();
             }
-            None => (GeoGeometry::Line(line), Fill::None, PartRole::Line),
+            (GeoGeometry::Ring(line), PartRole::Decoration)
         };
         let stroke = outline;
         let id = ctx.add_part(role, geometry, stroke, fill);
         first.get_or_insert(id);
     }
     Ok(first)
+}
+
+/// How an engine shape's interior is painted: the hatch upstream paints
+/// from an image where it has one, else its fill colour.
+pub(crate) fn shape_fill(shape: &Shape) -> Fill {
+    shape
+        .pattern_fill
+        .and_then(hatch)
+        .map(Fill::Hatch)
+        .or_else(|| shape.fill_color.map(Fill::Solid))
+        .unwrap_or(Fill::None)
+}
+
+/// Upstream tiles a square `spacing` pixels wide with one diagonal line
+/// (`PatternFillRenderer.MakeHatchPatternFill`), so its lines are `spacing`
+/// apart along the x axis. Its "forward" diagonal falls to the right on a
+/// y-down screen and its "backward" one rises.
+fn hatch(h: EngineHatch) -> Option<Hatch> {
+    let angle_deg = match h.style {
+        HATCH_FORWARD_DIAGONAL => 135.0,
+        HATCH_BACKWARD_DIAGONAL => 45.0,
+        _ => return None,
+    };
+    Some(Hatch::new(
+        h.color.unwrap_or(Rgba::BLACK),
+        angle_deg,
+        f64::from(h.spacing) * core::f64::consts::FRAC_1_SQRT_2,
+        f64::from(h.thickness),
+    ))
 }
 
 pub(crate) fn shape_stroke(shape: &Shape, fallback: Rgba) -> Stroke {

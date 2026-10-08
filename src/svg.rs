@@ -57,7 +57,8 @@ fn item_svg(out: &mut String, item: &ScreenItem) {
     };
     let fill = match item.fill {
         Fill::Solid(c) => c.to_hex(),
-        Fill::None => "none".to_owned(),
+        // Hatch lines are items of their own.
+        _ => "none".to_owned(),
     };
     writeln!(
         out,
