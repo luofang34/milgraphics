@@ -9,6 +9,7 @@
 
 pub(crate) mod api;
 pub(crate) mod base;
+pub(crate) mod dism;
 pub(crate) mod line_type;
 pub(crate) mod lineutility;
 pub(crate) mod settings;
