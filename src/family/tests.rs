@@ -134,3 +134,43 @@ fn planned_status_dashes_lines_but_not_bypass_arrowheads() {
         assert_eq!((stroke.dash, *filled), (DashPattern::Solid, true));
     }
 }
+
+#[test]
+fn edges_are_geodesics_not_mercator_chords() {
+    // A 100 km east-west phase line at 50°N: the geodesic bows poleward of
+    // the straight Mercator line by about 233 m at its middle.
+    let earth = Earth::wgs84();
+    let a = GeoPoint::new(0.0, 50.0).unwrap();
+    let b = earth.direct(a, 90.0, 100_000.0);
+    let pl = def(
+        "11032500001403000000",
+        &[(a.lon(), a.lat()), (b.lon(), b.lat())],
+    );
+    let c = construct(&pl, &Config::default()).unwrap();
+    let line = c.parts[0].geometry.points();
+    assert!(
+        line.len() >= 11,
+        "100 km is densified to at most 10 km steps"
+    );
+    let total = earth.inverse(a, b).distance_m;
+    for &v in line {
+        let detour = earth.inverse(a, v).distance_m + earth.inverse(v, b).distance_m - total;
+        assert!(
+            detour < 1e-6,
+            "vertex {v:?} is off the geodesic ({detour} m detour)"
+        );
+    }
+    let middle = earth.interpolate(a, b, 0.5);
+    let mercator = |lat: f64| {
+        (std::f64::consts::FRAC_PI_4 + lat.to_radians() / 2.0)
+            .tan()
+            .ln()
+    };
+    let chord_lat = (2.0 * ((mercator(a.lat()) + mercator(b.lat())) / 2.0).exp().atan()
+        - std::f64::consts::FRAC_PI_2)
+        .to_degrees();
+    let chord = GeoPoint::new((a.lon() + b.lon()) / 2.0, chord_lat).unwrap();
+    let bow = earth.inverse(middle, chord).distance_m;
+    assert!((bow - 233.1).abs() < 1.0, "bow {bow}");
+    assert!(middle.lat() > chord.lat());
+}
