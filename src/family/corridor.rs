@@ -1,6 +1,7 @@
-//! Air corridors: segments of width `AM` between control points, with a
-//! circle at each control point and an information block on the middle
-//! segment.
+//! Air corridors and routes: segments of width `AM` between control points,
+//! an information block beside the first segment and the name along each.
+//! Editions whose template draws only the two sides join them at the bends;
+//! others put a circle at each control point.
 
 use crate::construction::{
     GeoGeometry, HandleKind, HandleSpec, LabelPlacement, LabelSpec, PartId, PartRole,
@@ -10,14 +11,22 @@ use crate::edit::HandleId;
 use crate::family::{ConstructError, Ctx, vertex_handles};
 use crate::geo::{Altitude, GeoPoint, VerticalDatum};
 use crate::plane::LocalPlane;
-use crate::style::Fill;
+use crate::style::{Fill, Stroke};
 
 /// Vertices of each control-point circle.
 const CIRCLE_VERTICES: usize = 72;
 /// Feet per metre.
 const FEET_PER_METRE: f64 = 3.280_84;
 
-pub(crate) fn construct(ctx: &mut Ctx<'_>, def: &GraphicDefinition) -> Result<(), ConstructError> {
+/// Longest miter at a bend, in half-widths; sharper bends are bevelled.
+const MITER_LIMIT: f64 = 2.0;
+
+pub(crate) fn construct(
+    ctx: &mut Ctx<'_>,
+    def: &GraphicDefinition,
+    prefix: &str,
+    open: bool,
+) -> Result<(), ConstructError> {
     let control: Vec<GeoPoint> = def.positions().collect();
     let widths = &def.modifiers.distances_m;
     let max_width = widths.iter().copied().fold(0.0_f64, f64::max);
@@ -37,6 +46,31 @@ pub(crate) fn construct(ctx: &mut Ctx<'_>, def: &GraphicDefinition) -> Result<()
         w / 2.0
     };
     let stroke = Some(ctx.palette.line);
+    let part = if open {
+        open_sides(ctx, &control, &radius, stroke)?
+    } else {
+        sides_and_circles(ctx, &control, &radius, stroke)?
+    };
+    labels(ctx, def, &control, part, max_width, prefix);
+    ctx.add_handles(vertex_handles(def));
+    if let Some((&a, &b)) = control.first().zip(control.get(1)) {
+        let az = ctx.earth.inverse(a, b).azimuth1 - 90.0;
+        ctx.add_handles([HandleSpec {
+            id: HandleId::Width,
+            kind: HandleKind::Width,
+            at: ctx.earth.direct(a, az, radius(0)),
+        }]);
+    }
+    Ok(())
+}
+
+/// Each leg's two sides, and a circle at each control point.
+fn sides_and_circles(
+    ctx: &mut Ctx<'_>,
+    control: &[GeoPoint],
+    radius: &impl Fn(usize) -> f64,
+    stroke: Option<Stroke>,
+) -> Result<PartId, ConstructError> {
     let mut first = None;
     for (j, pair) in control.windows(2).enumerate() {
         let [a, b] = match pair {
@@ -79,17 +113,59 @@ pub(crate) fn construct(ctx: &mut Ctx<'_>, def: &GraphicDefinition) -> Result<()
             Fill::None,
         );
     }
-    labels(ctx, def, &control, part, max_width);
-    ctx.add_handles(vertex_handles(def));
-    if let Some((&a, &b)) = control.first().zip(control.get(1)) {
-        let az = ctx.earth.inverse(a, b).azimuth1 - 90.0;
-        ctx.add_handles([HandleSpec {
-            id: HandleId::Width,
-            kind: HandleKind::Width,
-            at: ctx.earth.direct(a, az, radius(0)),
-        }]);
+    Ok(part)
+}
+
+/// The two sides as continuous lines, each control point's half-width from
+/// the centre line: mitred at a bend, bevelled where the miter would reach
+/// past [`MITER_LIMIT`] half-widths, open at the ends.
+fn open_sides(
+    ctx: &mut Ctx<'_>,
+    control: &[GeoPoint],
+    radius: &impl Fn(usize) -> f64,
+    stroke: Option<Stroke>,
+) -> Result<PartId, ConstructError> {
+    let mut first = None;
+    for side in [-90.0, 90.0] {
+        let mut points = Vec::new();
+        for (i, &p) in control.iter().enumerate() {
+            let r = radius(i);
+            let before = i.checked_sub(1).and_then(|j| control.get(j));
+            let incoming = before.map(|&q| ctx.earth.inverse(q, p).azimuth2);
+            let outgoing = control
+                .get(i + 1)
+                .map(|&q| ctx.earth.inverse(p, q).azimuth1);
+            match (incoming, outgoing) {
+                (Some(a), Some(b)) => {
+                    let turn = (b - a + 540.0).rem_euclid(360.0) - 180.0;
+                    let half = (turn / 2.0).to_radians().cos();
+                    if half * MITER_LIMIT >= 1.0 {
+                        points.push(ctx.earth.direct(p, a + turn / 2.0 + side, r / half));
+                    } else {
+                        points.push(ctx.earth.direct(p, a + side, r));
+                        points.push(ctx.earth.direct(p, b + side, r));
+                    }
+                }
+                (Some(a), None) | (None, Some(a)) => points.push(ctx.earth.direct(p, a + side, r)),
+                (None, None) => {}
+            }
+        }
+        if points.len() < 2 {
+            continue;
+        }
+        let line = ctx.geodesic_path(&points)?;
+        let id = ctx.add_part(
+            PartRole::Boundary,
+            GeoGeometry::Line(line),
+            stroke,
+            Fill::None,
+        );
+        first.get_or_insert(id);
     }
-    Ok(())
+    first.ok_or(ConstructError::Degenerate {
+        symbol: ctx.spec.name(),
+        reason: "a corridor needs two distinct points",
+    })
 }
 
 /// The information block outside the first segment (between points 1 and
@@ -101,6 +177,7 @@ fn labels(
     control: &[GeoPoint],
     part: PartId,
     width: f64,
+    prefix: &str,
 ) {
     let m = &def.modifiers;
     let t = m.designation();
@@ -140,7 +217,7 @@ fn labels(
             may_hide: false,
         });
     }
-    let name = t.map_or_else(|| "AC".to_owned(), |t| format!("AC {t}"));
+    let name = t.map_or_else(|| prefix.to_owned(), |t| format!("{prefix} {t}"));
     for pair in control.windows(2) {
         if let [a, b] = pair {
             ctx.add_label(LabelSpec {

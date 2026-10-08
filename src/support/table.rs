@@ -6,11 +6,15 @@ use crate::family::Family;
 use crate::modifier::ModifierField;
 use crate::standard::StandardVersion;
 
+mod corridors;
 mod first_milestone;
 
 /// Every declaration table.
-pub(super) static TABLES: &[&[SymbolSpec]] =
-    &[first_milestone::SPECS, crate::generated::specs::SPECS];
+pub(super) static TABLES: &[&[SymbolSpec]] = &[
+    first_milestone::SPECS,
+    corridors::SPECS,
+    crate::generated::specs::SPECS,
+];
 
 /// Upper bound for symbols that take any number of points.
 pub(crate) const MANY: usize = 10_000;

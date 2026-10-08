@@ -1,3 +1,21 @@
 # Oracle cases where the standard's template differs from what the oracle
 # draws: case id, then why. tests/oracle_catalog.rs checks them against their
 # reviewed goldens instead, and fails on a listed case that matches the oracle.
+25170100-app6e open sides joined at the bends, no circle at each control point
+25170100-app6e-anticipated open sides joined at the bends, no circle at each control point
+25170100-app6e-s100k open sides joined at the bends, no circle at each control point
+25170100-e open sides joined at the bends, no circle at each control point
+25170100-e-anticipated open sides joined at the bends, no circle at each control point
+25170100-e-s100k open sides joined at the bends, no circle at each control point
+25170200-app6e open sides joined at the bends, no circle at each control point
+25170200-e open sides joined at the bends, no circle at each control point
+25170300-app6e open sides joined at the bends, no circle at each control point
+25170300-e open sides joined at the bends, no circle at each control point
+25170400-app6e open sides joined at the bends, no circle at each control point
+25170400-e open sides joined at the bends, no circle at each control point
+25170500-app6e open sides joined at the bends, no circle at each control point
+25170500-e open sides joined at the bends, no circle at each control point
+25170600-app6e open sides joined at the bends, no circle at each control point
+25170600-e open sides joined at the bends, no circle at each control point
+25170700-app6e open sides joined at the bends, no circle at each control point
+25170700-e open sides joined at the bends, no circle at each control point

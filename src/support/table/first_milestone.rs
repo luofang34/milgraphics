@@ -35,12 +35,26 @@ pub(super) static SPECS: &[SymbolSpec] = &[
     cm(E1, 120200, NAI).points(3, MANY).amplifiers(T),
     cm(D1, 151403, Family::Axis).points(3, 50).amplifiers(AXIS),
     cm(E1, 151403, Family::Axis).points(3, 50).amplifiers(AXIS),
-    cm(D1, 170100, Family::Corridor)
-        .points(2, 99)
-        .amplifiers(CORRIDOR),
-    cm(E1, 170100, Family::Corridor)
-        .points(2, 99)
-        .amplifiers(CORRIDOR),
+    cm(
+        D1,
+        170100,
+        Family::Corridor {
+            prefix: "AC",
+            open: false,
+        },
+    )
+    .points(2, 99)
+    .amplifiers(CORRIDOR),
+    cm(
+        E1,
+        170100,
+        Family::Corridor {
+            prefix: "AC",
+            open: true,
+        },
+    )
+    .points(2, 99)
+    .amplifiers(CORRIDOR),
     cm(D1, 242200, Family::RangeFanSector).amplifiers(FAN),
     cm(E1, 242200, Family::RangeFanSector).amplifiers(FAN),
     cm(D1, 270601, Family::Bypass).points(3, 3),
