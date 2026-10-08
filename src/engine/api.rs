@@ -20,6 +20,8 @@ pub(crate) struct Input<'a> {
     pub(crate) meters_per_pixel: f64,
     /// Width of `text` in pixels in the label font.
     pub(crate) text_width: &'a dyn Fn(&str) -> f64,
+    /// The symbol's draw rule and point range, as upstream's `MSInfo` has them.
+    pub(crate) ms_info: Option<super::line_type::classes::MsInfo>,
 }
 
 impl core::fmt::Debug for Input<'_> {
@@ -63,5 +65,5 @@ pub(crate) struct Output {
 
 /// Draws `input`, or says why upstream would draw nothing.
 pub(crate) fn draw(input: &Input<'_>) -> Result<Output, EngineError> {
-    Err(EngineError::LineType(input.line_type))
+    super::pipeline::render(input)
 }

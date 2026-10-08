@@ -226,6 +226,44 @@ mod catalog {
             .then(|| format!("labels missing {missing:?}, extra {extra:?}"))
     }
 
+    /// `ORACLE_CASE=<id> cargo test --test oracle_catalog dump -- --nocapture`
+    /// prints both sides of one case.
+    #[test]
+    fn dump() {
+        let Ok(case) = std::env::var("ORACLE_CASE") else {
+            return;
+        };
+        let r = records()
+            .into_iter()
+            .find(|r| r["case"] == case.as_str())
+            .unwrap();
+        let f = frame(&r);
+        for l in oracle_lines(&r, &f) {
+            let pts: Vec<(i64, i64)> = l
+                .iter()
+                .map(|p| ((p.x * 10.0) as i64, (p.y * 10.0) as i64))
+                .collect();
+            eprintln!("oracle {pts:?}");
+        }
+        let c = construct(&definition(&r), &Config::default()).unwrap();
+        let plan = render(
+            &c,
+            &View::new(0, 0),
+            &f,
+            &FixedAdvanceMetrics::default(),
+            &Budget::default(),
+        )
+        .unwrap();
+        for i in &plan.screen {
+            let (ScreenShape::Polyline(p) | ScreenShape::Polygon(p)) = &i.shape;
+            let pts: Vec<(i64, i64)> = p
+                .iter()
+                .map(|p| ((p.x * 10.0) as i64, (p.y * 10.0) as i64))
+                .collect();
+            eprintln!("ours{} {pts:?}", if i.decoration { "*" } else { "" });
+        }
+    }
+
     #[test]
     fn every_oracle_graphic_matches_or_is_listed_unimplemented() {
         let listed: BTreeSet<&str> = UNIMPLEMENTED

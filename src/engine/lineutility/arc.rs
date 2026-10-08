@@ -104,6 +104,33 @@ pub(crate) fn arc_array_double(
     Ok(())
 }
 
+/// Upstream `ArcArrayDouble` with its geographic converter, as the renderer
+/// runs it: an arc around `pts[0]` through `pts[1]`, its angles taken as
+/// azimuths clockwise from north and its points not truncated. The pixel
+/// frame stands in for the converter's ground: over a graphic's extent it is
+/// conformal, so azimuths and distances carry over.
+pub(crate) fn arc_array_geographic(pts: &mut [Pt], linetype: i32) -> Result<(), EngineError> {
+    let center = pts.at(0)?;
+    let through = pts.at(1)?;
+    let (dx, dy) = (through.x - center.x, through.y - center.y);
+    // Azimuth from north, clockwise; pixel y grows southward.
+    let mut m = dx.atan2(-dy);
+    if m < 0.0 {
+        m += PI;
+    }
+    let length = calc_distance_double(through, center);
+    let (startangle, endangle) = arc_angles(linetype, m, through.x < center.x);
+    let numarcpts = 26;
+    let increment = (endangle - startangle) / f64::from(numarcpts - 1);
+    for j in 0..numarcpts {
+        let az = startangle + f64::from(j) * increment;
+        let x = center.x + length * az.sin();
+        let y = center.y - length * az.cos();
+        *pts.at_mut(usize::try_from(j).unwrap_or(0))? = Pt::new(x, y);
+    }
+    Ok(())
+}
+
 /// Upstream `CalcClockwiseCenterDouble`: replaces `pts[0]` with the centre of
 /// the clockwise arc through the two points and `pts[1]` with a point 50
 /// pixels beyond `pts[0]` from the centre; returns the radius.

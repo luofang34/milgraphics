@@ -193,8 +193,10 @@ fn builders_match_recorded_upstream_output() {
     let mut checked = 0;
     for line in CASES.lines().filter_map(parse) {
         if line.name == "DEPTH_AREA" {
-            // Needs polygon stroking and area intersection, which are not ported.
-            assert!(run(&line).is_err());
+            // Upstream intersects stroked areas (java.awt.geom.Area), whose
+            // paths carry duplicate vertices; the bands are compared by shape
+            // in tests/oracle_catalog.rs instead.
+            assert!(run(&line).is_ok());
             continue;
         }
         if line.name == "SECURE" && line.thick == 6 && line.control.len() == 4 {

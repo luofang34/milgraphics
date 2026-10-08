@@ -40,9 +40,43 @@ pub(crate) fn get_line_stroke(width: i32, style: i32) -> Stroke {
 /// without a fill, then resolves each shape's colours, style and stroke from
 /// the graphic's properties. Skipped for METOC and MSR by the caller.
 pub(crate) fn set_shape_properties(tg: &mut Tg, shapes: &mut Vec<Shape>) {
+    // Without a fill, upstream filters the attack types' fill shapes into a
+    // new list that only the rest of this method sees: the caller's list
+    // keeps them, with their properties left unset.
+    if tg.fill_color.is_none() && skips_fill_shapes(tg.line_type) {
+        let (mut fills, mut rest): (Vec<_>, Vec<_>) = std::mem::take(shapes)
+            .into_iter()
+            .enumerate()
+            .partition(|(_, s)| s.shape_type == shape_type::FILL);
+        let mut kept: Vec<Shape> = rest.iter_mut().map(|(_, s)| std::mem::take(s)).collect();
+        set_properties(tg, &mut kept);
+        let mut all: Vec<(usize, Shape)> = rest.into_iter().map(|(i, _)| i).zip(kept).collect();
+        all.append(&mut fills);
+        all.sort_by_key(|(i, _)| *i);
+        *shapes = all.into_iter().map(|(_, s)| s).collect();
+        return;
+    }
     // Upstream's whole body sits in one try block that swallows exceptions,
     // so a failure stops processing and keeps what was done so far.
     drop_unfilled_shapes(tg, shapes);
+    set_properties(tg, shapes);
+}
+
+fn skips_fill_shapes(line_type: i32) -> bool {
+    matches!(
+        line_type,
+        CATK | AIRAOA
+            | AAAAA
+            | SPT
+            | FRONTAL_ATTACK
+            | TURNING_MOVEMENT
+            | MOVEMENT_TO_CONTACT
+            | MAIN
+            | CATKBYFIRE
+    )
+}
+
+fn set_properties(tg: &mut Tg, shapes: &mut [Shape]) {
     let mut thickness = tg.line_thickness;
     for (j, shape) in shapes.iter_mut().enumerate() {
         if shape.shape_type == shape_type::FILL && tg.line_type != DEPTH_AREA {
@@ -83,10 +117,6 @@ fn drop_unfilled_shapes(tg: &Tg, shapes: &mut Vec<Shape>) {
                 shapes.clear();
                 shapes.push(last);
             }
-        }
-        CATK | AIRAOA | AAAAA | SPT | FRONTAL_ATTACK | TURNING_MOVEMENT | MOVEMENT_TO_CONTACT
-        | MAIN | CATKBYFIRE => {
-            shapes.retain(|s| s.shape_type != shape_type::FILL);
         }
         _ => {}
     }

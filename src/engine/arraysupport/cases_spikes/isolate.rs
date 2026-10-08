@@ -3,7 +3,9 @@
 //! RETAIN and TURN share, and the decoration each adds.
 
 use crate::engine::base::{At, EngineError, Pt};
-use crate::engine::lineutility::arc::{arc_array_double, calc_clockwise_center_double};
+use crate::engine::lineutility::arc::{
+    arc_array_double, arc_array_geographic, calc_clockwise_center_double,
+};
 use crate::engine::lineutility::arrow::get_arrow_head4_double;
 use crate::engine::lineutility::basics::calc_distance_double;
 use crate::engine::lineutility::bounds::mbr_distance;
@@ -89,9 +91,16 @@ pub(super) fn isolate_points(p: &mut [Pt], line_type: i32, dpi: f64) -> Result<(
     }
     let e = Pt::new(2.0 * pt1.x - pt0.x, 2.0 * pt1.y - pt0.y);
     let mut arc = [Pt::default(); 26];
-    *arc.at_mut(0)? = p1;
-    *arc.at_mut(1)? = e;
-    arc_array_double(&mut arc, radius, line_type)?;
+    // The renderer passes its geographic converter for every type but TURN.
+    if matches!(line_type, lt::TURN | lt::TURN_REVD) {
+        *arc.at_mut(0)? = p1;
+        *arc.at_mut(1)? = e;
+        arc_array_double(&mut arc, radius, line_type)?;
+    } else {
+        *arc.at_mut(0)? = p0;
+        *arc.at_mut(1)? = p1;
+        arc_array_geographic(&mut arc, line_type)?;
+    }
     for (j, a) in arc.iter_mut().enumerate() {
         a.style = 0;
         set(p, i32::try_from(j).unwrap_or(0), *a)?;

@@ -2,6 +2,7 @@
 //! outline shapes of each line type, then the separate fill shapes of the
 //! arrowhead types. Shapes are never dropped for being empty.
 
+mod depth_area;
 mod fills;
 mod flot_shapes;
 mod outlines;

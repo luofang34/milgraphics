@@ -6,10 +6,12 @@
 //! others carry pixel-sized elements (teeth, ticks, fixed arrowheads) and are
 //! drawn for each view from the projected control points.
 
+use crate::catalog::CatalogDrawRule;
 use crate::construction::{Decoration, GeoGeometry, PartRole};
 use crate::definition::GraphicDefinition;
 use crate::engine::api::{self, Input, Output};
 use crate::engine::base::{Pt, Shape, shape_type};
+use crate::engine::line_type::classes::MsInfo;
 use crate::family::{ConstructError, Ctx, vertex_handles};
 use crate::geo::GeoPoint;
 use crate::plane::{LocalPlane, Xy};
@@ -33,6 +35,9 @@ pub(crate) fn construct(ctx: &mut Ctx<'_>, def: &GraphicDefinition) -> Result<()
         symbol.symbol_set(),
         symbol.entity().get(),
     )
+    // A METOC symbol without a line type of its own is drawn by upstream's
+    // default case (its control points as a line), as line type -1.
+    .or_else(|| matches!(symbol.symbol_set(), 45 | 46).then_some(-1))
     .ok_or(ConstructError::Degenerate {
         symbol: ctx.spec.name(),
         reason: "no upstream line type",
@@ -65,8 +70,9 @@ pub(crate) fn construct(ctx: &mut Ctx<'_>, def: &GraphicDefinition) -> Result<()
     let mut first = None;
     for (shape, &geo) in a.shapes.iter().zip(&geographic) {
         if geo {
-            let id = add_part(ctx, &plane, shape, mpp_a)?;
-            first.get_or_insert(id);
+            if let Some(id) = add_part(ctx, &plane, shape, mpp_a)? {
+                first.get_or_insert(id);
+            }
         }
     }
     let part = first.unwrap_or_else(|| ctx.next_part());
@@ -125,16 +131,18 @@ fn run(
         modifiers: &def.modifiers,
         meters_per_pixel: mpp,
         text_width: &width,
+        ms_info: crate::family::ported::ms_info(&def.symbol),
     })
 }
 
-/// One renderer shape as a geographic part.
+/// One renderer shape as geographic parts; the first part's id, or `None`
+/// for a shape with no points (upstream keeps such shapes).
 fn add_part(
     ctx: &mut Ctx<'_>,
     plane: &LocalPlane<'_>,
     shape: &Shape,
     mpp: f64,
-) -> Result<crate::construction::PartId, ConstructError> {
+) -> Result<Option<crate::construction::PartId>, ConstructError> {
     let lines: Vec<Vec<GeoPoint>> = shape
         .polylines()
         .into_iter()
@@ -164,10 +172,7 @@ fn add_part(
         let id = ctx.add_part(role, geometry, stroke, fill);
         first.get_or_insert(id);
     }
-    first.ok_or(ConstructError::Degenerate {
-        symbol: ctx.spec.name(),
-        reason: "an empty shape",
-    })
+    Ok(first)
 }
 
 /// A renderer shape's stroke, with the operator's line colour if set.
@@ -184,4 +189,44 @@ pub(crate) fn shape_stroke(shape: &Shape, fallback: Rgba) -> Stroke {
             None => DashPattern::Solid,
         },
     }
+}
+
+/// The symbol's draw rule and point range as upstream's `MSInfo` gives them
+/// to the renderer: draw rules are numbered by family (area 100s, point
+/// 200s, line 300s, corridor 400s, axis 500s, polyline 600s, ellipse 700s,
+/// rectangular 800s, circular 900s, arc 1000s).
+pub(crate) fn ms_info(symbol: &crate::sidc::SymbolId) -> Option<MsInfo> {
+    let spec = crate::support::spec(symbol).ok()?;
+    let draw_rule = match spec.catalog_entry()?.draw_rule {
+        CatalogDrawRule::Standard(rule) => rule_number(rule.name()),
+        CatalogDrawRule::Metoc(_) => -1,
+    };
+    let count = |n: usize| i32::try_from(n).unwrap_or(i32::MAX);
+    Some(MsInfo {
+        draw_rule,
+        min_points: count(spec.min_points),
+        max_points: count(spec.max_points),
+    })
+}
+
+fn rule_number(name: &str) -> i32 {
+    const FAMILIES: [(&str, i32); 10] = [
+        ("Rectangular", 800),
+        ("Circular", 900),
+        ("Polyline", 600),
+        ("Corridor", 400),
+        ("Ellipse", 700),
+        ("Point", 200),
+        ("Area", 100),
+        ("Line", 300),
+        ("Axis", 500),
+        ("Arc", 1000),
+    ];
+    FAMILIES
+        .iter()
+        .find_map(|(prefix, base)| {
+            let n: i32 = name.strip_prefix(prefix)?.parse().ok()?;
+            Some(base + n)
+        })
+        .unwrap_or(0)
 }

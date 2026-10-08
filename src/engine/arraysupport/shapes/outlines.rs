@@ -13,7 +13,7 @@ pub(crate) fn build(w: &mut Work<'_>, shapes: &mut Vec<Shape>) -> Result<(), Eng
         lt::PDF => pdf(w, shapes),
         lt::BBS_AREA | lt::BBS_RECTANGLE => bbs(w, shapes),
         lt::DIRATKGND => dir_atk_gnd(w, shapes),
-        lt::DEPTH_AREA => Err(EngineError::LineType(lt::DEPTH_AREA)),
+        lt::DEPTH_AREA => super::depth_area::build(w, shapes),
         lt::TRAINING_AREA => training_area(w, shapes),
         lt::ITD | lt::SFY | lt::SFG | lt::USF | lt::SF | lt::WFG | lt::CFG | lt::PIPE => {
             flot_shapes::build(w, shapes)

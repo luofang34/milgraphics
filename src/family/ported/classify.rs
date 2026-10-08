@@ -30,7 +30,9 @@ pub(super) fn geographic(
 
 fn same(a: &Shape, mpp_a: f64, b: &Shape, mpp_b: f64, tolerance: f64) -> bool {
     let (la, lb) = (a.polylines(), b.polylines());
-    a.shape_type == b.shape_type
+    // A shape empty at both sizes may still be drawn at others.
+    !la.is_empty()
+        && a.shape_type == b.shape_type
         && la.len() == lb.len()
         && la.iter().zip(&lb).all(|(pa, pb)| {
             pa.len() == pb.len()
