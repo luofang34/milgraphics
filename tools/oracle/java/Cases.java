@@ -85,7 +85,9 @@ public final class Cases {
         layout("cm:Area8", p(0, 1500, 0, -1500, 4000, 2500, 4000, -2500));
         layout("cm:Area13", p(-2000, 0, 2000, 0));
         layout("cm:Area14", p(0, 0, 1500, 0, 3000, 0));
-        layout("cm:Area18", p(0, 2500, 3500, 2500, 0, -2500, 3500, -2500));
+        // Points 1 and 2 the first arrow (tip, end), 3 and 4 the second (tip at
+        // the end of the curve from point 2, end).
+        layout("cm:Area18", p(0, 2500, 3500, 2500, 3500, -2500, 0, -2500));
         // Axes of advance: tip, intermediate, rear, then the width point.
         layout("cm:Axis1,cm:Axis2", p(3000, 1000, 500, 0, -3000, -500, 2000, 1250));
         // Single anchor point plus AM/AN size modifiers.

@@ -41,8 +41,14 @@ pub(crate) enum Family {
     },
     /// An axis of advance with a notched arrowhead (Main Attack).
     Axis,
-    /// An air corridor of width `AM`.
-    Corridor,
+    /// An air corridor of width `AM`, labelled "`prefix` T" along each leg.
+    Corridor {
+        /// Name abbreviation, e.g. "AC" or "LLTR".
+        prefix: &'static str,
+        /// Sides drawn as two open lines joined at the bends, without a
+        /// circle at each control point.
+        open: bool,
+    },
     /// A sector range fan from `AM` ranges and `AN` azimuths.
     RangeFanSector,
     /// An obstacle bypass box with arrowheads at the opening.
@@ -55,7 +61,7 @@ impl Family {
     /// Whether control points may be inserted and deleted.
     pub(crate) fn allows_vertex_edits(self) -> bool {
         match self {
-            Self::PhaseLine | Self::LabelledArea { .. } | Self::Corridor => true,
+            Self::PhaseLine | Self::LabelledArea { .. } | Self::Corridor { .. } => true,
             Self::Axis | Self::RangeFanSector | Self::Bypass | Self::Ported => false,
         }
     }
@@ -208,7 +214,9 @@ pub fn construct(
         Family::PhaseLine => phase_line::construct(&mut ctx, definition)?,
         Family::LabelledArea { prefix } => area::construct(&mut ctx, definition, prefix)?,
         Family::Axis => axis::construct(&mut ctx, definition)?,
-        Family::Corridor => corridor::construct(&mut ctx, definition)?,
+        Family::Corridor { prefix, open } => {
+            corridor::construct(&mut ctx, definition, prefix, open)?
+        }
         Family::RangeFanSector => range_fan::construct(&mut ctx, definition)?,
         Family::Bypass => bypass::construct(&mut ctx, definition)?,
         Family::Ported => ported::construct(&mut ctx, definition)?,
@@ -242,7 +250,7 @@ pub(crate) fn move_handle(
         (Family::RangeFanSector, HandleId::Range(_) | HandleId::Azimuth(_)) => {
             range_fan::move_handle(definition, handle, to)
         }
-        (Family::Corridor, HandleId::Width) => {
+        (Family::Corridor { .. }, HandleId::Width) => {
             let first = definition
                 .positions()
                 .next()

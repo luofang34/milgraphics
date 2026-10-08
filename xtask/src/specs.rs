@@ -30,8 +30,22 @@ const SINGLE_POINT_RULES: &[&str] = &["Point1", "Point2", "Point3", "Point7"];
 const UNIMPLEMENTED: &str = "tests/fixtures/oracle/unimplemented.txt";
 const OUTPUT: &str = "src/generated/specs.rs";
 
-/// Control measures with a hand-written family in `src/family`.
-const HAND_BUILT: &[u32] = &[140_300, 120_200, 151_403, 170_100, 242_200, 270_601];
+/// Control measures with a hand-written family in `src/family`, and the
+/// version codes they are hand-built for.
+const HAND_BUILT: &[(u32, &[u32])] = &[
+    (140_300, &[11, 15]),
+    (120_200, &[11, 15]),
+    (151_403, &[11, 15]),
+    (170_100, &[11, 15, 16]),
+    (242_200, &[11, 15]),
+    (270_601, &[11, 15]),
+    (170_200, &[15, 16]),
+    (170_300, &[15, 16]),
+    (170_400, &[15, 16]),
+    (170_500, &[15, 16]),
+    (170_600, &[15, 16]),
+    (170_700, &[15, 16]),
+];
 
 pub(crate) fn run() -> Result<String, XtaskError> {
     let root = catalog::root()?;
@@ -62,7 +76,10 @@ pub(crate) fn run() -> Result<String, XtaskError> {
             Some(document) => in_standard(&references, document, set, entity),
             None => !SINGLE_POINT_RULES.contains(&row.draw_rule.as_str()),
         };
-        let hand_built = set == 25 && HAND_BUILT.contains(&entity) && matches!(version, 11 | 15);
+        let hand_built = set == 25
+            && HAND_BUILT
+                .iter()
+                .any(|(e, versions)| *e == entity && versions.contains(&version));
         if pending.contains(case) || hand_built || !multipoint {
             continue;
         }
