@@ -36,3 +36,6 @@ pub(crate) struct ChannelPoints {
     pub(crate) line1: Pt,
     pub(crate) line2: Pt,
 }
+
+#[cfg(test)]
+mod oracle_tests;
