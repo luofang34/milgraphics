@@ -18,6 +18,13 @@ serde = { version = "1.0.229", features = ["derive"] }
 serde_json = { version = "1.0.151", features = ["float_roundtrip", "raw_value"] }
 thiserror = "2"
 
+[target.'cfg(not(target_arch = "wasm32"))'.dev-dependencies]
+criterion = { version = "0.8.2", default-features = false }
+
+[[bench]]
+name = "plan"
+harness = false
+
 # wasm-bindgen-test drives the browser behaviour tests. Its wasm-bindgen must
 # match the `=0.2.129` pin of maplibre-rs-experimental so the test runner and
 # the consumers' lockfiles agree.
