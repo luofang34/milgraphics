@@ -513,23 +513,22 @@ pub milgraphics::support::ModifierSpec::min_count: usize
 pub milgraphics::support::ModifierSpec::required: bool
 #[non_exhaustive] pub struct milgraphics::support::StandardRef
 pub milgraphics::support::StandardRef::document: &'static str
+pub milgraphics::support::StandardRef::draw_rule: core::option::Option<&'static str>
 pub milgraphics::support::StandardRef::pdf_page: u16
 pub milgraphics::support::StandardRef::table: &'static str
 #[non_exhaustive] pub struct milgraphics::support::SymbolSpec
-pub milgraphics::support::SymbolSpec::catalog_divergence: core::option::Option<&'static str>
-pub milgraphics::support::SymbolSpec::draw_rule: &'static str
 pub milgraphics::support::SymbolSpec::entity: u32
 pub milgraphics::support::SymbolSpec::max_points: usize
 pub milgraphics::support::SymbolSpec::min_points: usize
 pub milgraphics::support::SymbolSpec::modifiers: &'static [milgraphics::support::ModifierSpec]
-pub milgraphics::support::SymbolSpec::name: &'static str
-pub milgraphics::support::SymbolSpec::reference: milgraphics::support::StandardRef
 pub milgraphics::support::SymbolSpec::standard: milgraphics::standard::StandardVersion
 pub milgraphics::support::SymbolSpec::symbol_set: u8
 impl milgraphics::support::SymbolSpec
 pub fn milgraphics::support::SymbolSpec::allows_vertex_edits(&self) -> bool
 pub fn milgraphics::support::SymbolSpec::catalog_entry(&self) -> core::option::Option<&'static milgraphics::catalog::CatalogEntry>
 pub fn milgraphics::support::SymbolSpec::modifier(&self, milgraphics::ModifierField) -> core::option::Option<&'static milgraphics::support::ModifierSpec>
+pub fn milgraphics::support::SymbolSpec::name(&self) -> &'static str
+pub fn milgraphics::support::SymbolSpec::reference(&self) -> core::option::Option<&'static milgraphics::support::StandardRef>
 pub fn milgraphics::support::SymbolSpec::required(&self) -> impl core::iter::traits::iterator::Iterator<Item = milgraphics::ModifierField> + 'static
 pub fn milgraphics::support::all() -> impl core::iter::traits::iterator::Iterator<Item = &'static milgraphics::support::SymbolSpec> + core::clone::Clone
 pub fn milgraphics::support::spec(&milgraphics::sidc::SymbolId) -> core::result::Result<&'static milgraphics::support::SymbolSpec, milgraphics::support::Unsupported>
@@ -961,6 +960,7 @@ pub milgraphics::RenderPlan::surface_revision: u64
 pub milgraphics::RenderPlan::view_revision: u64
 #[non_exhaustive] pub struct milgraphics::StandardRef
 pub milgraphics::StandardRef::document: &'static str
+pub milgraphics::StandardRef::draw_rule: core::option::Option<&'static str>
 pub milgraphics::StandardRef::pdf_page: u16
 pub milgraphics::StandardRef::table: &'static str
 #[non_exhaustive] pub struct milgraphics::StyleOverrides
@@ -994,20 +994,18 @@ pub fn milgraphics::sidc::SymbolId::serialize<S: serde_core::ser::Serializer>(&s
 impl<'de> serde_core::de::Deserialize<'de> for milgraphics::sidc::SymbolId
 pub fn milgraphics::sidc::SymbolId::deserialize<D: serde_core::de::Deserializer<'de>>(D) -> core::result::Result<Self, <D as serde_core::de::Deserializer>::Error>
 #[non_exhaustive] pub struct milgraphics::SymbolSpec
-pub milgraphics::SymbolSpec::catalog_divergence: core::option::Option<&'static str>
-pub milgraphics::SymbolSpec::draw_rule: &'static str
 pub milgraphics::SymbolSpec::entity: u32
 pub milgraphics::SymbolSpec::max_points: usize
 pub milgraphics::SymbolSpec::min_points: usize
 pub milgraphics::SymbolSpec::modifiers: &'static [milgraphics::support::ModifierSpec]
-pub milgraphics::SymbolSpec::name: &'static str
-pub milgraphics::SymbolSpec::reference: milgraphics::support::StandardRef
 pub milgraphics::SymbolSpec::standard: milgraphics::standard::StandardVersion
 pub milgraphics::SymbolSpec::symbol_set: u8
 impl milgraphics::support::SymbolSpec
 pub fn milgraphics::support::SymbolSpec::allows_vertex_edits(&self) -> bool
 pub fn milgraphics::support::SymbolSpec::catalog_entry(&self) -> core::option::Option<&'static milgraphics::catalog::CatalogEntry>
 pub fn milgraphics::support::SymbolSpec::modifier(&self, milgraphics::ModifierField) -> core::option::Option<&'static milgraphics::support::ModifierSpec>
+pub fn milgraphics::support::SymbolSpec::name(&self) -> &'static str
+pub fn milgraphics::support::SymbolSpec::reference(&self) -> core::option::Option<&'static milgraphics::support::StandardRef>
 pub fn milgraphics::support::SymbolSpec::required(&self) -> impl core::iter::traits::iterator::Iterator<Item = milgraphics::ModifierField> + 'static
 #[non_exhaustive] pub struct milgraphics::Validity
 pub milgraphics::Validity::end: core::option::Option<alloc::string::String>
