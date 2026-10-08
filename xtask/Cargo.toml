@@ -1,0 +1,15 @@
+[package]
+name = "xtask"
+version = "0.0.0"
+authors = ["Fang Luo"]
+edition = "2024"
+rust-version = "1.85"
+description = "Repository automation for milgraphics: regenerates src/generated from the pinned upstream data"
+license = "AGPL-3.0-or-later"
+publish = false
+
+[dependencies]
+thiserror = "2"
+
+[lints]
+workspace = true

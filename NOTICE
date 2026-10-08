@@ -9,3 +9,10 @@ later version. See LICENSE.
 This program is distributed in the hope that it will be useful, but WITHOUT ANY
 WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+
+Upstream work: mil-sym-java (Apache-2.0)
+The files in src/generated/ are mechanically extracted from the symbol tables
+and draw-rule definitions of mil-sym-java,
+https://github.com/missioncommand/mil-sym-java, commit
+6634a2e916fb3513953ecc8d90a93371f05e6f4a. The Apache License, Version 2.0
+under which it is distributed is in LICENSE-APACHE-mil-sym.

@@ -38,9 +38,23 @@ marks Axis2 "Disused").
 |---|---|---|---|
 | Main Attack 151403, 2525E change 1 | TABLE L-X: draw rule Axis1 | `mse.txt`: Axis2 | Open: settle against the TABLE L-X figure when Main Attack is implemented |
 
-No upstream code or data is incorporated in the library. When a file is
-ported or generated from upstream, it is listed here with its source file and
-regeneration command, and the upstream license is added to `NOTICE`.
+## Generated data
+
+`src/generated/` is mechanically extracted data from the Apache-2.0
+mil-sym-java at the pinned commit; no upstream code is incorporated. Its
+license text is `LICENSE-APACHE-mil-sym` and the attribution is in `NOTICE`.
+Regenerate after `tools/oracle/fetch-upstream.sh` with `cargo xtask catalog`;
+the CI `oracle` job fails if the result differs from the checked-in files.
+
+| Generated file | Upstream source files | Command |
+|---|---|---|
+| `src/generated/catalog.rs` | `src/main/resources/data/msd.txt`, `mse.txt` (parsed as `MSLookup.java` does) | `cargo xtask catalog` |
+| `src/generated/draw_rule.rs` | `DrawRules.java`, `MODrawRules.java` | `cargo xtask catalog` |
+
+All upstream paths are relative to the mil-sym-java root, and every file is
+pinned by sha256 in `pin.json`. Where a later row of a data file repeats an
+earlier row's symbol set, entity and version, the later row wins, as in
+upstream's lookup table.
 
 ## Oracle
 

@@ -13,6 +13,8 @@
         },
         "rules": {
           "src/main/java/armyc2/c5isr/renderer/utilities/DrawRules.java": "e24b17afce0fed25d0733534dc94131460445a0f05fceb9c04d7866b74286c83",
+          "src/main/java/armyc2/c5isr/renderer/utilities/MODrawRules.java": "d99d17e3a912dbc7bc60704115992704964affe81b870f9e211d36729efc7dd1",
+          "src/main/java/armyc2/c5isr/renderer/utilities/MSLookup.java": "7c3f0d10dae4265e28e42cb74c9bee90d3c3620d115014abe6732c394df98c09",
           "src/main/java/armyc2/c5isr/renderer/utilities/MSInfo.java": "f43179dab7ee152c7d1cc4cea3a0dae4e94f70017033a75ce63b5a897bb062d6",
           "src/main/java/armyc2/c5isr/renderer/utilities/SymbolID.java": "c05986526fd022bd96a25ef2d626597bc5eb99c65dd112cc2b1d0049764fb836"
         },

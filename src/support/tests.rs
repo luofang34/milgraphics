@@ -49,3 +49,34 @@ fn lookup_by_symbol_id() {
         "APP-6 is not yet referenced"
     );
 }
+
+#[test]
+fn draw_rules_agree_with_the_catalog_or_declare_why_not() {
+    use crate::catalog::{CatalogDrawRule, lookup};
+    for s in all() {
+        let entry = lookup(s.standard.code(), 25, s.entity).unwrap_or_else(|| {
+            panic!(
+                "{} {} missing from the upstream catalog",
+                s.standard, s.entity
+            )
+        });
+        let upstream = match entry.draw_rule {
+            CatalogDrawRule::Standard(rule) => rule.name(),
+            CatalogDrawRule::Metoc(rule) => rule.name(),
+        };
+        assert!(
+            upstream == s.draw_rule || s.catalog_divergence.is_some(),
+            "{} {}: standard says {}, upstream catalog says {upstream}, and no divergence is declared",
+            s.standard,
+            s.name,
+            s.draw_rule
+        );
+        if let Some(reason) = s.catalog_divergence {
+            assert_ne!(
+                upstream, s.draw_rule,
+                "{}: divergence declared but none exists: {reason}",
+                s.name
+            );
+        }
+    }
+}

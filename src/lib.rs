@@ -8,10 +8,12 @@
 
 pub mod antimeridian;
 pub mod budget;
+pub mod catalog;
 pub mod construction;
 pub mod definition;
 pub mod edit;
 pub mod family;
+mod generated;
 pub mod geo;
 mod geodesy;
 pub mod geojson;
@@ -27,10 +29,13 @@ pub mod svg;
 mod version;
 
 pub use budget::{Budget, BudgetError};
+pub use catalog::{CatalogDrawRule, CatalogEntry, GeometryKind, VersionSet};
 pub use construction::Construction;
 pub use definition::{ControlPoint, GraphicDefinition, GraphicId, StyleOverrides, Validity};
 pub use edit::{Edit, EditError, HandleId, apply_edit};
 pub use family::{Config, ConstructError, construct};
+pub use generated::catalog::ModifierKey;
+pub use generated::draw_rule::{DrawRule, MoDrawRule};
 pub use geo::{Altitude, GeoPoint, VerticalDatum};
 pub use modifier::{ModifierField, Modifiers};
 pub use persist::{PersistError, PersistedGraphic};
