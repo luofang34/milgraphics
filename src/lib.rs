@@ -76,3 +76,7 @@ pub use sidc::{EntityCode, SymbolId};
 pub use standard::StandardVersion;
 pub use support::{SymbolSpec, Unsupported};
 pub use version::RENDERER_VERSION;
+
+#[doc = include_str!("../README.md")]
+#[cfg(doctest)]
+pub struct ReadmeDoctests;

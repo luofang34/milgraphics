@@ -1,6 +1,7 @@
 //! Renders the six first-milestone graphics (2525D change 1) to SVG files.
 //!
 //! Usage: `cargo run --example render_svg [out_dir]` (default `target/svg`).
+//! `docs/images` holds three of them for the README.
 
 use std::error::Error;
 use std::fs;
@@ -26,6 +27,8 @@ struct Case {
 }
 
 const SCALE: f64 = 50000.0;
+/// Space around the drawing, in pixels, for label text past its anchor.
+const MARGIN: f64 = 80.0;
 
 const CASES: [Case; 6] = [
     Case {
@@ -109,8 +112,8 @@ fn definition(case: &Case) -> Result<GraphicDefinition, Box<dyn Error>> {
     Ok(d)
 }
 
-/// Renders one case. The canvas covers every drawn point and label anchor
-/// with a margin and is never smaller than 1100 x 900.
+/// Renders one case, cropped to what is drawn with a margin for label text,
+/// on a white background so it reads on light and dark pages.
 fn svg(case: &Case) -> Result<String, Box<dyn Error>> {
     let construction = construct(&definition(case)?, &Config::default())?;
     let view = View {
@@ -130,12 +133,28 @@ fn svg(case: &Case) -> Result<String, Box<dyn Error>> {
     let shapes = plan.screen.iter().flat_map(|i| match &i.shape {
         ScreenShape::Polyline(p) | ScreenShape::Polygon(p) => p.iter().copied(),
     });
-    let (mut w, mut h) = (1100.0_f64, 900.0_f64);
+    let (mut x0, mut y0, mut x1, mut y1) = (f64::MAX, f64::MAX, f64::MIN, f64::MIN);
     for p in shapes.chain(anchors) {
-        w = w.max((p.x + 60.0).ceil());
-        h = h.max((p.y + 60.0).ceil());
+        (x0, y0, x1, y1) = (x0.min(p.x), y0.min(p.y), x1.max(p.x), y1.max(p.y));
     }
-    Ok(milgraphics::svg::to_svg(&plan, w, h))
+    let (x0, y0) = ((x0 - MARGIN).floor(), (y0 - MARGIN).floor());
+    let (w, h) = ((x1 + MARGIN).ceil() - x0, (y1 + MARGIN).ceil() - y0);
+    let full = milgraphics::svg::to_svg(&plan, x1 + MARGIN, y1 + MARGIN);
+    let body = full.split_once('\n').map_or("", |(_, body)| body);
+    Ok(format!(
+        concat!(
+            r#"<svg xmlns="http://www.w3.org/2000/svg" width="{w}" height="{h}" "#,
+            r#"viewBox="{x0} {y0} {w} {h}">"#,
+            "\n",
+            r#"<rect x="{x0}" y="{y0}" width="{w}" height="{h}" fill="white"/>"#,
+            "\n{body}"
+        ),
+        w = w,
+        h = h,
+        x0 = x0,
+        y0 = y0,
+        body = body,
+    ))
 }
 
 fn main() -> Result<(), Box<dyn Error>> {
