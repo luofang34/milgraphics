@@ -9,6 +9,7 @@
 
 pub(crate) mod api;
 pub(crate) mod base;
+pub(crate) mod build;
 pub(crate) mod channel_utility;
 pub(crate) mod channels;
 pub(crate) mod cpof;
