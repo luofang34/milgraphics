@@ -130,5 +130,9 @@ python3 -I tools/oracle/diff-fixtures.py tests/fixtures/oracle/six.jsonl /path/t
 ```
 
 The CI `oracle` job regenerates every case file on Linux and fails, naming each
-differing case and field, if the result differs from the checked-in fixtures.
+differing case and field, if the oracle's output differs from the checked-in
+fixtures. `font_probe` differences are reported as a notice only: Java measures
+the same PT Sans file slightly differently on Linux and macOS (advance 123 vs
+124 px, ascent 13 vs 11 px for the probe string), while every shape and label
+of the current cases is identical on both.
 Ordinary CI uses the checked-in fixtures and needs no JDK.
