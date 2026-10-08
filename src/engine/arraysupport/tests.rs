@@ -36,12 +36,7 @@ where
 }
 
 fn color(t: &mut std::slice::Iter<'_, &str>) -> Option<i64> {
-    let s: &str = t.next().unwrap();
-    if s == "-" {
-        None
-    } else {
-        Some(s.parse().unwrap())
-    }
+    t.next().and_then(|s| s.parse().ok())
 }
 
 fn parse_tokens(line: &str) -> Case {
