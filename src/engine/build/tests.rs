@@ -241,3 +241,23 @@ fn overrides_replace_the_symbol_colours() {
     assert_eq!(tg.fill_color, Some(Rgba::opaque(4, 5, 6)));
     assert_eq!(tg.line_thickness, 5);
 }
+
+#[test]
+fn planned_status_dash_matches_the_recorded_stroke() {
+    // The oracle records width 3 with dash [6, 6] for planned control measures
+    // and black for friendly ones (tests/fixtures/oracle/all.jsonl).
+    let tg = build_with(
+        PL,
+        &symbol(3, 1, 11, 110_100),
+        &pts(2),
+        &Modifiers::default(),
+        1.0,
+    );
+    let stroke = crate::engine::tg_utility::shape_properties::get_line_stroke(
+        tg.line_thickness,
+        tg.line_style,
+    );
+    assert_eq!(stroke.width, 3.0);
+    assert_eq!(stroke.dash, Some(vec![6.0, 6.0]));
+    assert_eq!(tg.line_color, Some(Rgba::BLACK));
+}
