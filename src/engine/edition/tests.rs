@@ -64,6 +64,20 @@ fn the_version_16_control_fills_both_arrowheads() {
 }
 
 #[test]
+fn the_version_16_control_sets_its_c_outside_the_circle() {
+    let none = Modifiers::default();
+    let points = [(300.0, 300.0), (450.0, 300.0)];
+    let from_centre = |o: &Output| {
+        let c = o.labels.iter().find(|l| l.text == "C").unwrap();
+        dist((c.x, c.y), points[0])
+    };
+    let app6e = out("16032500003432000000", tl::CONTROL, &points, &none);
+    assert!(from_centre(&app6e) > 150.0 + 6.0);
+    let d = out("11032500003432000000", tl::CONTROL, &points, &none);
+    assert!((from_centre(&d) - 150.0).abs() < 1.0);
+}
+
+#[test]
 fn the_frontal_attack_bar_is_twice_the_arrowhead_base() {
     let none = Modifiers::default();
     let points = [

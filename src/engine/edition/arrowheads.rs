@@ -1,7 +1,7 @@
 //! Arrowheads drawn open where upstream fills them, and the reverse.
 
 use super::lines_like;
-use crate::engine::api::Output;
+use crate::engine::api::{Input, Output};
 use crate::engine::base::shape_type;
 
 /// Fix: upstream fills the arrowhead as a triangle of its own; the template
@@ -52,5 +52,25 @@ pub(super) fn fill_control(out: &mut Output) {
         let mut filled = lines_like(&like, &[ring]);
         filled.fill_color = like.line_color;
         out.shapes.push(filled);
+    }
+}
+
+/// Distance from the circle to the centre of the "C", in pixels: half the
+/// label font's height and a gap, so the letter sits outside the line.
+const C_CLEARANCE: f64 = 8.0;
+
+/// Control: the template sets the "C" outside the circle; upstream centres
+/// it on the line. It keeps its bearing from the centre, point 1.
+pub(super) fn control_label_outside(input: &Input<'_>, out: &mut Output) {
+    let (Some(centre), Some(rim)) = (input.pixels.first(), input.pixels.get(1)) else {
+        return;
+    };
+    let radius = (rim.x - centre.x).hypot(rim.y - centre.y);
+    for label in out.labels.iter_mut().filter(|l| l.text == "C") {
+        let Some(u) = super::unit((label.x - centre.x, label.y - centre.y)) else {
+            continue;
+        };
+        label.x = centre.x + u.0 * (radius + C_CLEARANCE);
+        label.y = centre.y + u.1 * (radius + C_CLEARANCE);
     }
 }
