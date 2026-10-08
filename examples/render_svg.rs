@@ -7,7 +7,7 @@ use std::error::Error;
 use std::fs;
 use std::path::PathBuf;
 
-use milgraphics::render::{FixedAdvanceMetrics, LocalEquirectangular, ScreenShape};
+use milgraphics::render::{FixedAdvanceMetrics, LocalEquirectangular};
 use milgraphics::{
     Altitude, Budget, Config, ControlPoint, GeoPoint, GraphicDefinition, GraphicId, SymbolId,
     VerticalDatum, View, construct, render,
@@ -126,9 +126,10 @@ fn svg(case: &Case) -> Result<String, Box<dyn Error>> {
         &Budget::default(),
     )?;
     let anchors = plan.labels.iter().filter_map(|l| l.screen);
-    let shapes = plan.screen.iter().flat_map(|i| match &i.shape {
-        ScreenShape::Polyline(p) | ScreenShape::Polygon(p) => p.iter().copied(),
-    });
+    let shapes = plan
+        .screen
+        .iter()
+        .flat_map(|i| i.shape.points().iter().copied());
     let (mut x0, mut y0, mut x1, mut y1) = (f64::MAX, f64::MAX, f64::MIN, f64::MIN);
     for p in shapes.chain(anchors) {
         (x0, y0, x1, y1) = (x0.min(p.x), y0.min(p.y), x1.max(p.x), y1.max(p.y));

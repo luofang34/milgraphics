@@ -69,11 +69,26 @@ impl View {
 
 /// Geographic-tier geometry, split at the antimeridian.
 #[derive(Clone, Debug, PartialEq)]
+#[non_exhaustive]
 pub enum GeoShape {
     /// Open polylines.
     Lines(Vec<Vec<LonLat>>),
     /// Closed rings (first point repeated), one polygon each.
     Polygons(Vec<Vec<LonLat>>),
+}
+
+impl GeoShape {
+    /// The polylines or rings.
+    pub fn pieces(&self) -> &[Vec<LonLat>] {
+        match self {
+            Self::Lines(p) | Self::Polygons(p) => p,
+        }
+    }
+
+    /// Whether the pieces are closed rings.
+    pub fn is_closed(&self) -> bool {
+        matches!(self, Self::Polygons(_))
+    }
 }
 
 /// An item the map engine projects and drapes itself.
@@ -94,11 +109,26 @@ pub struct GeoItem {
 
 /// Screen-tier geometry in pixels.
 #[derive(Clone, Debug, PartialEq)]
+#[non_exhaustive]
 pub enum ScreenShape {
     /// An open polyline.
     Polyline(Vec<ScreenPoint>),
     /// A closed polygon, first point not repeated.
     Polygon(Vec<ScreenPoint>),
+}
+
+impl ScreenShape {
+    /// The shape's points, in drawing order.
+    pub fn points(&self) -> &[ScreenPoint] {
+        match self {
+            Self::Polyline(p) | Self::Polygon(p) => p,
+        }
+    }
+
+    /// Whether the last point joins back to the first.
+    pub fn is_closed(&self) -> bool {
+        matches!(self, Self::Polygon(_))
+    }
 }
 
 /// An item already projected, densified and clipped for this view.

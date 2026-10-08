@@ -1,7 +1,6 @@
 //! Explicit degenerate and boundary inputs. Each must give a typed error or
 //! finite output; the ones named as errors must be errors.
 
-use milgraphics::render::GeoShape;
 use milgraphics::{
     Altitude, Budget, BudgetError, Config, ConstructError, GraphicDefinition, VerticalDatum,
     construct,
@@ -40,9 +39,7 @@ fn geo_parts(d: &GraphicDefinition) -> Vec<Vec<[f64; 2]>> {
     let plan = rendered(&c, projection.as_ref(), &Budget::default()).unwrap();
     plan.geo
         .into_iter()
-        .flat_map(|i| match i.shape {
-            GeoShape::Lines(p) | GeoShape::Polygons(p) => p,
-        })
+        .flat_map(|i| i.shape.pieces().to_vec())
         .collect()
 }
 

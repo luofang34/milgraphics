@@ -9,7 +9,7 @@ wasm_bindgen_test::wasm_bindgen_test_configure!(run_in_browser);
 // test exemptions in clippy.toml reach them only through a `cfg(test)` module.
 #[cfg(test)]
 mod golden {
-    use milgraphics::render::{FixedAdvanceMetrics, LocalEquirectangular, ScreenShape};
+    use milgraphics::render::{FixedAdvanceMetrics, LocalEquirectangular};
     use milgraphics::{
         Altitude, Budget, Config, ControlPoint, GeoPoint, GraphicDefinition, GraphicId, SymbolId,
         VerticalDatum, View, construct, render,
@@ -219,9 +219,10 @@ mod golden {
         )
         .unwrap();
         let anchors = plan.labels.iter().filter_map(|l| l.screen);
-        let shapes = plan.screen.iter().flat_map(|i| match &i.shape {
-            ScreenShape::Polyline(p) | ScreenShape::Polygon(p) => p.iter().copied(),
-        });
+        let shapes = plan
+            .screen
+            .iter()
+            .flat_map(|i| i.shape.points().iter().copied());
         let (mut w, mut h) = (1100.0_f64, 900.0_f64);
         for p in shapes.chain(anchors) {
             w = w.max((p.x + 60.0).ceil());

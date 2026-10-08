@@ -54,10 +54,11 @@ pub fn milgraphics::catalog::VersionSet::iter(self) -> impl core::iter::traits::
 pub fn milgraphics::catalog::entries() -> &'static [milgraphics::catalog::CatalogEntry]
 pub fn milgraphics::catalog::lookup(u8, u8, u32) -> core::option::Option<&'static milgraphics::catalog::CatalogEntry>
 pub mod milgraphics::construction
-pub enum milgraphics::construction::GeoGeometry
+#[non_exhaustive] pub enum milgraphics::construction::GeoGeometry
 pub milgraphics::construction::GeoGeometry::Line(alloc::vec::Vec<milgraphics::geo::GeoPoint>)
 pub milgraphics::construction::GeoGeometry::Ring(alloc::vec::Vec<milgraphics::geo::GeoPoint>)
 impl milgraphics::construction::GeoGeometry
+pub fn milgraphics::construction::GeoGeometry::is_closed(&self) -> bool
 pub fn milgraphics::construction::GeoGeometry::points(&self) -> &[milgraphics::geo::GeoPoint]
 #[non_exhaustive] pub enum milgraphics::construction::HandleKind
 pub milgraphics::construction::HandleKind::Azimuth
@@ -104,7 +105,9 @@ pub milgraphics::construction::LabelSpec::may_hide: bool
 pub milgraphics::construction::LabelSpec::part: milgraphics::construction::PartId
 pub milgraphics::construction::LabelSpec::placement: milgraphics::construction::LabelPlacement
 pub milgraphics::construction::LabelSpec::text: alloc::string::String
-pub struct milgraphics::construction::PartId(pub u16)
+pub struct milgraphics::construction::PartId(_)
+impl milgraphics::construction::PartId
+pub const fn milgraphics::construction::PartId::get(self) -> u16
 pub struct milgraphics::construction::ScreenDecoration(_)
 pub mod milgraphics::definition
 #[non_exhaustive] pub enum milgraphics::definition::ControlPointError
@@ -318,17 +321,23 @@ pub milgraphics::pick::PickTarget::Part(milgraphics::construction::PartId)
 pub milgraphics::pick::PickRef::definition: milgraphics::definition::GraphicId
 pub milgraphics::pick::PickRef::target: milgraphics::pick::PickTarget
 pub mod milgraphics::render
-pub enum milgraphics::render::GeoShape
+#[non_exhaustive] pub enum milgraphics::render::GeoShape
 pub milgraphics::render::GeoShape::Lines(alloc::vec::Vec<alloc::vec::Vec<milgraphics::antimeridian::LonLat>>)
 pub milgraphics::render::GeoShape::Polygons(alloc::vec::Vec<alloc::vec::Vec<milgraphics::antimeridian::LonLat>>)
+impl milgraphics::render::GeoShape
+pub fn milgraphics::render::GeoShape::is_closed(&self) -> bool
+pub fn milgraphics::render::GeoShape::pieces(&self) -> &[alloc::vec::Vec<milgraphics::antimeridian::LonLat>]
 #[non_exhaustive] pub enum milgraphics::render::PlanContent
 pub milgraphics::render::PlanContent::Full
 pub milgraphics::render::PlanContent::Overlay
 #[non_exhaustive] pub enum milgraphics::render::RenderError
 pub milgraphics::render::RenderError::Budget(milgraphics::budget::BudgetError)
-pub enum milgraphics::render::ScreenShape
+#[non_exhaustive] pub enum milgraphics::render::ScreenShape
 pub milgraphics::render::ScreenShape::Polygon(alloc::vec::Vec<milgraphics::render::ScreenPoint>)
 pub milgraphics::render::ScreenShape::Polyline(alloc::vec::Vec<milgraphics::render::ScreenPoint>)
+impl milgraphics::render::ScreenShape
+pub fn milgraphics::render::ScreenShape::is_closed(&self) -> bool
+pub fn milgraphics::render::ScreenShape::points(&self) -> &[milgraphics::render::ScreenPoint]
 #[non_exhaustive] pub enum milgraphics::render::TextAlign
 pub milgraphics::render::TextAlign::Center
 pub milgraphics::render::TextAlign::Left
