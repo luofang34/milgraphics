@@ -10,8 +10,8 @@ differing case and field. `font_probe` describes the platform's font
 metrics rather than the oracle's output: its differences are reported as a
 notice, so metric drift between platforms is visible. Where the metrics
 differ, label positions depend on them and are not compared (as AGENTS.md
-asks of anchors without pinned fonts) and label angles are compared to the
-nearest degree; label texts and everything else still must match.
+asks of anchors without pinned fonts) and label angles may differ by a
+degree; label texts and everything else still must match.
 """
 import json
 import sys
@@ -48,14 +48,23 @@ def detail(a, b):
     return ""
 
 
-def without_positions(shapes):
-    """Labels without what follows the font metrics: positions, and angles to
-    the nearest degree (mil-sym derives some from text extents)."""
-    return [
-        {k: (round(v) if k == "angle" and isinstance(v, (int, float)) else v)
-         for k, v in s.items() if k != "position"}
-        for s in shapes or []
-    ]
+def labels_match_but_metrics(a, b):
+    """Labels equal except for what follows the font metrics: positions, and
+    angles within a degree (mil-sym derives some from text extents)."""
+    if not (isinstance(a, list) and isinstance(b, list)) or len(a) != len(b):
+        return False
+    for x, y in zip(a, b):
+        if x.keys() != y.keys():
+            return False
+        for k in x:
+            if k == "position":
+                continue
+            if k == "angle" and isinstance(x[k], (int, float)) and isinstance(y[k], (int, float)):
+                if abs(x[k] - y[k]) > 1.0:
+                    return False
+            elif not same(x[k], y[k]):
+                return False
+    return True
 
 
 def main():
@@ -78,8 +87,8 @@ def main():
                 continue
             if same(a.get(key), b.get(key)):
                 continue
-            if key == "modifier_shapes" and metrics_differ and same(
-                without_positions(a.get(key)), without_positions(b.get(key))
+            if key == "modifier_shapes" and metrics_differ and labels_match_but_metrics(
+                a.get(key), b.get(key)
             ):
                 notices.append(f"{a['case']}: label positions follow the platform's font metrics")
                 continue
