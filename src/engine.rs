@@ -8,3 +8,4 @@
 #![allow(dead_code)]
 
 pub(crate) mod base;
+pub(crate) mod lineutility;
