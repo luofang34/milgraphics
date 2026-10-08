@@ -441,3 +441,22 @@ fn a_graphic_a_few_pixels_across_draws_no_labels_or_decorations() {
         );
     }
 }
+
+#[test]
+fn a_mine_cluster_figure_is_drawn_dashed_in_the_screen_tier() {
+    let area = [(20.0, 50.0), (20.04, 50.0), (20.04, 50.02), (20.0, 50.02)];
+    let d = def("15032500002708001900", &area, None);
+    let p = plan(&d, &LocalEquirectangular::new(19.99, 50.03, 50_000.0, 96.0));
+    let clusters: Vec<_> = p
+        .screen
+        .iter()
+        .filter(|i| {
+            i.decoration
+                && i.shape.is_closed()
+                && i.stroke
+                    .is_some_and(|s| s.dash == crate::style::DashPattern::Dashed)
+                && i.shape.points().len() == 13
+        })
+        .collect();
+    assert_eq!(clusters.len(), 3);
+}

@@ -14,15 +14,19 @@ fn sector_1_codes_name_the_mine_types_in_order() {
 
 #[test]
 fn a_single_type_is_drawn_three_times_and_unknown_codes_are_unspecified() {
-    assert_eq!(entities(16), [280_300; 3]);
-    assert_eq!(entities(0), [UNSPECIFIED; 3]);
-    assert_eq!(entities(13), [UNSPECIFIED; 3]);
-    assert_eq!(entities(21), [280_200, 280_300]);
-    assert_eq!(entities(46), [280_201, 280_300, 280_500]);
+    assert_eq!(slots(16), [Some(280_300); 3]);
+    assert_eq!(slots(0), [Some(UNSPECIFIED); 3]);
+    assert_eq!(slots(13), [Some(UNSPECIFIED); 3]);
+    assert_eq!(slots(21), [Some(280_200), Some(280_300)]);
+    assert_eq!(slots(46), [Some(280_201), Some(280_300), Some(280_500)]);
 }
 
 #[test]
-fn mine_cluster_has_no_symbol_to_embed() {
-    assert!(entities(19).is_empty());
-    assert_eq!(entities(31), [280_300]);
+fn mine_cluster_takes_its_place_in_the_row_as_a_figure() {
+    assert_eq!(slots(19), [None; 3]);
+    assert_eq!(slots(31), [Some(280_300), None]);
+    let outline = cluster_outline();
+    let width = outline.iter().map(|p| p[0]).fold(f64::MIN, f64::max)
+        - outline.iter().map(|p| p[0]).fold(f64::MAX, f64::min);
+    assert!((width - MINE_PX).abs() < 1e-9);
 }

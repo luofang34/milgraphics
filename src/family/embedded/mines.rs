@@ -2,10 +2,11 @@
 //! single-point symbol of each type the symbol code's sector 1 modifier
 //! names in a row at the graphic's centre.
 
-use crate::construction::{EmbeddedSymbol, SymbolSize};
+use crate::construction::{Decoration, EmbeddedSymbol, PartId, SymbolSize};
 use crate::family::Ctx;
 use crate::geo::GeoPoint;
 use crate::sidc::SymbolId;
+use crate::style::{DashPattern, Stroke};
 
 /// Areas and lines that show their mine types, and whether the row sits at
 /// the middle of the line (rather than the centre of the area).
@@ -24,8 +25,8 @@ const VERSIONS: [u8; 2] = [15, 16];
 /// The single mine types in the order the sector 1 modifier codes combine
 /// them: Antipersonnel Mine, with Directional Effects, Antitank Mine, with
 /// Anti-handling Device, Wide Area Antitank Mine, Mine Cluster. Mine
-/// Cluster is a multipoint graphic of its own, with no single-point symbol
-/// to embed, so it is left out of the row.
+/// Cluster has no single-point symbol; its place in the row holds a small
+/// dashed semicircle, as the sector 1 modifier table draws it.
 const TYPES: [Option<u32>; 6] = [
     Some(280_200),
     Some(280_201),
@@ -67,22 +68,36 @@ pub(super) fn types(code: u8) -> Vec<usize> {
     }
 }
 
-/// The entity codes drawn for sector 1 code `code`: one symbol per type,
-/// three of a single type as the templates' examples show, and the
-/// Unspecified Mine for a code that names no mine type.
-pub(super) fn entities(code: u8) -> Vec<u32> {
+/// The row drawn for sector 1 code `code`, one entry per place: a mine
+/// symbol's entity code, or `None` for the Mine Cluster figure. A single
+/// type is drawn three times as the templates' examples show, and a code
+/// that names no mine type gets the Unspecified Mine.
+pub(super) fn slots(code: u8) -> Vec<Option<u32>> {
     let listed = types(code);
     if listed.is_empty() {
-        return vec![UNSPECIFIED; 3];
+        return vec![Some(UNSPECIFIED); 3];
     }
-    let drawn: Vec<u32> = listed
+    let row: Vec<Option<u32>> = listed
         .iter()
-        .filter_map(|&i| TYPES.get(i).copied().flatten())
+        .filter_map(|&i| TYPES.get(i).copied())
         .collect();
-    match drawn.as_slice() {
-        [one] if listed.len() == 1 => vec![*one; 3],
-        _ => drawn,
+    match row.as_slice() {
+        [one] => vec![*one; 3],
+        _ => row,
     }
+}
+
+/// The Mine Cluster figure: a dashed semicircle on a dashed base, its
+/// width that of a mine symbol, centred on its place in the row.
+fn cluster_outline() -> Vec<[f64; 2]> {
+    let r = MINE_PX / 2.0;
+    let base = r / 2.0;
+    (0..=12)
+        .map(|i| {
+            let a = std::f64::consts::PI * f64::from(i) / 12.0;
+            [r * a.cos(), base - r * a.sin()]
+        })
+        .collect()
 }
 
 pub(super) fn add(ctx: &mut Ctx<'_>, symbol: &SymbolId, points: &[GeoPoint]) {
@@ -101,9 +116,26 @@ pub(super) fn add(ctx: &mut Ctx<'_>, symbol: &SymbolId, points: &[GeoPoint]) {
     let Some(anchor) = anchor else {
         return;
     };
-    let mines = entities(symbol.modifier1());
-    let first = -(mines.len().saturating_sub(1) as f64) / 2.0;
-    for (i, mine) in mines.into_iter().enumerate() {
+    let row = slots(symbol.modifier1());
+    let first = -(row.len().saturating_sub(1) as f64) / 2.0;
+    for (i, slot) in row.into_iter().enumerate() {
+        let offset_px = [(first + i as f64) * PITCH_PX, 0.0];
+        let Some(mine) = slot else {
+            let stroke = Stroke {
+                dash: DashPattern::Dashed,
+                ..ctx.palette.solid_line
+            };
+            // Picked as the graphic's outline.
+            ctx.add_decoration(Decoration::Glyph {
+                id: PartId(0),
+                anchor,
+                offset_px,
+                points: cluster_outline(),
+                closed: true,
+                stroke,
+            });
+            continue;
+        };
         let code = format!(
             "{:02}{}{}25{}000{:06}0000",
             symbol.version_code(),
@@ -118,7 +150,7 @@ pub(super) fn add(ctx: &mut Ctx<'_>, symbol: &SymbolId, points: &[GeoPoint]) {
         ctx.add_symbol(EmbeddedSymbol {
             symbol: mine,
             anchor,
-            offset_px: [(first + i as f64) * PITCH_PX, 0.0],
+            offset_px,
             size: SymbolSize::Pixels(MINE_PX),
         });
     }

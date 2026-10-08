@@ -150,3 +150,37 @@ fn a_mineline_puts_its_mines_halfway_along_it() {
     let at = c.symbols.first().unwrap().anchor;
     assert!((at.lon() - 20.03).abs() < 1e-6 && (at.lat() - 50.0).abs() < 1e-4);
 }
+
+#[test]
+fn a_mine_cluster_takes_its_place_in_the_row_as_a_dashed_figure() {
+    let area = [(20.0, 50.0), (20.04, 50.0), (20.04, 50.02), (20.0, 50.02)];
+    // Sector 1 code 24: antipersonnel mine and mine cluster.
+    let c = construct(
+        &def("15032500002708002400", &area, None),
+        &Config::default(),
+    )
+    .unwrap();
+    let [mine] = c.symbols.as_slice() else {
+        panic!("one mine: {:?}", c.symbols)
+    };
+    assert_eq!(mine.symbol.as_str(), "15032500002802000000");
+    let glyphs: Vec<_> = c
+        .decorations
+        .iter()
+        .filter_map(|d| match &d.0 {
+            crate::construction::Decoration::Glyph {
+                anchor,
+                offset_px,
+                stroke,
+                ..
+            } => Some((*anchor, *offset_px, *stroke)),
+            _ => None,
+        })
+        .collect();
+    let [(anchor, offset, stroke)] = glyphs.as_slice() else {
+        panic!("one cluster: {glyphs:?}")
+    };
+    assert_eq!(*anchor, mine.anchor);
+    assert_eq!(offset[0], -mine.offset_px[0]);
+    assert_eq!(stroke.dash, crate::style::DashPattern::Dashed);
+}
