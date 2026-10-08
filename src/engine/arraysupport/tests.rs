@@ -129,6 +129,8 @@ fn compare_shape(got: &Shape, want: &JShape) -> Result<(), String> {
             PathOp::MoveTo(x, y) => ('M', x, y),
             PathOp::LineTo(x, y) => ('L', x, y),
         };
+        // Upstream stores path coordinates as single precision floats.
+        let (x, y) = (f64::from(x as f32), f64::from(y as f32));
         if c != w.0 || !close(x, w.1) || !close(y, w.2) {
             return Err(format!(
                 "path op {i}: {c} {x} {y} != {} {} {}",
