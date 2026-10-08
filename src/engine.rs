@@ -8,6 +8,7 @@
 #![allow(dead_code)]
 
 pub(crate) mod api;
+pub(crate) mod arraysupport;
 pub(crate) mod base;
 pub(crate) mod dism;
 pub(crate) mod flot;
