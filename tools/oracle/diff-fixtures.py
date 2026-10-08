@@ -22,7 +22,9 @@ def main():
     problems = []
     notices = []
     if [r["case"] for r in old] != [r["case"] for r in new]:
-        problems.append(f"case lists differ: {[r['case'] for r in old]} vs {[r['case'] for r in new]}")
+        a_ids, b_ids = [r["case"] for r in old], [r["case"] for r in new]
+        only_old, only_new = sorted(set(a_ids) - set(b_ids)), sorted(set(b_ids) - set(a_ids))
+        problems.append(f"case lists differ: only committed {only_old[:10]}, only regenerated {only_new[:10]}")
     for a, b in zip(old, new):
         for key in sorted(set(a) | set(b)):
             if a.get(key) == b.get(key):

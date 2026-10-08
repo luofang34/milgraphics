@@ -104,9 +104,14 @@ jobs:
         run: |
           for cases in tools/oracle/cases/*.tsv; do
             name=$(basename "$cases" .tsv)
+            # The large set is stored without GeoJSON and with 0.01 px coordinates.
+            if [ "$name" = all ]; then export ORACLE_COMPACT=1; else unset ORACLE_COMPACT; fi
             tools/oracle/oracle.sh "$cases" > "/tmp/$name.jsonl"
             python3 -I tools/oracle/diff-fixtures.py "tests/fixtures/oracle/$name.jsonl" "/tmp/$name.jsonl"
           done
+      - name: Generated case list matches the pinned catalog
+        run: |
+          tools/oracle/oracle.sh --cases 2>/dev/null | diff - tools/oracle/cases/all.tsv
       - name: Generated catalog matches the pinned data
         run: |
           tools/oracle/fetch-upstream.sh
