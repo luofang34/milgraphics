@@ -209,7 +209,7 @@ fn point_areas(tg: &mut Tg, g: &mut Geo<'_>, line_type: i32) -> Result<bool, Eng
             add_dtg(tg, AREA, (cs, 2.0 * cs), c, c);
         }
         tl::PAA => {
-            add_modifier_on_line(tg, "PAA", false);
+            add_modifier_on_line(tg, &label, false);
             at_center(tg, g, &name, -0.5 * cs, false);
             add_dtg(tg, AREA, (0.5 * cs, 1.5 * cs), c, c);
         }

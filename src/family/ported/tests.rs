@@ -1,5 +1,6 @@
-//! METOC graphics the ported renderer leaves incomplete for MIL-STD-2525E
-//! change 1, drawn as the standard's templates show them.
+//! Graphics the ported renderer leaves incomplete for MIL-STD-2525E change
+//! 1 (METOC) and for version 16, drawn as the standard's templates show
+//! them.
 
 use crate::construction::{GeoGeometry, LabelPlacement, PartRole};
 use crate::definition::{ControlPoint, GraphicDefinition, GraphicId};
@@ -145,4 +146,76 @@ fn a_pattern_zoomed_far_in_stays_within_the_vertex_budget() {
         .filter(|i| i.role == PartRole::Pattern)
         .count();
     assert!((1..=4000).contains(&dots), "{dots} dots");
+}
+
+fn render_texts(c: &crate::construction::Construction) -> Vec<String> {
+    let frame = LocalEquirectangular::new(19.9, 50.1, 250_000.0, 96.0);
+    let plan = render(
+        c,
+        &View::new(0, 0),
+        &frame,
+        &FixedAdvanceMetrics::default(),
+        &crate::Budget::default(),
+    )
+    .unwrap();
+    plan.labels.iter().map(|l| l.text.clone()).collect()
+}
+
+#[test]
+fn the_navigational_rhumb_line_keeps_its_course_and_draws_it() {
+    // About 100 km due east at 50°N, where the geodesic would bow some
+    // 230 m toward the pole.
+    let mut d = def("16032500002201090000", &[(20.0, 50.0), (21.4, 50.0)]);
+    d.modifiers.designation = Some("15".to_owned());
+    let c = construct(&d, &Config::default()).unwrap();
+    let line = c
+        .parts
+        .iter()
+        .find(|p| matches!(p.geometry, GeoGeometry::Line(_)))
+        .unwrap();
+    let points = line.geometry.points();
+    assert!(points.len() > 10);
+    assert!(points.iter().all(|p| (p.lat() - 50.0).abs() < 1e-9));
+    // AN, not entered, is the line's course.
+    let texts = render_texts(&c);
+    assert!(texts.contains(&"090".to_owned()), "{texts:?}");
+    assert!(texts.contains(&"15".to_owned()));
+    d.modifiers.azimuths_deg = vec![92.0];
+    let texts = render_texts(&construct(&d, &Config::default()).unwrap());
+    assert!(texts.contains(&"092".to_owned()), "{texts:?}");
+    assert!(!texts.contains(&"090".to_owned()));
+}
+
+#[test]
+fn the_rhumb_line_puts_an_on_its_north_or_west_side() {
+    use super::rhumb::left_is_north_west as left;
+    // East-bound and north-bound lines have north and west on their left.
+    assert!(left(90.0) && left(0.0) && left(330.0) && left(100.0));
+    assert!(!left(270.0) && !left(180.0) && !left(200.0));
+}
+
+#[test]
+fn the_zone_of_fire_outline_is_broken_in_every_status() {
+    let present = construct(&def("16032500002426000000", &AREA), &Config::default()).unwrap();
+    assert!(
+        present
+            .parts
+            .iter()
+            .all(|p| p.stroke.is_some_and(|s| s.dash == DashPattern::Dashed))
+    );
+}
+
+#[test]
+fn the_version_16_single_target_is_drawn_as_in_2525d() {
+    let draw = |sidc: &str| {
+        let mut d = def(sidc, &[(20.0, 50.0), (20.05, 50.01)]);
+        d.modifiers.distances_m = vec![2000.0];
+        d.modifiers.designation = Some("NSFS002".to_owned());
+        let c = construct(&d, &Config::default()).unwrap();
+        let parts: Vec<_> = c.parts.iter().map(|p| p.geometry.clone()).collect();
+        (parts, render_texts(&c))
+    };
+    let app6e = draw("16032500002408040000");
+    assert!(!app6e.0.is_empty());
+    assert_eq!(app6e, draw("11032500002408040000"));
 }

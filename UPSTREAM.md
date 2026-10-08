@@ -48,13 +48,6 @@ undeclared symbol (`tests/fixtures/oracle/unimplemented.txt`):
 | Line of Contact 25 140200 | 2525D change 1, 2525E change 1 | No row: reserved in 2525D, a Combat Support code in 2525E |
 | Wind Plot 45 140200 | 2525E change 1 | No row (2525D change 1 defines it in TABLE I-II) |
 
-Some version 16 codes have no line type in upstream's `getCMLineType`
-(Bridgehead, Mobility Corridor, Avenue of Approach 152300, Restricted Terrain,
-Severely Restricted Terrain, Navigational Rhumb Line, Rectangular Target 240804,
-AMA, ARA, Zone of Fire, the 242700 areas, Recover, Human Terrain). Upstream
-draws only their control points as a line, which is not the graphic, so they
-are not declared either.
-
 ## Divergences under review
 
 | Symbol | Standard | mil-sym-java | Status |
@@ -141,6 +134,25 @@ all are checked by their reviewed goldens and unit tests:
 | Isopleths (45 180100–180700), Depth Curve and Contour (46 120102, 120103) | TABLE M-II, M-III: the value along the line at both ends and the middle; the field is not named, so `T` carries an isopleth's value and `X` a depth | No text |
 | Anchorage - Line, - Area (46 120305, 120306) | TABLE M-III: the Anchorage - Point symbol (46 120304) on the line or in the area | No symbol |
 | Offshore Loading Facility - Area (46 120318) | TABLE M-III: brown (189, 154, 56) | Tan (210, 180, 140) |
+
+Some version 16 control measures have no line type in upstream's
+`getCMLineType`, which then draws their control points as a line. For
+version 16 only, each is drawn with the line type of the graphic its
+template resembles (`engine/line_type/control_measures.rs`), relabelled and
+decorated as the template shows (`engine/edition`); their oracle cases are
+listed in `tests/fixtures/oracle/standard.txt`:
+
+| Graphic | Drawn as |
+|---|---|
+| Bridgehead 120800, Human Terrain 370100, Zone of Fire 242600 | `AO`, labelled "BA T", "HT" over H and "ZF T"; the Zone of Fire is drawn as anticipated, so its outline is broken in every status |
+| AMA 242400, ARA 242500 | `PAA`, with AMA or ARA in breaks of the outline at four sides |
+| Avenue of Approach 152300 | `SPT`, labelled "AA T", with H beside the upper boundary and N ("ENY") beside both boundaries when hostile |
+| Restricted Terrain 152400, Severely Restricted Terrain 152500 | `NFA`'s hatch, crossed by a second hatch for severely restricted terrain, with H at the centre; the Sector 1 and 2 fields are not drawn |
+| PsyOps Zones 242701, 242702, 242703 | `KILLBOXPURPLE`, `KILLBOXPURPLE_RECTANGULAR`, `KILLBOXPURPLE_CIRCULAR`, with a loudspeaker beside H over T in place of the kill box label |
+| Recover 344600 | `EVACUATE`, with R |
+| Mobility Corridor 142100 | `GENERIC_LINE`, with a fork at each end and B (in a break) and H on every segment |
+| Navigational Rhumb Line 220109 | `GENERIC_LINE` through the rhumb line between the two points, densified; AN along it on its north or west side (the line's course when AN is not entered) and T upright in a box on the other |
+| Rectangular Target – Single Target 240804 | Its 2525D change 1 code |
 
 ## Generated data
 

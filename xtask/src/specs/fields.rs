@@ -39,9 +39,11 @@ pub(super) const ADDED: &[(u32, u8, u32, &[&str])] = &[
     (16, 25, 343_000, &["A"]),
     (16, 25, 343_600, &["A"]),
     (16, 25, 344_500, &["A"]),
+    (16, 25, 344_600, &["A"]),
     // APP-6(E)(2): fields the labels of the template carry.
     (16, 25, 151_000, &["T"]),
     (16, 25, 151_100, &["H"]),
+    (16, 25, 152_300, &["N"]),
     (16, 25, 240_102, &["H"]),
     (16, 25, 240_103, &["H"]),
     (16, 25, 270_707, &["H", "N", "W"]),
@@ -61,6 +63,8 @@ pub(super) const REMOVED: &[(u32, u8, u32, &[&str])] = &[
     (16, 25, 240_103, &["Y"]),
     (16, 25, 272_200, &["T"]),
     (16, 25, 300_100, &["T"]),
+    // APP-6(E)(2): the template shows the label and T only.
+    (16, 25, 242_600, &["W", "W1"]),
 ];
 
 /// The fields to declare in addition to the catalog's for a symbol.

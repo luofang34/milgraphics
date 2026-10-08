@@ -34,6 +34,10 @@ fn filled(r: &Value) -> Option<(String, GraphicDefinition)> {
             d.modifiers.clear(field);
         }
     }
+    // Such a case may also give more points than the template takes.
+    if listed {
+        d.points.truncate(spec.max_points);
+    }
     for m in spec.modifiers {
         if d.modifiers.is_set(m.field) {
             continue;

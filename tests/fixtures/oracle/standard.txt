@@ -71,3 +71,23 @@
 25290301-e the X marks stand apart, with clear space between them
 25290301-app6e the X marks stand apart, with clear space between them
 25290500-app6e the version 16 template draws the trip wire glyph at point 1 and no "t"
+# Codes upstream has no line type for: it draws their control points as a line.
+25120800-app6e the template is a closed area labelled BA T
+25142100-app6e the template is a line forked at both ends with B and H on each segment
+25142100-app6e-anticipated the template is a line forked at both ends with B and H on each segment
+25142100-app6e-s100k the template is a line forked at both ends with B and H on each segment
+25152300-app6e the template is an axis labelled AA T, with H and N beside it
+25152400-app6e the template is a hatched area holding H
+25152500-app6e the template is a cross hatched area holding H
+25220109-app6e the template is a rhumb line between two points, AN along it and T boxed across it
+25240804-app6e the template is the rectangle with a centre cross and T drawn for 2525D
+25240804-app6e-anticipated the template is the rectangle with a centre cross and T drawn for 2525D
+25240804-app6e-s100k the template is the rectangle with a centre cross and T drawn for 2525D
+25242400-app6e the template is an area broken by AMA at four sides, with T and W - W1 inside
+25242500-app6e the template is an area broken by ARA at four sides, with T and W - W1 inside
+25242600-app6e the template is an area with a broken outline labelled ZF T
+25242701-app6e the template is an area holding a loudspeaker beside H over T, W - W1 outside
+25242702-app6e the template is a rectangle holding a loudspeaker beside H over T, W - W1 outside
+25242703-app6e the template is a circle holding a loudspeaker beside H over T, W - W1 outside
+25344600-app6e the template is drawn as Evacuate with R in place of E
+25370100-app6e the template is a closed area labelled HT over H

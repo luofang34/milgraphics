@@ -7,10 +7,17 @@ use crate::engine::tactical_lines::*;
 pub(crate) const VERSION_2525E: u8 = 13;
 /// Upstream `SymbolID.Version_2525Ech1`.
 pub(crate) const VERSION_2525E_CH1: u8 = 15;
+/// Upstream `SymbolID.Version_APP6Ech2`.
+pub(crate) const VERSION_APP6E_CH2: u8 = 16;
 
 /// The line type of control-measure `entity`, or `None` where upstream returns -1.
 /// Entities whose drawing changed between editions resolve per edition first.
 pub(crate) fn cm_line_type(version: u8, entity: u32) -> Option<i32> {
+    if version == VERSION_APP6E_CH2 {
+        if let Some(line_type) = app6e_line_type(entity) {
+            return Some(line_type);
+        }
+    }
     if version >= VERSION_2525E_CH1 {
         match entity {
             172000 => return Some(WFZ),
@@ -42,6 +49,34 @@ pub(crate) fn cm_line_type(version: u8, entity: u32) -> Option<i32> {
         }
     }
     cm_line_type_any_version(entity)
+}
+
+/// Version 16 codes upstream has no line type for, and the line type that
+/// draws the shape their template shows; `engine::edition` and the centre
+/// labels change the text and decorations for these codes.
+fn app6e_line_type(entity: u32) -> Option<i32> {
+    Some(match entity {
+        // Bridgehead, Human Terrain, Zone of Fire: a plain area labelled at
+        // its centre.
+        120800 | 370100 | 242600 => AO,
+        // Artillery Manoeuvre and Reserved Areas: the label on the outline
+        // at four sides, as the Position Area for Artillery.
+        242400 | 242500 => PAA,
+        // Avenue of Approach: the axis of a supporting attack.
+        152300 => SPT,
+        // Restricted and Severely Restricted Terrain: a hatched area.
+        152400 | 152500 => NFA,
+        // PsyOps Zones: areas with W - W1 outside at the upper left.
+        242701 => KILLBOXPURPLE,
+        242702 => KILLBOXPURPLE_RECTANGULAR,
+        242703 => KILLBOXPURPLE_CIRCULAR,
+        // Recover: drawn as Evacuate.
+        344600 => EVACUATE,
+        // Mobility Corridor and Navigational Rhumb Line: a line through
+        // the points.
+        142100 | 220109 => GENERIC_LINE,
+        _ => return None,
+    })
 }
 
 /// Entities whose line type does not depend on the edition.

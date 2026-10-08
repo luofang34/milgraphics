@@ -10,10 +10,15 @@ use super::base::{Pt, Shape, shape_type};
 use super::settings::Settings;
 
 mod arrowheads;
+mod avenue;
 mod decision;
 mod frontal;
 mod knockout;
 mod minefield;
+mod mobility;
+mod psyops;
+mod rhumb;
+mod terrain;
 mod trip;
 mod wire;
 
@@ -49,6 +54,32 @@ pub(crate) fn adjust(input: &Input<'_>, out: &mut Output) {
         (_, 272_100) => knockout::mark(out, |t| {
             !t.is_empty() && t.chars().all(|c| c.is_ascii_digit())
         }),
+        (16, entity) => app6e_codes(input, out, entity),
+        _ => {}
+    }
+}
+
+/// Version 16 codes upstream has no line type for, drawn with another
+/// code's line type (`line_type::control_measures`).
+fn app6e_codes(input: &Input<'_>, out: &mut Output, entity: u32) {
+    match entity {
+        // Artillery Manoeuvre and Reserved Areas: the outline breaks under
+        // the label at each side.
+        242_400 => knockout::mark(out, |t| t == "AMA"),
+        242_500 => knockout::mark(out, |t| t == "ARA"),
+        // Human Terrain: H under "HT".
+        370_100 => terrain::human(input, out),
+        // Restricted Terrain hatched, Severely Restricted cross hatched.
+        152_400 => terrain::restricted(input, out, false),
+        152_500 => terrain::restricted(input, out, true),
+        // PsyOps Zones: a loudspeaker beside H over T.
+        242_701..=242_703 => psyops::speaker(input, out),
+        // Avenue of Approach: "AA T" in the axis, H and N beside it.
+        152_300 => avenue::labels(input, out),
+        // Mobility Corridor: forks at the ends, B and H on each segment.
+        142_100 => mobility::corridor(input, out),
+        // Navigational Rhumb Line: AN along the line, T boxed across it.
+        220_109 => rhumb::labels(input, out),
         _ => {}
     }
 }
@@ -80,6 +111,57 @@ fn set_lines(shape: &mut Shape, lines: &[Vec<(f64, f64)>]) {
         for &(x, y) in points {
             shape.line_to(Pt::new(x, y));
         }
+    }
+}
+
+/// The text of a field, unless it is unset or empty.
+fn text(field: &Option<String>) -> Option<&str> {
+    field.as_deref().filter(|t| !t.is_empty())
+}
+
+/// Label font size in pixels: also the distance between stacked lines.
+fn font_px() -> f64 {
+    f64::from(Settings::default().label_font.size)
+}
+
+/// The centre of the bounds of `points`.
+fn bounds_centre(points: &[Pt]) -> Option<(f64, f64)> {
+    let first = points.first()?;
+    let (mut left, mut right, mut top, mut bottom) = (first.x, first.x, first.y, first.y);
+    for p in points {
+        left = left.min(p.x);
+        right = right.max(p.x);
+        top = top.min(p.y);
+        bottom = bottom.max(p.y);
+    }
+    Some(((left + right) / 2.0, (top + bottom) / 2.0))
+}
+
+/// A label whose middle is at `at`, rotated `angle_deg` clockwise; the
+/// baseline sits below the middle by 0.3 of the font size, across the text.
+fn rotated(text: &str, at: (f64, f64), angle_deg: f64, knockout: bool) -> Label {
+    let drop = 0.3 * font_px();
+    let a = angle_deg.to_radians();
+    Label {
+        text: text.to_owned(),
+        x: at.0 - drop * a.sin(),
+        y: at.1 + drop * a.cos(),
+        angle_deg,
+        justify: Justify::Center,
+        knockout,
+    }
+}
+
+/// The clockwise screen angle of `(dx, dy)` in degrees, turned so text
+/// along it reads upright.
+fn upright_deg((dx, dy): (f64, f64)) -> f64 {
+    let a = dy.atan2(dx).to_degrees();
+    if a > 90.0 {
+        a - 180.0
+    } else if a <= -90.0 {
+        a + 180.0
+    } else {
+        a
     }
 }
 

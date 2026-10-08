@@ -126,7 +126,8 @@ fn grouped_labels(tg: &mut Tg, g: &mut Geo<'_>) -> Result<bool, EngineError> {
     let (c, cs) = (g.center, 1.0);
     match tg.line_type {
         tl::PAA => {
-            add_modifier_on_line(tg, "PAA", false);
+            let label = g.label.clone();
+            add_modifier_on_line(tg, &label, false);
             let text = build_area_group_string(tg, &g.label);
             area_modifier(tg, &text, AREA, 0.0, (c, c), false);
         }

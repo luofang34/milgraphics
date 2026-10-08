@@ -30,8 +30,9 @@ const SINGLE_POINT_RULES: &[&str] = &["Point1", "Point2", "Point3", "Point7"];
 const UNIMPLEMENTED: &str = "tests/fixtures/oracle/unimplemented.txt";
 const OUTPUT: &str = "src/generated/specs.rs";
 
-/// Control measures with a hand-written family in `src/family`, and the
-/// version codes they are hand-built for.
+/// Control measures declared by hand in `src/support/table`, built by a
+/// family of their own in `src/family` or declared differently from
+/// upstream's catalog row, and the version codes they are declared for.
 const HAND_BUILT: &[(u32, &[u32])] = &[
     (140_300, &[11, 15]),
     (120_200, &[11, 15]),
@@ -45,6 +46,11 @@ const HAND_BUILT: &[(u32, &[u32])] = &[
     (170_500, &[15, 16]),
     (170_600, &[15, 16]),
     (170_700, &[15, 16]),
+    (142_100, &[16]),
+    (152_400, &[16]),
+    (152_500, &[16]),
+    (220_109, &[16]),
+    (240_804, &[16]),
 ];
 
 pub(crate) fn run() -> Result<String, XtaskError> {
@@ -68,6 +74,13 @@ pub(crate) fn run() -> Result<String, XtaskError> {
         let Some((set, entity, version)) = base_case(case) else {
             continue;
         };
+        let hand_built = set == 25
+            && HAND_BUILT
+                .iter()
+                .any(|(e, versions)| *e == entity && versions.contains(&version));
+        if hand_built {
+            continue;
+        }
         let row = rows
             .iter()
             .find(|r| r.symbol_set == set && r.entity == entity && r.versions >> version & 1 == 1)
@@ -76,11 +89,7 @@ pub(crate) fn run() -> Result<String, XtaskError> {
             Some(document) => in_standard(&references, document, set, entity),
             None => !SINGLE_POINT_RULES.contains(&row.draw_rule.as_str()),
         };
-        let hand_built = set == 25
-            && HAND_BUILT
-                .iter()
-                .any(|(e, versions)| *e == entity && versions.contains(&version));
-        if pending.contains(case) || hand_built || !multipoint {
+        if pending.contains(case) || !multipoint {
             continue;
         }
         writeln!(body, "    {},", declaration(row, version))?;

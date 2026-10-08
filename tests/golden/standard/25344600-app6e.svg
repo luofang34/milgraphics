@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="730" height="706" viewBox="0 0 730 706">
+<polyline points="180.09,534.33 187.01,569.11 206.71,598.6 236.2,618.3 270.98,625.22 305.76,618.3 335.24,598.6 354.94,569.11 361.86,534.33 354.94,499.55 335.24,470.07 305.76,450.37 270.98,443.45 236.2,450.37 206.71,470.07 187.01,499.55 180.09,534.33" fill="none" stroke="#000000ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt"/>
+<polyline points="649.49,420.76 629.78,411.13 609.38,403.07 588.41,396.64 566.99,391.87 545.27,388.8 523.38,387.44 501.45,387.8 479.61,389.88 458,393.67 436.76,399.14 416.01,406.26 395.89,414.99 376.51,425.26 357.99,437.03 340.46,450.21 325.41,463.5" fill="none" stroke="#000000ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt"/>
+<polyline points="602.17,434.96 649.49,420.76 635.29,373.45" fill="none" stroke="#000000ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt"/>
+<text transform="translate(447 394.5) rotate(0)" x="0" y="-3.6" text-anchor="middle" dominant-baseline="central" font-family="PT Sans" font-size="12" font-weight="bold">R</text>
+<rect x="207.36" y="470.71" width="127.24" height="127.24" fill="none" stroke="#808080" stroke-dasharray="3 2"/><text x="270.98" y="534.33" text-anchor="middle" dominant-baseline="central" font-family="sans-serif" font-size="6">10031000001211000000</text>
+</svg>

@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="897" height="803" viewBox="0 0 897 803">
+<polyline points="407.64,573.74 437.48,722.1 816.06,646.4 786.22,498.02 407.64,573.74" fill="none" stroke="#000000ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt"/>
+<polygon points="587.55,605.07 593.55,605.07 593.55,615.07 587.55,615.07" fill="#000000ff" stroke="none"/>
+<polygon points="593.55,605.07 601.55,598.07 601.55,622.07 593.55,615.07" fill="#000000ff" stroke="none"/>
+<polygon points="603.05,600.07 608.55,600.07 608.55,602.07 603.05,602.07" fill="#000000ff" stroke="none"/>
+<polygon points="603.05,606.07 608.55,606.07 608.55,608.07 603.05,608.07" fill="#000000ff" stroke="none"/>
+<polygon points="603.05,612.07 608.55,612.07 608.55,614.07 603.05,614.07" fill="#000000ff" stroke="none"/>
+<polygon points="603.05,618.07 608.55,618.07 608.55,620.07 603.05,620.07" fill="#000000ff" stroke="none"/>
+<text transform="translate(408 580) rotate(0)" x="0" y="-3.6" text-anchor="end" dominant-baseline="central" font-family="PT Sans" font-size="12" font-weight="bold">W0800Z - </text>
+<text transform="translate(408 592) rotate(0)" x="0" y="-3.6" text-anchor="end" dominant-baseline="central" font-family="PT Sans" font-size="12" font-weight="bold">W1200Z </text>
+<text transform="translate(614.55 607.67) rotate(0)" x="0" y="-3.6" text-anchor="start" dominant-baseline="central" font-family="PT Sans" font-size="12" font-weight="bold">HH</text>
+<text transform="translate(614.55 619.67) rotate(0)" x="0" y="-3.6" text-anchor="start" dominant-baseline="central" font-family="PT Sans" font-size="12" font-weight="bold">T1X</text>
+</svg>
