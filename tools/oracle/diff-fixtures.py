@@ -8,8 +8,10 @@ compact record with a full one.
 Exits non-zero on any difference in the oracle's output and names each
 differing case and field. `font_probe` describes the platform's font
 metrics rather than the oracle's output: its differences are reported as a
-notice, so metric drift between platforms is visible without failing when
-every shape and label is unchanged.
+notice, so metric drift between platforms is visible. Where the metrics
+differ, label positions depend on them and are not compared (as AGENTS.md
+asks of anchors without pinned fonts); label texts, angles and everything
+else still must match.
 """
 import json
 import sys
@@ -33,6 +35,10 @@ def same(a, b):
     return a == b
 
 
+def without_positions(shapes):
+    return [{k: v for k, v in s.items() if k != "position"} for s in shapes or []]
+
+
 def main():
     global TOL
     if "--tolerance" in sys.argv:
@@ -47,17 +53,23 @@ def main():
         only_old, only_new = sorted(set(a_ids) - set(b_ids)), sorted(set(b_ids) - set(a_ids))
         problems.append(f"case lists differ: only committed {only_old[:10]}, only regenerated {only_new[:10]}")
     for a, b in zip(old, new):
+        metrics_differ = not same(a.get("font_probe"), b.get("font_probe"))
         for key in sorted(set(a) | set(b)):
             if TOL and key == "geojson" and key not in b:
                 continue
             if same(a.get(key), b.get(key)):
+                continue
+            if key == "modifier_shapes" and metrics_differ and same(
+                without_positions(a.get(key)), without_positions(b.get(key))
+            ):
+                notices.append(f"{a['case']}: label positions follow the platform's font metrics")
                 continue
             if key == "font_probe":
                 notices.append(f"{a['case']}: font metrics differ: {a.get(key)} vs {b.get(key)}")
             else:
                 problems.append(f"{a['case']}: field {key!r} differs")
     if notices:
-        print(f"notice: {notices[0]} ({len(notices)} records)")
+        print(f"notice: {notices[0]} ({len(notices)} notices)")
     if problems:
         print("\n".join(problems), file=sys.stderr)
         print(f"{sys.argv[1]} differs from the pinned oracle; regenerate with tools/oracle/oracle.sh",
