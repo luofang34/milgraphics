@@ -4,7 +4,7 @@ use std::collections::BTreeMap;
 use std::fmt;
 
 use serde::{Deserialize, Serialize};
-use serde_json::Value;
+use serde_json::{Map, Value};
 
 use crate::geo::{Altitude, GeoPoint};
 use crate::modifier::Modifiers;
@@ -75,14 +75,18 @@ impl fmt::Display for GraphicId {
 }
 
 /// One control (anchor) point of a graphic.
-#[derive(Clone, Copy, Debug, PartialEq, Serialize, Deserialize)]
+///
+/// Stored as a JSON object with `lon`, `lat`, an optional `altitude`, and
+/// any fields a newer version added, which are kept as JSON content.
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[serde(try_from = "Map<String, Value>", into = "Map<String, Value>")]
 pub struct ControlPoint {
     /// Horizontal position.
-    #[serde(flatten)]
     pub position: GeoPoint,
     /// Altitude, when the graphic is not clamped to the ground.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub altitude: Option<Altitude>,
+    /// Fields this version does not model, preserved as JSON content.
+    pub unknown: BTreeMap<String, Value>,
 }
 
 impl ControlPoint {
@@ -91,7 +95,58 @@ impl ControlPoint {
         Self {
             position,
             altitude: None,
+            unknown: BTreeMap::new(),
         }
+    }
+}
+
+/// Why a stored control point was rejected.
+#[derive(Debug, thiserror::Error)]
+pub enum ControlPointError {
+    /// `lon` or `lat` is missing or not a number.
+    #[error("control point needs numeric lon and lat")]
+    Coordinates,
+    /// The coordinates are out of range.
+    #[error(transparent)]
+    Geo(#[from] crate::geo::GeoError),
+    /// `altitude` is malformed.
+    #[error("control point altitude is malformed: {0}")]
+    Altitude(#[source] serde_json::Error),
+}
+
+impl TryFrom<Map<String, Value>> for ControlPoint {
+    type Error = ControlPointError;
+
+    fn try_from(mut map: Map<String, Value>) -> Result<Self, ControlPointError> {
+        let mut number = |key: &str| {
+            map.remove(key)
+                .and_then(|v| v.as_f64())
+                .ok_or(ControlPointError::Coordinates)
+        };
+        let (lon, lat) = (number("lon")?, number("lat")?);
+        let altitude = match map.remove("altitude") {
+            Some(v) => Some(serde_json::from_value(v).map_err(ControlPointError::Altitude)?),
+            None => None,
+        };
+        Ok(Self {
+            position: GeoPoint::new(lon, lat)?,
+            altitude,
+            unknown: map.into_iter().collect(),
+        })
+    }
+}
+
+impl From<ControlPoint> for Map<String, Value> {
+    fn from(p: ControlPoint) -> Self {
+        let mut map = Map::new();
+        map.insert("lon".to_owned(), Value::from(p.position.lon()));
+        map.insert("lat".to_owned(), Value::from(p.position.lat()));
+        if let Some(a) = p.altitude {
+            let altitude = serde_json::json!({ "metres": a.metres, "datum": a.datum });
+            map.insert("altitude".to_owned(), altitude);
+        }
+        map.extend(p.unknown);
+        map
     }
 }
 

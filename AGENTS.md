@@ -47,7 +47,7 @@ The display contract is shaped by [maplibre-rs-experimental](https://github.com/
 
 **Host persistence gap.** Sokoly-App's journal deserializes an unknown payload kind into `Payload::Unknown`, which discards its content and makes the journal read-only. That does not preserve unknown graphic data. The integration therefore includes a host change that stores unknown payloads verbatim (e.g. as `RawValue`) and writes them back unchanged.
 
-**Toolchain.** Consumers build on Rust 1.97.1 (edition 2021) and check `wasm32-unknown-unknown` in CI; the fork pins `wasm-bindgen = "=0.2.129"`, which fixes the app's lockfile to the same version. `milgraphics` keeps `rust-version = "1.85"`, builds for `wasm32-unknown-unknown` without `wasm-bindgen`, `getrandom` or threads in its normal dependencies, uses `thiserror` 2, and exposes only plain data in its public API — no `cgmath`, `lyon` or `wgpu` types; `geo-types` is the only shared geometry type. Browser test tooling (`wasm-bindgen-test`) is a dev-dependency only and matches the consumers' `wasm-bindgen` pin.
+**Toolchain.** Consumers build on Rust 1.97.1 (edition 2021) and check `wasm32-unknown-unknown` in CI; the fork pins `wasm-bindgen = "=0.2.129"`, which fixes the app's lockfile to the same version. `milgraphics` keeps `rust-version = "1.85"`, builds for `wasm32-unknown-unknown` without `wasm-bindgen`, `getrandom` or threads in its normal dependencies, uses `thiserror` 2, and exposes only plain data in its public API: its own validated `GeoPoint`, `[lon, lat]` pairs and pixel points, and no `cgmath`, `lyon`, `wgpu` or `geo` types. Conversions to `geo-types` may be added behind a feature when a consumer needs them. Browser test tooling (`wasm-bindgen-test`) is a dev-dependency only and matches the consumers' `wasm-bindgen` pin.
 
 ## Non-negotiable runtime constraints
 
@@ -268,9 +268,9 @@ Keep each PR to one issue.
 ## Dependencies
 
 - Geodesics: `geographiclib-rs` (MIT, pure Rust, depends on `libm`). It agrees with Karney's reference GeographicLib, runs on `wasm32-unknown-unknown` (Node runner; headless-browser execution is a phase-1 CI job), builds on Rust 1.85, and is already in both consumers' lockfiles. It requires `std`. Porting Karney's algorithms is a separate, explicitly approved project, never a side effect of pursuing `no_std`.
-- Geometry interchange: `geo-types` (`default-features = false`). `geo` only where an algorithm is worth its weight.
+- Geometry: the library's own `GeoPoint` (finite, latitude in range, longitude normalized) and planar helpers; `geo` or `geo-types` only where an algorithm is worth its weight.
 - `lyon` tessellation only if a consumer cannot tessellate the plan itself.
-- Persistence: `serde`, and `serde_json` with `raw_value` for the envelope.
+- Persistence: `serde` and `serde_json` (with `raw_value` for the envelope and `float_roundtrip` so stored coordinates round-trip exactly) are required dependencies, because persistence is part of the core contract.
 - Every new dependency must be pure Rust, offline, `wasm32`-clean, AGPL-compatible, and checked for its effect on the consumers' lockfiles.
 
 ## Quality gates

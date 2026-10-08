@@ -13,6 +13,7 @@ fn sample() -> GraphicDefinition {
                     metres: 10.0,
                     datum: VerticalDatum::MeanSeaLevel,
                 }),
+                unknown: BTreeMap::new(),
             },
         ],
     );
@@ -29,8 +30,8 @@ fn round_trips_through_json() {
         json,
         concat!(
             r#"{"id":"pl-1","symbol":"11032500001403000000","points":["#,
-            r#"{"lon":20.0,"lat":50.0},"#,
-            r#"{"lon":20.1,"lat":50.02,"altitude":{"metres":10.0,"datum":"msl"}}],"#,
+            r#"{"lat":50.0,"lon":20.0},"#,
+            r#"{"altitude":{"datum":"msl","metres":10.0},"lat":50.02,"lon":20.1}],"#,
             r#""modifiers":{"T":"ALPHA","AM":[1000.0,5000.5]},"revision":0}"#
         )
     );
@@ -47,12 +48,15 @@ fn unknown_fields_survive_at_every_level() {
         "modifiers":{"T":"X","Q":"9"},"style":{"glow":3},"revision":7,"layer":"ops"}"#;
     let def: GraphicDefinition = serde_json::from_str(json).unwrap();
     assert_eq!(def.unknown["layer"], "ops");
+    assert_eq!(def.points[0].unknown["z_future"], true);
     assert_eq!(def.modifiers.unknown["Q"], "9");
     assert_eq!(def.style.unknown["glow"], 3);
     let back: Value = serde_json::to_value(&def).unwrap();
     assert_eq!(back["layer"], "ops");
     assert_eq!(back["modifiers"]["Q"], "9");
     assert_eq!(back["style"]["glow"], 3);
+    assert_eq!(back["points"][0]["z_future"], true);
+    assert_eq!(back["points"][0]["lon"], 1.0);
 }
 
 #[test]
@@ -68,4 +72,16 @@ fn empty_designation_counts_as_absent() {
     let mut def = sample();
     def.modifiers.designation = Some(String::new());
     assert_eq!(def.modifiers.designation(), None);
+}
+
+#[test]
+fn malformed_control_points_are_rejected() {
+    for bad in [
+        r#"{"lat":1}"#,
+        r#"{"lon":"1","lat":1}"#,
+        r#"{"lon":1,"lat":95}"#,
+        r#"{"lon":1,"lat":2,"altitude":3}"#,
+    ] {
+        assert!(serde_json::from_str::<ControlPoint>(bad).is_err(), "{bad}");
+    }
 }

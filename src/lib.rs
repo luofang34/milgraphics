@@ -40,7 +40,7 @@ pub use generated::draw_rule::{DrawRule, MoDrawRule};
 pub use geo::{Altitude, GeoPoint, VerticalDatum};
 pub use modifier::{ModifierField, Modifiers};
 pub use persist::{PersistError, PersistedGraphic};
-pub use pick::PickRef;
+pub use pick::{PickRef, PickTarget};
 pub use render::{RenderError, RenderPlan, View, render};
 pub use sidc::{EntityCode, SymbolId};
 pub use standard::StandardVersion;

@@ -6,7 +6,7 @@ use crate::construction::{Construction, GeoGeometry, HandleKind, PartRole};
 use crate::edit::HandleId;
 use crate::geo::GeoPoint;
 use crate::geodesy::Earth;
-use crate::pick::PickRef;
+use crate::pick::{PickRef, PickTarget};
 use crate::style::{Fill, Stroke};
 
 mod decoration;
@@ -141,10 +141,9 @@ pub fn render(
     let earth = Earth::wgs84();
     let mut meter = VertexMeter::new(budget);
     let mut ctx = screen::ScreenCtx::new(&earth, projection, &mut meter);
-    let pick = |part, handle| PickRef {
+    let pick = |target| PickRef {
         definition: construction.definition.clone(),
-        part,
-        handle,
+        target,
     };
     let mut geo = Vec::with_capacity(construction.parts.len());
     let mut items = Vec::new();
@@ -154,7 +153,7 @@ pub fn render(
             GeoGeometry::Ring(p) => GeoShape::Polygons(antimeridian::split_ring(p)),
         };
         geo.push(GeoItem {
-            pick: pick(part.id, None),
+            pick: pick(PickTarget::Part(part.id)),
             role: part.role,
             shape,
             stroke: part.stroke,
@@ -162,7 +161,7 @@ pub fn render(
         });
         for (shape, fill) in ctx.part(&part.geometry, part.fill)? {
             items.push(ScreenItem {
-                pick: pick(part.id, None),
+                pick: pick(PickTarget::Part(part.id)),
                 role: part.role,
                 shape,
                 stroke: part.stroke,
@@ -176,13 +175,21 @@ pub fn render(
     let labels = construction
         .labels
         .iter()
-        .map(|l| label::place(&mut ctx, l, &view.label_font, metrics, pick(l.part, None)))
+        .map(|l| {
+            label::place(
+                &mut ctx,
+                l,
+                &view.label_font,
+                metrics,
+                pick(PickTarget::Part(l.part)),
+            )
+        })
         .collect();
     let handles = construction
         .handles
         .iter()
         .map(|h| Handle {
-            pick: pick(crate::construction::PartId(u16::MAX), Some(h.id)),
+            pick: pick(PickTarget::Handle(h.id)),
             id: h.id,
             kind: h.kind,
             at: h.at,

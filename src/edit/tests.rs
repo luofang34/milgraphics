@@ -105,3 +105,162 @@ fn revisions_wrap_instead_of_overflowing() {
     .unwrap();
     assert_eq!(edited.revision, 0);
 }
+
+fn graphic(sidc: &str, points: &[(f64, f64)]) -> GraphicDefinition {
+    let mut d = phase_line(points);
+    d.symbol = SymbolId::parse(sidc).unwrap();
+    d
+}
+
+fn range_fan() -> GraphicDefinition {
+    let mut d = graphic("11032500002422000000", &[(20.0, 50.0)]);
+    d.modifiers.distances_m = vec![1000.0, 5000.0];
+    d.modifiers.azimuths_deg = vec![30.0, 90.0];
+    d
+}
+
+/// Applies `edit` and checks the input is unchanged whatever the outcome.
+fn apply(def: &GraphicDefinition, edit: Edit) -> Result<GraphicDefinition, EditError> {
+    let before = def.clone();
+    let result = apply_edit(def, &edit);
+    assert_eq!(def, &before, "apply_edit must not modify its input");
+    result
+}
+
+#[test]
+fn range_and_azimuth_handles_set_their_values_from_the_origin() {
+    let earth = crate::geodesy::Earth::wgs84();
+    let def = range_fan();
+    let centre = def.points[0].position;
+    let to = earth.direct(centre, 200.0, 7_500.0);
+    let edited = apply(
+        &def,
+        Edit::Move {
+            handle: HandleId::Range(1),
+            to,
+        },
+    )
+    .unwrap();
+    assert!((edited.modifiers.distances_m[1] - 7_500.0).abs() < 1e-6);
+    assert_eq!(edited.modifiers.distances_m[0], 1000.0);
+    let edited = apply(
+        &def,
+        Edit::Move {
+            handle: HandleId::Azimuth(0),
+            to,
+        },
+    )
+    .unwrap();
+    assert!((edited.modifiers.azimuths_deg[0] - 200.0).abs() < 1e-9);
+    let west = earth.direct(centre, -45.0, 3_000.0);
+    let edited = apply(
+        &def,
+        Edit::Move {
+            handle: HandleId::Azimuth(1),
+            to: west,
+        },
+    )
+    .unwrap();
+    assert!(
+        (edited.modifiers.azimuths_deg[1] - 315.0).abs() < 1e-9,
+        "wrapped into [0, 360)"
+    );
+    assert!(matches!(
+        apply(
+            &def,
+            Edit::Move {
+                handle: HandleId::Range(2),
+                to
+            }
+        ),
+        Err(EditError::NoSuchHandle { .. })
+    ));
+}
+
+#[test]
+fn corridor_width_handle_sets_one_width() {
+    let earth = crate::geodesy::Earth::wgs84();
+    let mut def = graphic(
+        "11032500001701000000",
+        &[(20.0, 50.0), (20.1, 50.0), (20.2, 50.1)],
+    );
+    def.modifiers.distances_m = vec![1000.0, 2000.0, 3000.0];
+    let to = earth.direct(def.points[0].position, 0.0, 750.0);
+    let edited = apply(
+        &def,
+        Edit::Move {
+            handle: HandleId::Width,
+            to,
+        },
+    )
+    .unwrap();
+    assert_eq!(edited.modifiers.distances_m.len(), 1);
+    assert!((edited.modifiers.distances_m[0] - 1_500.0).abs() < 1e-6);
+}
+
+#[test]
+fn fixed_shape_symbols_refuse_vertex_insertion_and_deletion() {
+    let mut axis = graphic(
+        "11032500001514030000",
+        &[(20.0, 50.0), (20.1, 50.03), (20.0, 50.01)],
+    );
+    let bypass = graphic(
+        "11032500002706010000",
+        &[(20.0, 50.0), (20.04, 50.03), (20.08, 50.0)],
+    );
+    for def in [&axis, &bypass, &range_fan()] {
+        assert!(
+            apply(
+                def,
+                Edit::InsertVertex {
+                    index: 1,
+                    at: p(20.0, 50.0)
+                }
+            )
+            .is_err()
+        );
+        assert!(apply(def, Edit::DeleteVertex { index: 0 }).is_err());
+    }
+    // Moving the width point of an axis is a vertex move.
+    axis.revision = 9;
+    let moved = apply(
+        &axis,
+        Edit::Move {
+            handle: HandleId::Vertex(2),
+            to: p(20.0, 50.02),
+        },
+    )
+    .unwrap();
+    assert_eq!(
+        (moved.points[2].position, moved.revision),
+        (p(20.0, 50.02), 10)
+    );
+}
+
+#[test]
+fn handles_exist_only_where_the_family_draws_them() {
+    let pl = phase_line(&[(20.0, 50.0), (20.1, 50.0)]);
+    for handle in [HandleId::Width, HandleId::Range(0), HandleId::Azimuth(0)] {
+        assert!(
+            apply(
+                &pl,
+                Edit::Move {
+                    handle,
+                    to: p(20.0, 50.0)
+                }
+            )
+            .is_err(),
+            "{handle:?}"
+        );
+    }
+    assert!(
+        apply(
+            &range_fan(),
+            Edit::Move {
+                handle: HandleId::Width,
+                to: p(20.0, 50.0)
+            }
+        )
+        .is_err()
+    );
+}

@@ -20,6 +20,9 @@ mod corridor;
 mod phase_line;
 mod range_fan;
 
+#[cfg(test)]
+mod tests;
+
 pub(crate) use context::Ctx;
 
 /// How a family of symbols is constructed and edited.

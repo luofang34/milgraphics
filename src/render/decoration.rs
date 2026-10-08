@@ -1,9 +1,8 @@
 //! Resolving pixel-sized decorations for a view.
 
 use crate::budget::BudgetError;
-use crate::construction::{DecorationSize, PartId, PartRole, ScreenDecoration};
-use crate::edit::HandleId;
-use crate::pick::PickRef;
+use crate::construction::{DecorationSize, PartRole, ScreenDecoration};
+use crate::pick::{PickRef, PickTarget};
 use crate::render::screen::ScreenCtx;
 use crate::render::{ScreenItem, ScreenPoint, ScreenShape};
 use crate::style::Fill;
@@ -11,7 +10,7 @@ use crate::style::Fill;
 pub(crate) fn resolve(
     ctx: &mut ScreenCtx<'_>,
     decoration: &ScreenDecoration,
-    pick: &impl Fn(PartId, Option<HandleId>) -> PickRef,
+    pick: &impl Fn(PickTarget) -> PickRef,
 ) -> Result<Option<ScreenItem>, BudgetError> {
     let item = match *decoration {
         ScreenDecoration::Arrowhead {
@@ -44,7 +43,7 @@ pub(crate) fn resolve(
                 (ScreenShape::Polyline(points), Fill::None)
             };
             ScreenItem {
-                pick: pick(id, None),
+                pick: pick(PickTarget::Part(id)),
                 role: PartRole::Arrowhead,
                 shape,
                 stroke: Some(stroke),
@@ -78,7 +77,7 @@ pub(crate) fn resolve(
             };
             let tip = at(2.0, 0.0);
             ScreenItem {
-                pick: pick(id, None),
+                pick: pick(PickTarget::Part(id)),
                 role: PartRole::Orientation,
                 shape: ScreenShape::Polyline(vec![f, tip, at(1.0, -1.0), tip, at(1.0, 1.0)]),
                 stroke: Some(stroke),

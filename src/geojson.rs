@@ -3,6 +3,7 @@
 
 use serde_json::{Map, Value, json};
 
+use crate::pick::{PickRef, PickTarget};
 use crate::render::{GeoItem, GeoShape, Label, RenderPlan, TextAlign};
 use crate::style::{Fill, Stroke};
 
@@ -31,7 +32,7 @@ fn item_feature(item: &GeoItem) -> Value {
     };
     let mut props = Map::new();
     props.insert("graphic".into(), json!(item.pick.definition.as_str()));
-    props.insert("part".into(), json!(item.pick.part.0));
+    props.insert("part".into(), part(&item.pick));
     props.insert("role".into(), json!(format!("{:?}", item.role)));
     stroke_props(&mut props, item.stroke);
     if let Fill::Solid(c) = item.fill {
@@ -60,7 +61,7 @@ fn label_feature(label: &Label) -> Value {
         "geometry": { "type": "Point", "coordinates": [label.anchor.lon(), label.anchor.lat()] },
         "properties": {
             "graphic": label.pick.definition.as_str(),
-            "part": label.pick.part.0,
+            "part": part(&label.pick),
             "label": label.text,
             "rotation": label.rotation_deg,
             "align": align,
@@ -71,4 +72,11 @@ fn label_feature(label: &Label) -> Value {
             "may_hide": label.may_hide,
         }
     })
+}
+
+fn part(pick: &PickRef) -> Value {
+    match pick.target {
+        PickTarget::Part(p) => json!(p.0),
+        PickTarget::Handle(_) => Value::Null,
+    }
 }
