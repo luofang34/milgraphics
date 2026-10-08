@@ -92,5 +92,8 @@ fn a_stored_value_of_the_wrong_shape_is_kept_not_fatal() {
     assert_eq!(m.direction_deg, None);
     let back = serde_json::to_value(&m).unwrap();
     let original: serde_json::Value = serde_json::from_str(json).unwrap();
-    assert_eq!(back, original, "written back unchanged, empty text included");
+    assert_eq!(
+        back, original,
+        "written back unchanged, empty text included"
+    );
 }

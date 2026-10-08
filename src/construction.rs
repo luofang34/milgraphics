@@ -64,10 +64,7 @@ pub struct GeoPart {
 
 /// How large a pixel-sized decoration is.
 #[derive(Clone, Copy, Debug, PartialEq)]
-#[non_exhaustive]
-pub enum DecorationSize {
-    /// A fixed number of pixels.
-    Px(f64),
+pub(crate) enum DecorationSize {
     /// A fraction of the summed on-screen lengths of two geographic
     /// segments, clamped to a pixel range.
     Proportional {
@@ -83,10 +80,14 @@ pub enum DecorationSize {
 }
 
 /// A decoration whose size is set in screen pixels, so it can only be
-/// resolved once a projection is known.
+/// resolved once a projection is known. Rendering turns it into screen-tier
+/// items marked as decorations; its contents are internal.
 #[derive(Clone, Debug, PartialEq)]
-#[non_exhaustive]
-pub enum ScreenDecoration {
+pub struct ScreenDecoration(pub(crate) Decoration);
+
+/// The kinds of pixel-sized decoration.
+#[derive(Clone, Debug, PartialEq)]
+pub(crate) enum Decoration {
     /// A two-winged arrowhead at `tip`, opening back toward `toward`.
     Arrowhead {
         /// Index of the part.

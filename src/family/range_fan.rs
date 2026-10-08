@@ -2,7 +2,7 @@
 //! `AM` ranges (metres) and `AN` azimuth pairs (degrees from true north).
 
 use crate::construction::{
-    GeoGeometry, HandleKind, HandleSpec, LabelPlacement, LabelSpec, PartRole, ScreenDecoration,
+    Decoration, GeoGeometry, HandleKind, HandleSpec, LabelPlacement, LabelSpec, PartRole,
 };
 use crate::definition::GraphicDefinition;
 use crate::edit::{EditError, HandleId};
@@ -109,7 +109,7 @@ pub(crate) fn construct(ctx: &mut Ctx<'_>, def: &GraphicDefinition) -> Result<()
     let part = first.ok_or(degenerate("no sector"))?;
     let bearing = main.left + (main.right - main.left) / 2.0;
     let pointer = ctx.next_part();
-    ctx.add_decoration(ScreenDecoration::Pointer {
+    ctx.add_decoration(Decoration::Pointer {
         id: pointer,
         from: center,
         through: ctx.earth.direct(center, bearing, 1.1 * main.max_m),

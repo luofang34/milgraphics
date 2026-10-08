@@ -54,13 +54,6 @@ pub fn milgraphics::catalog::VersionSet::iter(self) -> impl core::iter::traits::
 pub fn milgraphics::catalog::entries() -> &'static [milgraphics::catalog::CatalogEntry]
 pub fn milgraphics::catalog::lookup(u8, u8, u32) -> core::option::Option<&'static milgraphics::catalog::CatalogEntry>
 pub mod milgraphics::construction
-#[non_exhaustive] pub enum milgraphics::construction::DecorationSize
-pub milgraphics::construction::DecorationSize::Proportional
-pub milgraphics::construction::DecorationSize::Proportional::fraction: f64
-pub milgraphics::construction::DecorationSize::Proportional::max_px: f64
-pub milgraphics::construction::DecorationSize::Proportional::min_px: f64
-pub milgraphics::construction::DecorationSize::Proportional::segments: [(milgraphics::geo::GeoPoint, milgraphics::geo::GeoPoint); 2]
-pub milgraphics::construction::DecorationSize::Px(f64)
 pub enum milgraphics::construction::GeoGeometry
 pub milgraphics::construction::GeoGeometry::Line(alloc::vec::Vec<milgraphics::geo::GeoPoint>)
 pub milgraphics::construction::GeoGeometry::Ring(alloc::vec::Vec<milgraphics::geo::GeoPoint>)
@@ -86,21 +79,6 @@ pub milgraphics::construction::PartRole::Boundary
 pub milgraphics::construction::PartRole::Decoration
 pub milgraphics::construction::PartRole::Line
 pub milgraphics::construction::PartRole::Orientation
-#[non_exhaustive] pub enum milgraphics::construction::ScreenDecoration
-pub milgraphics::construction::ScreenDecoration::Arrowhead
-pub milgraphics::construction::ScreenDecoration::Arrowhead::filled: bool
-pub milgraphics::construction::ScreenDecoration::Arrowhead::half_angle_deg: f64
-pub milgraphics::construction::ScreenDecoration::Arrowhead::id: milgraphics::construction::PartId
-pub milgraphics::construction::ScreenDecoration::Arrowhead::size: milgraphics::construction::DecorationSize
-pub milgraphics::construction::ScreenDecoration::Arrowhead::stroke: milgraphics::style::Stroke
-pub milgraphics::construction::ScreenDecoration::Arrowhead::tip: milgraphics::geo::GeoPoint
-pub milgraphics::construction::ScreenDecoration::Arrowhead::toward: milgraphics::geo::GeoPoint
-pub milgraphics::construction::ScreenDecoration::Pointer
-pub milgraphics::construction::ScreenDecoration::Pointer::from: milgraphics::geo::GeoPoint
-pub milgraphics::construction::ScreenDecoration::Pointer::head_px: f64
-pub milgraphics::construction::ScreenDecoration::Pointer::id: milgraphics::construction::PartId
-pub milgraphics::construction::ScreenDecoration::Pointer::stroke: milgraphics::style::Stroke
-pub milgraphics::construction::ScreenDecoration::Pointer::through: milgraphics::geo::GeoPoint
 #[non_exhaustive] pub struct milgraphics::construction::Construction
 pub milgraphics::construction::Construction::decorations: alloc::vec::Vec<milgraphics::construction::ScreenDecoration>
 pub milgraphics::construction::Construction::definition: milgraphics::definition::GraphicId
@@ -127,6 +105,7 @@ pub milgraphics::construction::LabelSpec::part: milgraphics::construction::PartI
 pub milgraphics::construction::LabelSpec::placement: milgraphics::construction::LabelPlacement
 pub milgraphics::construction::LabelSpec::text: alloc::string::String
 pub struct milgraphics::construction::PartId(pub u16)
+pub struct milgraphics::construction::ScreenDecoration(_)
 pub mod milgraphics::definition
 #[non_exhaustive] pub enum milgraphics::definition::ControlPointError
 pub milgraphics::definition::ControlPointError::Altitude(serde_json::error::Error)

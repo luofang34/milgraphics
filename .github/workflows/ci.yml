@@ -81,11 +81,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
-      - uses: dtolnay/rust-toolchain@nightly
+      # cargo-public-api reads one rustdoc JSON format version: pin both.
+      - uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: nightly-2026-08-06
       - uses: dtolnay/rust-toolchain@stable
       - uses: taiki-e/install-action@v2
         with:
-          tool: cargo-public-api
+          tool: cargo-public-api@0.52.0
       - uses: Swatinem/rust-cache@v2
       - run: tools/ci/public-api.sh
 

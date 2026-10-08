@@ -124,7 +124,7 @@ fn budgets_bound_input_and_output() {
 
 #[test]
 fn planned_status_dashes_lines_but_not_bypass_arrowheads() {
-    use crate::construction::ScreenDecoration;
+    use crate::construction::Decoration;
     use crate::style::DashPattern;
     let bypass = def(
         "11032510002706010000",
@@ -137,7 +137,7 @@ fn planned_status_dashes_lines_but_not_bypass_arrowheads() {
             .all(|p| p.stroke.is_some_and(|s| s.dash == DashPattern::Dashed))
     );
     for d in &c.decorations {
-        let ScreenDecoration::Arrowhead { stroke, filled, .. } = d else {
+        let Decoration::Arrowhead { stroke, filled, .. } = &d.0 else {
             panic!()
         };
         assert_eq!((stroke.dash, *filled), (DashPattern::Solid, true));

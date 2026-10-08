@@ -6,7 +6,7 @@
 //! midpoint to point 3, so it has the opening's length; it is perpendicular
 //! to the sides when point 3 lies on the opening's perpendicular bisector.
 
-use crate::construction::{DecorationSize, GeoGeometry, PartRole, ScreenDecoration};
+use crate::construction::{Decoration, DecorationSize, GeoGeometry, PartRole};
 use crate::definition::GraphicDefinition;
 use crate::family::{ConstructError, Ctx, vertex_handles};
 use crate::plane::LocalPlane;
@@ -45,7 +45,7 @@ pub(crate) fn construct(ctx: &mut Ctx<'_>, def: &GraphicDefinition) -> Result<()
         max_px: HEAD_PX.1,
     };
     for (tip, toward) in [(p0, c0), (p1, c1)] {
-        ctx.add_decoration(ScreenDecoration::Arrowhead {
+        ctx.add_decoration(Decoration::Arrowhead {
             id: part,
             tip,
             toward,

@@ -43,9 +43,8 @@ impl Modifiers {
     /// Takes the stored `value` of `field`, or gives it back if its shape
     /// does not fit.
     fn store(&mut self, field: ModifierField, value: Value) -> Result<(), Value> {
-        let numbers = |v: &Value| -> Option<Vec<f64>> {
-            v.as_array()?.iter().map(Value::as_f64).collect()
-        };
+        let numbers =
+            |v: &Value| -> Option<Vec<f64>> { v.as_array()?.iter().map(Value::as_f64).collect() };
         if let Some(slot) = self.text_mut(field) {
             let Value::String(text) = value else {
                 return Err(value);
