@@ -12,7 +12,7 @@ struct Orthographic {
 }
 
 impl Projection for Orthographic {
-    fn project(&self, p: GeoPoint, _h: f64) -> Option<ScreenPoint> {
+    fn project(&self, p: GeoPoint) -> Option<ScreenPoint> {
         let (phi, lam) = (p.lat().to_radians(), (p.lon() - self.lon0).to_radians());
         let phi0 = self.lat0.to_radians();
         let cos_c = phi0.sin() * phi.sin() + phi0.cos() * phi.cos() * lam.cos();
@@ -101,7 +101,6 @@ fn phase_line_plan_has_both_tiers_labels_and_handles() {
     assert!((p.labels[0].rotation_deg - p.labels[1].rotation_deg).abs() < 1e-6);
     assert_eq!(p.handles.len(), 2);
     assert!(p.handles.iter().all(|h| h.screen.is_some()));
-    assert!(!p.terrain_missing);
 }
 
 #[test]
@@ -127,7 +126,6 @@ fn horizon_cuts_lines_and_unfills_rings() {
         p.labels[1].screen.is_none(),
         "end label is behind the globe"
     );
-    assert!(p.terrain_missing);
 
     let area = def(
         NAI,
@@ -209,7 +207,7 @@ fn rendering_is_repeatable() {
 fn local_frame_round_trips() {
     let frame = LocalEquirectangular::new(19.95, 50.07, 50_000.0, 96.0);
     let p = GeoPoint::new(20.0312, 50.0123).unwrap();
-    let s = frame.project(p, 0.0).unwrap();
+    let s = frame.project(p).unwrap();
     let back = frame.unproject(s).unwrap();
     assert!((back.lon() - p.lon()).abs() < 1e-9 && (back.lat() - p.lat()).abs() < 1e-12);
     assert!((frame.metres_per_px() - 13.229_166_6).abs() < 1e-6);
@@ -219,16 +217,11 @@ fn local_frame_round_trips() {
 struct Rotated180<P>(P);
 
 impl<P: Projection> Projection for Rotated180<P> {
-    fn project(&self, p: GeoPoint, h: f64) -> Option<ScreenPoint> {
-        self.0
-            .project(p, h)
-            .map(|s| ScreenPoint { x: -s.x, y: -s.y })
+    fn project(&self, p: GeoPoint) -> Option<ScreenPoint> {
+        self.0.project(p).map(|s| ScreenPoint { x: -s.x, y: -s.y })
     }
     fn unproject(&self, s: ScreenPoint) -> Option<GeoPoint> {
         self.0.unproject(ScreenPoint { x: -s.x, y: -s.y })
-    }
-    fn terrain_height_m(&self, p: GeoPoint) -> Option<f64> {
-        self.0.terrain_height_m(p)
     }
 }
 
@@ -245,8 +238,8 @@ fn corridor_information_block_stays_outside_whatever_the_rotation() {
     for projection in [&frame as &dyn Projection, &Rotated180(frame)] {
         let p = plan(&d, projection);
         let (a, b) = (
-            projection.project(d.points[0].position, 0.0).unwrap(),
-            projection.project(d.points[1].position, 0.0).unwrap(),
+            projection.project(d.points[0].position).unwrap(),
+            projection.project(d.points[1].position).unwrap(),
         );
         let (ux, uy) = {
             let (dx, dy) = b.sub(a);
@@ -285,16 +278,13 @@ struct Viewport<P> {
 }
 
 impl<P: Projection> Projection for Viewport<P> {
-    fn project(&self, p: GeoPoint, h: f64) -> Option<ScreenPoint> {
+    fn project(&self, p: GeoPoint) -> Option<ScreenPoint> {
         self.inner
-            .project(p, h)
+            .project(p)
             .filter(|s| (0.0..=self.width).contains(&s.x) && (0.0..=self.height).contains(&s.y))
     }
     fn unproject(&self, s: ScreenPoint) -> Option<GeoPoint> {
         self.inner.unproject(s)
-    }
-    fn terrain_height_m(&self, p: GeoPoint) -> Option<f64> {
-        self.inner.terrain_height_m(p)
     }
 }
 
@@ -379,4 +369,44 @@ fn a_ring_cut_elsewhere_is_one_line_through_its_first_vertex() {
     assert_eq!(p.screen.len(), 1, "joined across the first vertex");
     assert!(matches!(p.screen[0].shape, ScreenShape::Polyline(_)));
     assert_eq!(p.screen[0].fill, Fill::None);
+}
+
+#[test]
+fn only_pixel_sized_decorations_are_marked_as_decorations() {
+    let frame = LocalEquirectangular::new(19.95, 50.1, 50_000.0, 96.0);
+    let bypass = def(
+        "11032500002706010000",
+        &[(20.0, 50.0), (20.04, 50.03), (20.08, 50.0)],
+        None,
+    );
+    let p = plan(&bypass, &frame);
+    let flags: Vec<bool> = p.screen.iter().map(|i| i.decoration).collect();
+    assert_eq!(
+        flags,
+        [false, true, true],
+        "box from the geographic tier, two arrowheads"
+    );
+    let pl = plan(&def(PL, &[(20.0, 50.0), (20.1, 50.02)], None), &frame);
+    assert!(pl.screen.iter().all(|i| !i.decoration));
+}
+
+#[test]
+fn the_geographic_tier_alone_matches_the_plan_and_is_budgeted() {
+    let frame = LocalEquirectangular::new(19.95, 50.1, 50_000.0, 96.0);
+    let d = def(
+        NAI,
+        &[(20.0, 50.0), (20.08, 50.0), (20.08, 50.05), (20.0, 50.05)],
+        Some("1"),
+    );
+    let c = construct(&d, &Config::default()).unwrap();
+    let alone = geographic(&c, &Budget::default()).unwrap();
+    assert_eq!(alone, plan(&d, &frame).geo);
+    let tight = Budget {
+        max_vertices: 3,
+        ..Budget::default()
+    };
+    assert!(matches!(
+        geographic(&c, &tight),
+        Err(RenderError::Budget(_))
+    ));
 }

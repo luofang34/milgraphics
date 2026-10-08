@@ -45,7 +45,7 @@ pub(crate) struct Globe {
 }
 
 impl Projection for Globe {
-    fn project(&self, p: GeoPoint, _height_m: f64) -> Option<ScreenPoint> {
+    fn project(&self, p: GeoPoint) -> Option<ScreenPoint> {
         let (phi, lam) = (p.lat().to_radians(), (p.lon() - self.lon0).to_radians());
         let phi0 = self.lat0.to_radians();
         let cos_c = phi0.sin() * phi.sin() + phi0.cos() * phi.cos() * lam.cos();

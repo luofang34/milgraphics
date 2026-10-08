@@ -48,6 +48,7 @@ pub(crate) fn resolve(
                 shape,
                 stroke: Some(stroke),
                 fill,
+                decoration: true,
             }
         }
         ScreenDecoration::Pointer {
@@ -82,6 +83,7 @@ pub(crate) fn resolve(
                 shape: ScreenShape::Polyline(vec![f, tip, at(1.0, -1.0), tip, at(1.0, 1.0)]),
                 stroke: Some(stroke),
                 fill: Fill::None,
+                decoration: true,
             }
         }
     };

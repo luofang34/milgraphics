@@ -76,7 +76,7 @@ mod compare {
 
     fn px(frame: &LocalEquirectangular, lonlat: &Value) -> ScreenPoint {
         let p = GeoPoint::new(lonlat[0].as_f64().unwrap(), lonlat[1].as_f64().unwrap()).unwrap();
-        frame.project(p, 0.0).unwrap()
+        frame.project(p).unwrap()
     }
 
     fn seg_dist(p: ScreenPoint, a: ScreenPoint, b: ScreenPoint) -> f64 {

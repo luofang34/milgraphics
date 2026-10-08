@@ -80,6 +80,10 @@ pub struct ScreenItem {
     pub stroke: Option<Stroke>,
     /// Interior; dropped when a ring is cut by the horizon.
     pub fill: Fill,
+    /// A pixel-sized decoration, which the geographic tier does not contain;
+    /// adapters that draw the geographic tier in the map engine overlay only
+    /// these.
+    pub decoration: bool,
 }
 
 /// An edit handle for this view.
@@ -118,8 +122,6 @@ pub struct RenderPlan {
     pub labels: Vec<Label>,
     /// Edit handles.
     pub handles: Vec<Handle>,
-    /// True when some ground position had no terrain height and used 0.
-    pub terrain_missing: bool,
 }
 
 /// Why a plan could not be built.
@@ -128,6 +130,50 @@ pub enum RenderError {
     /// A size limit would be exceeded.
     #[error(transparent)]
     Budget(#[from] BudgetError),
+}
+
+/// The geographic tier alone: what a map engine draws and drapes itself.
+/// It does not depend on the view, so engines update it only when a
+/// graphic changes.
+pub fn geographic(
+    construction: &Construction,
+    budget: &Budget,
+) -> Result<Vec<GeoItem>, RenderError> {
+    let mut meter = VertexMeter::new(budget);
+    construction
+        .parts
+        .iter()
+        .map(|part| {
+            let item = geo_item(construction, part);
+            meter.take(item.vertex_count())?;
+            Ok(item)
+        })
+        .collect()
+}
+
+fn geo_item(construction: &Construction, part: &crate::construction::GeoPart) -> GeoItem {
+    let shape = match &part.geometry {
+        GeoGeometry::Line(p) => GeoShape::Lines(antimeridian::split_line(p)),
+        GeoGeometry::Ring(p) => GeoShape::Polygons(antimeridian::split_ring(p)),
+    };
+    GeoItem {
+        pick: PickRef {
+            definition: construction.definition.clone(),
+            target: PickTarget::Part(part.id),
+        },
+        role: part.role,
+        shape,
+        stroke: part.stroke,
+        fill: part.fill,
+    }
+}
+
+impl GeoItem {
+    /// Vertices in the item's geometry.
+    pub fn vertex_count(&self) -> usize {
+        let (GeoShape::Lines(pieces) | GeoShape::Polygons(pieces)) = &self.shape;
+        pieces.iter().map(Vec::len).sum()
+    }
 }
 
 /// Resolves `construction` for `view`.
@@ -148,19 +194,9 @@ pub fn render(
     let mut geo = Vec::with_capacity(construction.parts.len());
     let mut items = Vec::new();
     for part in &construction.parts {
-        let shape = match &part.geometry {
-            GeoGeometry::Line(p) => GeoShape::Lines(antimeridian::split_line(p)),
-            GeoGeometry::Ring(p) => GeoShape::Polygons(antimeridian::split_ring(p)),
-        };
-        let (GeoShape::Lines(pieces) | GeoShape::Polygons(pieces)) = &shape;
-        ctx.take(pieces.iter().map(Vec::len).sum())?;
-        geo.push(GeoItem {
-            pick: pick(PickTarget::Part(part.id)),
-            role: part.role,
-            shape,
-            stroke: part.stroke,
-            fill: part.fill,
-        });
+        let item = geo_item(construction, part);
+        ctx.take(item.vertex_count())?;
+        geo.push(item);
         for (shape, fill) in ctx.part(&part.geometry, part.fill)? {
             items.push(ScreenItem {
                 pick: pick(PickTarget::Part(part.id)),
@@ -168,6 +204,7 @@ pub fn render(
                 shape,
                 stroke: part.stroke,
                 fill,
+                decoration: false,
             });
         }
     }
@@ -208,6 +245,5 @@ pub fn render(
         screen: items,
         labels,
         handles,
-        terrain_missing: ctx.terrain_missing(),
     })
 }
