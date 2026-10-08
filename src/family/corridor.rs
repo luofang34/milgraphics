@@ -172,7 +172,7 @@ mod tests {
 
     #[test]
     fn altitudes_are_whole_feet_with_datum() {
-        let a = |metres, datum| altitude_text(&Altitude { metres, datum });
+        let a = |metres, datum| altitude_text(&Altitude::new(metres, datum));
         assert_eq!(a(1000.0, VerticalDatum::MeanSeaLevel), "3280 FT AMSL");
         assert_eq!(a(3000.0, VerticalDatum::MeanSeaLevel), "9842 FT AMSL");
         assert_eq!(a(150.0, VerticalDatum::AboveGround), "492 FT AGL");

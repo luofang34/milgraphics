@@ -198,10 +198,7 @@ mod golden {
         d.modifiers.altitudes = case
             .altitudes_m
             .iter()
-            .map(|&metres| Altitude {
-                metres,
-                datum: VerticalDatum::MeanSeaLevel,
-            })
+            .map(|&metres| Altitude::new(metres, VerticalDatum::MeanSeaLevel))
             .collect();
         d
     }

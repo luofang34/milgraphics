@@ -142,8 +142,11 @@ impl From<ControlPoint> for Map<String, Value> {
         map.insert("lon".to_owned(), Value::from(p.position.lon()));
         map.insert("lat".to_owned(), Value::from(p.position.lat()));
         if let Some(a) = p.altitude {
-            let altitude = serde_json::json!({ "metres": a.metres, "datum": a.datum });
-            map.insert("altitude".to_owned(), altitude);
+            // Serializing these plain fields cannot fail; a failure would
+            // drop only the altitude, never the point.
+            if let Ok(altitude) = serde_json::to_value(a) {
+                map.insert("altitude".to_owned(), altitude);
+            }
         }
         map.extend(p.unknown);
         map
@@ -172,7 +175,7 @@ impl StyleOverrides {
 }
 
 /// The time span in which a graphic applies, as ISO 8601 strings.
-#[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
 pub struct Validity {
     /// Start of the span, if bounded.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -180,6 +183,9 @@ pub struct Validity {
     /// End of the span, if bounded.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub end: Option<String>,
+    /// Fields this version does not model, preserved as JSON content.
+    #[serde(flatten)]
+    pub unknown: BTreeMap<String, Value>,
 }
 
 /// A tactical graphic as persisted and edited: the only authority from which

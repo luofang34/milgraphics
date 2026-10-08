@@ -174,3 +174,16 @@ fn edges_are_geodesics_not_mercator_chords() {
     assert!((bow - 233.1).abs() < 1.0, "bow {bow}");
     assert!(middle.lat() > chord.lat());
 }
+
+#[test]
+fn control_point_altitudes_are_refused_not_ignored() {
+    use crate::geo::{Altitude, VerticalDatum};
+    let mut pl = def("11032500001403000000", &[(20.0, 50.0), (20.1, 50.0)]);
+    let ground = construct(&pl, &Config::default());
+    assert!(ground.is_ok());
+    pl.points[1].altitude = Some(Altitude::new(1000.0, VerticalDatum::Ellipsoid));
+    assert!(matches!(
+        construct(&pl, &Config::default()),
+        Err(ConstructError::UnsupportedAltitude { index: 1, .. })
+    ));
+}

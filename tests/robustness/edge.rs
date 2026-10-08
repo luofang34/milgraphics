@@ -17,10 +17,7 @@ const SCALE: f64 = 250_000.0;
 fn corridor(points: &[(f64, f64)], width_m: f64) -> GraphicDefinition {
     let mut d = definition(AIR_CORRIDOR, points);
     d.modifiers.distances_m = vec![width_m];
-    d.modifiers.altitudes = vec![Altitude {
-        metres: 500.0,
-        datum: VerticalDatum::MeanSeaLevel,
-    }];
+    d.modifiers.altitudes = vec![Altitude::new(500.0, VerticalDatum::MeanSeaLevel)];
     d.modifiers.designation = Some("ROUTE".to_owned());
     d
 }

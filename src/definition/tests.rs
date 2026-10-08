@@ -9,10 +9,7 @@ fn sample() -> GraphicDefinition {
             ControlPoint::ground(GeoPoint::new(20.0, 50.0).unwrap()),
             ControlPoint {
                 position: GeoPoint::new(20.1, 50.02).unwrap(),
-                altitude: Some(Altitude {
-                    metres: 10.0,
-                    datum: VerticalDatum::MeanSeaLevel,
-                }),
+                altitude: Some(Altitude::new(10.0, VerticalDatum::MeanSeaLevel)),
                 unknown: BTreeMap::new(),
             },
         ],

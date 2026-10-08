@@ -1,6 +1,9 @@
 //! Geographic positions and altitudes on WGS84.
 
+use std::collections::BTreeMap;
+
 use serde::{Deserialize, Serialize};
+use serde_json::Value;
 
 #[cfg(test)]
 mod tests;
@@ -113,10 +116,24 @@ pub enum VerticalDatum {
 }
 
 /// An altitude in metres with an explicit vertical datum.
-#[derive(Clone, Copy, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct Altitude {
     /// Metres above the datum; negative below it.
     pub metres: f64,
     /// What the altitude is measured from.
     pub datum: VerticalDatum,
+    /// Fields this version does not model, preserved as JSON content.
+    #[serde(flatten)]
+    pub unknown: BTreeMap<String, Value>,
+}
+
+impl Altitude {
+    /// An altitude with no extra fields.
+    pub fn new(metres: f64, datum: VerticalDatum) -> Self {
+        Self {
+            metres,
+            datum,
+            unknown: BTreeMap::new(),
+        }
+    }
 }

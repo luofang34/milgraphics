@@ -36,10 +36,7 @@ fn serde_validates_points() {
 
 #[test]
 fn altitude_datums_use_short_names() {
-    let a = Altitude {
-        metres: 120.5,
-        datum: VerticalDatum::AboveGround,
-    };
+    let a = Altitude::new(120.5, VerticalDatum::AboveGround);
     let json = serde_json::to_string(&a).unwrap();
     assert_eq!(json, r#"{"metres":120.5,"datum":"agl"}"#);
     assert_eq!(serde_json::from_str::<Altitude>(&json).unwrap(), a);

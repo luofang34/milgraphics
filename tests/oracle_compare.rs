@@ -59,10 +59,7 @@ mod compare {
         d.modifiers.azimuths_deg = list("AN_AZIMUTH");
         d.modifiers.altitudes = list("X_ALTITUDE_DEPTH")
             .into_iter()
-            .map(|metres| Altitude {
-                metres,
-                datum: VerticalDatum::MeanSeaLevel,
-            })
+            .map(|metres| Altitude::new(metres, VerticalDatum::MeanSeaLevel))
             .collect();
         d
     }

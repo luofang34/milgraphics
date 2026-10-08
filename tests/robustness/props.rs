@@ -129,10 +129,7 @@ fn modifiers(sym: Sym, count: usize) -> impl Strategy<Value = Modifiers> {
                     m.distances_m = vec![width];
                     m.altitudes = x
                         .into_iter()
-                        .map(|metres| Altitude {
-                            metres,
-                            datum: VerticalDatum::MeanSeaLevel,
-                        })
+                        .map(|metres| Altitude::new(metres, VerticalDatum::MeanSeaLevel))
                         .collect();
                 }
                 RANGE_FAN => {

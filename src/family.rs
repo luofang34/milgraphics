@@ -127,6 +127,18 @@ pub enum ConstructError {
         /// Why.
         reason: &'static str,
     },
+    /// A control point has an altitude. Graphics are drawn clamped to the
+    /// ground; drawing an altitude there would misplace it, so it is refused
+    /// until altitudes and their datums are carried through construction.
+    #[error(
+        "{symbol}: control point {index} has an altitude; only ground-clamped points are supported"
+    )]
+    UnsupportedAltitude {
+        /// Symbol name.
+        symbol: &'static str,
+        /// Index of the first such point.
+        index: usize,
+    },
     /// A size limit would be exceeded.
     #[error(transparent)]
     Budget(#[from] BudgetError),
@@ -210,6 +222,12 @@ fn validate(
             count,
             min: spec.min_points,
             max: spec.max_points,
+        });
+    }
+    if let Some(index) = def.points.iter().position(|p| p.altitude.is_some()) {
+        return Err(ConstructError::UnsupportedAltitude {
+            symbol: spec.name,
+            index,
         });
     }
     let m = &def.modifiers;
