@@ -96,6 +96,38 @@ pub enum Fill {
     None,
     /// Filled with a colour.
     Solid(Rgba),
+    /// Covered with parallel lines a fixed number of pixels apart. The
+    /// render plan's screen tier carries the lines, clipped to the area, as
+    /// decorations; the outline is the item's stroke.
+    Hatch(Hatch),
+}
+
+/// Parallel lines filling an area, sized in pixels.
+#[derive(Clone, Copy, Debug, PartialEq)]
+#[non_exhaustive]
+pub struct Hatch {
+    /// Line colour.
+    pub color: Rgba,
+    /// Direction of the lines on screen, in degrees counterclockwise from
+    /// pointing right: 45 rises to the right, 135 falls to the right.
+    pub angle_deg: f64,
+    /// Distance between neighbouring lines, in pixels.
+    pub spacing_px: f64,
+    /// Line width, in pixels.
+    pub width_px: f64,
+}
+
+impl Hatch {
+    /// A hatch of `color` lines at `angle_deg`, `spacing_px` apart and
+    /// `width_px` wide.
+    pub const fn new(color: Rgba, angle_deg: f64, spacing_px: f64, width_px: f64) -> Self {
+        Self {
+            color,
+            angle_deg,
+            spacing_px,
+            width_px,
+        }
+    }
 }
 
 /// Default line width in pixels.

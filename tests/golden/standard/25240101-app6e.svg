@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="730" height="728" viewBox="0 0 730 728">
+<polyline points="270.85,647.91 649.65,647.91 649.28,420.76 270.69,420.76 270.85,647.91" fill="none" stroke="#000000ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt"/>
+<text transform="translate(460 485) rotate(0)" x="0" y="-3.6" text-anchor="middle" dominant-baseline="central" font-family="PT Sans" font-size="12" font-weight="bold">ACA T1X</text>
+<text transform="translate(460 522) rotate(0)" x="0" y="-3.6" text-anchor="middle" dominant-baseline="central" font-family="PT Sans" font-size="12" font-weight="bold">MIN ALT: 3280 FT AMSL</text>
+<text transform="translate(460 540) rotate(0)" x="0" y="-3.6" text-anchor="middle" dominant-baseline="central" font-family="PT Sans" font-size="12" font-weight="bold">MAX ALT: 9842 FT AMSL</text>
+<text transform="translate(460 558) rotate(0)" x="0" y="-3.6" text-anchor="middle" dominant-baseline="central" font-family="PT Sans" font-size="12" font-weight="bold">GRID YY</text>
+<text transform="translate(460 576) rotate(0)" x="0" y="-3.6" text-anchor="middle" dominant-baseline="central" font-family="PT Sans" font-size="12" font-weight="bold">EFF W0800Z - </text>
+<text transform="translate(460 595) rotate(0)" x="0" y="-3.6" text-anchor="middle" dominant-baseline="central" font-family="PT Sans" font-size="12" font-weight="bold">W1200Z</text>
+</svg>

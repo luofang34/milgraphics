@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="806" height="612" viewBox="0 0 806 612">
+<polyline points="270.86,526.75 422.25,428.32 573.81,504.04 725.15,420.75" fill="none" stroke="#000000ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt"/>
+<text transform="translate(284.34 508.01) rotate(-33.69)" x="0" y="-3.6" text-anchor="middle" dominant-baseline="central" font-family="PT Sans" font-size="12" font-weight="bold"> FSCL</text>
+<text transform="translate(293.66 521.99) rotate(-33.69)" x="0" y="-3.6" text-anchor="middle" dominant-baseline="central" font-family="PT Sans" font-size="12" font-weight="bold">W0800Z - </text>
+<text transform="translate(300.32 531.97) rotate(-33.69)" x="0" y="-3.6" text-anchor="middle" dominant-baseline="central" font-family="PT Sans" font-size="12" font-weight="bold">W1200Z</text>
+<text transform="translate(702.09 423.57) rotate(-27.76)" x="0" y="-3.6" text-anchor="middle" dominant-baseline="central" font-family="PT Sans" font-size="12" font-weight="bold"> FSCL</text>
+<text transform="translate(709.91 438.43) rotate(-27.76)" x="0" y="-3.6" text-anchor="middle" dominant-baseline="central" font-family="PT Sans" font-size="12" font-weight="bold">W0800Z - </text>
+<text transform="translate(715.5 449.05) rotate(-27.76)" x="0" y="-3.6" text-anchor="middle" dominant-baseline="central" font-family="PT Sans" font-size="12" font-weight="bold">W1200Z</text>
+</svg>

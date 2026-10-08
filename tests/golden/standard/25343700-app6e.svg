@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="806" height="615" viewBox="0 0 806 615">
+<polyline points="270.84,534.33 473.91,396.76 481.33,397.93 488.02,401.34 493.33,406.65 496.74,413.34 497.91,420.76 499.09,428.18 502.5,434.87 507.81,440.18 514.5,443.59 521.91,444.76 725.27,534.33 708,514" fill="none" stroke="#000000ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt"/>
+<polyline points="725.27,534.33 699,535" fill="none" stroke="#000000ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt"/>
+<text transform="translate(372.5 465.5) rotate(-34.01)" x="0" y="-3.6" text-anchor="middle" dominant-baseline="central" font-family="PT Sans" font-size="12" font-weight="bold">EX</text>
+</svg>

@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="730" height="746" viewBox="0 0 730 746">
+<polyline points="270.85,647.91 649.65,647.91 649.28,420.76 270.69,420.76 270.85,647.91" fill="none" stroke="#00ff00ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt"/>
+<text transform="translate(460.5 403) rotate(0)" x="0" y="-3.6" text-anchor="middle" dominant-baseline="central" font-family="PT Sans" font-size="12" font-weight="bold">HH</text>
+<text transform="translate(460.5 666) rotate(0)" x="0" y="-3.6" text-anchor="middle" dominant-baseline="central" font-family="PT Sans" font-size="12" font-weight="bold">W0800Z</text>
+<text transform="translate(271 534) rotate(0)" x="0" y="-3.6" text-anchor="middle" dominant-baseline="central" font-family="PT Sans" font-size="12" font-weight="bold">M</text>
+<text transform="translate(649 534) rotate(0)" x="0" y="-3.6" text-anchor="middle" dominant-baseline="central" font-family="PT Sans" font-size="12" font-weight="bold">M</text>
+<text transform="translate(460 648) rotate(0)" x="0" y="-3.6" text-anchor="middle" dominant-baseline="central" font-family="PT Sans" font-size="12" font-weight="bold">M</text>
+<text transform="translate(460 421) rotate(0)" x="0" y="-3.6" text-anchor="middle" dominant-baseline="central" font-family="PT Sans" font-size="12" font-weight="bold">M</text>
+</svg>

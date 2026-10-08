@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="715" height="921" viewBox="0 0 715 921">
+<polyline points="270.85,420.77 535.81,420.77" fill="none" stroke="#000000ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt"/>
+<polyline points="271.1,799.36 536.31,799.36" fill="none" stroke="#000000ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt"/>
+<polyline points="270.85,420.77 294.27,397.35" fill="none" stroke="#000000ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt"/>
+<polyline points="270.85,420.77 294.27,444.19" fill="none" stroke="#000000ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt"/>
+<polyline points="271.1,799.36 310.58,821.55 353.62,835.6 398.58,840.99 443.72,837.51 487.32,825.28 527.69,804.79 563.3,776.81 592.75,742.42 614.94,702.95 628.99,659.9 634.38,614.95 630.9,569.8 618.67,526.2 598.18,485.83 570.2,450.23 535.81,420.77" fill="none" stroke="#000000ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt"/>
+<text transform="translate(403.5 421) rotate(0)" x="0" y="-3.6" text-anchor="middle" dominant-baseline="central" font-family="PT Sans" font-size="12" font-weight="bold">DEM</text>
+</svg>

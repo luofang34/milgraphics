@@ -4,7 +4,7 @@ use crate::budget::BudgetError;
 use crate::construction::{Decoration, PartRole};
 use crate::engine::api::{self, Input, Justify};
 use crate::engine::base::{Pt, Shape, shape_type};
-use crate::family::shape_stroke;
+use crate::family::{shape_fill, shape_stroke};
 use crate::pick::{PickRef, PickTarget};
 use crate::render::label::{self, Label, TextAlign};
 use crate::render::screen::ScreenCtx;
@@ -121,28 +121,22 @@ fn screen_items(
         // outline of its own.
         let outline =
             (shape.shape_type != shape_type::FILL).then(|| shape_stroke(shape, Rgba::BLACK));
-        let item = match shape.fill_color {
-            Some(fill) => {
-                if points.len() > 1 && points.first() == points.last() {
-                    points.pop();
-                }
-                ScreenItem {
-                    pick: pick.clone(),
-                    role: PartRole::Decoration,
-                    shape: ScreenShape::Polygon(points),
-                    stroke: outline,
-                    fill: Fill::Solid(fill),
-                    decoration: true,
-                }
+        let fill = shape_fill(shape);
+        let shape = if fill == Fill::None {
+            ScreenShape::Polyline(points)
+        } else {
+            if points.len() > 1 && points.first() == points.last() {
+                points.pop();
             }
-            None => ScreenItem {
-                pick: pick.clone(),
-                role: PartRole::Decoration,
-                shape: ScreenShape::Polyline(points),
-                stroke: outline,
-                fill: Fill::None,
-                decoration: true,
-            },
+            ScreenShape::Polygon(points)
+        };
+        let item = ScreenItem {
+            pick: pick.clone(),
+            role: PartRole::Decoration,
+            shape,
+            stroke: outline,
+            fill,
+            decoration: true,
         };
         items.push(item);
     }

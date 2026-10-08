@@ -14,6 +14,7 @@
 mod catalog {
     use std::collections::BTreeSet;
 
+    use milgraphics::construction::PartRole;
     use milgraphics::render::{FixedAdvanceMetrics, LocalEquirectangular, Projection, ScreenPoint};
     use milgraphics::{
         Altitude, Budget, Config, ControlPoint, GeoPoint, GraphicDefinition, GraphicId,
@@ -22,9 +23,14 @@ mod catalog {
     use serde_json::Value;
 
     mod review;
+    mod standard;
 
     const RECORDS: &str = include_str!("fixtures/oracle/all.jsonl");
     const UNIMPLEMENTED: &str = include_str!("fixtures/oracle/unimplemented.txt");
+    /// Cases where the standard's template differs from what the oracle
+    /// draws; they are checked against their reviewed goldens instead
+    /// (`catalog::standard`).
+    const STANDARD: &str = include_str!("fixtures/oracle/standard.txt");
 
     /// Hausdorff tolerance in pixels; mil-sym measures on a sphere and in its
     /// own pixel path, ours on the ellipsoid.
@@ -194,9 +200,11 @@ mod catalog {
             Ok(p) => p,
             Err(e) => return Some(format!("not rendered: {e}")),
         };
+        // Upstream paints hatching from an image the fixture does not record.
         let ours: Vec<Vec<ScreenPoint>> = plan
             .screen
             .iter()
+            .filter(|i| i.role != PartRole::Hatch)
             .map(|i| {
                 let p = i.shape.points();
                 let close = i.shape.is_closed().then(|| p.first()).flatten();
@@ -321,6 +329,12 @@ mod catalog {
             .lines()
             .filter(|l| !l.starts_with('#') && !l.trim().is_empty())
             .collect();
+        let standard: BTreeSet<&str> = STANDARD
+            .lines()
+            .filter(|l| !l.starts_with('#') && !l.trim().is_empty())
+            .filter_map(|l| l.split_whitespace().next())
+            .collect();
+        let mut agreeing = Vec::new();
         let mut unimplemented = BTreeSet::new();
         let mut failures = Vec::new();
         for r in records() {
@@ -329,10 +343,18 @@ mod catalog {
             let symbol = SymbolId::parse(r["symbol"].as_str().unwrap()).unwrap();
             if support::spec(&symbol).is_err() {
                 unimplemented.insert(case.to_owned());
+            } else if standard.contains(case) {
+                if mismatch(&r).is_none() {
+                    agreeing.push(case.to_owned());
+                }
             } else if let Some(why) = mismatch(&r) {
                 failures.push(format!("{case}: {why}"));
             }
         }
+        assert!(
+            agreeing.is_empty(),
+            "fixtures/oracle/standard.txt lists cases that match the oracle: {agreeing:?}"
+        );
         assert!(
             failures.is_empty(),
             "{} mismatches:\n{}",

@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="730" height="585" viewBox="0 0 730 585">
+<polygon points="632,433 649.4,420.74 628,415" fill="#000000ff" stroke="none"/>
+<polyline points="314.06,487.81 649.4,420.74" fill="none" stroke="#000000ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt"/>
+<polyline points="297,500 314.06,487.81 293,482 268,487 288.82,492.85 272,505 297,500" fill="none" stroke="#000000ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt"/>
+<polyline points="632,433 649.4,420.74 628,415" fill="none" stroke="#000000ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt"/>
+<text transform="translate(296.5 491.5) rotate(-11.31)" x="0" y="-3.6" text-anchor="middle" dominant-baseline="central" font-family="PT Sans" font-size="12" font-weight="bold">T1X</text>
+</svg>

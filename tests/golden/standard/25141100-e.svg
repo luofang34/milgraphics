@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="806" height="607" viewBox="0 0 806 607">
+<polyline points="270.86,526.75 422.25,428.32 573.81,504.04 725.15,420.75" fill="none" stroke="#000000ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt"/>
+<text transform="translate(264.42 516.96) rotate(-33.25)" x="0" y="-3.6" text-anchor="start" dominant-baseline="central" font-family="PT Sans" font-size="12" font-weight="bold">LD/LC</text>
+<text transform="translate(719.22 410.48) rotate(-28.8)" x="0" y="-3.6" text-anchor="end" dominant-baseline="central" font-family="PT Sans" font-size="12" font-weight="bold">LD/LC</text>
+</svg>
