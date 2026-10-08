@@ -77,6 +77,9 @@ pub(crate) const UPPER_TROUGH: i32 = 45110402;
 pub(crate) const INSTABILITY: i32 = 31144000;
 pub(crate) const SHEAR: i32 = 31145000;
 pub(crate) const ITC: i32 = 31146000;
+/// The 2525E change 1 Inter-Tropical Convergence Zone ladder; not an
+/// upstream type.
+pub(crate) const ITCZ_LADDER: i32 = 45110407;
 pub(crate) const CONVERGENCE: i32 = 31147000;
 pub(crate) const ITD: i32 = 31148000;
 pub(crate) const RIDGE: i32 = 31142000;

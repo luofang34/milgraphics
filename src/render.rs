@@ -14,6 +14,7 @@ mod extent;
 mod hatch;
 mod label;
 mod local;
+mod pattern;
 mod ported;
 mod projection;
 mod screen;
@@ -255,8 +256,9 @@ struct Parts {
     geo: Vec<GeoItem>,
     /// The parts projected (full plans only).
     items: Vec<ScreenItem>,
-    /// Hatched parts projected for an overlay plan, which draws their hatch
-    /// lines over the map's outline but not the parts themselves.
+    /// Hatched and pattern-filled parts projected for an overlay plan, which
+    /// draws their hatch lines and figures over the map's outline but not the
+    /// parts themselves.
     hatched: Vec<ScreenItem>,
 }
 
@@ -278,8 +280,8 @@ fn parts(
             ctx.take(item.vertex_count())?;
             out.geo.push(item);
         }
-        let hatch = matches!(part.fill, Fill::Hatch(_));
-        if !in_view || !(full || hatch) {
+        let screen_fill = matches!(part.fill, Fill::Hatch(_) | Fill::Pattern(_));
+        if !in_view || !(full || screen_fill) {
             continue;
         }
         for (shape, fill) in ctx.part(&part.geometry, part.fill)? {
@@ -352,7 +354,10 @@ pub fn render(
         let boxes: Vec<[ScreenPoint; 4]> = labels.iter().filter_map(|l| l.corners).collect();
         let lines = hatch::items(items.iter().chain(&hatched), &boxes);
         ctx.take(lines.len() * 2)?;
+        let figures = pattern::items(items.iter().chain(&hatched), &boxes);
+        ctx.take(figures.iter().map(|f| f.shape.points().len()).sum())?;
         items.extend(lines);
+        items.extend(figures);
     }
     let symbols = if detailed {
         symbols::resolve(&mut ctx, construction, &pick)

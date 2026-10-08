@@ -76,3 +76,39 @@ fn an_unreadable_unit_code_is_refused() {
     );
     assert!(matches!(err, Err(ConstructError::InvalidSymbolIcon { .. })));
 }
+
+#[test]
+fn an_anchorage_line_carries_the_anchor_halfway_along() {
+    // Two equal legs: halfway is the middle point.
+    let points = [(20.0, 50.0), (20.02, 50.0), (20.04, 50.0)];
+    let c = construct(
+        &def("15004600001203050000", &points, None),
+        &Config::default(),
+    );
+    let c = c.unwrap();
+    let [s] = c.symbols.as_slice() else {
+        panic!("one symbol: {:?}", c.symbols)
+    };
+    assert_eq!(s.symbol.as_str(), "15004600001203040000");
+    assert!((s.anchor.lon() - 20.02).abs() < 1e-6 && (s.anchor.lat() - 50.0).abs() < 1e-6);
+}
+
+#[test]
+fn an_anchorage_area_carries_the_anchor_at_its_centre_only_in_2525e() {
+    let points = [(20.0, 50.0), (20.02, 50.0), (20.02, 50.02), (20.0, 50.02)];
+    let e = construct(
+        &def("15004600001203060000", &points, None),
+        &Config::default(),
+    )
+    .unwrap();
+    let [s] = e.symbols.as_slice() else {
+        panic!("one symbol: {:?}", e.symbols)
+    };
+    assert_eq!(s.symbol.as_str(), "15004600001203040000");
+    let d = construct(
+        &def("11004600001203060000", &points, None),
+        &Config::default(),
+    )
+    .unwrap();
+    assert!(d.symbols.is_empty());
+}

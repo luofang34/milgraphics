@@ -49,3 +49,11 @@
 25290600-app6e-s100k the template stacks T, AM, W and W1 beside the lane
 25300100-app6e the template follows the label with T1, not T
 25310800-app6e the template shows CSA T, W - W1 and N
+45110401-e Trough Axis is a dashed smooth curve (2525E ch1 TABLE M-II); upstream draws a wave
+45110402-e Trough is a solid smooth curve (2525E ch1 TABLE M-II); upstream draws a wave
+45110407-e ITCZ is a ladder of two rails and rungs (2525E ch1 TABLE M-II); upstream draws the line alone
+45110407-e-anticipated ITCZ is a ladder of two rails and rungs (2525E ch1 TABLE M-II); upstream draws the line alone
+45110407-e-s100k ITCZ is a ladder of two rails and rungs (2525E ch1 TABLE M-II); upstream draws the line alone
+45110408-e Convergence Line ticks are about three times as far apart (2525E ch1 TABLE M-II)
+45110408-e-anticipated Convergence Line ticks are about three times as far apart (2525E ch1 TABLE M-II)
+45110408-e-s100k Convergence Line ticks are about three times as far apart (2525E ch1 TABLE M-II)

@@ -27,4 +27,5 @@
 <polyline points="270,533 273,533 276,535 278,538 279,541 279,544 278,548 276,550 273,552 270,553 270,533" fill="none" stroke="#ff00ffff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt"/>
 <polyline points="270,579 273,579 276,581 278,584 279,587 279,590 278,594 276,596 273,598 270,599 270,579" fill="none" stroke="#ff00ffff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt"/>
 <polyline points="270,625 273,625 276,627 278,630 279,633 279,636 278,640 276,642 273,644 270,645 270,625" fill="none" stroke="#ff00ffff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt"/>
+<rect x="445.12" y="519.29" width="30" height="30" fill="none" stroke="#808080" stroke-dasharray="3 2"/><text x="460.12" y="534.29" text-anchor="middle" dominant-baseline="central" font-family="sans-serif" font-size="6">15034600001203040000</text>
 </svg>

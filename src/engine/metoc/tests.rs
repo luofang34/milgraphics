@@ -317,3 +317,15 @@ fn frozen_openings_add_the_cross_lines_after_both_edges() {
     let cross = shapes.get(2).map(|s| s.path.len()).unwrap_or(0);
     assert!(cross >= 4 && cross % 2 == 0);
 }
+
+#[test]
+fn loading_facility_area_takes_the_2525e_brown_only_in_version_15() {
+    let colour = |version: &str| {
+        let mut tg = tg_with(LOADING_FACILITY_AREA, &[]);
+        tg.symbol_id = format!("{version}00460000120318{}", "0".repeat(4));
+        set_metoc_properties(&mut tg, &Settings::default());
+        tg.fill_color
+    };
+    assert_eq!(colour("15"), Some(Rgba::opaque(189, 154, 56)));
+    assert_eq!(colour("11"), Some(Rgba::opaque(210, 180, 140)));
+}

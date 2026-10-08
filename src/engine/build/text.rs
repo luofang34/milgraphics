@@ -58,6 +58,6 @@ pub(super) fn create_altitude_label(metres: f64, mode: &str) -> String {
 }
 
 /// The label of one altitude amplifier in its own datum's mode.
-pub(super) fn altitude_label(altitude: &Altitude) -> String {
+pub(crate) fn altitude_label(altitude: &Altitude) -> String {
     create_altitude_label(altitude.metres, altitude_mode(altitude.datum))
 }

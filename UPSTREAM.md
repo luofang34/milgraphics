@@ -120,6 +120,28 @@ Accepted differences, each bounded by a per-case tolerance there:
 |---|---|---|---|
 | Depth Area (46 120104) | Its two bands along the inside of the outline are drawn as mitred lines along their centres, as wide as the bands; upstream fills each band as a stroked area intersected with the polygon, a fill with a hole | The output's polygons are single rings; the drawn band is the same | 7.5 px (half the wider band) |
 
+Upstream paints some METOC fills from bitmaps its geometry output does not
+carry (`PatternFillRenderer.MakeMetocPatternFill`). They are drawn as
+`Fill::Pattern`: the same figure, size, spacing and colour as each image,
+on the screen tier. The four of those types upstream leaves without a line
+colour (swept area, oil rig field, foul ground, kelp) have no outline.
+Upstream's dotted line style is kept as `DashPattern::Dotted`.
+
+MIL-STD-2525E change 1 METOC templates (Appendix M) that differ from
+upstream are followed for version 15 only. Cases the oracle comparison
+detects as different are listed in `tests/fixtures/oracle/standard.txt`;
+all are checked by their reviewed goldens and unit tests:
+
+| Graphic | Standard | mil-sym-java |
+|---|---|---|
+| Trough Axis, Trough (45 110401, 110402) | TABLE M-II: dashed and solid smooth curves | Waves |
+| Inter-Tropical Convergence Zone (45 110407) | TABLE M-II: a ladder, two rails with rungs in groups of two and three | The line alone |
+| Convergence Line (45 110408) | TABLE M-II: ticks about three times as far apart | Ticks every 5 px |
+| Tropical Storm Wind Areas (45 162004) | TABLE M-II: closed wind areas with a date-time label (`W`) | The points as an open line |
+| Isopleths (45 180100–180700), Depth Curve and Contour (46 120102, 120103) | TABLE M-II, M-III: the value along the line at both ends and the middle; the field is not named, so `T` carries an isopleth's value and `X` a depth | No text |
+| Anchorage - Line, - Area (46 120305, 120306) | TABLE M-III: the Anchorage - Point symbol (46 120304) on the line or in the area | No symbol |
+| Offshore Loading Facility - Area (46 120318) | TABLE M-III: brown (189, 154, 56) | Tan (210, 180, 140) |
+
 ## Generated data
 
 `src/generated/` is mechanically extracted data. The catalog and draw-rule

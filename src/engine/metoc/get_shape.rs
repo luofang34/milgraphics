@@ -265,6 +265,11 @@ fn dispatch(
     support: &dyn MetocSupport,
 ) -> Result<Dispatched, EngineError> {
     let lt = tg.line_type;
+    if lt == ITCZ_LADDER {
+        let scale = f64::from(tg.line_thickness) / 3.0;
+        shapes.extend(super::itcz::shapes(&tg.pixels, scale));
+        return Ok(Dispatched::NoClosing);
+    }
     if uses_line_array(lt) {
         support.line_array(tg, shapes)?;
         return Ok(Dispatched::Splines(Vec::new()));

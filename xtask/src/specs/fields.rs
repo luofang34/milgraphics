@@ -15,6 +15,19 @@ pub(super) const ADDED: &[(u32, u8, u32, &[&str])] = &[
     (15, 25, 344_500, &["A"]),
     // MIL-STD-2525E change 1: the counterattack's name.
     (15, 25, 340_600, &["T"]),
+    // MIL-STD-2525E change 1, TABLE M-II and M-III: the value of an isopleth
+    // or depth line, which its notes place along the line, and the
+    // date-time label of the tropical storm wind areas.
+    (15, 45, 162_004, &["W"]),
+    (15, 45, 180_100, &["T"]),
+    (15, 45, 180_200, &["T"]),
+    (15, 45, 180_300, &["T"]),
+    (15, 45, 180_400, &["T"]),
+    (15, 45, 180_500, &["T"]),
+    (15, 45, 180_600, &["T"]),
+    (15, 45, 180_700, &["T"]),
+    (15, 46, 120_102, &["T"]),
+    (15, 46, 120_103, &["T"]),
     // APP-6(E)(2): the unit assigned a task.
     (16, 25, 152_200, &["A"]),
     (16, 25, 230_100, &["A"]),

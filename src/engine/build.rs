@@ -14,7 +14,7 @@
 mod colors;
 mod corridor;
 mod fans;
-mod text;
+pub(crate) mod text;
 
 #[cfg(test)]
 mod tests;

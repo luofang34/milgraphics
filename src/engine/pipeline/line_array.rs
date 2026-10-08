@@ -60,7 +60,14 @@ pub(super) fn get_line_array(
         if tg.pixels.len() < 2 {
             return Ok(Vec::new());
         }
-        get_me_toc_shape(tg, &mut shapes, settings, &wiring).ok();
+        let pattern = get_me_toc_shape(tg, &mut shapes, settings, &wiring)
+            .ok()
+            .flatten();
+        if let Some(p) = pattern {
+            if let Some(shape) = shapes.get_mut(p.shape_index) {
+                shape.metoc_pattern = Some(p.line_type);
+            }
+        }
     } else {
         if tg.pixels.len() < 2 && line_type != tl::BS_CROSS {
             return Ok(Vec::new());

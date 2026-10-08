@@ -200,11 +200,12 @@ mod catalog {
             Ok(p) => p,
             Err(e) => return Some(format!("not rendered: {e}")),
         };
-        // Upstream paints hatching from an image the fixture does not record.
+        // Upstream paints hatching and pattern figures from images the
+        // fixture does not record.
         let ours: Vec<Vec<ScreenPoint>> = plan
             .screen
             .iter()
-            .filter(|i| i.role != PartRole::Hatch)
+            .filter(|i| !matches!(i.role, PartRole::Hatch | PartRole::Pattern))
             .map(|i| {
                 let p = i.shape.points();
                 let close = i.shape.is_closed().then(|| p.first()).flatten();

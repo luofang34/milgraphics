@@ -33,6 +33,8 @@ pub enum PartRole {
     Decoration,
     /// A line of a hatched area's fill.
     Hatch,
+    /// A figure of a pattern-filled area's fill.
+    Pattern,
 }
 
 /// Geometry in WGS84 degrees. Edges are geodesics and are already densified,

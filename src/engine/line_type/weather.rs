@@ -4,7 +4,8 @@
 use crate::engine::tactical_lines::*;
 
 /// The line type of METOC `entity`, or `None` where upstream returns -1. Upstream
-/// ignores the version, and so does this.
+/// ignores the version, and so does this; the edition's own templates are
+/// applied by [`super::line_type`].
 pub(crate) fn weather_line_type(entity: u32) -> Option<i32> {
     let parts: [fn(u32) -> Option<i32>; 3] = [weather_part_0, weather_part_1, weather_part_2];
     parts.iter().find_map(|part| part(entity))

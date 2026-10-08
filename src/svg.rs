@@ -74,7 +74,7 @@ fn item_svg(out: &mut String, item: &ScreenItem) {
     };
     let fill = match item.fill {
         Fill::Solid(c) => c.to_hex(),
-        // Hatch lines are items of their own.
+        // Hatch lines and pattern figures are items of their own.
         _ => "none".to_owned(),
     };
     writeln!(
@@ -91,9 +91,10 @@ fn stroke_attrs(stroke: Option<Stroke>) -> String {
         return r#" stroke="none""#.to_owned();
     };
     let mut attrs = format!(
-        r#" stroke="{}" stroke-width="{}" stroke-linejoin="miter" stroke-linecap="butt""#,
+        r#" stroke="{}" stroke-width="{}" stroke-linejoin="miter" stroke-linecap="{}""#,
         s.color.to_hex(),
-        num(s.width_px)
+        num(s.width_px),
+        if s.dash.round_caps() { "round" } else { "butt" },
     );
     let dash = s.dash.array();
     if !dash.is_empty() {

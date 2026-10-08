@@ -127,6 +127,8 @@ fn split_off_fill(tg: &Tg, shape: &mut Shape, lines: &[Polyline]) -> Option<Shap
     if let Some(color) = shape.fill_color {
         fill.fill_color = Some(color);
         shape.fill_color = None;
+    } else if let Some(pattern) = shape.metoc_pattern.take() {
+        fill.metoc_pattern = Some(pattern);
     } else {
         fill.pattern_fill = Some(shape.pattern_fill?);
         shape.pattern_fill = None;

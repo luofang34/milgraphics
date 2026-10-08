@@ -3,6 +3,7 @@
 //! Appendix C). The types have no user-defined fills, so any fill colour
 //! comes from here.
 
+use crate::engine::modifier::center_label::symbol_version;
 use crate::engine::settings::{BASE_DPI, Settings};
 use crate::engine::tactical_lines::*;
 use crate::engine::tg::{CAP_BUTT, CAP_ROUND, Tg};
@@ -232,7 +233,7 @@ fn styled_look(line_type: i32) -> Option<Look> {
             ..rgb(206, 158, 140)
         })),
         DEPTH_AREA => line(BLUE).fill(Some(WHITE)),
-        CONVERGENCE | ITC => line(ORANGE).cap(CAP_BUTT),
+        CONVERGENCE | ITC | ITCZ_LADDER => line(ORANGE).cap(CAP_BUTT),
         TURBULENCE => line(BLUE)
             .style(2)
             .cap(CAP_ROUND)
@@ -253,8 +254,20 @@ fn styled_look(line_type: i32) -> Option<Look> {
     })
 }
 
-fn look_for(line_type: i32) -> Option<Look> {
-    bottom_look(line_type)
+/// MIL-STD-2525E change 1 (version 15) colours that differ from upstream's:
+/// Offshore Loading Facility - Area is the brown of its template (TABLE
+/// M-III), not upstream's tan.
+fn edition_look(line_type: i32, version: Option<i32>) -> Option<Look> {
+    match (version, line_type) {
+        (Some(15), LOADING_FACILITY_AREA) => Some(same(rgb(189, 154, 56))),
+        (Some(15), ISLAND) => Some(same(rgb(210, 176, 106))),
+        _ => None,
+    }
+}
+
+fn look_for(line_type: i32, version: Option<i32>) -> Option<Look> {
+    edition_look(line_type, version)
+        .or_else(|| bottom_look(line_type))
         .or_else(|| sediment_look(line_type))
         .or_else(|| area_look(line_type))
         .or_else(|| styled_look(line_type))
@@ -263,7 +276,7 @@ fn look_for(line_type: i32) -> Option<Look> {
 
 /// `SetMeTOCProperties`.
 pub(crate) fn set_metoc_properties(tg: &mut Tg, settings: &Settings) {
-    let Some(look) = look_for(tg.line_type) else {
+    let Some(look) = look_for(tg.line_type, symbol_version(&tg.symbol_id)) else {
         return;
     };
     tg.line_color = look.line;
