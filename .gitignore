@@ -56,3 +56,6 @@ Desktop.ini
 * 2.*
 *.bak
 *.orig
+
+# Claude Code agent worktrees
+/.claude/worktrees/

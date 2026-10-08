@@ -36,11 +36,41 @@ marks Axis2 "Disused").
 
 | Symbol | Standard | mil-sym-java | Status |
 |---|---|---|---|
-| Main Attack 151403, 2525E change 1 | TABLE L-X: draw rule Axis1 | `mse.txt`: Axis2 | Open: settle against the TABLE L-X figure when Main Attack is implemented |
+| Main Attack 151403, 2525E change 1 | TABLE L-X: draw rule Axis1 | `mse.txt`: Axis2 | Declared in `src/support.rs` (`catalog_divergence`); geometry is the same for both editions and matches the oracle |
 
-No upstream code or data is incorporated in the library. When a file is
-ported or generated from upstream, it is listed here with its source file and
-regeneration command, and the upstream license is added to `NOTICE`.
+## Accepted differences from the oracle
+
+Each is bounded by a test in `tests/oracle_compare.rs`.
+
+| Graphic | Difference | Reason | Bound |
+|---|---|---|---|
+| All | Edges are WGS84 geodesics; mil-sym draws straight lines in its local pixel frame | Geographic correctness across projections; at tactical scale the two agree | Geometry within 0.5–1.5 px |
+| Main Attack | Body half-width is exactly half the width point's offset; mil-sym truncates to whole pixels | Ground-sized geometry must not depend on the display scale | Geometry within 1.5 px |
+| Main Attack | The designation is anchored at the geodesic midpoint of its control-point segment; mil-sym uses a midpoint of its internally adjusted pixel path | Label position must follow the control points, not renderer internals | Up to 12 px along the text, 2.5 px across |
+| Main Attack | `W`/`W1` are not drawn and are refused | Their text format on axes is not yet verified against the standard | Typed error |
+| Air Corridor | Empty `DTG Start:`/`DTG End:` lines are omitted; mil-sym prints them with no value | The standard's information block shows fields that have values | Label sets compared without empty fields |
+| Air Corridor | The information block is stacked outside the corridor edge of the first segment that is uppermost on screen, and "AC T" is placed inside every segment; mil-sym stacks the block across the middle segment, where it overlaps the corridor edge, with one "AC T" | 2525E change 1: the box goes "between points 1 and 2 in such a way it does not obscure the symbol", and the field inside appears "within each segment" | Label texts compared; positions reviewed in the golden SVGs |
+| Air Corridor | Control-point circles have 72 vertices and the radius is `AM`/2 on the ground; mil-sym uses 25-gons sized from a pixel scale measured northward at point 1 | Ground-sized geometry | Geometry within 1.5 px |
+| Range Fan, Sector | Ranges are measured on the WGS84 ellipsoid; mil-sym uses a sphere of radius 6,378,137 m | Correct ground distances | Geometry within 1.5 px |
+| Named Area of Interest | The label sits at the centre of the longitude/latitude bounds; mil-sym walks a spherical "minimum bounding rectangle" | Equivalent within a metre at tactical scale | Label within 1.5 px |
+
+## Generated data
+
+`src/generated/` is mechanically extracted data from the Apache-2.0
+mil-sym-java at the pinned commit; no upstream code is incorporated. Its
+license text is `LICENSE-APACHE-mil-sym` and the attribution is in `NOTICE`.
+Regenerate after `tools/oracle/fetch-upstream.sh` with `cargo xtask catalog`;
+the CI `oracle` job fails if the result differs from the checked-in files.
+
+| Generated file | Upstream source files | Command |
+|---|---|---|
+| `src/generated/catalog.rs` | `src/main/resources/data/msd.txt`, `mse.txt` (parsed as `MSLookup.java` does) | `cargo xtask catalog` |
+| `src/generated/draw_rule.rs` | `DrawRules.java`, `MODrawRules.java` | `cargo xtask catalog` |
+
+All upstream paths are relative to the mil-sym-java root, and every file is
+pinned by sha256 in `pin.json`. Where a later row of a data file repeats an
+earlier row's symbol set, entity and version, the later row wins, as in
+upstream's lookup table.
 
 ## Oracle
 
