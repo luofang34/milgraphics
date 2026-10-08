@@ -3,8 +3,9 @@
 //! partitions, and the line of contact's hostile FLOT.
 
 use crate::engine::arraysupport::{ArraySupport, get_line_array2};
-use crate::engine::base::{EngineError, Pt, Shape};
+use crate::engine::base::{At, EngineError, Pt, Shape};
 use crate::engine::channel_utility::partitions::get_partitions2;
+use crate::engine::channels::channel1::{ChannelRequest, get_channel1_points};
 use crate::engine::channels::externals::ChannelExternals;
 use crate::engine::dism::cover::get_dism_cover_double_rev_c;
 use crate::engine::flot::flot_line::{get_flot_count_double, get_flot_double};
@@ -72,12 +73,34 @@ impl MetocSupport for Wiring<'_> {
 
     fn channel_points(
         &self,
-        _line: &[f64],
-        _out: &mut [f64],
-        _channel_width: i32,
+        line: &[f64],
+        out: &mut [f64],
+        channel_width: i32,
     ) -> Result<(), EngineError> {
-        Err(EngineError::Degenerate(
-            "ice opening channels are not drawn",
-        ))
+        let tg = Tg::new(self.settings);
+        let count = i32::try_from(line.len() / 2).unwrap_or(i32::MAX);
+        let request = ChannelRequest {
+            tg: &tg,
+            settings: self.settings,
+            line_type: tl::CHANNEL,
+            upper: line,
+            lower: line,
+            upper_counter: count,
+            lower_counter: count,
+            channel_width,
+            useptr: 0,
+        };
+        let Some(points) = get_channel1_points(&request, self)? else {
+            return Ok(());
+        };
+        // Upstream writes point by point and fails on the first slot past
+        // the end of `out`, leaving the earlier ones written.
+        for (j, p) in points.iter().enumerate() {
+            let base = 3 * j;
+            *out.at_mut(base)? = p.x;
+            *out.at_mut(base + 1)? = p.y;
+            *out.at_mut(base + 2)? = f64::from(p.style);
+        }
+        Ok(())
     }
 }

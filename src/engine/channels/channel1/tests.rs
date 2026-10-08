@@ -104,3 +104,35 @@ fn fill_color_adds_a_fill_shape_first() {
     assert_eq!(shapes[0].shape_type, crate::engine::base::shape_type::FILL);
     let _ = Pt::default();
 }
+
+#[test]
+fn point_output_is_the_edges_with_styles() {
+    use super::get_channel1_points;
+    let settings = Settings::default();
+    let tg = Tg::new(&settings);
+    let flat = [0.0, 0.0, 100.0, 0.0];
+    let request = ChannelRequest {
+        tg: &tg,
+        settings: &settings,
+        line_type: lt::CHANNEL,
+        upper: &flat,
+        lower: &flat,
+        upper_counter: 2,
+        lower_counter: 2,
+        channel_width: 20,
+        useptr: 0,
+    };
+    let pts = get_channel1_points(&request, &StubExternals)
+        .unwrap()
+        .unwrap();
+    let got: Vec<(f64, f64, i32)> = pts.iter().map(|p| (p.x, p.y, p.style)).collect();
+    assert_eq!(
+        got,
+        vec![
+            (0.0, -5.0, 0),
+            (100.0, -5.0, 5),
+            (0.0, 5.0, 0),
+            (100.0, 5.0, 5)
+        ]
+    );
+}
