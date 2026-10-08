@@ -1,6 +1,6 @@
 //! Geodesics on the WGS84 ellipsoid.
 
-use geographiclib_rs::{DirectGeodesic, Geodesic, InverseGeodesic};
+use geographiclib_rs::{DirectGeodesic, Geodesic, GeodesicLine, InverseGeodesic, capability};
 
 use crate::geo::GeoPoint;
 
@@ -55,8 +55,25 @@ impl Earth {
 
     /// The point a `fraction` of the way along the geodesic from `a` to `b`.
     pub(crate) fn interpolate(&self, a: GeoPoint, b: GeoPoint, fraction: f64) -> GeoPoint {
+        self.line(a, b).at(fraction)
+    }
+
+    /// The geodesic from `a` to `b`, solved once for taking many points on it.
+    pub(crate) fn line(&self, a: GeoPoint, b: GeoPoint) -> Line {
         let inv = self.inverse(a, b);
-        self.direct(a, inv.azimuth1, inv.distance_m * fraction)
+        Line {
+            line: GeodesicLine::new(
+                &self.geodesic,
+                a.lat(),
+                a.lon(),
+                inv.azimuth1,
+                Some(LINE_CAPS),
+                None,
+                None,
+            ),
+            from: a,
+            distance_m: inv.distance_m,
+        }
     }
 
     /// Points along the geodesic from `a` to `b`, `a` included and `b`
@@ -96,6 +113,26 @@ pub(crate) fn segment_count(distance_m: f64, max_step_m: f64) -> usize {
 
 /// A point from geodesic output, which is finite and in range for finite
 /// input; `fallback` covers the degenerate case instead of panicking.
+/// What a [`Line`] computes: positions at distances along it, as `direct` does.
+const LINE_CAPS: u64 = capability::LATITUDE | capability::LONGITUDE | capability::DISTANCE_IN;
+
+/// A geodesic between two points.
+pub(crate) struct Line {
+    line: GeodesicLine,
+    from: GeoPoint,
+    distance_m: f64,
+}
+
+impl Line {
+    /// The point a `fraction` of the way along.
+    pub(crate) fn at(&self, fraction: f64) -> GeoPoint {
+        let (_, lat, lon, ..) =
+            self.line
+                ._gen_position(false, self.distance_m * fraction, LINE_CAPS);
+        clamp_point(lon, lat, self.from)
+    }
+}
+
 fn clamp_point(lon: f64, lat: f64, fallback: GeoPoint) -> GeoPoint {
     GeoPoint::new(lon, lat.clamp(-90.0, 90.0)).unwrap_or(fallback)
 }

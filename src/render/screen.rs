@@ -3,8 +3,8 @@
 use crate::budget::{BudgetError, VertexMeter};
 use crate::construction::GeoGeometry;
 use crate::geo::GeoPoint;
-use crate::geodesy::Earth;
-use crate::render::{Projection, ScreenPoint, ScreenShape};
+use crate::geodesy::{Earth, Line};
+use crate::render::{Projection, ScreenPoint, ScreenRect, ScreenShape};
 use crate::style::Fill;
 
 /// Deepest subdivision of one geodesic piece (2^12 sub-pieces).
@@ -63,6 +63,11 @@ impl<'a> ScreenCtx<'a> {
     /// The ground point under a screen position.
     pub(crate) fn unproject(&self, p: ScreenPoint) -> Option<GeoPoint> {
         self.projection.unproject(p)
+    }
+
+    /// The part of the screen the host draws, if it says.
+    pub(crate) fn viewport(&self) -> Option<ScreenRect> {
+        self.projection.viewport()
     }
 
     /// The WGS84 model used for geodesics.
@@ -152,7 +157,7 @@ impl<'a> ScreenCtx<'a> {
         depth: u32,
     ) -> Result<(), BudgetError> {
         match (sa, sb) {
-            (Some(sa), Some(sb)) => self.subdivide(a, sa, b, sb, 0, &mut runs.run),
+            (Some(sa), Some(sb)) => self.subdivide(a, sa, b, sb, &mut runs.run),
             (Some(_), None) => {
                 let (edge, s) = self.horizon(a, b, true);
                 if let Some(s) = s {
@@ -168,7 +173,7 @@ impl<'a> ScreenCtx<'a> {
                 match s {
                     Some(s) => {
                         runs.run.push(s);
-                        self.subdivide(edge, s, b, sb, 0, &mut runs.run)
+                        self.subdivide(edge, s, b, sb, &mut runs.run)
                     }
                     None => {
                         runs.run.push(sb);
@@ -196,7 +201,7 @@ impl<'a> ScreenCtx<'a> {
         run: &mut Vec<ScreenPoint>,
     ) -> Result<(), BudgetError> {
         match (run.last().copied(), self.project(a)) {
-            (Some(sa), _) | (None, Some(sa)) => self.subdivide(a, sa, b, sb, 0, run),
+            (Some(sa), _) | (None, Some(sa)) => self.subdivide(a, sa, b, sb, run),
             (None, None) => Ok(()),
         }
     }
@@ -208,30 +213,72 @@ impl<'a> ScreenCtx<'a> {
         sa: ScreenPoint,
         b: GeoPoint,
         sb: ScreenPoint,
-        depth: u32,
         run: &mut Vec<ScreenPoint>,
     ) -> Result<(), BudgetError> {
         if run.is_empty() {
             self.meter.take(1)?;
             run.push(sa);
         }
-        if depth < MAX_DEPTH {
-            let m = self.earth.interpolate(a, b, 0.5);
-            if let Some(sm) = self.project(m) {
-                let chord_mid = ScreenPoint {
-                    x: (sa.x + sb.x) / 2.0,
-                    y: (sa.y + sb.y) / 2.0,
-                };
-                let (dx, dy) = sm.sub(chord_mid);
-                if dx.hypot(dy) > self.projection.tolerance_px() {
-                    self.subdivide(a, sa, m, sm, depth + 1, run)?;
-                    return self.subdivide(m, sm, b, sb, depth + 1, run);
-                }
-            }
+        if self.may_stray(sa, sb) {
+            let line = self.earth.line(a, b);
+            self.refine(&line, (0.0, sa), (1.0, sb), 0, run)?;
         }
         self.meter.take(1)?;
         run.push(sb);
         Ok(())
+    }
+
+    /// Appends the screen points strictly between two points of `line`, at
+    /// fractions along it, until each chord is within the tolerance.
+    fn refine(
+        &mut self,
+        line: &Line,
+        (ta, sa): (f64, ScreenPoint),
+        (tb, sb): (f64, ScreenPoint),
+        depth: u32,
+        run: &mut Vec<ScreenPoint>,
+    ) -> Result<(), BudgetError> {
+        let tm = (ta + tb) / 2.0;
+        let Some(sm) = self.project(line.at(tm)) else {
+            return Ok(());
+        };
+        let chord_mid = ScreenPoint {
+            x: (sa.x + sb.x) / 2.0,
+            y: (sa.y + sb.y) / 2.0,
+        };
+        let (dx, dy) = sm.sub(chord_mid);
+        if dx.hypot(dy) <= self.projection.tolerance_px() {
+            return Ok(());
+        }
+        if depth + 1 < MAX_DEPTH && self.may_stray(sa, sm) {
+            self.refine(line, (ta, sa), (tm, sm), depth + 1, run)?;
+        }
+        self.meter.take(1)?;
+        run.push(sm);
+        if depth + 1 < MAX_DEPTH && self.may_stray(sm, sb) {
+            self.refine(line, (tm, sm), (tb, sb), depth + 1, run)?;
+        }
+        Ok(())
+    }
+
+    /// Whether the curve between two projected ends may stray from their
+    /// chord by more than the tolerance where it can be seen. A curve that
+    /// bends less than a semicircle stays within half its chord of the
+    /// chord's middle, so a short chord, or one at least that far outside
+    /// the viewport, needs no midpoint; the geodesic pieces are short enough
+    /// for the projection to be that smooth over each.
+    fn may_stray(&self, sa: ScreenPoint, sb: ScreenPoint) -> bool {
+        let (dx, dy) = sb.sub(sa);
+        let reach = dx.hypot(dy) / 2.0;
+        if reach <= self.projection.tolerance_px() {
+            return false;
+        }
+        self.projection.viewport().is_none_or(|v| {
+            sa.x.min(sb.x) - reach <= v.max.x
+                && sa.x.max(sb.x) + reach >= v.min.x
+                && sa.y.min(sb.y) - reach <= v.max.y
+                && sa.y.max(sb.y) + reach >= v.min.y
+        })
     }
 
     /// The last visible point on the geodesic from `a` to `b`, searching from
@@ -264,3 +311,6 @@ impl<'a> ScreenCtx<'a> {
         best
     }
 }
+
+#[cfg(test)]
+mod tests;

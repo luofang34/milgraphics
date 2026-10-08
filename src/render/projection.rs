@@ -17,6 +17,15 @@ impl ScreenPoint {
     }
 }
 
+/// A rectangle on screen in pixels, y downward.
+#[derive(Clone, Copy, Debug, PartialEq)]
+pub struct ScreenRect {
+    /// Top-left corner.
+    pub min: ScreenPoint,
+    /// Bottom-right corner.
+    pub max: ScreenPoint,
+}
+
 /// The host's map projection and camera.
 ///
 /// Implementations may be flat (Web Mercator), globe or vertical
@@ -24,9 +33,14 @@ impl ScreenPoint {
 pub trait Projection {
     /// Screen position of the ground at `point` — on the host's terrain
     /// where it has terrain — or `None` when it is hidden: behind the
-    /// horizon, behind the camera or outside the view volume. Graphics are
-    /// clamped to the ground; control points with altitudes are refused at
-    /// construction until heights are carried through.
+    /// horizon or behind the camera. Graphics are clamped to the ground;
+    /// control points with altitudes are refused at construction until
+    /// heights are carried through.
+    ///
+    /// A point in front of the camera but beyond the screen edges should
+    /// keep its position: the library searches the geodesic between two
+    /// hidden points for a visible span and bisects where a line becomes
+    /// hidden, which for points merely off screen is wasted work.
     fn project(&self, point: GeoPoint) -> Option<ScreenPoint>;
 
     /// Geographic position under a screen point, if it hits the surface.
@@ -36,6 +50,14 @@ pub trait Projection {
     /// curve before it is subdivided.
     fn tolerance_px(&self) -> f64 {
         0.5
+    }
+
+    /// The part of the screen the host draws, if it knows it. Geometry
+    /// beyond it is still returned, but chords that cannot reach it are not
+    /// refined, which keeps off-screen graphics cheap. The default `None`
+    /// refines everywhere.
+    fn viewport(&self) -> Option<ScreenRect> {
+        None
     }
 
     /// Whether any part of the geodesic from `a` to `b` might be visible,
