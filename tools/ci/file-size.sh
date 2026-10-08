@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Hand-written .rs files stay under 500 lines and lib.rs under 100.
-# src/generated/ is exempt: it is data emitted by tools/codegen (see UPSTREAM.md).
+# src/generated/ is exempt: it is data emitted by `cargo xtask catalog` (see UPSTREAM.md).
 set -euo pipefail
 fail=0
 while IFS= read -r f; do

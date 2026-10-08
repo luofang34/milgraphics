@@ -6,6 +6,11 @@
 //! references. Single-point symbols are rendered by the sibling `milsymbol`
 //! crate; the two compose through data and neither depends on the other.
 
+mod catalog;
+mod generated;
 mod version;
 
+pub use catalog::{CatalogDrawRule, CatalogEntry, GeometryKind, VersionSet, entries, lookup};
+pub use generated::catalog::ModifierKey;
+pub use generated::draw_rule::{DrawRule, MoDrawRule};
 pub use version::RENDERER_VERSION;

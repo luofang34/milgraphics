@@ -83,6 +83,8 @@ jobs:
         with:
           distribution: temurin
           java-version: 21
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
       - name: Fixtures match the pinned oracle
         run: |
           for cases in tools/oracle/cases/*.tsv; do
@@ -90,3 +92,8 @@ jobs:
             tools/oracle/oracle.sh "$cases" > "/tmp/$name.jsonl"
             python3 -I tools/oracle/diff-fixtures.py "tests/fixtures/oracle/$name.jsonl" "/tmp/$name.jsonl"
           done
+      - name: Generated catalog matches the pinned data
+        run: |
+          tools/oracle/fetch-upstream.sh
+          cargo xtask catalog
+          git diff --exit-code -- src/generated
