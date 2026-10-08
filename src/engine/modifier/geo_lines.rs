@@ -3,8 +3,10 @@
 
 use super::add::{add_modifier2, area_modifier, area_modifier_opt, integral_modifier, px};
 use super::boundary::add_boundary_modifiers;
-use super::center_label::symbol_version;
-use super::geo::{Geo, req};
+use super::center_label::{
+    VERSION_2525E, VERSION_2525E_CH1, VERSION_APP6E_2, is_app6e_2, symbol_version,
+};
+use super::geo::{Geo, establishing_hq, req};
 use super::layout::{
     add_dtg, add_modifier_on_line, add_modifier_top_segment, get_mbr, pixels_middle_segment,
 };
@@ -37,6 +39,7 @@ fn end_rules(tg: &mut Tg, g: &mut Geo<'_>, line_type: i32) -> Result<bool, Engin
         }
         tl::BS_LINE | tl::BBS_LINE => battle_symbol_line(tg, g, &name)?,
         tl::FEBA => end_pair(tg, g, &label, TO_END, 0.0),
+        tl::FSCL | tl::CFL if is_app6e_2(tg) => limit_line(tg, g, line_type)?,
         tl::FSCL => {
             let text = format!("{name} {label}");
             let width = g.sw(&text).max(g.sw(&tg.w));
@@ -100,12 +103,11 @@ fn segment_rules(tg: &mut Tg, g: &mut Geo<'_>, line_type: i32) -> Result<bool, E
         tl::CFL => cfl(tg, g)?,
         tl::FLOT => flot(tg, g)?,
         tl::LC => lc(tg, g)?,
-        tl::CATK => integral_modifier(tg, &label, ABOVE_MIDDLE, 0.0, (1, 0), false)?,
-        tl::CATKBYFIRE => {
-            let width = (1.5 * f64::from(g.sw(&label))) as i32;
-            let pt1 = req(g.ends.pt1)?;
-            let pt2 = extend_along_line_double(g.ends.pt0, pt1, f64::from(width));
-            add_modifier2(tg, &label, ABOVE_MIDDLE, 0.0, (pt1, pt2), false, None);
+        tl::CATK | tl::CATKBYFIRE => counterattack(tg, g, line_type == tl::CATKBYFIRE)?,
+        tl::FPOL | tl::RPOL if is_app6e_2(tg) => {
+            let dtg = tg.w.clone();
+            integral_modifier(tg, &dtg, ABOVE_MIDDLE, -cs, (0, 1), false)?;
+            integral_modifier(tg, &label, ABOVE_MIDDLE, 0.0, (0, 1), true)?;
         }
         tl::IL => integral_modifier(tg, &name, ABOVE_MIDDLE, 0.0, (1, 0), false)?,
         tl::RETIRE
@@ -140,6 +142,11 @@ fn segment_rules(tg: &mut Tg, g: &mut Geo<'_>, line_type: i32) -> Result<bool, E
                 let seg = g.middle_segment;
                 integral_modifier(tg, &n, ABOVE_MIDDLE, 0.0, (seg, seg + 1), true)?;
             }
+        }
+        // The version 16 template labels the contour with its dose rate.
+        tl::DRCL if is_app6e_2(tg) => {
+            let h = tg.h.clone();
+            add_modifier_top_segment(tg, &h)?;
         }
         tl::SERIES | tl::DRCL => add_modifier_top_segment(tg, &name)?,
         tl::STRIKWARN => {
@@ -252,17 +259,62 @@ pub(super) fn end_labels(
     Ok(())
 }
 
+/// `CATK` and `CATKBYFIRE`: the label along the axis.
+fn counterattack(tg: &mut Tg, g: &Geo<'_>, by_fire: bool) -> Result<(), EngineError> {
+    let text = counterattack_text(tg, &g.label, by_fire);
+    if by_fire {
+        let width = (1.5 * f64::from(g.sw(&text))) as i32;
+        let pt1 = req(g.ends.pt1)?;
+        let pt2 = extend_along_line_double(g.ends.pt0, pt1, f64::from(width));
+        add_modifier2(tg, &text, ABOVE_MIDDLE, 0.0, (pt1, pt2), false, None);
+        Ok(())
+    } else {
+        integral_modifier(tg, &text, ABOVE_MIDDLE, 0.0, (1, 0), false)
+    }
+}
+
+/// "CATK", followed by T where the template shows it: the counterattack
+/// from version 15 on, the counterattack by fire in version 16 only.
+fn counterattack_text(tg: &Tg, label: &str, by_fire: bool) -> String {
+    let version = symbol_version(&tg.symbol_id);
+    let named = match version {
+        Some(VERSION_APP6E_2) => true,
+        Some(VERSION_2525E_CH1) => !by_fire,
+        _ => false,
+    };
+    if named && !tg.t.is_empty() {
+        format!("{label} {}", tg.t)
+    } else {
+        label.to_owned()
+    }
+}
+
 /// Upstream's "T after label" group: the label, then T (how depends on the
-/// symbol's standard version).
+/// symbol's standard version). The version 16 templates follow the label
+/// with T2 and AS, and the intelligence coordination line with T1.
 fn limit_line(tg: &mut Tg, g: &Geo<'_>, line_type: i32) -> Result<(), EngineError> {
     let label = &g.label;
     let name = tg.t.clone();
     let version = symbol_version(&tg.symbol_id).ok_or(EngineError::Number(tg.symbol_id.clone()))?;
     let (mut t_mod, mut width) = (String::new(), 0);
-    if version < 13 {
+    if version == VERSION_APP6E_2 {
+        let text = if line_type == tl::ICL {
+            tg.t1.clone()
+        } else {
+            establishing_hq(tg)
+        };
+        let text = if text.is_empty() {
+            label.clone()
+        } else {
+            format!("{label} {text}")
+        };
+        let width = g.sw(&text).max(g.sw(&format!("{}{}", tg.w, g.w_dash)));
+        return end_labels(tg, g, (&text, &text), width);
+    }
+    if version < VERSION_2525E {
         t_mod = name.clone();
         width = g.sw(&format!("{t_mod} {label}"));
-    } else if version == 13 || version == 15 {
+    } else if version == VERSION_2525E || version == VERSION_2525E_CH1 {
         if line_type == tl::BCL {
             if !name.is_empty() {
                 t_mod = format!(" ({name})");
@@ -272,14 +324,6 @@ fn limit_line(tg: &mut Tg, g: &Geo<'_>, line_type: i32) -> Result<(), EngineErro
             t_mod = name.clone();
             width = g.sw(&format!("{name} {label}"));
         }
-    } else if version == 16 {
-        if !name.is_empty() {
-            t_mod = format!(" {name}");
-        }
-        if !tg.as_.is_empty() {
-            t_mod.push_str(&format!(" ({})", tg.as_));
-        }
-        width = g.sw(&format!("{label}{t_mod}"));
     }
     width = width.max(g.sw(&tg.w));
     let near = format!("{label}{}{t_mod}", g.t_space);
@@ -322,9 +366,11 @@ fn cfl(tg: &mut Tg, g: &Geo<'_>) -> Result<(), EngineError> {
     Ok(())
 }
 
-/// Upstream `FLOT`: H picks the label ("1" gives LC, "2" none).
+/// Upstream `FLOT`: H picks the label ("1" gives LC, "2" none). The
+/// version 16 template has no label.
 fn flot(tg: &mut Tg, g: &Geo<'_>) -> Result<(), EngineError> {
     let label = match tg.h.as_str() {
+        _ if is_app6e_2(tg) => "",
         "1" => "LC",
         "2" => "",
         _ => g.label.as_str(),

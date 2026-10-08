@@ -166,9 +166,10 @@ const FIRST_AM_TYPES: &[i32] = &[
     KILLBOXPURPLE_RECTANGULAR,
 ];
 
-/// `PAA_RECTANGULAR` and the other sized areas: width or radius in AM.
+/// `PAA_RECTANGULAR` and the other sized areas: width or radius in AM. The
+/// safe lane shows its width as a label (version 16).
 pub(super) fn first_am(tg: &mut Tg, line_type: i32, amps: &Amps) {
-    if FIRST_AM_TYPES.contains(&line_type) {
+    if FIRST_AM_TYPES.contains(&line_type) || line_type == MFLANE {
         if let Some([first, ..]) = amps.am.as_deref() {
             tg.am = double_to_string(*first);
         }

@@ -3,7 +3,8 @@
 //! areas and the range fans.
 
 use super::add::{add_area_modifier, area_modifier, area_modifier_id, integral_modifier};
-use super::geo::{Geo, nudged};
+use super::center_label::is_app6e_2;
+use super::geo::{Geo, establishing_hq, nudged};
 use super::layout::{add_dtg, get_rfa_lines, highest_point_left_of_center, remove_decimal};
 use super::post::{circle_center, rectangle_center, upper_left_index};
 use super::{AREA, TO_END};
@@ -78,20 +79,23 @@ pub(super) fn post_area_labels(
     Ok(true)
 }
 
-/// The airspace coordination area's stack of text, upright at `c`.
+/// The airspace coordination area's stack of text, upright at `c`. The
+/// version 16 template has T2 in the second line and H after "Grids".
 fn aca_stack(tg: &mut Tg, g: &Geo<'_>, c: Pt) {
     let cs = 1.0;
     let text = format!("{}{}{}", g.label, g.t_space, tg.t);
     area_modifier(tg, &text, AREA, -3.0 * cs, (c, c), false);
-    super::add::add_modifier2(
-        tg,
-        &tg.t1.clone(),
-        AREA,
-        -2.0 * cs,
-        (c, c),
-        false,
-        Some("T1"),
-    );
+    let (second, second_id, grid, eff) = if is_app6e_2(tg) {
+        (tg.t2.clone(), "T2", format!("Grids {}", tg.h), "EFF:")
+    } else {
+        (
+            tg.t1.clone(),
+            "T1",
+            format!("GRID {}", tg.location()),
+            "EFF",
+        )
+    };
+    super::add::add_modifier2(tg, &second, AREA, -2.0 * cs, (c, c), false, Some(second_id));
     area_modifier_id(tg, &format!("MIN ALT: {}", tg.x), AREA, -cs, c, false, "H");
     area_modifier_id(
         tg,
@@ -102,18 +106,10 @@ fn aca_stack(tg: &mut Tg, g: &Geo<'_>, c: Pt) {
         false,
         "H1",
     );
+    area_modifier_id(tg, &grid, AREA, cs, c, false, "H2");
     area_modifier_id(
         tg,
-        &format!("GRID {}", tg.location()),
-        AREA,
-        cs,
-        c,
-        false,
-        "H2",
-    );
-    area_modifier_id(
-        tg,
-        &format!("EFF {}{}", tg.w, g.w_dash),
+        &format!("{eff} {}{}", tg.w, g.w_dash),
         AREA,
         2.0 * cs,
         c,
@@ -169,11 +165,19 @@ fn rectangular_zone(tg: &mut Tg, g: &Geo<'_>) -> Result<(), EngineError> {
 }
 
 /// The fire support areas: the label, the name and the DTG, as many lines
-/// as the graphic has text for.
+/// as the graphic has text for. The version 16 templates show T2 and AS in
+/// place of the name.
 fn rfa_labels(tg: &mut Tg, g: &Geo<'_>, c: Pt) {
     let cs = 1.0;
-    let name = tg.t.clone();
-    match get_rfa_lines(tg) {
+    let (name, lines) = if is_app6e_2(tg) {
+        let name = establishing_hq(tg);
+        let dtg = !tg.w.is_empty() || !tg.w1.is_empty();
+        let lines = 1 + i32::from(!name.is_empty()) + i32::from(dtg);
+        (name, lines)
+    } else {
+        (tg.t.clone(), get_rfa_lines(tg))
+    };
+    match lines {
         3 => {
             area_modifier(tg, &g.label, AREA, -cs, (c, c), false);
             area_modifier(tg, &name, AREA, 0.0, (c, c), false);

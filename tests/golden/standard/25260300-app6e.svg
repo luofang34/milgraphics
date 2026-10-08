@@ -1,9 +1,9 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="806" height="609" viewBox="0 0 806 609">
+<svg xmlns="http://www.w3.org/2000/svg" width="806" height="607" viewBox="0 0 806 607">
 <polyline points="270.86,526.75 422.25,428.32 573.81,504.04 725.15,420.75" fill="none" stroke="#000000ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt"/>
-<text transform="translate(290.44 504.44) rotate(-32.86)" x="0" y="-3.6" text-anchor="middle" dominant-baseline="central" font-family="PT Sans" font-size="12" font-weight="bold">NFL (US)</text>
-<text transform="translate(299.56 518.56) rotate(-32.86)" x="0" y="-3.6" text-anchor="middle" dominant-baseline="central" font-family="PT Sans" font-size="12" font-weight="bold">W0800Z - </text>
-<text transform="translate(306.07 528.64) rotate(-32.86)" x="0" y="-3.6" text-anchor="middle" dominant-baseline="central" font-family="PT Sans" font-size="12" font-weight="bold">W1200Z</text>
-<text transform="translate(696.01 427.11) rotate(-28.37)" x="0" y="-3.6" text-anchor="middle" dominant-baseline="central" font-family="PT Sans" font-size="12" font-weight="bold">NFL (US)</text>
-<text transform="translate(703.99 441.89) rotate(-28.37)" x="0" y="-3.6" text-anchor="middle" dominant-baseline="central" font-family="PT Sans" font-size="12" font-weight="bold">W0800Z - </text>
-<text transform="translate(709.69 452.45) rotate(-28.37)" x="0" y="-3.6" text-anchor="middle" dominant-baseline="central" font-family="PT Sans" font-size="12" font-weight="bold">W1200Z</text>
+<text transform="translate(299.41 498.46) rotate(-33.08)" x="0" y="-3.6" text-anchor="middle" dominant-baseline="central" font-family="PT Sans" font-size="12" font-weight="bold">NFL T2 (US)</text>
+<text transform="translate(308.59 512.54) rotate(-33.08)" x="0" y="-3.6" text-anchor="middle" dominant-baseline="central" font-family="PT Sans" font-size="12" font-weight="bold">W0800Z - </text>
+<text transform="translate(315.14 522.59) rotate(-33.08)" x="0" y="-3.6" text-anchor="middle" dominant-baseline="central" font-family="PT Sans" font-size="12" font-weight="bold">W1200Z</text>
+<text transform="translate(686.45 432.64) rotate(-28.84)" x="0" y="-3.6" text-anchor="middle" dominant-baseline="central" font-family="PT Sans" font-size="12" font-weight="bold">NFL T2 (US)</text>
+<text transform="translate(694.55 447.36) rotate(-28.84)" x="0" y="-3.6" text-anchor="middle" dominant-baseline="central" font-family="PT Sans" font-size="12" font-weight="bold">W0800Z - </text>
+<text transform="translate(700.34 457.87) rotate(-28.84)" x="0" y="-3.6" text-anchor="middle" dominant-baseline="central" font-family="PT Sans" font-size="12" font-weight="bold">W1200Z</text>
 </svg>

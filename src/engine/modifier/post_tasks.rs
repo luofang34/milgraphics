@@ -2,13 +2,16 @@
 //! labels placed on points of the drawn symbol.
 
 use super::add::{area_modifier, integral_modifier, px};
+use super::center_label::is_app6e_2;
 use super::geo::Geo;
 use super::layout::{add_dtg, get_mbr};
 use super::{
     ABOVE_END_INSIDE, ABOVE_MIDDLE, ABOVE_MIDDLE_PERPENDICULAR, ABOVE_START_INSIDE, AREA, TO_END,
 };
-use crate::engine::base::{At, EngineError};
-use crate::engine::lineutility::basics::{calc_center_point_double2, mid_point_double};
+use crate::engine::base::{At, EngineError, Pt};
+use crate::engine::lineutility::basics::{
+    calc_center_point_double2, calc_distance_double, mid_point_double,
+};
 use crate::engine::lineutility::extend::{extend_along_line_double, extend_along_line_double2};
 use crate::engine::tactical_lines as tl;
 use crate::engine::tg::Tg;
@@ -200,6 +203,7 @@ pub(super) fn ship_and_flank_labels(
             let (_, _, lr, ll) = get_mbr(tg)?;
             area_modifier(tg, &label, ABOVE_MIDDLE, cs, (ll, lr), false);
         }
+        tl::MFLANE if is_app6e_2(tg) => safe_lane(tg, g)?,
         tl::MFLANE => {
             let (pt0, pt1) = (px(tg, 4)?, px(tg, 2)?);
             let factors = if px(tg, 0)?.y < px(tg, 1)?.y {
@@ -212,4 +216,42 @@ pub(super) fn ship_and_flank_labels(
         _ => return Ok(false),
     }
     Ok(true)
+}
+
+/// `MFLANE` in version 16: T, AM, W and W1 stacked along the lane beside
+/// its middle, as the template shows them. The text runs across the lane
+/// as upstream's DTG does, so the stack is moved off the lane by half its
+/// widest line.
+fn safe_lane(tg: &mut Tg, g: &Geo<'_>) -> Result<(), EngineError> {
+    let dash = if tg.w.is_empty() || tg.w1.is_empty() {
+        ""
+    } else {
+        " - "
+    };
+    let texts = [
+        tg.t.clone(),
+        // A whole number of metres without Java's ".0".
+        tg.am.strip_suffix(".0").unwrap_or(&tg.am).to_owned(),
+        format!("{}{dash}", tg.w),
+        tg.w1.clone(),
+    ];
+    let widest = texts.iter().map(|t| g.sw(t)).max().unwrap_or(0);
+    // The fork's crossbar runs across the lane.
+    let (a, b) = (px(tg, 4)?, px(tg, 2)?);
+    let across = calc_distance_double(a, b);
+    if across <= 0.0 {
+        return Ok(());
+    }
+    let mid = mid_point_double(px(tg, 0)?, px(tg, 1)?, 0);
+    let bar_mid = mid_point_double(a, b, 0);
+    let shift = (f64::from(widest) / 2.0 + f64::from(tg.font.size) / 2.0) / across;
+    let dx = mid.x - bar_mid.x + (b.x - a.x) * shift;
+    let dy = mid.y - bar_mid.y + (b.y - a.y) * shift;
+    let path = (Pt::new(a.x + dx, a.y + dy), Pt::new(b.x + dx, b.y + dy));
+    // The lines keep the template's order within the block, as upstream
+    // orders W and W1.
+    for (factor, text) in [-1.5, -0.5, 0.5, 1.5].into_iter().zip(texts) {
+        area_modifier(tg, &text, ABOVE_MIDDLE, factor, path, false);
+    }
+    Ok(())
 }

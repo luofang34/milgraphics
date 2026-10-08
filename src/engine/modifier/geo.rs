@@ -60,6 +60,16 @@ pub(super) fn req(p: Option<Pt>) -> Result<Pt, EngineError> {
     p.ok_or(EngineError::Degenerate("label rule needs more points"))
 }
 
+/// T2 followed by AS in parentheses, as the version 16 templates of the
+/// fire support areas and lines show them; either part may be absent.
+pub(super) fn establishing_hq(tg: &Tg) -> String {
+    match (tg.t2.is_empty(), tg.as_.is_empty()) {
+        (_, true) => tg.t2.clone(),
+        (true, false) => format!("({})", tg.as_),
+        (false, false) => format!("{} ({})", tg.t2, tg.as_),
+    }
+}
+
 /// The same point with `x` moved, as `new POINT2(p.x + dx, p.y)`.
 pub(super) fn nudged(p: Pt, dx: f64) -> Pt {
     Pt::new(p.x + dx, p.y)
