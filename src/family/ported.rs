@@ -157,29 +157,28 @@ fn add_part(
     let mut first = None;
     for mut line in lines {
         ctx.take_vertices(line.len())?;
-        let (geometry, fill, stroke, role) = if shape.shape_type == shape_type::FILL {
-            if line.len() > 1 && line.first() == line.last() {
-                line.pop();
+        // Upstream fills any shape with a fill colour; a fill shape has no
+        // outline of its own.
+        let outline = (shape.shape_type != shape_type::FILL)
+            .then(|| shape_stroke(shape, ctx.palette.line.color));
+        let (geometry, fill, role) = match shape.fill_color {
+            Some(color) => {
+                if line.len() > 1 && line.first() == line.last() {
+                    line.pop();
+                }
+                (
+                    GeoGeometry::Ring(line),
+                    Fill::Solid(color),
+                    PartRole::Decoration,
+                )
             }
-            let fill = shape.fill_color.map_or(Fill::None, Fill::Solid);
-            (GeoGeometry::Ring(line), fill, None, PartRole::Decoration)
-        } else {
-            (
-                GeoGeometry::Line(line),
-                Fill::None,
-                stroke(ctx, shape),
-                PartRole::Line,
-            )
+            None => (GeoGeometry::Line(line), Fill::None, PartRole::Line),
         };
+        let stroke = outline;
         let id = ctx.add_part(role, geometry, stroke, fill);
         first.get_or_insert(id);
     }
     Ok(first)
-}
-
-/// A renderer shape's stroke, with the operator's line colour if set.
-pub(crate) fn stroke(ctx: &Ctx<'_>, shape: &Shape) -> Option<Stroke> {
-    Some(shape_stroke(shape, ctx.palette.line.color))
 }
 
 pub(crate) fn shape_stroke(shape: &Shape, fallback: Rgba) -> Stroke {

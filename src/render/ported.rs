@@ -114,27 +114,32 @@ fn screen_items(
             .into_iter()
             .map(|(x, y)| ScreenPoint { x, y })
             .collect();
-        let item = if shape.shape_type == shape_type::FILL {
-            if points.len() > 1 && points.first() == points.last() {
-                points.pop();
+        // Upstream fills any shape with a fill colour; a fill shape has no
+        // outline of its own.
+        let outline =
+            (shape.shape_type != shape_type::FILL).then(|| shape_stroke(shape, Rgba::BLACK));
+        let item = match shape.fill_color {
+            Some(fill) => {
+                if points.len() > 1 && points.first() == points.last() {
+                    points.pop();
+                }
+                ScreenItem {
+                    pick: pick.clone(),
+                    role: PartRole::Decoration,
+                    shape: ScreenShape::Polygon(points),
+                    stroke: outline,
+                    fill: Fill::Solid(fill),
+                    decoration: true,
+                }
             }
-            ScreenItem {
-                pick: pick.clone(),
-                role: PartRole::Decoration,
-                shape: ScreenShape::Polygon(points),
-                stroke: None,
-                fill: shape.fill_color.map_or(Fill::None, Fill::Solid),
-                decoration: true,
-            }
-        } else {
-            ScreenItem {
+            None => ScreenItem {
                 pick: pick.clone(),
                 role: PartRole::Decoration,
                 shape: ScreenShape::Polyline(points),
-                stroke: Some(shape_stroke(shape, Rgba::BLACK)),
+                stroke: outline,
                 fill: Fill::None,
                 decoration: true,
-            }
+            },
         };
         items.push(item);
     }

@@ -1,8 +1,9 @@
 # milgraphics
 
-Multi-point military tactical graphics per **MIL-STD-2525** and **APP-6**, in
-native Rust: control measures such as phase lines, areas, axes of advance,
-corridors and range fans.
+Multi-point military tactical graphics per **MIL-STD-2525**, in native Rust:
+every multipoint control measure and METOC line and area of MIL-STD-2525D
+change 1 and 2525E change 1 — phase lines, areas, axes of advance,
+corridors, range fans, obstacles, mission tasks, fronts and more.
 
 `milgraphics` turns a graphic definition (symbol identity, geographic control
 points, typed modifiers) into map-engine-neutral output — geometry, labels,
@@ -50,7 +51,10 @@ let svg = milgraphics::svg::to_svg(&plan, 1100.0, 900.0);
 # }
 ```
 
-`cargo run --example render_svg` renders all six supported graphics to SVG; the images above are three of them.
+`cargo run --example render_svg` renders a few graphics to SVG; the images
+above are three of them. `milgraphics::support::all()` lists every supported
+symbol with its points, amplifiers and standard reference, for building
+palettes and amplifier forms.
 
 ## Building and testing
 
