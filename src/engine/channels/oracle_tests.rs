@@ -4,18 +4,22 @@
 //! and every shape and vertex must land where the oracle's back-projected
 //! polylines do (to well under a hundredth of a pixel).
 //!
-//! Lines of contact and movement to contact need the flot and the DISM cover
-//! glyph, so they are not covered here.
+//! The flot and DISM cover glyph come from their own ports; the small-angle
+//! FLOT of a line of contact is not exercised by the fixtures.
 
-use super::externals::StubExternals;
+use super::externals::ChannelExternals;
+use crate::engine::base::EngineError;
 use crate::engine::base::{Pt, Shape};
 use crate::engine::channel_utility::draw::draw_channel;
+use crate::engine::dism::cover::get_dism_cover_double_rev_c;
+use crate::engine::flot::flot_line::{get_flot_count_double, get_flot_double};
 use crate::engine::line_type::classes::is_channel;
 use crate::engine::line_type::line_type;
 use crate::engine::settings::Settings;
 use crate::engine::tactical_lines as lt;
 use crate::engine::tg::Tg;
 use crate::engine::tg_utility::axad_filter::filter_axad_points;
+use crate::engine::tg_utility::lc_points::{reverse_usas_lc_points_by_quadrant, segment_lc_points};
 use crate::engine::tg_utility::points::{filter_vertical_segments, reverse_points_rev_d};
 
 const FIXTURES: &str = include_str!("../../../tests/fixtures/oracle/all.jsonl");
@@ -83,10 +87,14 @@ fn render(symbol: &str, line_type: i32, pixels: Vec<Pt>) -> Vec<Shape> {
     if line_type == lt::SINGLEC {
         tg.pixels.reverse();
     }
+    if line_type == lt::LC {
+        reverse_usas_lc_points_by_quadrant(&mut tg).unwrap();
+        segment_lc_points(&mut tg).unwrap();
+    }
     filter_vertical_segments(&mut tg);
     filter_axad_points(&mut tg).unwrap();
     let mut shapes = Vec::new();
-    draw_channel(&mut tg, line_type, &settings, &StubExternals, &mut shapes).unwrap();
+    draw_channel(&mut tg, line_type, &settings, &Real, &mut shapes).unwrap();
     shapes
 }
 
@@ -106,7 +114,7 @@ fn channel_shapes_match_the_oracle() {
         let Some(line_type) = line_type(version, set, entity) else {
             continue;
         };
-        if !is_channel(line_type) || line_type == lt::LC || line_type == lt::MOVEMENT_TO_CONTACT {
+        if !is_channel(line_type) {
             continue;
         }
         let conv = Converter::from_case(&case).unwrap();
@@ -137,4 +145,34 @@ fn channel_shapes_match_the_oracle() {
         compared += 1;
     }
     assert!(compared >= 30, "only {compared} channel cases compared");
+}
+
+/// The channel externals backed by the flot and DISM ports.
+#[derive(Debug)]
+struct Real;
+
+impl ChannelExternals for Real {
+    fn flot_count(&self, pts: &[Pt], len: f64, n: i32) -> Result<i32, EngineError> {
+        get_flot_count_double(pts, len, n)
+    }
+
+    fn flot(&self, pts: &mut Vec<Pt>, len: f64, n: i32) -> Result<i32, EngineError> {
+        get_flot_double(pts, len, n)
+    }
+
+    fn dism_cover_rev_c(
+        &self,
+        pts: &mut Vec<Pt>,
+        line_type: i32,
+        n: i32,
+        settings: &Settings,
+    ) -> Result<i32, EngineError> {
+        get_dism_cover_double_rev_c(pts, line_type, n, settings)
+    }
+
+    fn lc_flot_shapes(&self, _parent: &Tg, _pixels: Vec<Pt>) -> Result<Vec<Shape>, EngineError> {
+        Err(EngineError::Degenerate(
+            "the fixtures have no small-angle line of contact",
+        ))
+    }
 }
