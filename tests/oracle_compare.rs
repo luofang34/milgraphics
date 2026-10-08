@@ -320,11 +320,9 @@ mod compare {
     #[cfg_attr(not(target_arch = "wasm32"), test)]
     #[cfg_attr(target_arch = "wasm32", wasm_bindgen_test::wasm_bindgen_test)]
     fn air_corridors_match_the_oracle() {
-        for case in [
-            "air-corridor-d",
-            "air-corridor-e",
-            "air-corridor-anticipated-d",
-        ] {
+        // 2525E change 1 draws only the two sides, without the oracle's
+        // circles; its golden is reviewed against the template instead.
+        for case in ["air-corridor-d", "air-corridor-anticipated-d"] {
             let (r, o) = check_geometry(case, 1.5);
             // Accepted difference (UPSTREAM.md): the information block sits
             // outside the first segment as the standard asks, and "AC T"
