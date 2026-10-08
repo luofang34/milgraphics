@@ -22,6 +22,13 @@ pub fn to_geojson(plan: &RenderPlan) -> Value {
     json!({ "type": "FeatureCollection", "features": features })
 }
 
+/// Features for geographic items only, e.g. from [`crate::render::geographic`],
+/// for engines that draw the geographic tier while labels and decorations
+/// are drawn per view.
+pub fn geographic_features(items: &[GeoItem]) -> Vec<Value> {
+    items.iter().map(item_feature).collect()
+}
+
 fn item_feature(item: &GeoItem) -> Value {
     let geometry = match &item.shape {
         GeoShape::Lines(lines) => json!({ "type": "MultiLineString", "coordinates": lines }),

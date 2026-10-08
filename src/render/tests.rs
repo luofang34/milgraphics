@@ -389,3 +389,24 @@ fn only_pixel_sized_decorations_are_marked_as_decorations() {
     let pl = plan(&def(PL, &[(20.0, 50.0), (20.1, 50.02)], None), &frame);
     assert!(pl.screen.iter().all(|i| !i.decoration));
 }
+
+#[test]
+fn the_geographic_tier_alone_matches_the_plan_and_is_budgeted() {
+    let frame = LocalEquirectangular::new(19.95, 50.1, 50_000.0, 96.0);
+    let d = def(
+        NAI,
+        &[(20.0, 50.0), (20.08, 50.0), (20.08, 50.05), (20.0, 50.05)],
+        Some("1"),
+    );
+    let c = construct(&d, &Config::default()).unwrap();
+    let alone = geographic(&c, &Budget::default()).unwrap();
+    assert_eq!(alone, plan(&d, &frame).geo);
+    let tight = Budget {
+        max_vertices: 3,
+        ..Budget::default()
+    };
+    assert!(matches!(
+        geographic(&c, &tight),
+        Err(RenderError::Budget(_))
+    ));
+}
