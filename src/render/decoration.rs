@@ -13,6 +13,7 @@ pub(crate) fn resolve(
     pick: &impl Fn(PickTarget) -> PickRef,
 ) -> Result<Option<ScreenItem>, BudgetError> {
     let item = match decoration.0 {
+        Decoration::Engine { .. } => return Ok(None),
         Decoration::Arrowhead {
             id,
             tip,

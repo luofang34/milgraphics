@@ -31,16 +31,16 @@ enum Geometry {
 
 /// One data row with geometry and a draw rule.
 #[derive(Debug)]
-struct Row {
-    symbol_set: u8,
-    entity: u32,
+pub(crate) struct Row {
+    pub(crate) symbol_set: u8,
+    pub(crate) entity: u32,
     name: String,
     path: Vec<String>,
     /// Bit `n` set when version code `n` is listed.
-    versions: u32,
+    pub(crate) versions: u32,
     geometry: Geometry,
-    draw_rule: String,
-    modifiers: Vec<String>,
+    pub(crate) draw_rule: String,
+    pub(crate) modifiers: Vec<String>,
 }
 
 impl Row {
@@ -51,16 +51,10 @@ impl Row {
 
 /// Regenerates `src/generated/{draw_rule,catalog}.rs`; returns a summary line.
 pub(crate) fn run() -> Result<String, XtaskError> {
-    let manifest = Path::new(env!("CARGO_MANIFEST_DIR"));
-    let root = manifest
-        .parent()
-        .ok_or_else(|| XtaskError::Root(manifest.to_path_buf()))?;
+    let root = root()?;
     let upstream = root.join(UPSTREAM);
     let read = |rel: &str| read_file(&upstream.join(rel));
-
-    let mut rows = parse::parse_table("msd.txt", &read(DATA_D)?)?;
-    rows.extend(parse::parse_table("mse.txt", &read(DATA_E)?)?);
-    let rows = select(resolve_overrides(rows))?;
+    let rows = rows(&root)?;
 
     let standard = parse_consts(&read(RULES)?);
     let metoc = parse_consts(&read(MO_RULES)?);
@@ -77,7 +71,25 @@ pub(crate) fn run() -> Result<String, XtaskError> {
     Ok(summary(&rows, &standard, &metoc, &modifiers))
 }
 
-fn read_file(path: &Path) -> Result<String, XtaskError> {
+/// The workspace root.
+pub(crate) fn root() -> Result<PathBuf, XtaskError> {
+    let manifest = Path::new(env!("CARGO_MANIFEST_DIR"));
+    manifest
+        .parent()
+        .map(Path::to_path_buf)
+        .ok_or_else(|| XtaskError::Root(manifest.to_path_buf()))
+}
+
+/// The catalog rows, as `src/generated/catalog.rs` lists them.
+pub(crate) fn rows(root: &Path) -> Result<Vec<Row>, XtaskError> {
+    let upstream = root.join(UPSTREAM);
+    let read = |rel: &str| read_file(&upstream.join(rel));
+    let mut rows = parse::parse_table("msd.txt", &read(DATA_D)?)?;
+    rows.extend(parse::parse_table("mse.txt", &read(DATA_E)?)?);
+    select(resolve_overrides(rows))
+}
+
+pub(crate) fn read_file(path: &Path) -> Result<String, XtaskError> {
     fs::read_to_string(path).map_err(|source| XtaskError::Read {
         path: path.to_path_buf(),
         source,
@@ -112,10 +124,11 @@ fn resolve_overrides(mut rows: Vec<Row>) -> Vec<Row> {
     rows
 }
 
-/// Keeps symbol set 25 in full and the Line and Area rows of the METOC sets,
-/// ordered by `(symbol set, entity, first version)`.
+/// Keeps symbol set 25 in full and the METOC rows drawn from several points
+/// (lines, areas and the two-point `Point5`), ordered by `(symbol set,
+/// entity, first version)`.
 fn select(mut rows: Vec<Row>) -> Result<Vec<Row>, XtaskError> {
-    rows.retain(|r| r.symbol_set == 25 || r.geometry != Geometry::Point);
+    rows.retain(|r| r.symbol_set == 25 || r.geometry != Geometry::Point || r.draw_rule == "Point5");
     rows.sort_by_key(|r| (r.symbol_set, r.entity, r.first_version()));
     let mut seen = BTreeSet::new();
     for row in &rows {

@@ -90,6 +90,63 @@ pub(crate) fn place(
     }
 }
 
+/// A label the ported renderer placed in pixels.
+#[derive(Debug)]
+pub(crate) struct PlacedText {
+    pub(crate) text: String,
+    /// Upstream's text position: the start, centre or end of the baseline,
+    /// by `align`.
+    pub(crate) screen: ScreenPoint,
+    /// The ground point under `screen`.
+    pub(crate) anchor: GeoPoint,
+    pub(crate) rotation_deg: f64,
+    pub(crate) align: TextAlign,
+}
+
+pub(crate) fn at_screen(
+    placed: PlacedText,
+    font: &Font,
+    metrics: &dyn FontMetrics,
+    pick: PickRef,
+) -> Label {
+    let PlacedText {
+        text,
+        screen,
+        anchor,
+        rotation_deg,
+        align,
+    } = placed;
+    let width_px = metrics.text_width_px(font, &text);
+    let height_px = metrics.line_height_px(font);
+    // Upstream gives the baseline; the anchor here is the middle of the line.
+    let offset_em = [0.0, -BASELINE_TO_MIDDLE_EM];
+    let corners = text_box(
+        screen,
+        rotation_deg,
+        align,
+        offset_em,
+        font.size_px,
+        width_px,
+        height_px,
+    );
+    Label {
+        pick,
+        text,
+        anchor,
+        screen: Some(screen),
+        rotation_deg,
+        align,
+        offset_em,
+        font: font.clone(),
+        may_hide: true,
+        width_px,
+        corners: Some(corners),
+    }
+}
+
+/// Distance from a baseline up to the middle of the text line, in ems.
+const BASELINE_TO_MIDDLE_EM: f64 = 0.3;
+
 /// Anchor (geographic and on screen), rotation, alignment and offset.
 fn resolve(
     ctx: &mut ScreenCtx<'_>,

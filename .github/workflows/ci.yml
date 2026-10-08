@@ -120,4 +120,5 @@ jobs:
           tools/oracle/fetch-upstream.sh
           cargo xtask catalog
           cargo xtask references
+          cargo xtask specs
           git diff --exit-code -- src/generated

@@ -582,6 +582,9 @@ pub milgraphics::ConstructError::PointCount::symbol: &'static str
 pub milgraphics::ConstructError::UnknownModifier
 pub milgraphics::ConstructError::UnknownModifier::key: alloc::string::String
 pub milgraphics::ConstructError::UnknownModifier::symbol: &'static str
+pub milgraphics::ConstructError::Unrenderable
+pub milgraphics::ConstructError::Unrenderable::reason: alloc::string::String
+pub milgraphics::ConstructError::Unrenderable::symbol: &'static str
 pub milgraphics::ConstructError::Unsupported(milgraphics::support::Unsupported)
 pub milgraphics::ConstructError::UnsupportedAltitude
 pub milgraphics::ConstructError::UnsupportedAltitude::index: usize

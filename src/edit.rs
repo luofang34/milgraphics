@@ -93,7 +93,7 @@ pub fn apply_edit(
         Edit::Move { handle, to } => crate::family::move_handle(spec, &mut next, handle, to)?,
         Edit::InsertVertex { index, at } => {
             let index = usize::from(index);
-            if index > next.points.len() || !spec.family.allows_vertex_edits() {
+            if index > next.points.len() || !spec.allows_vertex_edits() {
                 return Err(EditError::NoSuchHandle {
                     handle: HandleId::Vertex(index as u16),
                 });
@@ -102,7 +102,7 @@ pub fn apply_edit(
         }
         Edit::DeleteVertex { index } => {
             let at = usize::from(index);
-            if at >= next.points.len() || !spec.family.allows_vertex_edits() {
+            if at >= next.points.len() || !spec.allows_vertex_edits() {
                 return Err(EditError::NoSuchHandle {
                     handle: HandleId::Vertex(index),
                 });

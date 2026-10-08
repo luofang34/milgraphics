@@ -9,23 +9,24 @@ use crate::standard::StandardVersion;
 mod first_milestone;
 
 /// Every declaration table.
-pub(super) static TABLES: &[&[SymbolSpec]] = &[first_milestone::SPECS];
+pub(super) static TABLES: &[&[SymbolSpec]] =
+    &[first_milestone::SPECS, crate::generated::specs::SPECS];
 
 /// Upper bound for symbols that take any number of points.
-pub(super) const MANY: usize = 10_000;
+pub(crate) const MANY: usize = 10_000;
 
 /// An optional single-valued field.
-pub(super) const fn opt(field: ModifierField) -> ModifierSpec {
+pub(crate) const fn opt(field: ModifierField) -> ModifierSpec {
     ModifierSpec::optional(field)
 }
 
 /// A required single-valued field.
-pub(super) const fn req(field: ModifierField) -> ModifierSpec {
+pub(crate) const fn req(field: ModifierField) -> ModifierSpec {
     ModifierSpec::required(field)
 }
 
 /// A field of `min..=max` values.
-pub(super) const fn list(
+pub(crate) const fn list(
     field: ModifierField,
     required: bool,
     min: usize,
@@ -48,9 +49,23 @@ pub(super) const fn cm(standard: StandardVersion, entity: u32, family: Family) -
     }
 }
 
+/// Graphic `entity` of symbol set `symbol_set` in `standard`, drawn by the
+/// ported upstream renderer.
+pub(crate) const fn ported(standard: StandardVersion, symbol_set: u8, entity: u32) -> SymbolSpec {
+    SymbolSpec {
+        standard,
+        symbol_set,
+        entity,
+        min_points: 1,
+        max_points: 1,
+        modifiers: &[],
+        family: Family::Ported,
+    }
+}
+
 impl SymbolSpec {
     /// The same declaration taking `min..=max` control points.
-    pub(super) const fn points(self, min: usize, max: usize) -> Self {
+    pub(crate) const fn points(self, min: usize, max: usize) -> Self {
         Self {
             min_points: min,
             max_points: max,
@@ -59,7 +74,7 @@ impl SymbolSpec {
     }
 
     /// The same declaration drawing `modifiers`.
-    pub(super) const fn amplifiers(self, modifiers: &'static [ModifierSpec]) -> Self {
+    pub(crate) const fn amplifiers(self, modifiers: &'static [ModifierSpec]) -> Self {
         Self { modifiers, ..self }
     }
 }

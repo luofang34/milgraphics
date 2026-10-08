@@ -42,6 +42,7 @@ pub mod catalog;
 pub mod construction;
 pub mod definition;
 pub mod edit;
+mod engine;
 mod family;
 mod generated;
 pub mod geo;

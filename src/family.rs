@@ -18,6 +18,7 @@ mod bypass;
 mod context;
 mod corridor;
 mod phase_line;
+mod ported;
 mod range_fan;
 mod validate;
 
@@ -25,6 +26,7 @@ mod validate;
 mod tests;
 
 pub(crate) use context::Ctx;
+pub(crate) use ported::{ms_info, shape_stroke};
 
 /// How a family of symbols is constructed and edited.
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
@@ -44,6 +46,8 @@ pub(crate) enum Family {
     RangeFanSector,
     /// An obstacle bypass box with arrowheads at the opening.
     Bypass,
+    /// Drawn by the ported upstream renderer.
+    Ported,
 }
 
 impl Family {
@@ -51,7 +55,7 @@ impl Family {
     pub(crate) fn allows_vertex_edits(self) -> bool {
         match self {
             Self::PhaseLine | Self::LabelledArea { .. } | Self::Corridor => true,
-            Self::Axis | Self::RangeFanSector | Self::Bypass => false,
+            Self::Axis | Self::RangeFanSector | Self::Bypass | Self::Ported => false,
         }
     }
 }
@@ -169,6 +173,15 @@ pub enum ConstructError {
     /// A size limit would be exceeded.
     #[error(transparent)]
     Budget(#[from] BudgetError),
+    /// The symbol's renderer draws nothing for these control points and
+    /// amplifiers.
+    #[error("{symbol} cannot be drawn: {reason}")]
+    Unrenderable {
+        /// Symbol name.
+        symbol: &'static str,
+        /// Why.
+        reason: String,
+    },
 }
 
 /// Validates `definition` and builds its geographic construction.
@@ -188,6 +201,7 @@ pub fn construct(
         Family::Corridor => corridor::construct(&mut ctx, definition)?,
         Family::RangeFanSector => range_fan::construct(&mut ctx, definition)?,
         Family::Bypass => bypass::construct(&mut ctx, definition)?,
+        Family::Ported => ported::construct(&mut ctx, definition)?,
     }
     ctx.finish(definition, RENDERER_VERSION)
 }

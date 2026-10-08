@@ -10,3 +10,5 @@ pub(crate) mod catalog;
 pub(crate) mod draw_rule;
 #[rustfmt::skip]
 pub(crate) mod references;
+#[rustfmt::skip]
+pub(crate) mod specs;

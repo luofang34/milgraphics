@@ -32,11 +32,29 @@ Draw rules are per edition. Phase Line is Line2 in 2525D change 1 and Line1 in
 2525E change 1; Main Attack is Axis2 and Axis1 respectively (2525E change 1
 marks Axis2 "Disused").
 
+## Graphics upstream draws that are not declared
+
+Upstream's catalog lists some graphics the standard edition does not define
+as multipoint graphics; they are not declared, so they are refused like any
+undeclared symbol (`tests/fixtures/oracle/unimplemented.txt`):
+
+| Graphic | Edition | Standard |
+|---|---|---|
+| Line of Contact 25 140200 | 2525D change 1, 2525E change 1 | No row: reserved in 2525D, a Combat Support code in 2525E |
+| Wind Plot 45 140200 | 2525E change 1 | No row (2525D change 1 defines it in TABLE I-II) |
+
 ## Divergences under review
 
 | Symbol | Standard | mil-sym-java | Status |
 |---|---|---|---|
-| Main Attack 151403, 2525E change 1 | TABLE L-X: draw rule Axis1 | `mse.txt`: Axis2 | Listed in `src/support/tests.rs` (`DIVERGENCES`); the standard's rule is followed; geometry is the same for both editions and matches the oracle |
+| Main Attack 151403, 2525E change 1 | TABLE L-X: draw rule Axis1 | `mse.txt`: Axis2 | The standard's rule is followed; geometry is the same for both editions and matches the oracle |
+| Trip Wire 290500, 2525D change 1 | Line15 | `msd.txt`: Line1 | Drawn as upstream draws it (matches the oracle); point limits follow upstream's rule |
+| Rectangular Target 240802, 2525E change 1 | Rectangular1 | `mse.txt`: Rectangular2 | As above |
+| Ferry 290700, 2525E change 1 | Line14 | `mse.txt`: Line18 | As above |
+| Withdraw 342400 and Withdraw Under Pressure 342500, 2525E change 1 | Line24 | `mse.txt`: Line14 | As above |
+
+Each is listed in `src/support/tests.rs` (`DIVERGENCES`), which fails if a
+declared symbol's printed and catalog rules differ without being listed.
 
 ## Accepted differences from the oracle
 
@@ -47,12 +65,47 @@ Each is bounded by a test in `tests/oracle_compare.rs`.
 | All | Edges are WGS84 geodesics; mil-sym draws straight lines in its local pixel frame | Geographic correctness across projections; at tactical scale the two agree | Geometry within 0.5–1.5 px |
 | Main Attack | Body half-width is exactly half the width point's offset; mil-sym truncates to whole pixels | Ground-sized geometry must not depend on the display scale | Geometry within 1.5 px |
 | Main Attack | The designation is anchored at the geodesic midpoint of its control-point segment; mil-sym uses a midpoint of its internally adjusted pixel path | Label position must follow the control points, not renderer internals | Up to 12 px along the text, 2.5 px across |
-| Main Attack | `W`/`W1` are not drawn and are refused | Their text format on axes is not yet verified against the standard | Typed error |
 | Air Corridor | Empty `DTG Start:`/`DTG End:` lines are omitted; mil-sym prints them with no value | The standard's information block shows fields that have values | Label sets compared without empty fields |
 | Air Corridor | The information block is stacked outside the corridor edge of the first segment that is uppermost on screen, and "AC T" is placed inside every segment; mil-sym stacks the block across the middle segment, where it overlaps the corridor edge, with one "AC T" | 2525E change 1: the box goes "between points 1 and 2 in such a way it does not obscure the symbol", and the field inside appears "within each segment" | Label texts compared; positions reviewed in the golden SVGs |
 | Air Corridor | Control-point circles have 72 vertices and the radius is `AM`/2 on the ground; mil-sym uses 25-gons sized from a pixel scale measured northward at point 1 | Ground-sized geometry | Geometry within 1.5 px |
 | Range Fan, Sector | Ranges are measured on the WGS84 ellipsoid; mil-sym uses a sphere of radius 6,378,137 m | Correct ground distances | Geometry within 1.5 px |
 | Named Area of Interest | The label sits at the centre of the longitude/latitude bounds; mil-sym walks a spherical "minimum bounding rectangle" | Equivalent within a metre at tactical scale | Label within 1.5 px |
+
+## Ported renderer
+
+Every multipoint graphic other than the six above is drawn by `src/engine/`,
+a port of mil-sym-java's multipoint renderer (Apache-2.0, pinned commit in
+`pin.json`) that runs in pixel space. milgraphics feeds it control points
+projected for the view and draws its output as the screen tier; shapes that
+come out identical on the ground at two pixel sizes (`src/family/ported.rs`)
+also form the geographic tier.
+
+| Port | Upstream source (mil-sym-java `src/main/java/armyc2/c5isr/`) |
+|---|---|
+| `engine/lineutility` | `JavaLineArray/lineutility.java` |
+| `engine/arraysupport` | `JavaLineArray/arraysupport.java`, `countsupport.java` |
+| `engine/flot` | `JavaLineArray/flot.java` |
+| `engine/dism` | `JavaLineArray/DISMSupport.java` |
+| `engine/channels`, `engine/channel_utility`, `engine/partition` | `JavaLineArray/Channels.java`, `CChannelPoints2.java`, `JavaTacticalRenderer/clsChannelUtility.java`, `P1.java` |
+| `engine/metoc` | `JavaTacticalRenderer/clsMETOC.java` |
+| `engine/modifier` | `JavaTacticalRenderer/Modifier2.java` |
+| `engine/tg`, `engine/tg_utility`, `engine/line_type`, `engine/tactical_lines` | `JavaTacticalRenderer/TGLight.java`, `clsUtility.java`, `RenderMultipoints/clsRenderer.java` (`getCMLineType`), `clsMETOC.java` (`getWeatherLinetype`), `JavaLineArray/TacticalLines.java`, `CELineArray.java` |
+| `engine/build` | `RenderMultipoints/clsRenderer.java` (`createTGLightFromMilStdSymbol`), `web/render/MultiPointHandler.java` (`populateModifiers`) |
+| `engine/cpof`, `engine/render_utility`, `engine/pipeline` | `RenderMultipoints/clsUtilityCPOF.java`, `clsUtility.java`, `clsUtilityGE.java`, `clsClipPolygon2.java` (non-clipping parts), `clsRenderer2.java`, `clsRenderer.java` (`render_GE`) |
+
+Clipping, SVG and raster output, and the geodesic densification of very long
+edges are not ported. Where upstream converts between pixels and geographic
+coordinates (`mdlGeodesic` through its converter), the port works in the
+view's pixel frame with its ground scale (`meters_per_pixel`), which is
+conformal over a graphic's extent; the `mdlGeodesic` code itself, including
+its CC-BY-3.0 routine, is not ported.
+
+`tests/oracle_catalog.rs` compares every case of `tools/oracle/cases/all.tsv`.
+Accepted differences, each bounded by a per-case tolerance there:
+
+| Graphic | Difference | Reason | Bound |
+|---|---|---|---|
+| Depth Area (46 120104) | Its two bands along the inside of the outline are drawn as mitred lines along their centres, as wide as the bands; upstream fills each band as a stroked area intersected with the polygon, a fill with a hole | The output's polygons are single rings; the drawn band is the same | 7.5 px (half the wider band) |
 
 ## Generated data
 

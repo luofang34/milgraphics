@@ -12,6 +12,7 @@ use crate::style::{Fill, Stroke};
 mod decoration;
 mod label;
 mod local;
+mod ported;
 mod projection;
 mod screen;
 
@@ -225,10 +226,14 @@ pub fn render(
             });
         }
     }
+    let mut engine_labels = Vec::new();
     for d in &construction.decorations {
         items.extend(decoration::resolve(&mut ctx, d, &pick)?);
+        let (more, labels) = ported::resolve(&mut ctx, &d.0, &view.label_font, metrics, &pick)?;
+        items.extend(more);
+        engine_labels.extend(labels);
     }
-    let labels = construction
+    let mut labels: Vec<Label> = construction
         .labels
         .iter()
         .map(|l| {
@@ -241,6 +246,7 @@ pub fn render(
             )
         })
         .collect();
+    labels.extend(engine_labels);
     let handles = construction
         .handles
         .iter()
