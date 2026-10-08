@@ -264,3 +264,50 @@ fn handles_exist_only_where_the_family_draws_them() {
         .is_err()
     );
 }
+
+#[test]
+fn edits_that_would_break_the_graphic_are_refused() {
+    // Dragging the corridor width handle onto the first point means zero width.
+    let mut corridor = graphic("11032500001701000000", &[(20.0, 50.0), (20.1, 50.0)]);
+    corridor.modifiers.distances_m = vec![2000.0];
+    let first = corridor.points[0].position;
+    assert!(matches!(
+        apply(
+            &corridor,
+            Edit::Move {
+                handle: HandleId::Width,
+                to: first
+            }
+        ),
+        Err(EditError::Invalid(_))
+    ));
+    // Moving an axis width point onto its centreline leaves no width.
+    let axis = graphic(
+        "11032500001514030000",
+        &[(20.0, 50.0), (20.1, 50.0), (20.0, 50.01)],
+    );
+    let on_axis = crate::geodesy::Earth::wgs84().interpolate(p(20.0, 50.0), p(20.1, 50.0), 0.5);
+    assert!(matches!(
+        apply(
+            &axis,
+            Edit::Move {
+                handle: HandleId::Vertex(2),
+                to: on_axis
+            }
+        ),
+        Err(EditError::Invalid(_))
+    ));
+    // A range moved to zero leaves a fan with no extent.
+    let fan = range_fan();
+    let centre = fan.points[0].position;
+    assert!(matches!(
+        apply(
+            &fan,
+            Edit::Move {
+                handle: HandleId::Range(1),
+                to: centre
+            }
+        ),
+        Err(EditError::Invalid(_))
+    ));
+}

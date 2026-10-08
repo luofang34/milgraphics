@@ -59,6 +59,9 @@ pub enum EditError {
         /// The requested handle.
         handle: HandleId,
     },
+    /// The edited graphic could not be constructed (e.g. a zero width).
+    #[error("edit would leave an invalid graphic: {0}")]
+    Invalid(#[source] crate::family::ConstructError),
     /// The edit would leave a point count the symbol does not allow.
     #[error("edit would leave {count} control points; the symbol allows {min}..={max}")]
     PointCount {
@@ -73,6 +76,10 @@ pub enum EditError {
 
 /// Applies `edit` to `definition`, returning the edited copy with its
 /// revision advanced.
+///
+/// The result is checked like a construction with the default
+/// [`crate::Config`], so an accepted edit never yields a graphic that cannot
+/// be drawn; a refused edit leaves nothing changed.
 pub fn apply_edit(
     definition: &GraphicDefinition,
     edit: &Edit,
@@ -108,6 +115,11 @@ pub fn apply_edit(
             max: spec.max_points,
         });
     }
+    // The edited graphic must be one that can be drawn: the same checks as
+    // construction (amplifier values, geometry) decide, before the revision
+    // advances.
+    crate::family::construct(&next, &crate::family::Config::default())
+        .map_err(EditError::Invalid)?;
     next.revision = next.revision.wrapping_add(1);
     Ok(next)
 }

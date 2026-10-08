@@ -89,7 +89,10 @@ fn shape(points: &[Xy]) -> Option<Shape> {
     let rel = width_point.sub(tip);
     let half = rel.cross(axis).abs() / 2.0;
     let head_len = rel.dot(axis).abs();
-    if !(half > 0.0 && head_len > 0.0) {
+    // Widths and lengths below a millionth of the first segment are rounding
+    // noise of a width point placed on the axis, not a drawable shape.
+    let eps = 1e-6 * second.sub(tip).len();
+    if !(half > eps && head_len > eps) {
         return None;
     }
     let base = tip.add(axis.scale(head_len));
