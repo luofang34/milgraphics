@@ -45,9 +45,6 @@ pub(crate) fn set_shape_properties(tg: &mut Tg, shapes: &mut Vec<Shape>) {
     drop_unfilled_shapes(tg, shapes);
     let mut thickness = tg.line_thickness;
     for (j, shape) in shapes.iter_mut().enumerate() {
-        if shape.path.is_empty() {
-            continue;
-        }
         if shape.shape_type == shape_type::FILL && tg.line_type != DEPTH_AREA {
             shape.fill_color = tg.fill_color;
         }
