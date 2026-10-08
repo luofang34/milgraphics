@@ -25,6 +25,21 @@ impl Projection for Orthographic {
     fn unproject(&self, _s: ScreenPoint) -> Option<GeoPoint> {
         None
     }
+
+    fn segment_may_be_visible(&self, a: GeoPoint, b: GeoPoint) -> bool {
+        // Every point of an arc of angular length θ lies within θ/2 of an
+        // end, so ends more than 90° + θ/2 from the view centre hide it all.
+        let unit = |p: GeoPoint| {
+            let (phi, lam) = (p.lat().to_radians(), p.lon().to_radians());
+            [phi.cos() * lam.cos(), phi.cos() * lam.sin(), phi.sin()]
+        };
+        let dot = |u: [f64; 3], v: [f64; 3]| u[0] * v[0] + u[1] * v[1] + u[2] * v[2];
+        let (ua, ub) = (unit(a), unit(b));
+        let centre = unit(GeoPoint::new(self.lon0, self.lat0).unwrap());
+        let half = dot(ua, ub).clamp(-1.0, 1.0).acos() / 2.0;
+        let limit = -half.sin() - 1e-9;
+        !(dot(ua, centre) < limit && dot(ub, centre) < limit)
+    }
 }
 
 fn def(sidc: &str, points: &[(f64, f64)], t: Option<&str>) -> GraphicDefinition {
@@ -260,4 +275,108 @@ fn corridor_information_block_stays_outside_whatever_the_rotation() {
             );
         }
     }
+}
+
+/// `inner` restricted to a viewport: points outside it are hidden.
+struct Viewport<P> {
+    inner: P,
+    width: f64,
+    height: f64,
+}
+
+impl<P: Projection> Projection for Viewport<P> {
+    fn project(&self, p: GeoPoint, h: f64) -> Option<ScreenPoint> {
+        self.inner
+            .project(p, h)
+            .filter(|s| (0.0..=self.width).contains(&s.x) && (0.0..=self.height).contains(&s.y))
+    }
+    fn unproject(&self, s: ScreenPoint) -> Option<GeoPoint> {
+        self.inner.unproject(s)
+    }
+    fn terrain_height_m(&self, p: GeoPoint) -> Option<f64> {
+        self.inner.terrain_height_m(p)
+    }
+}
+
+#[test]
+fn a_segment_hidden_at_both_ends_still_draws_its_visible_middle() {
+    // A short line whose ends are left and right of a narrow viewport.
+    let frame = LocalEquirectangular::new(20.0, 50.1, 50_000.0, 96.0);
+    let view = Viewport {
+        inner: frame,
+        width: 100.0,
+        height: 1000.0,
+    };
+    let west = frame
+        .unproject(ScreenPoint {
+            x: -200.0,
+            y: 500.0,
+        })
+        .unwrap();
+    let east = frame.unproject(ScreenPoint { x: 300.0, y: 500.0 }).unwrap();
+    let d = def(
+        PL,
+        &[(west.lon(), west.lat()), (east.lon(), east.lat())],
+        None,
+    );
+    let p = plan(&d, &view);
+    assert_eq!(p.screen.len(), 1, "the crossing span is drawn");
+    let ScreenShape::Polyline(pts) = &p.screen[0].shape else {
+        panic!()
+    };
+    let (first, last) = (pts.first().unwrap(), pts.last().unwrap());
+    assert!(
+        first.x < 1.0 && last.x > 99.0,
+        "it spans the viewport: {first:?} .. {last:?}"
+    );
+}
+
+#[test]
+fn a_ring_cut_at_its_first_vertex_is_not_closed_across_the_cut() {
+    // A small ring (edges under the 10 km construction step) straddling the
+    // horizon of a closely zoomed globe, first vertex hidden: on screen it
+    // is subdivided into many more points than its construction has.
+    let globe = Orthographic {
+        lon0: 0.0,
+        lat0: 0.0,
+        radius_px: 1e7,
+    };
+    let area = def(
+        NAI,
+        &[(90.03, 0.0), (89.97, -0.03), (89.94, 0.0), (89.97, 0.03)],
+        None,
+    );
+    let p = plan(&area, &globe);
+    assert_eq!(p.screen.len(), 1);
+    let ScreenShape::Polyline(pts) = &p.screen[0].shape else {
+        panic!(
+            "a cut ring must not become a polygon: {:?}",
+            p.screen[0].shape
+        )
+    };
+    assert!(pts.len() > 5, "subdivided on screen");
+    for end in [pts.first().unwrap(), pts.last().unwrap()] {
+        assert!(
+            (end.x.hypot(end.y) - 1e7).abs() < 1.0,
+            "ends on the horizon: {end:?}"
+        );
+    }
+}
+
+#[test]
+fn a_ring_cut_elsewhere_is_one_line_through_its_first_vertex() {
+    let globe = Orthographic {
+        lon0: 0.0,
+        lat0: 0.0,
+        radius_px: 1000.0,
+    };
+    let area = def(
+        NAI,
+        &[(40.0, 0.0), (60.0, -20.0), (100.0, 0.0), (60.0, 20.0)],
+        None,
+    );
+    let p = plan(&area, &globe);
+    assert_eq!(p.screen.len(), 1, "joined across the first vertex");
+    assert!(matches!(p.screen[0].shape, ScreenShape::Polyline(_)));
+    assert_eq!(p.screen[0].fill, Fill::None);
 }

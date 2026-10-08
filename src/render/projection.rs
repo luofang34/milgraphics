@@ -36,6 +36,16 @@ pub trait Projection {
         0.5
     }
 
+    /// Whether any part of the geodesic from `a` to `b` might be visible,
+    /// asked when both ends are hidden. The default `true` makes the library
+    /// search the segment for a visible span, which costs up to 63
+    /// projections; hosts that can cheaply prove a segment hidden (both ends
+    /// well behind the globe, say) return `false` to skip that search.
+    fn segment_may_be_visible(&self, a: GeoPoint, b: GeoPoint) -> bool {
+        let _ = (a, b);
+        true
+    }
+
     /// Terrain height at `point` above the ellipsoid, or `None` when the
     /// host has no terrain there.
     fn terrain_height_m(&self, point: GeoPoint) -> Option<f64> {

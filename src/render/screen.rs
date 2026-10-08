@@ -11,6 +11,29 @@ use crate::style::Fill;
 const MAX_DEPTH: u32 = 12;
 /// Bisection steps when locating where a piece crosses the horizon.
 const HORIZON_STEPS: u32 = 30;
+/// Depth of the search for a visible span between two hidden points: a
+/// span narrower than 1/2^depth of the edge (densified edges are at most
+/// `Config::geodesic_step_m` long) may be missed.
+const HIDDEN_PROBE_DEPTH: u32 = 6;
+
+/// Visible runs of a path, the run being extended, and whether anything
+/// was cut away.
+#[derive(Default)]
+struct Runs {
+    pieces: Vec<Vec<ScreenPoint>>,
+    run: Vec<ScreenPoint>,
+    clipped: bool,
+}
+
+impl Runs {
+    /// Ends the current run, keeping it if it has a length.
+    fn cut(&mut self) {
+        let run = core::mem::take(&mut self.run);
+        if run.len() >= 2 {
+            self.pieces.push(run);
+        }
+    }
+}
 
 /// Projection state for one render: geodesics, budget and terrain notes.
 pub(crate) struct ScreenCtx<'a> {
@@ -62,53 +85,64 @@ impl<'a> ScreenCtx<'a> {
         geometry: &GeoGeometry,
         fill: Fill,
     ) -> Result<Vec<(ScreenShape, Fill)>, BudgetError> {
-        match geometry {
-            GeoGeometry::Line(points) => Ok(self
-                .pieces(points)?
+        let polylines = |pieces: Vec<Vec<ScreenPoint>>| {
+            pieces
                 .into_iter()
                 .map(|p| (ScreenShape::Polyline(p), Fill::None))
-                .collect()),
+                .collect()
+        };
+        match geometry {
+            GeoGeometry::Line(points) => Ok(polylines(self.pieces(points)?.pieces)),
             GeoGeometry::Ring(points) => {
                 let mut closed = points.clone();
                 if let Some(first) = points.first() {
                     closed.push(*first);
                 }
-                let mut pieces = self.pieces(&closed)?;
-                let whole = pieces.len() == 1
-                    && pieces.first().map_or(0, Vec::len) > closed.len().saturating_sub(1);
-                if whole {
+                let Runs {
+                    mut pieces,
+                    clipped,
+                    ..
+                } = self.pieces(&closed)?;
+                if !clipped {
                     let mut ring = pieces.pop().unwrap_or_default();
                     ring.pop();
-                    Ok(vec![(ScreenShape::Polygon(ring), fill)])
-                } else {
-                    Ok(pieces
-                        .into_iter()
-                        .map(|p| (ScreenShape::Polyline(p), Fill::None))
-                        .collect())
+                    return Ok(if ring.len() >= 3 {
+                        vec![(ScreenShape::Polygon(ring), fill)]
+                    } else {
+                        vec![]
+                    });
                 }
+                // The first run starts at the ring's first vertex and the last
+                // ends there when that vertex is visible: they are one line.
+                let start_visible = points.first().is_some_and(|&p| self.project(p).is_some());
+                if start_visible && pieces.len() >= 2 {
+                    let first = pieces.remove(0);
+                    if let Some(last) = pieces.last_mut() {
+                        last.extend(first.into_iter().skip(1));
+                    }
+                }
+                Ok(polylines(pieces))
             }
         }
     }
 
     /// Visible runs of a geodesic path, densified to the projection tolerance.
-    fn pieces(&mut self, points: &[GeoPoint]) -> Result<Vec<Vec<ScreenPoint>>, BudgetError> {
-        let mut pieces = Vec::new();
-        let mut run: Vec<ScreenPoint> = Vec::new();
+    fn pieces(&mut self, points: &[GeoPoint]) -> Result<Runs, BudgetError> {
+        let mut runs = Runs::default();
         let mut prev: Option<(GeoPoint, Option<ScreenPoint>)> = None;
         for &p in points {
             let s = self.project(p);
+            runs.clipped |= s.is_none();
             if let Some((a, sa)) = prev {
-                self.segment(a, sa, p, s, &mut run, &mut pieces)?;
+                self.segment(a, sa, p, s, &mut runs, 0)?;
             } else if let Some(s) = s {
                 self.meter.take(1)?;
-                run.push(s);
+                runs.run.push(s);
             }
             prev = Some((p, s));
         }
-        if run.len() >= 2 {
-            pieces.push(run);
-        }
-        Ok(pieces)
+        runs.cut();
+        Ok(runs)
     }
 
     fn segment(
@@ -117,34 +151,41 @@ impl<'a> ScreenCtx<'a> {
         sa: Option<ScreenPoint>,
         b: GeoPoint,
         sb: Option<ScreenPoint>,
-        run: &mut Vec<ScreenPoint>,
-        pieces: &mut Vec<Vec<ScreenPoint>>,
+        runs: &mut Runs,
+        depth: u32,
     ) -> Result<(), BudgetError> {
         match (sa, sb) {
-            (Some(sa), Some(sb)) => self.subdivide(a, sa, b, sb, 0, run),
+            (Some(sa), Some(sb)) => self.subdivide(a, sa, b, sb, 0, &mut runs.run),
             (Some(_), None) => {
                 let (edge, s) = self.horizon(a, b, true);
                 if let Some(s) = s {
-                    self.subdivide_to(a, edge, s, run)?;
+                    self.subdivide_to(a, edge, s, &mut runs.run)?;
                 }
-                if run.len() >= 2 {
-                    pieces.push(core::mem::take(run));
-                }
-                run.clear();
+                runs.cut();
                 Ok(())
             }
             (None, Some(sb)) => {
                 let (edge, s) = self.horizon(a, b, false);
-                run.clear();
-                if let Some(s) = s {
-                    self.meter.take(1)?;
-                    run.push(s);
-                    self.subdivide(edge, s, b, sb, 0, run)
-                } else {
-                    self.meter.take(1)?;
-                    run.push(sb);
-                    Ok(())
+                runs.cut();
+                self.meter.take(1)?;
+                match s {
+                    Some(s) => {
+                        runs.run.push(s);
+                        self.subdivide(edge, s, b, sb, 0, &mut runs.run)
+                    }
+                    None => {
+                        runs.run.push(sb);
+                        Ok(())
+                    }
                 }
+            }
+            (None, None) if depth == 0 && !self.projection.segment_may_be_visible(a, b) => Ok(()),
+            (None, None) if depth < HIDDEN_PROBE_DEPTH => {
+                // Both ends hidden, but the middle may cross the view.
+                let m = self.earth.interpolate(a, b, 0.5);
+                let sm = self.project(m);
+                self.segment(a, None, m, sm, runs, depth + 1)?;
+                self.segment(m, sm, b, None, runs, depth + 1)
             }
             (None, None) => Ok(()),
         }

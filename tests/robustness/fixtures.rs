@@ -58,6 +58,21 @@ impl Projection for Globe {
     fn unproject(&self, _s: ScreenPoint) -> Option<GeoPoint> {
         None
     }
+
+    fn segment_may_be_visible(&self, a: GeoPoint, b: GeoPoint) -> bool {
+        // Every point of an arc of angular length θ lies within θ/2 of an
+        // end, so ends more than 90° + θ/2 from the view centre hide it all.
+        let unit = |p: GeoPoint| {
+            let (phi, lam) = (p.lat().to_radians(), p.lon().to_radians());
+            [phi.cos() * lam.cos(), phi.cos() * lam.sin(), phi.sin()]
+        };
+        let dot = |u: [f64; 3], v: [f64; 3]| u[0] * v[0] + u[1] * v[1] + u[2] * v[2];
+        let (ua, ub) = (unit(a), unit(b));
+        let centre = unit(GeoPoint::new(self.lon0, self.lat0).unwrap());
+        let half = dot(ua, ub).clamp(-1.0, 1.0).acos() / 2.0;
+        let limit = -half.sin() - 1e-9;
+        !(dot(ua, centre) < limit && dot(ub, centre) < limit)
+    }
 }
 
 pub(crate) fn view() -> View {
