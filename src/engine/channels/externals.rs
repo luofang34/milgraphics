@@ -3,6 +3,7 @@
 //! supplies one implementation; tests use a stub.
 
 use crate::engine::base::{EngineError, Pt, Shape};
+use crate::engine::settings::Settings;
 use crate::engine::tg::Tg;
 
 /// Calls out of the channel code into other ported modules.
@@ -21,9 +22,10 @@ pub(crate) trait ChannelExternals {
     /// first `counter` points of `pts`, returning its point count.
     fn dism_cover_rev_c(
         &self,
-        pts: &mut [Pt],
+        pts: &mut Vec<Pt>,
         line_type: i32,
         counter: i32,
+        settings: &Settings,
     ) -> Result<i32, EngineError>;
 
     /// The FLOT shapes upstream's `DrawLCSingleLineSegments` gets from
@@ -44,11 +46,17 @@ impl ChannelExternals for StubExternals {
         Ok(counter)
     }
 
-    fn flot(&self, _pts: &mut [Pt], _len: f64, counter: i32) -> Result<i32, EngineError> {
+    fn flot(&self, _pts: &mut Vec<Pt>, _len: f64, counter: i32) -> Result<i32, EngineError> {
         Ok(counter)
     }
 
-    fn dism_cover_rev_c(&self, _p: &mut [Pt], _lt: i32, _n: i32) -> Result<i32, EngineError> {
+    fn dism_cover_rev_c(
+        &self,
+        _p: &mut Vec<Pt>,
+        _lt: i32,
+        _n: i32,
+        _settings: &Settings,
+    ) -> Result<i32, EngineError> {
         Ok(0)
     }
 

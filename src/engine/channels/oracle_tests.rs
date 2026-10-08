@@ -107,7 +107,11 @@ fn channel_shapes_match_the_oracle() {
         assert_eq!(shapes.len(), oracle.len(), "{name}: shape count");
         for (mine, theirs) in shapes.iter().zip(oracle) {
             // The oracle drops one-point subpaths (a trailing pen-up).
-            let mine: Vec<_> = mine.polylines().into_iter().filter(|p| p.len() > 1).collect();
+            let mine: Vec<_> = mine
+                .polylines()
+                .into_iter()
+                .filter(|p| p.len() > 1)
+                .collect();
             let theirs = theirs["polylines"].as_array().unwrap();
             assert_eq!(mine.len(), theirs.len(), "{name}: polyline count");
             for (a, b) in mine.iter().zip(theirs) {
