@@ -46,7 +46,7 @@ fn metres_per_deg_lon(lat: f64) -> f64 {
 }
 
 impl Projection for LocalEquirectangular {
-    fn project(&self, p: GeoPoint, _height_m: f64) -> Option<ScreenPoint> {
+    fn project(&self, p: GeoPoint) -> Option<ScreenPoint> {
         let dlon = wrap_longitude(p.lon() - self.west);
         Some(ScreenPoint {
             x: dlon * metres_per_deg_lon(p.lat()) / self.metres_per_px,
@@ -61,9 +61,5 @@ impl Projection for LocalEquirectangular {
             return None;
         }
         GeoPoint::new(self.west + s.x * self.metres_per_px / per_deg, lat).ok()
-    }
-
-    fn terrain_height_m(&self, _point: GeoPoint) -> Option<f64> {
-        Some(0.0)
     }
 }

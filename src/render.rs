@@ -80,6 +80,10 @@ pub struct ScreenItem {
     pub stroke: Option<Stroke>,
     /// Interior; dropped when a ring is cut by the horizon.
     pub fill: Fill,
+    /// A pixel-sized decoration, which the geographic tier does not contain;
+    /// adapters that draw the geographic tier in the map engine overlay only
+    /// these.
+    pub decoration: bool,
 }
 
 /// An edit handle for this view.
@@ -118,8 +122,6 @@ pub struct RenderPlan {
     pub labels: Vec<Label>,
     /// Edit handles.
     pub handles: Vec<Handle>,
-    /// True when some ground position had no terrain height and used 0.
-    pub terrain_missing: bool,
 }
 
 /// Why a plan could not be built.
@@ -168,6 +170,7 @@ pub fn render(
                 shape,
                 stroke: part.stroke,
                 fill,
+                decoration: false,
             });
         }
     }
@@ -208,6 +211,5 @@ pub fn render(
         screen: items,
         labels,
         handles,
-        terrain_missing: ctx.terrain_missing(),
     })
 }

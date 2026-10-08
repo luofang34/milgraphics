@@ -22,10 +22,12 @@ impl ScreenPoint {
 /// Implementations may be flat (Web Mercator), globe or vertical
 /// perspective; the library never assumes which.
 pub trait Projection {
-    /// Screen position of a point at `height_m` above the ellipsoid, or
-    /// `None` when it is hidden: behind the horizon, behind the camera or
-    /// outside the view volume.
-    fn project(&self, point: GeoPoint, height_m: f64) -> Option<ScreenPoint>;
+    /// Screen position of the ground at `point` — on the host's terrain
+    /// where it has terrain — or `None` when it is hidden: behind the
+    /// horizon, behind the camera or outside the view volume. Graphics are
+    /// clamped to the ground; control points with altitudes are refused at
+    /// construction until heights are carried through.
+    fn project(&self, point: GeoPoint) -> Option<ScreenPoint>;
 
     /// Geographic position under a screen point, if it hits the surface.
     fn unproject(&self, point: ScreenPoint) -> Option<GeoPoint>;
@@ -44,13 +46,6 @@ pub trait Projection {
     fn segment_may_be_visible(&self, a: GeoPoint, b: GeoPoint) -> bool {
         let _ = (a, b);
         true
-    }
-
-    /// Terrain height at `point` above the ellipsoid, or `None` when the
-    /// host has no terrain there.
-    fn terrain_height_m(&self, point: GeoPoint) -> Option<f64> {
-        let _ = point;
-        None
     }
 }
 

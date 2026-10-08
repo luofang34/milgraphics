@@ -40,7 +40,6 @@ pub(crate) struct ScreenCtx<'a> {
     earth: &'a Earth,
     projection: &'a dyn Projection,
     meter: &'a mut VertexMeter,
-    terrain_missing: bool,
 }
 
 impl<'a> ScreenCtx<'a> {
@@ -53,7 +52,6 @@ impl<'a> ScreenCtx<'a> {
             earth,
             projection,
             meter,
-            terrain_missing: false,
         }
     }
 
@@ -62,20 +60,9 @@ impl<'a> ScreenCtx<'a> {
         self.meter.take(count)
     }
 
-    pub(crate) fn terrain_missing(&self) -> bool {
-        self.terrain_missing
-    }
-
     /// Screen position of a ground-clamped point.
     pub(crate) fn project(&mut self, p: GeoPoint) -> Option<ScreenPoint> {
-        let height = match self.projection.terrain_height_m(p) {
-            Some(h) => h,
-            None => {
-                self.terrain_missing = true;
-                0.0
-            }
-        };
-        self.projection.project(p, height)
+        self.projection.project(p)
     }
 
     /// Screen pieces of a part. A ring cut by the horizon is returned as
