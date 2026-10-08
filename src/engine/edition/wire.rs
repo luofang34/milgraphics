@@ -9,8 +9,9 @@ const HALF: f64 = 7.0;
 /// Distance between the centres of neighbouring X marks: the template leaves
 /// about seven tenths of a mark's width between them.
 pub(super) const PITCH: f64 = 24.0;
-/// Most marks drawn, so a line far longer than the view stays cheap.
-const MAX_MARKS: usize = 20_000;
+/// Most marks drawn; a longer line spaces its marks further apart so they
+/// still run its whole length within the vertex budget.
+pub(super) const MAX_MARKS: usize = 2_000;
 
 /// Replaces upstream's touching marks with spaced ones along the control
 /// points, each turned with its segment.
@@ -18,9 +19,18 @@ pub(super) fn spread(input: &Input<'_>, out: &mut Output) {
     let Some(shape) = out.shapes.first_mut() else {
         return;
     };
+    let total: f64 = input
+        .pixels
+        .windows(2)
+        .filter_map(|w| match w {
+            [a, b] => Some((b.x - a.x).hypot(b.y - a.y)),
+            _ => None,
+        })
+        .sum();
+    let pitch = PITCH.max(total / MAX_MARKS as f64);
     let mut marks = Vec::new();
     // Distance along the line to the next mark's centre.
-    let mut next = PITCH / 2.0;
+    let mut next = pitch / 2.0;
     let mut walked = 0.0;
     for pair in input.pixels.windows(2) {
         let [a, b] = pair else { continue };
@@ -37,7 +47,7 @@ pub(super) fn spread(input: &Input<'_>, out: &mut Output) {
                 let d = ((p.0 + q.0) * HALF, (p.1 + q.1) * HALF);
                 marks.push(vec![(c.0 - d.0, c.1 - d.1), (c.0 + d.0, c.1 + d.1)]);
             }
-            next += PITCH;
+            next += pitch;
         }
         walked += len;
     }

@@ -164,6 +164,22 @@ fn unspecified_wire_spaces_its_marks() {
 }
 
 #[test]
+fn a_wire_too_long_for_its_marks_spaces_them_along_its_whole_length() {
+    let none = Modifiers::default();
+    let far = 100.0 + 1_000.0 * wire::PITCH * wire::MAX_MARKS as f64;
+    let o = out(
+        "15032500002903010000",
+        tl::UNSP,
+        &[(100.0, 300.0), (far, 300.0)],
+        &none,
+    );
+    let all = lines(&o);
+    assert_eq!(all.len(), 2 * wire::MAX_MARKS);
+    let last = all.last().map_or(0.0, |arm| (arm[0].0 + arm[1].0) / 2.0);
+    assert!(far - last < 1_000.0 * wire::PITCH);
+}
+
+#[test]
 fn labels_set_into_the_outline_are_marked_from_version_15() {
     let none = Modifiers::default();
     let e = out("15032500002405030000", tl::PAA, SQUARE, &none);
