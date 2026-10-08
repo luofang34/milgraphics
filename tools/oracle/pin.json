@@ -1,0 +1,242 @@
+{
+  "references": {
+    "mil-sym-java": {
+      "role": "primary algorithm reference and diagnostic oracle",
+      "url": "https://github.com/missioncommand/mil-sym-java.git",
+      "tag": "v2.9.7",
+      "commit": "6634a2e916fb3513953ecc8d90a93371f05e6f4a",
+      "license": "Apache-2.0",
+      "files": {
+        "data": {
+          "src/main/resources/data/msd.txt": "e4411d925fec724c23258c450bfde29c266fdebd00d39ff9aaf44acc23053b6d",
+          "src/main/resources/data/mse.txt": "98d0e641013e8945a0ff2e30413cf9e8bcced6e79f2554063f42d6af8192af3c"
+        },
+        "rules": {
+          "src/main/java/armyc2/c5isr/renderer/utilities/DrawRules.java": "e24b17afce0fed25d0733534dc94131460445a0f05fceb9c04d7866b74286c83",
+          "src/main/java/armyc2/c5isr/renderer/utilities/MSInfo.java": "f43179dab7ee152c7d1cc4cea3a0dae4e94f70017033a75ce63b5a897bb062d6",
+          "src/main/java/armyc2/c5isr/renderer/utilities/SymbolID.java": "c05986526fd022bd96a25ef2d626597bc5eb99c65dd112cc2b1d0049764fb836"
+        },
+        "algorithms": {
+          "src/main/java/armyc2/c5isr/JavaLineArray/lineutility.java": "40e5b8e4701563cf1621fbe1c129b3d1acdb569f162bcdb5c0b6265ed3862664",
+          "src/main/java/armyc2/c5isr/JavaLineArray/arraysupport.java": "ea864114a4a4ff9c73717d0749845ffa54c92bb167b1a376d59ff5436dd22f64",
+          "src/main/java/armyc2/c5isr/JavaLineArray/Channels.java": "a57b9ac24834c1f2090224081ac78160944cff7a3bd8c31862f27f7b37331e90",
+          "src/main/java/armyc2/c5isr/JavaLineArray/flot.java": "7212af97c44211d2e951b8591d3cec272780c916e7152c6484f91d1eab8df0b1",
+          "src/main/java/armyc2/c5isr/JavaLineArray/DISMSupport.java": "1f5f669f6326da1e46cd6258824ce8f5c324ef942fd333aa12b943a2540db86f",
+          "src/main/java/armyc2/c5isr/JavaTacticalRenderer/mdlGeodesic.java": "cb63377a0b2073568c50209ffff0d555d29b5e757432ca57d4bc34e4d139a6c1",
+          "src/main/java/armyc2/c5isr/JavaTacticalRenderer/Modifier2.java": "822b845f76cdd20befc05e4a351a50ccb16a9282aed764d499f87d7a2a48ae5c",
+          "src/main/java/armyc2/c5isr/JavaTacticalRenderer/clsMETOC.java": "ec414f8bd34eebc2af1683fd523db31877e20bfeafafcd03e50c13f52332994d",
+          "src/main/java/armyc2/c5isr/RenderMultipoints/clsRenderer.java": "9f672d92ad3651b61c249756718382123afa507adb64971af46d5c080c3942bb"
+        },
+        "oracle_entry": {
+          "src/main/java/armyc2/c5isr/web/render/WebRenderer.java": "8a4c34b5ff9eeb7a0076009e499f527bd6b884c83e9e5cc5c6b989012ba430e8",
+          "src/main/java/armyc2/c5isr/web/render/MultiPointHandler.java": "f1bc0a8ac00f76164ad115a7b9d1fe7e7adf32271aa5a27984cacb447a515e13",
+          "src/test/java/armyc2/c5isr/RendererTests.java": "534ee91bb73fa47521f5617a23f20def27e6a59954a9293db1cfd9c368725e1c"
+        },
+        "license": {
+          "LICENSE": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4"
+        }
+      }
+    },
+    "mil-sym-ts": {
+      "role": "cross-check only (line-for-line port of mil-sym-java)",
+      "url": "https://github.com/missioncommand/mil-sym-ts.git",
+      "tag": "v2.10.7",
+      "commit": "37e6af70c5b33f8831647b19432e75f2b5ad7f57",
+      "license": "Apache-2.0"
+    },
+    "zaes-tactical-graphics": {
+      "role": "architecture reference",
+      "url": "https://github.com/zaes-code/tactical-graphics.git",
+      "commit": "c6019bc53dc0813147ee6e8492b4410395cec722",
+      "license": "MIT",
+      "files": {
+        "license": {
+          "LICENSE": "9dab3d0443a9b6a30def6c7cb3b09157d19cbff42b7dbdde622c88a948c6a412"
+        }
+      }
+    }
+  },
+  "oracle_runtime": {
+    "java_release": 21,
+    "jars": {
+      "geodesy-1.1.3.jar": {
+        "url": "https://repo1.maven.org/maven2/org/gavaghan/geodesy/1.1.3/geodesy-1.1.3.jar",
+        "sha256": "d79935a567f876b411b72aa7a7b9e222fb611c0fddf63c84a7f2014740dea12c",
+        "license": "Apache-2.0"
+      },
+      "jsvg-2.0.0.jar": {
+        "url": "https://repo1.maven.org/maven2/com/github/weisj/jsvg/2.0.0/jsvg-2.0.0.jar",
+        "sha256": "81fc9ada579fc3f4924ec35f904c043de13ee8fba280322e638c7092006f1b52",
+        "license": "MIT"
+      }
+    },
+    "font": {
+      "file": "PT_Sans-Web-Bold.ttf",
+      "family": "PT Sans",
+      "style": "bold",
+      "size": 12,
+      "url": "https://raw.githubusercontent.com/google/fonts/90abd17b4f97671435798b6147b698aa9087612f/ofl/ptsans/PT_Sans-Web-Bold.ttf",
+      "sha256": "3128bd5ecf01816e59a23d54c57a7a6b14615b07db53ff277c77376010265b05",
+      "license": "OFL-1.1"
+    },
+    "settings": {
+      "device_dpi": 96
+    }
+  },
+  "standards": {
+    "note": "ASSIST stamps every page with the download time, so file hashes identify one copy only; documents are identified by revision, cover date and page count, and references by table and PDF page (file page, 1-based).",
+    "documents": {
+      "mil-std-2525d": {
+        "title": "MIL-STD-2525D Joint Military Symbology",
+        "cover_date": "2014-06-10",
+        "pages": 885,
+        "distribution": "Distribution A: Approved for public release, distribution is unlimited.",
+        "listing": "https://quicksearch.dla.mil/qsDocDetails.aspx?ident_number=114934",
+        "download": "https://quicksearch.dla.mil/WMX/Default.aspx?token=5730409"
+      },
+      "mil-std-2525d-ch1": {
+        "title": "MIL-STD-2525D w/CHANGE 1 Joint Military Symbology",
+        "cover_date": "2018-08-02",
+        "pages": 786,
+        "distribution": "Distribution A: Approved for public release, distribution is unlimited.",
+        "listing": "https://quicksearch.dla.mil/qsDocDetails.aspx?ident_number=114934",
+        "download": "https://quicksearch.dla.mil/WMX/Default.aspx?token=5770835"
+      },
+      "mil-std-2525e": {
+        "title": "MIL-STD-2525E Joint Military Symbology",
+        "cover_date": "2022-12-31",
+        "pages": 765,
+        "distribution": "Distribution A: Approved for public release, distribution is unlimited.",
+        "listing": "https://quicksearch.dla.mil/qsDocDetails.aspx?ident_number=114934",
+        "download": "https://quicksearch.dla.mil/WMX/Default.aspx?token=5782656"
+      },
+      "mil-std-2525e-ch1": {
+        "title": "MIL-STD-2525E w/Change 1 Joint Military Symbology",
+        "cover_date": "2025-03-02",
+        "pages": 749,
+        "distribution": "Distribution A: Approved for public release, distribution is unlimited.",
+        "listing": "https://quicksearch.dla.mil/qsDocDetails.aspx?ident_number=114934",
+        "download": "https://quicksearch.dla.mil/WMX/Default.aspx?token=5795656"
+      }
+    },
+    "unavailable": {
+      "app-6d": "ASSIST ident 275338 lists Rev D Amd 1 (2017-10-16); download requires an ASSIST account",
+      "app-6e": "ASSIST ident 275338 lists Rev E (2023-11-10) and Rev E Amd 2 (2025-10-16, Distribution C); download requires an ASSIST account"
+    },
+    "graphics": {
+      "140300": {
+        "name": "Phase Line",
+        "refs": [
+          {
+            "doc": "mil-std-2525d-ch1",
+            "table": "TABLE H-VII",
+            "pdf_page": 446,
+            "draw_rule": "Line2"
+          },
+          {
+            "doc": "mil-std-2525e-ch1",
+            "table": "TABLE L-VII",
+            "pdf_page": 478,
+            "draw_rule": "Line1"
+          }
+        ]
+      },
+      "120200": {
+        "name": "Named Area of Interest",
+        "refs": [
+          {
+            "doc": "mil-std-2525d-ch1",
+            "table": "TABLE H-V",
+            "pdf_page": 436,
+            "draw_rule": "Area1"
+          },
+          {
+            "doc": "mil-std-2525e-ch1",
+            "table": "TABLE L-V",
+            "pdf_page": 468,
+            "draw_rule": "Area1"
+          }
+        ]
+      },
+      "151403": {
+        "name": "Main Attack",
+        "refs": [
+          {
+            "doc": "mil-std-2525d-ch1",
+            "table": "TABLE H-X",
+            "pdf_page": 455,
+            "draw_rule": "Axis2"
+          },
+          {
+            "doc": "mil-std-2525e-ch1",
+            "table": "TABLE L-X",
+            "pdf_page": 496,
+            "draw_rule": "Axis1"
+          }
+        ]
+      },
+      "170100": {
+        "name": "Air Corridor",
+        "refs": [
+          {
+            "doc": "mil-std-2525d-ch1",
+            "table": "TABLE H-XIII",
+            "pdf_page": 463,
+            "draw_rule": "Corridor1"
+          },
+          {
+            "doc": "mil-std-2525e-ch1",
+            "table": "TABLE L-XI",
+            "pdf_page": 498,
+            "draw_rule": "Corridor1"
+          }
+        ]
+      },
+      "242200": {
+        "name": "Weapon/Sensor Range Fan, Sector",
+        "refs": [
+          {
+            "doc": "mil-std-2525d-ch1",
+            "table": "TABLE H-XVII",
+            "pdf_page": 528,
+            "draw_rule": "Arc1"
+          },
+          {
+            "doc": "mil-std-2525e-ch1",
+            "table": "TABLE L-XV",
+            "pdf_page": 573,
+            "draw_rule": "Arc1"
+          }
+        ]
+      },
+      "270601": {
+        "name": "Obstacle Bypass, Easy",
+        "refs": [
+          {
+            "doc": "mil-std-2525d-ch1",
+            "table": "TABLE H-XVIII",
+            "pdf_page": 533,
+            "draw_rule": "Point12"
+          },
+          {
+            "doc": "mil-std-2525e-ch1",
+            "table": "TABLE L-XVI",
+            "pdf_page": 576,
+            "draw_rule": "Point12"
+          }
+        ]
+      }
+    },
+    "draw_rule_definitions": [
+      {
+        "doc": "mil-std-2525d-ch1",
+        "section": "Appendix H, TABLE H-IV"
+      },
+      {
+        "doc": "mil-std-2525e-ch1",
+        "section": "Appendix L, TABLE L-III",
+        "pdf_pages": "457-463"
+      }
+    ]
+  }
+}

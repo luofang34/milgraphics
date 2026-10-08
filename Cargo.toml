@@ -1,0 +1,61 @@
+[package]
+name = "milgraphics"
+version = "0.0.0"
+authors = ["Fang Luo"]
+edition = "2024"
+rust-version = "1.85"
+description = "Native Rust multi-point tactical graphics (MIL-STD-2525 / APP-6): geometry, labels, handles and edits"
+license = "AGPL-3.0-or-later"
+repository = "https://github.com/luofang34/milgraphics"
+readme = "README.md"
+keywords = ["mil-std-2525", "app-6", "tactical-graphics", "symbology", "gis"]
+categories = ["graphics", "science::geo"]
+publish = false
+
+[dependencies]
+
+[dev-dependencies]
+serde_json = "1.0.151"
+
+# wasm-bindgen-test drives the browser behaviour tests. Its wasm-bindgen must
+# match the `=0.2.129` pin of maplibre-rs-experimental so the test runner and
+# the consumers' lockfiles agree.
+[target.'cfg(target_arch = "wasm32")'.dev-dependencies]
+wasm-bindgen-test = "=0.3.79"
+
+[lints]
+workspace = true
+
+[workspace]
+members = ["."]
+
+[workspace.lints.rust]
+unsafe_code = "forbid"
+missing_docs = "warn"
+let_underscore_drop = "warn"
+dead_code = "deny"
+unused = { level = "deny", priority = -1 }
+unreachable_pub = "deny"
+missing_debug_implementations = "deny"
+
+[workspace.lints.clippy]
+all = { level = "deny", priority = -1 }
+dbg_macro = "deny"
+print_stdout = "deny"
+print_stderr = "deny"
+unwrap_used = "forbid"
+expect_used = "forbid"
+panic = "forbid"
+unwrap_in_result = "forbid"
+get_unwrap = "forbid"
+indexing_slicing = "forbid"
+string_slice = "forbid"
+todo = "forbid"
+unimplemented = "forbid"
+unreachable = "forbid"
+exit = "forbid"
+mem_forget = "forbid"
+let_underscore_must_use = "deny"
+let_underscore_future = "deny"
+await_holding_lock = "deny"
+too_many_lines = "deny"
