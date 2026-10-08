@@ -33,6 +33,17 @@ public final class Cases {
     /** AM/AN/X values that make a rule's documented geometry valid; applied even if not listed by MSInfo. */
     static final Map<String, String[]> SIZE_MODS = new LinkedHashMap<>();
     static final Map<String, String> TEXT = new LinkedHashMap<>();
+    /**
+     * Layouts for "version:entity" where the standard's text gives other
+     * control points than upstream's draw rule (xtask/src/specs/rules.rs,
+     * standard_points): Withdraw and Withdraw Under Pressure take three in
+     * 2525E and APP-6(E); Trip Wire, Bearing Line and Linear Target two.
+     */
+    static final Map<String, String> STANDARD_LAYOUT = Map.of(
+            "15:342400", "cm:Line24", "16:342400", "cm:Line24",
+            "15:342500", "cm:Line24", "16:342500", "cm:Line24",
+            "11:290500", "cm:Line14", "16:290500", "cm:Line14",
+            "16:220100", "cm:Line14", "16:240701", "cm:Line14");
 
     static double[][] p(double... v) {
         double[][] r = new double[v.length / 2][2];
@@ -190,7 +201,7 @@ public final class Cases {
     static String line(Entry en, int status, int scale, String suffix) {
         MSInfo info = en.info;
         String key = ruleKey(info);
-        double[][] pts = LAYOUTS.get(key);
+        double[][] pts = LAYOUTS.get(STANDARD_LAYOUT.getOrDefault(en.version + ":" + entityOf(en.basic), key));
         if (pts == null) {
             System.err.println("no layout for " + key + " " + en.basic);
             pts = LAYOUTS.get("cm:Line1");

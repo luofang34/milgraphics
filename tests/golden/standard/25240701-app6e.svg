@@ -1,6 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="812" height="618" viewBox="0 0 812 618">
-<polyline points="270.86,526.75 422.25,428.32 573.81,504.04 725.15,420.75" fill="none" stroke="#000000ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt"/>
-<polyline points="277.67,537.23 264.05,516.27" fill="none" stroke="#000000ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt"/>
-<polyline points="731.18,431.7 719.12,409.8" fill="none" stroke="#000000ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt"/>
-<text transform="translate(501.76 458.49) rotate(26.57)" x="0" y="-3.6" text-anchor="middle" dominant-baseline="central" font-family="PT Sans" font-size="12" font-weight="bold">AP1</text>
+<svg xmlns="http://www.w3.org/2000/svg" width="732" height="589" viewBox="0 0 732 589">
+<polyline points="270.8,496.46 649.4,420.74" fill="none" stroke="#000000ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt"/>
+<polyline points="273.25,508.72 268.34,484.2" fill="none" stroke="#000000ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt"/>
+<polyline points="651.86,433 646.95,408.49" fill="none" stroke="#000000ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt"/>
+<text transform="translate(458.37 450.26) rotate(-11.22)" x="0" y="-3.6" text-anchor="middle" dominant-baseline="central" font-family="PT Sans" font-size="12" font-weight="bold">AP1</text>
 </svg>

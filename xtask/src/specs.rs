@@ -172,7 +172,8 @@ fn declaration(row: &Row, version: u32) -> String {
         _ => "App6Ech2",
     };
     let (min, max) = if row.symbol_set == 25 {
-        rules::cm_points(&row.draw_rule, u8::try_from(version).unwrap_or(0))
+        rules::standard_points(version, row.entity)
+            .unwrap_or_else(|| rules::cm_points(&row.draw_rule, u8::try_from(version).unwrap_or(0)))
     } else {
         rules::metoc_points(&row.draw_rule)
     };

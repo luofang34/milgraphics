@@ -53,10 +53,10 @@ undeclared symbol (`tests/fixtures/oracle/unimplemented.txt`):
 | Symbol | Standard | mil-sym-java | Status |
 |---|---|---|---|
 | Main Attack 151403, 2525E change 1 | TABLE L-X: draw rule Axis1 | `mse.txt`: Axis2 | The standard's rule is followed; geometry is the same for both editions and matches the oracle |
-| Trip Wire 290500, 2525D change 1 | Line15 | `msd.txt`: Line1 | Drawn as upstream draws it (matches the oracle); point limits follow upstream's rule |
-| Rectangular Target 240802, 2525E change 1 | Rectangular1 | `mse.txt`: Rectangular2 | As above |
-| Ferry 290700, 2525E change 1 | Line14 | `mse.txt`: Line18 | As above |
-| Withdraw 342400 and Withdraw Under Pressure 342500, 2525E change 1 | Line24 | `mse.txt`: Line14 | As above |
+| Trip Wire 290500, 2525D change 1 | Line15: two anchor points | `msd.txt`: Line1 | Two points, as Line15 requires; drawn as upstream draws two points (matches the oracle) |
+| Rectangular Target 240802, 2525E change 1 | Rectangular1, but the template has one centre point with AM length and width and AN attitude (Rectangular2) | `mse.txt`: Rectangular2 | The template is followed: one point, as upstream |
+| Ferry 290700, 2525E change 1 | Line14 | `mse.txt`: Line18 | Both take two points; drawn as upstream (matches the oracle) |
+| Withdraw 342400 and Withdraw Under Pressure 342500, 2525E change 1 | Line24: three anchor points, the arc from point 3 | `mse.txt`: Line14 (two points) | Three points, drawn as the 2525D code draws them; listed in `tests/fixtures/oracle/standard.txt` |
 
 Each is listed in `src/support/tests.rs` (`DIVERGENCES`), which fails if a
 declared symbol's printed and catalog rules differ without being listed.
