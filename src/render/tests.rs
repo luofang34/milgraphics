@@ -406,3 +406,38 @@ fn the_geographic_tier_alone_matches_the_plan_and_is_budgeted() {
         Err(RenderError::Budget(_))
     ));
 }
+
+#[test]
+fn a_graphic_a_few_pixels_across_draws_no_labels_or_decorations() {
+    // Bypass, easy has pixel-sized arrowheads; a ported light line has labels.
+    for (sidc, points) in [
+        (
+            "11032500002706010000",
+            &[(20.0, 50.0), (20.04, 50.03), (20.08, 50.0)][..],
+        ),
+        ("11032500001102000000", &[(20.0, 50.0), (20.1, 50.02)][..]),
+    ] {
+        let d = def(sidc, points, None);
+        let near = plan(
+            &d,
+            &crate::render::LocalEquirectangular::new(19.9, 50.1, 50_000.0, 96.0),
+        );
+        let far = plan(
+            &d,
+            &crate::render::LocalEquirectangular::new(19.9, 50.1, 50_000_000.0, 96.0),
+        );
+        assert!(
+            near.screen.iter().any(|i| i.decoration) || !near.labels.is_empty(),
+            "{sidc}"
+        );
+        assert!(far.labels.is_empty(), "{sidc}: labels at a few pixels");
+        assert!(
+            far.screen.iter().all(|i| !i.decoration),
+            "{sidc}: decorations at a few pixels"
+        );
+        assert!(
+            !far.screen.is_empty(),
+            "{sidc}: the graphic itself still draws"
+        );
+    }
+}

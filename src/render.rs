@@ -194,6 +194,43 @@ impl GeoItem {
     }
 }
 
+/// On-screen extent below which a graphic is drawn without decorations or
+/// labels.
+const MIN_DETAIL_PX: f64 = 12.0;
+
+/// The on-screen extent of a graphic: of its handles (control points and,
+/// for graphics sized by ranges or widths, the handles setting them) and of
+/// the corners of its geographic parts' bounds.
+fn extent_px(ctx: &mut screen::ScreenCtx<'_>, construction: &Construction) -> f64 {
+    let (mut west, mut south, mut east, mut north) = (f64::MAX, f64::MAX, f64::MIN, f64::MIN);
+    for q in construction.parts.iter().flat_map(|p| p.geometry.points()) {
+        (west, south) = (west.min(q.lon()), south.min(q.lat()));
+        (east, north) = (east.max(q.lon()), north.max(q.lat()));
+    }
+    let corners = [(west, south), (east, north), (west, north), (east, south)]
+        .into_iter()
+        .filter_map(|(lon, lat)| GeoPoint::new(lon, lat).ok());
+    let points: Vec<GeoPoint> = construction
+        .handles
+        .iter()
+        .map(|h| h.at)
+        .chain(corners)
+        .collect();
+    let (mut lo, mut hi) = ((f64::MAX, f64::MAX), (f64::MIN, f64::MIN));
+    for at in points {
+        // A graphic reaching past the horizon is large in any view.
+        let Some(p) = ctx.project(at) else {
+            return f64::INFINITY;
+        };
+        lo = (lo.0.min(p.x), lo.1.min(p.y));
+        hi = (hi.0.max(p.x), hi.1.max(p.y));
+    }
+    if lo.0 > hi.0 {
+        return 0.0;
+    }
+    (hi.0 - lo.0).hypot(hi.1 - lo.1)
+}
+
 /// Resolves `construction` for `view`.
 pub fn render(
     construction: &Construction,
@@ -226,8 +263,11 @@ pub fn render(
             });
         }
     }
+    // Decorations and labels have minimum pixel sizes; on a graphic a few
+    // pixels across they would dwarf it, so it draws its geographic tier only.
+    let detailed = extent_px(&mut ctx, construction) >= MIN_DETAIL_PX;
     let mut engine_labels = Vec::new();
-    for d in &construction.decorations {
+    for d in construction.decorations.iter().filter(|_| detailed) {
         items.extend(decoration::resolve(&mut ctx, d, &pick)?);
         let (more, labels) = ported::resolve(&mut ctx, &d.0, &view.label_font, metrics, &pick)?;
         items.extend(more);
@@ -236,6 +276,7 @@ pub fn render(
     let mut labels: Vec<Label> = construction
         .labels
         .iter()
+        .filter(|_| detailed)
         .map(|l| {
             label::place(
                 &mut ctx,
