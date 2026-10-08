@@ -13,7 +13,7 @@ use crate::style::Rgba;
 
 /// Java `String.split(regex)` for a literal separator: trailing empty
 /// strings are dropped, and a string without the separator comes back whole.
-pub(super) fn java_split(text: &str, separator: char) -> Vec<&str> {
+pub(crate) fn java_split(text: &str, separator: char) -> Vec<&str> {
     let mut parts: Vec<&str> = text.split(separator).collect();
     if parts.len() > 1 {
         while parts.last().is_some_and(|p| p.is_empty()) {

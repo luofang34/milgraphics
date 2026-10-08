@@ -1,0 +1,33 @@
+circ	change1	CIRCULAR	0,0	AM=2000
+circ_pbs	change1	PBS_CIRCLE	10,-20	AM=1500
+bbs_point	change1	BBS_POINT	10,-20	AM=1500
+rect	change1	RECTANGULAR	0,0	AM=1000	AM1=3000	AN=640
+cued	change1	CUED_ACQUISITION	0,0	AM=1000	AM1=3000	AN=45
+launch	change1	LAUNCH_AREA	0,0	AM=3000	AM1=1500	AN=30
+fsa_rect	change1	FSA_RECTANGULAR	-100,0;100,-50	AM=800
+target	change1	RECTANGULAR_TARGET	-100,0;100,-50	AM=600
+orbit	change1	BS_ORBIT	-100,0;100,-50	AM=500
+route	change1	BS_ROUTE	-100,0;0,50;100,-50	AM=400,600
+track	change1	BS_TRACK	-100,0;0,50;100,-50	AM=100,200,300,400
+fan1	change1	RANGE_FAN	0,0	AM=1000,2000,3000
+fan2	change1	RANGE_FAN	0,0;100,-100	AM=1000,2000,3000
+sector1	change1	RANGE_FAN_SECTOR	0,0	LRMM=30,120,500,1500,200,300,1000,2000
+sector_pts	change1	RANGE_FAN_SECTOR	0,0;50,-100;40,-50;120,-60;100,20;-100,40	LRMM=1,1,1,1
+radar	change1	RADAR_SEARCH	0,0	LRMM=270,90,0,2500
+radar_circle	change1	RADAR_SEARCH	0,0	LRMM=10,10,500,1000
+fan_fill	change1	RANGE_FAN_FILL	0,0	LRMM=0,0,1000,2000,0,0,2000,3000
+polyarc	change1	BS_POLYARC	0,0;100,0;100,-100	AM=1500	AN=20,100
+polyarc_rev	change1	BS_POLYARC	0,0;100,-100;100,0	AM=1500	AN=20,100
+unknown	change1	PL	0,0;10,10
+filt_pl	filter	PL	0,0;2,0;3,0;50,0;100,0
+filt_pl_end	filter	PL	0,0;50,0;100,0;102,0
+filt_flot	filter	FLOT	0,0;2,0;3,0;50,0;100,0
+filt_short	filter	PL	0,0;2,0
+filt_lc_styles	filter	LC	0,0,0;2,0,-1;3,0,0;60,0,0
+interp_flot	interp	FLOT	0,0;5,0;10,0;15,0;100,0;105,0;110,0
+interp_turn	interp	LC	0,0;10,0;20,5;30,40;40,0;300,0
+interp_zone	interp	ZONE	0,0;5,0;10,0;300,0
+interp_zone2	interp	ZONE	0,0;5,0;10,0;15,0;20,0
+interp_pl	interp	PL	0,0;5,0;10,0
+clear	clear	PL	0,0,5;2,0,9;3,0,10
+clear_keep	clear	SC	0,0,5;2,0,9;3,0,10

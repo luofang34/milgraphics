@@ -132,10 +132,26 @@ impl Default for Stroke {
     }
 }
 
+/// The parameters upstream hands to `PatternFillRenderer.MakeHatchPatternFill`
+/// to make a hatch image: carried on a shape in place of the image.
+#[derive(Clone, Copy, Debug, PartialEq)]
+pub(crate) struct Hatch {
+    /// Hatch direction (`clsUtility.Hatch_*`).
+    pub(crate) style: i32,
+    /// Distance between hatch lines in pixels.
+    pub(crate) spacing: i32,
+    /// Hatch line width in pixels.
+    pub(crate) thickness: i32,
+    /// Hatch line colour.
+    pub(crate) color: Option<Rgba>,
+}
+
 /// Upstream `Shape2`: a path with its shape type, line style, colours and
 /// stroke.
 #[derive(Clone, Debug, Default, PartialEq)]
 pub(crate) struct Shape {
+    /// Upstream's pattern fill image, as the parameters that make it.
+    pub(crate) pattern_fill: Option<Hatch>,
     pub(crate) shape_type: i32,
     pub(crate) style: i32,
     pub(crate) fill_style: i32,
