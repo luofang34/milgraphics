@@ -25,8 +25,13 @@ so a file hash identifies one copy only; documents are identified by revision,
 cover date and page count. Each first-milestone graphic has its table and PDF
 page in 2525D change 1 and 2525E change 1, and the draw rule printed there.
 
-APP-6(D) and APP-6(E) need an ASSIST account and are not yet referenced, so no
-APP-6 symbol can be declared supported.
+APP-6(D) and APP-6(E) need an ASSIST account and are not referenced. APP-6
+symbols (version codes 10 and 16) are therefore declared on agreement with
+the oracle alone: every multipoint graphic upstream draws for them is
+declared when the ported renderer matches it, with upstream's catalog draw
+rule, and `SymbolSpec::reference` is `None`. They are drawn by the ported
+renderer throughout, including the six graphics that 2525D/E change 1 draw
+with milgraphics' own families.
 
 Draw rules are per edition. Phase Line is Line2 in 2525D change 1 and Line1 in
 2525E change 1; Main Attack is Axis2 and Axis1 respectively (2525E change 1
@@ -42,6 +47,13 @@ undeclared symbol (`tests/fixtures/oracle/unimplemented.txt`):
 |---|---|---|
 | Line of Contact 25 140200 | 2525D change 1, 2525E change 1 | No row: reserved in 2525D, a Combat Support code in 2525E |
 | Wind Plot 45 140200 | 2525E change 1 | No row (2525D change 1 defines it in TABLE I-II) |
+
+Some APP-6(E) change 2 codes have no line type in upstream's `getCMLineType`
+(Bridgehead, Mobility Corridor, Supporting Attack 152300, Restricted Terrain,
+Severely Restricted Terrain, Navigational Rhumb Line, Rectangular Target 240804,
+AMA, ARA, Zone of Fire, the 242700 areas, Recover, Human Terrain). Upstream
+draws only their control points as a line, which is not the graphic, so they
+are not declared either.
 
 ## Divergences under review
 
@@ -91,6 +103,7 @@ also form the geographic tier.
 | `engine/modifier` | `JavaTacticalRenderer/Modifier2.java` |
 | `engine/tg`, `engine/tg_utility`, `engine/line_type`, `engine/tactical_lines` | `JavaTacticalRenderer/TGLight.java`, `clsUtility.java`, `RenderMultipoints/clsRenderer.java` (`getCMLineType`), `clsMETOC.java` (`getWeatherLinetype`), `JavaLineArray/TacticalLines.java`, `CELineArray.java` |
 | `engine/build` | `RenderMultipoints/clsRenderer.java` (`createTGLightFromMilStdSymbol`), `web/render/MultiPointHandler.java` (`populateModifiers`) |
+| `engine/intercept` | `web/render/WebRenderer.java` (`interceptAndAdjustCode`: APP-6 feint and dummy duplicates drawn as their originals with the feint/dummy indicator) |
 | `engine/cpof`, `engine/render_utility`, `engine/pipeline` | `RenderMultipoints/clsUtilityCPOF.java`, `clsUtility.java`, `clsUtilityGE.java`, `clsClipPolygon2.java` (non-clipping parts), `clsRenderer2.java`, `clsRenderer.java` (`render_GE`) |
 
 Clipping, SVG and raster output, and the geodesic densification of very long

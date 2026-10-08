@@ -102,6 +102,9 @@ pub(crate) enum Decoration {
         geographic: Vec<bool>,
         shape_count: usize,
         part: PartId,
+        /// Ground size the graphic spans, in metres, so a view can tell how
+        /// large it appears when it has no geographic parts to measure.
+        reach_m: f64,
     },
     /// A two-winged arrowhead at `tip`, opening back toward `toward`.
     Arrowhead {

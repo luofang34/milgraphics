@@ -47,15 +47,20 @@ fn declarations_are_internally_consistent() {
             "{} lists a field twice",
             s.name()
         );
-        let reference = s
-            .reference()
-            .unwrap_or_else(|| panic!("{} {} has no standard reference", s.standard, s.name()));
-        let doc_matches = match s.standard {
-            StandardVersion::Mil2525Dch1 => reference.document == "mil-std-2525d-ch1",
-            StandardVersion::Mil2525Ech1 => reference.document == "mil-std-2525e-ch1",
-            _ => false,
+        // The APP-6 texts are not available: APP-6 symbols are declared on
+        // agreement with the oracle alone and cite nothing.
+        let document = match s.standard {
+            StandardVersion::Mil2525Dch1 => Some("mil-std-2525d-ch1"),
+            StandardVersion::Mil2525Ech1 => Some("mil-std-2525e-ch1"),
+            _ => None,
         };
-        assert!(doc_matches, "{} cites {}", s.name(), reference.document);
+        assert_eq!(
+            s.reference().map(|r| r.document),
+            document,
+            "{} {} cites the wrong standard",
+            s.standard,
+            s.name()
+        );
     }
 }
 
@@ -77,10 +82,10 @@ fn lookup_by_symbol_id() {
         Err(Unsupported::Symbol { symbol_set: 10, .. })
     ));
     let app6 = SymbolId::parse("10032500001403000000").unwrap();
-    assert!(
-        matches!(spec(&app6), Err(Unsupported::Symbol { .. })),
-        "APP-6 is not yet referenced"
-    );
+    assert_eq!(spec(&app6).unwrap().reference(), None);
+    // Upstream draws this APP-6(E) Supporting Attack as its bare control points.
+    let unmapped = SymbolId::parse("16032500001523000000").unwrap();
+    assert!(matches!(spec(&unmapped), Err(Unsupported::Symbol { .. })));
 }
 
 /// Declared symbols whose standard prints a different draw rule than
