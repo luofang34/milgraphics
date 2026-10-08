@@ -12,6 +12,7 @@
 //! upstream's catalog gives. APP-6 graphics are drawn by the ported renderer
 //! throughout.
 
+mod fields;
 mod rules;
 
 use std::collections::BTreeSet;
@@ -156,6 +157,7 @@ fn declaration(row: &Row, version: u32) -> String {
     };
     let mut fields: Vec<String> = Vec::new();
     let mut listed: BTreeSet<&str> = row.modifiers.iter().map(String::as_str).collect();
+    listed.extend(fields::added(version, row.symbol_set, row.entity));
     for (field, needed) in [("AM", am), ("AN", an)] {
         if needed > 0 {
             listed.remove(field);

@@ -26,4 +26,6 @@ pub enum PickTarget {
     Part(PartId),
     /// An edit handle.
     Handle(HandleId),
+    /// An embedded single-point symbol, by its index in the construction.
+    Symbol(u16),
 }

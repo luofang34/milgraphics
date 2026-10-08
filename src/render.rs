@@ -17,10 +17,12 @@ mod local;
 mod ported;
 mod projection;
 mod screen;
+mod symbols;
 
 pub use label::{Label, TextAlign};
 pub use local::LocalEquirectangular;
 pub use projection::{FixedAdvanceMetrics, Font, FontMetrics, Projection, ScreenPoint, ScreenRect};
+pub use symbols::SymbolPlacement;
 
 #[cfg(test)]
 mod tests;
@@ -190,6 +192,8 @@ pub struct RenderPlan {
     pub labels: Vec<Label>,
     /// Edit handles.
     pub handles: Vec<Handle>,
+    /// Single-point symbols drawn as part of the graphic.
+    pub symbols: Vec<SymbolPlacement>,
 }
 
 /// Why a plan could not be built.
@@ -350,6 +354,11 @@ pub fn render(
         ctx.take(lines.len() * 2)?;
         items.extend(lines);
     }
+    let symbols = if detailed {
+        symbols::resolve(&mut ctx, construction, &pick)
+    } else {
+        Vec::new()
+    };
     let handles = construction
         .handles
         .iter()
@@ -371,5 +380,6 @@ pub fn render(
         screen: items,
         labels,
         handles,
+        symbols,
     })
 }

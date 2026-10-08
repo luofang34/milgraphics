@@ -81,6 +81,10 @@ pub milgraphics::construction::PartRole::Decoration
 pub milgraphics::construction::PartRole::Hatch
 pub milgraphics::construction::PartRole::Line
 pub milgraphics::construction::PartRole::Orientation
+#[non_exhaustive] pub enum milgraphics::construction::SymbolSize
+pub milgraphics::construction::SymbolSize::Pixels(f64)
+pub milgraphics::construction::SymbolSize::WithinCircle
+pub milgraphics::construction::SymbolSize::WithinCircle::edge: milgraphics::geo::GeoPoint
 #[non_exhaustive] pub struct milgraphics::construction::Construction
 pub milgraphics::construction::Construction::decorations: alloc::vec::Vec<milgraphics::construction::ScreenDecoration>
 pub milgraphics::construction::Construction::definition: milgraphics::definition::GraphicId
@@ -89,6 +93,12 @@ pub milgraphics::construction::Construction::labels: alloc::vec::Vec<milgraphics
 pub milgraphics::construction::Construction::parts: alloc::vec::Vec<milgraphics::construction::GeoPart>
 pub milgraphics::construction::Construction::renderer_version: &'static str
 pub milgraphics::construction::Construction::revision: u64
+pub milgraphics::construction::Construction::symbols: alloc::vec::Vec<milgraphics::construction::EmbeddedSymbol>
+#[non_exhaustive] pub struct milgraphics::construction::EmbeddedSymbol
+pub milgraphics::construction::EmbeddedSymbol::anchor: milgraphics::geo::GeoPoint
+pub milgraphics::construction::EmbeddedSymbol::offset_px: [f64; 2]
+pub milgraphics::construction::EmbeddedSymbol::size: milgraphics::construction::SymbolSize
+pub milgraphics::construction::EmbeddedSymbol::symbol: milgraphics::sidc::SymbolId
 #[non_exhaustive] pub struct milgraphics::construction::GeoPart
 pub milgraphics::construction::GeoPart::fill: milgraphics::style::Fill
 pub milgraphics::construction::GeoPart::geometry: milgraphics::construction::GeoGeometry
@@ -318,6 +328,7 @@ pub mod milgraphics::pick
 #[non_exhaustive] pub enum milgraphics::pick::PickTarget
 pub milgraphics::pick::PickTarget::Handle(milgraphics::edit::HandleId)
 pub milgraphics::pick::PickTarget::Part(milgraphics::construction::PartId)
+pub milgraphics::pick::PickTarget::Symbol(u16)
 #[non_exhaustive] pub struct milgraphics::pick::PickRef
 pub milgraphics::pick::PickRef::definition: milgraphics::definition::GraphicId
 pub milgraphics::pick::PickRef::target: milgraphics::pick::PickTarget
@@ -404,6 +415,7 @@ pub milgraphics::render::RenderPlan::renderer_version: &'static str
 pub milgraphics::render::RenderPlan::revision: u64
 pub milgraphics::render::RenderPlan::screen: alloc::vec::Vec<milgraphics::render::ScreenItem>
 pub milgraphics::render::RenderPlan::surface_revision: u64
+pub milgraphics::render::RenderPlan::symbols: alloc::vec::Vec<milgraphics::render::SymbolPlacement>
 pub milgraphics::render::RenderPlan::view_revision: u64
 #[non_exhaustive] pub struct milgraphics::render::ScreenItem
 pub milgraphics::render::ScreenItem::decoration: bool
@@ -418,6 +430,12 @@ pub milgraphics::render::ScreenPoint::y: f64
 pub struct milgraphics::render::ScreenRect
 pub milgraphics::render::ScreenRect::max: milgraphics::render::ScreenPoint
 pub milgraphics::render::ScreenRect::min: milgraphics::render::ScreenPoint
+#[non_exhaustive] pub struct milgraphics::render::SymbolPlacement
+pub milgraphics::render::SymbolPlacement::anchor: milgraphics::geo::GeoPoint
+pub milgraphics::render::SymbolPlacement::pick: milgraphics::pick::PickRef
+pub milgraphics::render::SymbolPlacement::screen: core::option::Option<milgraphics::render::ScreenPoint>
+pub milgraphics::render::SymbolPlacement::size_px: f64
+pub milgraphics::render::SymbolPlacement::symbol: milgraphics::sidc::SymbolId
 #[non_exhaustive] pub struct milgraphics::render::View
 pub milgraphics::render::View::content: milgraphics::render::PlanContent
 pub milgraphics::render::View::label_font: milgraphics::render::Font
@@ -594,6 +612,9 @@ pub milgraphics::ConstructError::InvalidModifier::field: milgraphics::ModifierFi
 pub milgraphics::ConstructError::InvalidModifier::index: usize
 pub milgraphics::ConstructError::InvalidModifier::reason: &'static str
 pub milgraphics::ConstructError::InvalidModifier::value: f64
+pub milgraphics::ConstructError::InvalidSymbolIcon
+pub milgraphics::ConstructError::InvalidSymbolIcon::source: milgraphics::sidc::SidcError
+pub milgraphics::ConstructError::InvalidSymbolIcon::symbol: &'static str
 pub milgraphics::ConstructError::MissingModifier
 pub milgraphics::ConstructError::MissingModifier::field: milgraphics::ModifierField
 pub milgraphics::ConstructError::MissingModifier::symbol: &'static str
@@ -827,6 +848,7 @@ pub milgraphics::PersistError::WrongType::found: &'static str
 #[non_exhaustive] pub enum milgraphics::PickTarget
 pub milgraphics::PickTarget::Handle(milgraphics::edit::HandleId)
 pub milgraphics::PickTarget::Part(milgraphics::construction::PartId)
+pub milgraphics::PickTarget::Symbol(u16)
 #[non_exhaustive] pub enum milgraphics::RenderError
 pub milgraphics::RenderError::Budget(milgraphics::budget::BudgetError)
 #[non_exhaustive] pub enum milgraphics::StandardVersion
@@ -887,6 +909,7 @@ pub milgraphics::Construction::labels: alloc::vec::Vec<milgraphics::construction
 pub milgraphics::Construction::parts: alloc::vec::Vec<milgraphics::construction::GeoPart>
 pub milgraphics::Construction::renderer_version: &'static str
 pub milgraphics::Construction::revision: u64
+pub milgraphics::Construction::symbols: alloc::vec::Vec<milgraphics::construction::EmbeddedSymbol>
 #[non_exhaustive] pub struct milgraphics::ControlPoint
 pub milgraphics::ControlPoint::altitude: core::option::Option<milgraphics::geo::Altitude>
 pub milgraphics::ControlPoint::position: milgraphics::geo::GeoPoint
@@ -989,6 +1012,7 @@ pub milgraphics::RenderPlan::renderer_version: &'static str
 pub milgraphics::RenderPlan::revision: u64
 pub milgraphics::RenderPlan::screen: alloc::vec::Vec<milgraphics::render::ScreenItem>
 pub milgraphics::RenderPlan::surface_revision: u64
+pub milgraphics::RenderPlan::symbols: alloc::vec::Vec<milgraphics::render::SymbolPlacement>
 pub milgraphics::RenderPlan::view_revision: u64
 #[non_exhaustive] pub struct milgraphics::StandardRef
 pub milgraphics::StandardRef::document: &'static str

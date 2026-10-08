@@ -17,6 +17,7 @@ mod axis;
 mod bypass;
 mod context;
 mod corridor;
+mod embedded;
 mod phase_line;
 mod ported;
 mod range_fan;
@@ -138,6 +139,15 @@ pub enum ConstructError {
         /// Maximum.
         max: usize,
     },
+    /// Amplifier `A` is not a symbol code.
+    #[error("{symbol}: amplifier A is not a symbol code")]
+    InvalidSymbolIcon {
+        /// Symbol name.
+        symbol: &'static str,
+        /// Why the code was refused.
+        #[source]
+        source: crate::sidc::SidcError,
+    },
     /// An amplifier value is not usable.
     #[error("amplifier {field} value {value} at position {index} is invalid: {reason}")]
     InvalidModifier {
@@ -203,6 +213,7 @@ pub fn construct(
         Family::Bypass => bypass::construct(&mut ctx, definition)?,
         Family::Ported => ported::construct(&mut ctx, definition)?,
     }
+    embedded::add(&mut ctx, definition)?;
     ctx.finish(definition, RENDERER_VERSION)
 }
 
