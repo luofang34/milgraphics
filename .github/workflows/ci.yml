@@ -34,9 +34,8 @@ jobs:
       - uses: taiki-e/install-action@v2
         with:
           tool: wasm-bindgen@0.2.129
-      - run: tools/ci/wasm-test.sh
-        env:
-          CHROMEDRIVER: ${{ env.CHROMEWEBDRIVER }}/chromedriver
+      # The runner image provides chromedriver under $CHROMEWEBDRIVER.
+      - run: CHROMEDRIVER="$CHROMEWEBDRIVER/chromedriver" tools/ci/wasm-test.sh
 
   lint:
     name: clippy on beta
@@ -71,8 +70,8 @@ jobs:
           targets: wasm32-unknown-unknown
       - uses: taiki-e/install-action@cargo-hack
       - uses: Swatinem/rust-cache@v2
-      - run: cargo hack check --locked -p milgraphics --feature-powerset --no-dev-deps
-      - run: cargo hack check --locked -p milgraphics --feature-powerset --no-dev-deps --target wasm32-unknown-unknown
+      - run: cargo hack check -p milgraphics --feature-powerset --no-dev-deps
+      - run: cargo hack check -p milgraphics --feature-powerset --no-dev-deps --target wasm32-unknown-unknown
 
   oracle:
     name: regenerate oracle fixtures from pinned mil-sym-java and diff

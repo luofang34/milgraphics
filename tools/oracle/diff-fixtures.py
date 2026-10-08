@@ -2,9 +2,11 @@
 
 Usage: diff-fixtures.py COMMITTED.jsonl REGENERATED.jsonl
 
-Exits non-zero on any difference and names each differing case and field,
-so that, for example, font-metric drift between platforms (`font_probe`)
-is distinguishable from a geometry change.
+Exits non-zero on any difference in the oracle's output and names each
+differing case and field. `font_probe` describes the platform's font
+metrics rather than the oracle's output: its differences are reported as a
+notice, so metric drift between platforms is visible without failing when
+every shape and label is unchanged.
 """
 import json
 import sys
@@ -18,15 +20,19 @@ def load(path):
 def main():
     old, new = load(sys.argv[1]), load(sys.argv[2])
     problems = []
+    notices = []
     if [r["case"] for r in old] != [r["case"] for r in new]:
         problems.append(f"case lists differ: {[r['case'] for r in old]} vs {[r['case'] for r in new]}")
     for a, b in zip(old, new):
         for key in sorted(set(a) | set(b)):
-            if a.get(key) != b.get(key):
-                detail = ""
-                if key == "font_probe":
-                    detail = f": {a.get(key)} vs {b.get(key)}"
-                problems.append(f"{a['case']}: field {key!r} differs{detail}")
+            if a.get(key) == b.get(key):
+                continue
+            if key == "font_probe":
+                notices.append(f"{a['case']}: font metrics differ: {a.get(key)} vs {b.get(key)}")
+            else:
+                problems.append(f"{a['case']}: field {key!r} differs")
+    if notices:
+        print(f"notice: {notices[0]} ({len(notices)} records)")
     if problems:
         print("\n".join(problems), file=sys.stderr)
         print(f"{sys.argv[1]} differs from the pinned oracle; regenerate with tools/oracle/oracle.sh",
