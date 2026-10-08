@@ -11,6 +11,7 @@ pub(crate) mod api;
 pub(crate) mod base;
 pub(crate) mod line_type;
 pub(crate) mod lineutility;
+pub(crate) mod modifier;
 pub(crate) mod settings;
 pub(crate) mod tactical_lines;
 pub(crate) mod tg;
