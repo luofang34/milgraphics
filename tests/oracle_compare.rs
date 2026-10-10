@@ -15,8 +15,8 @@ mod compare {
     };
     use milgraphics::style::DashPattern;
     use milgraphics::{
-        Altitude, Budget, Config, ControlPoint, GeoPoint, GraphicDefinition, GraphicId, SymbolId,
-        VerticalDatum, View, construct, render,
+        Altitude, Config, ControlPoint, GeoPoint, GraphicDefinition, GraphicId, ModifierField,
+        ModifierValue, SymbolId, VerticalDatum, View, construct, render,
     };
     use serde_json::Value;
 
@@ -48,18 +48,32 @@ mod compare {
             points,
         );
         let m = &r["modifiers"];
-        d.modifiers.designation = m["T_UNIQUE_DESIGNATION_1"].as_str().map(str::to_owned);
+        if let Some(t) = m["T_UNIQUE_DESIGNATION_1"].as_str() {
+            let text = ModifierValue::Text(t.to_owned());
+            d.modifiers.set(ModifierField::T, text).unwrap();
+        }
         let list = |key: &str| -> Vec<f64> {
             m[key].as_str().map_or_else(Vec::new, |v| {
                 v.split(',').map(|x| x.parse().unwrap()).collect()
             })
         };
-        d.modifiers.distances_m = list("AM_DISTANCE");
-        d.modifiers.azimuths_deg = list("AN_AZIMUTH");
-        d.modifiers.altitudes = list("X_ALTITUDE_DEPTH")
+        let altitudes = list("X_ALTITUDE_DEPTH")
             .into_iter()
             .map(|metres| Altitude::new(metres, VerticalDatum::MeanSeaLevel))
             .collect();
+        for (field, value) in [
+            (
+                ModifierField::AM,
+                ModifierValue::Numbers(list("AM_DISTANCE")),
+            ),
+            (
+                ModifierField::AN,
+                ModifierValue::Numbers(list("AN_AZIMUTH")),
+            ),
+            (ModifierField::X, ModifierValue::Altitudes(altitudes)),
+        ] {
+            d.modifiers.set(field, value).unwrap();
+        }
         d
     }
 
@@ -121,14 +135,7 @@ mod compare {
     fn ours(r: &Value) -> Ours {
         let c = construct(&definition(r), &Config::default()).unwrap();
         let view = View::new(0, 0);
-        let plan = render(
-            &c,
-            &view,
-            &frame(r),
-            &FixedAdvanceMetrics::default(),
-            &Budget::default(),
-        )
-        .unwrap();
+        let plan = render(&c, &view, &frame(r), &FixedAdvanceMetrics::default()).unwrap();
         let lines = plan
             .screen
             .iter()

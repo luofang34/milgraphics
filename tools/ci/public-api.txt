@@ -1,8 +1,4 @@
 pub mod milgraphics
-pub mod milgraphics::antimeridian
-pub fn milgraphics::antimeridian::split_line(&[milgraphics::geo::GeoPoint]) -> alloc::vec::Vec<alloc::vec::Vec<milgraphics::antimeridian::LonLat>>
-pub fn milgraphics::antimeridian::split_ring(&[milgraphics::geo::GeoPoint]) -> alloc::vec::Vec<alloc::vec::Vec<milgraphics::antimeridian::LonLat>>
-pub type milgraphics::antimeridian::LonLat = [f64; 2]
 pub mod milgraphics::budget
 #[non_exhaustive] pub enum milgraphics::budget::BudgetError
 pub milgraphics::budget::BudgetError::ControlPoints
@@ -22,58 +18,270 @@ pub milgraphics::budget::BudgetError::Text::limit: usize
 pub milgraphics::budget::BudgetError::Vertices
 pub milgraphics::budget::BudgetError::Vertices::count: usize
 pub milgraphics::budget::BudgetError::Vertices::limit: usize
+impl core::clone::Clone for milgraphics::budget::BudgetError
+pub fn milgraphics::budget::BudgetError::clone(&self) -> milgraphics::budget::BudgetError
+impl core::cmp::Eq for milgraphics::budget::BudgetError
+impl core::cmp::PartialEq for milgraphics::budget::BudgetError
+pub fn milgraphics::budget::BudgetError::eq(&self, &milgraphics::budget::BudgetError) -> bool
+impl core::convert::From<milgraphics::budget::BudgetError> for milgraphics::ConstructError
+pub fn milgraphics::ConstructError::from(milgraphics::budget::BudgetError) -> Self
+impl core::convert::From<milgraphics::budget::BudgetError> for milgraphics::render::RenderError
+pub fn milgraphics::render::RenderError::from(milgraphics::budget::BudgetError) -> Self
+impl core::error::Error for milgraphics::budget::BudgetError
+impl core::fmt::Debug for milgraphics::budget::BudgetError
+pub fn milgraphics::budget::BudgetError::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::fmt::Display for milgraphics::budget::BudgetError
+pub fn milgraphics::budget::BudgetError::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::marker::Copy for milgraphics::budget::BudgetError
+impl core::marker::StructuralPartialEq for milgraphics::budget::BudgetError
 #[non_exhaustive] pub struct milgraphics::budget::Budget
 pub milgraphics::budget::Budget::max_control_points: usize
 pub milgraphics::budget::Budget::max_labels: usize
 pub milgraphics::budget::Budget::max_modifier_values: usize
 pub milgraphics::budget::Budget::max_text_chars: usize
 pub milgraphics::budget::Budget::max_vertices: usize
+impl core::clone::Clone for milgraphics::budget::Budget
+pub fn milgraphics::budget::Budget::clone(&self) -> milgraphics::budget::Budget
+impl core::cmp::Eq for milgraphics::budget::Budget
+impl core::cmp::PartialEq for milgraphics::budget::Budget
+pub fn milgraphics::budget::Budget::eq(&self, &milgraphics::budget::Budget) -> bool
 impl core::default::Default for milgraphics::budget::Budget
 pub fn milgraphics::budget::Budget::default() -> Self
+impl core::fmt::Debug for milgraphics::budget::Budget
+pub fn milgraphics::budget::Budget::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::marker::Copy for milgraphics::budget::Budget
+impl core::marker::StructuralPartialEq for milgraphics::budget::Budget
 pub mod milgraphics::catalog
 #[non_exhaustive] pub enum milgraphics::catalog::CatalogDrawRule
-pub milgraphics::catalog::CatalogDrawRule::Metoc(milgraphics::MoDrawRule)
-pub milgraphics::catalog::CatalogDrawRule::Standard(milgraphics::DrawRule)
+pub milgraphics::catalog::CatalogDrawRule::Metoc(milgraphics::catalog::MoDrawRule)
+pub milgraphics::catalog::CatalogDrawRule::Standard(milgraphics::catalog::DrawRule)
+impl core::clone::Clone for milgraphics::catalog::CatalogDrawRule
+pub fn milgraphics::catalog::CatalogDrawRule::clone(&self) -> milgraphics::catalog::CatalogDrawRule
+impl core::cmp::Eq for milgraphics::catalog::CatalogDrawRule
+impl core::cmp::PartialEq for milgraphics::catalog::CatalogDrawRule
+pub fn milgraphics::catalog::CatalogDrawRule::eq(&self, &milgraphics::catalog::CatalogDrawRule) -> bool
+impl core::fmt::Debug for milgraphics::catalog::CatalogDrawRule
+pub fn milgraphics::catalog::CatalogDrawRule::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::hash::Hash for milgraphics::catalog::CatalogDrawRule
+pub fn milgraphics::catalog::CatalogDrawRule::hash<__H: core::hash::Hasher>(&self, &mut __H)
+impl core::marker::Copy for milgraphics::catalog::CatalogDrawRule
+impl core::marker::StructuralPartialEq for milgraphics::catalog::CatalogDrawRule
+#[non_exhaustive] pub enum milgraphics::catalog::DrawRule
+pub milgraphics::catalog::DrawRule::Arc1
+pub milgraphics::catalog::DrawRule::Area1
+pub milgraphics::catalog::DrawRule::Area10
+pub milgraphics::catalog::DrawRule::Area11
+pub milgraphics::catalog::DrawRule::Area12
+pub milgraphics::catalog::DrawRule::Area13
+pub milgraphics::catalog::DrawRule::Area14
+pub milgraphics::catalog::DrawRule::Area15
+pub milgraphics::catalog::DrawRule::Area16
+pub milgraphics::catalog::DrawRule::Area17
+pub milgraphics::catalog::DrawRule::Area18
+pub milgraphics::catalog::DrawRule::Area19
+pub milgraphics::catalog::DrawRule::Area2
+pub milgraphics::catalog::DrawRule::Area20
+pub milgraphics::catalog::DrawRule::Area21
+pub milgraphics::catalog::DrawRule::Area22
+pub milgraphics::catalog::DrawRule::Area23
+pub milgraphics::catalog::DrawRule::Area24
+pub milgraphics::catalog::DrawRule::Area25
+pub milgraphics::catalog::DrawRule::Area26
+pub milgraphics::catalog::DrawRule::Area27
+pub milgraphics::catalog::DrawRule::Area3
+pub milgraphics::catalog::DrawRule::Area4
+pub milgraphics::catalog::DrawRule::Area5
+pub milgraphics::catalog::DrawRule::Area6
+pub milgraphics::catalog::DrawRule::Area7
+pub milgraphics::catalog::DrawRule::Area8
+pub milgraphics::catalog::DrawRule::Area9
+pub milgraphics::catalog::DrawRule::Axis1
+pub milgraphics::catalog::DrawRule::Axis2
+pub milgraphics::catalog::DrawRule::Circular1
+pub milgraphics::catalog::DrawRule::Circular2
+pub milgraphics::catalog::DrawRule::Corridor1
+pub milgraphics::catalog::DrawRule::DoNotDraw
+pub milgraphics::catalog::DrawRule::Ellipse1
+pub milgraphics::catalog::DrawRule::Line1
+pub milgraphics::catalog::DrawRule::Line10
+pub milgraphics::catalog::DrawRule::Line11
+pub milgraphics::catalog::DrawRule::Line12
+pub milgraphics::catalog::DrawRule::Line13
+pub milgraphics::catalog::DrawRule::Line14
+pub milgraphics::catalog::DrawRule::Line16
+pub milgraphics::catalog::DrawRule::Line17
+pub milgraphics::catalog::DrawRule::Line18
+pub milgraphics::catalog::DrawRule::Line19
+pub milgraphics::catalog::DrawRule::Line2
+pub milgraphics::catalog::DrawRule::Line20
+pub milgraphics::catalog::DrawRule::Line21
+pub milgraphics::catalog::DrawRule::Line22
+pub milgraphics::catalog::DrawRule::Line23
+pub milgraphics::catalog::DrawRule::Line24
+pub milgraphics::catalog::DrawRule::Line25
+pub milgraphics::catalog::DrawRule::Line26
+pub milgraphics::catalog::DrawRule::Line27
+pub milgraphics::catalog::DrawRule::Line28
+pub milgraphics::catalog::DrawRule::Line29
+pub milgraphics::catalog::DrawRule::Line3
+pub milgraphics::catalog::DrawRule::Line30
+pub milgraphics::catalog::DrawRule::Line31
+pub milgraphics::catalog::DrawRule::Line32
+pub milgraphics::catalog::DrawRule::Line33
+pub milgraphics::catalog::DrawRule::Line4
+pub milgraphics::catalog::DrawRule::Line5
+pub milgraphics::catalog::DrawRule::Line50
+pub milgraphics::catalog::DrawRule::Line6
+pub milgraphics::catalog::DrawRule::Line7
+pub milgraphics::catalog::DrawRule::Line8
+pub milgraphics::catalog::DrawRule::Line9
+pub milgraphics::catalog::DrawRule::Point1
+pub milgraphics::catalog::DrawRule::Point10
+pub milgraphics::catalog::DrawRule::Point11
+pub milgraphics::catalog::DrawRule::Point12
+pub milgraphics::catalog::DrawRule::Point13
+pub milgraphics::catalog::DrawRule::Point14
+pub milgraphics::catalog::DrawRule::Point15
+pub milgraphics::catalog::DrawRule::Point16
+pub milgraphics::catalog::DrawRule::Point17
+pub milgraphics::catalog::DrawRule::Point18
+pub milgraphics::catalog::DrawRule::Point2
+pub milgraphics::catalog::DrawRule::Point3
+pub milgraphics::catalog::DrawRule::Point4
+pub milgraphics::catalog::DrawRule::Point5
+pub milgraphics::catalog::DrawRule::Point6
+pub milgraphics::catalog::DrawRule::Point7
+pub milgraphics::catalog::DrawRule::Point8
+pub milgraphics::catalog::DrawRule::Point9
+pub milgraphics::catalog::DrawRule::Polyline1
+pub milgraphics::catalog::DrawRule::Rectangular1
+pub milgraphics::catalog::DrawRule::Rectangular2
+pub milgraphics::catalog::DrawRule::Rectangular3
+impl milgraphics::catalog::DrawRule
+pub const milgraphics::catalog::DrawRule::ALL: &[Self]
+pub fn milgraphics::catalog::DrawRule::from_name(&str) -> core::option::Option<Self>
+pub const fn milgraphics::catalog::DrawRule::name(self) -> &'static str
+impl core::clone::Clone for milgraphics::catalog::DrawRule
+pub fn milgraphics::catalog::DrawRule::clone(&self) -> milgraphics::catalog::DrawRule
+impl core::cmp::Eq for milgraphics::catalog::DrawRule
+impl core::cmp::Ord for milgraphics::catalog::DrawRule
+pub fn milgraphics::catalog::DrawRule::cmp(&self, &milgraphics::catalog::DrawRule) -> core::cmp::Ordering
+impl core::cmp::PartialEq for milgraphics::catalog::DrawRule
+pub fn milgraphics::catalog::DrawRule::eq(&self, &milgraphics::catalog::DrawRule) -> bool
+impl core::cmp::PartialOrd for milgraphics::catalog::DrawRule
+pub fn milgraphics::catalog::DrawRule::partial_cmp(&self, &milgraphics::catalog::DrawRule) -> core::option::Option<core::cmp::Ordering>
+impl core::fmt::Debug for milgraphics::catalog::DrawRule
+pub fn milgraphics::catalog::DrawRule::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::hash::Hash for milgraphics::catalog::DrawRule
+pub fn milgraphics::catalog::DrawRule::hash<__H: core::hash::Hasher>(&self, &mut __H)
+impl core::marker::Copy for milgraphics::catalog::DrawRule
+impl core::marker::StructuralPartialEq for milgraphics::catalog::DrawRule
 #[non_exhaustive] pub enum milgraphics::catalog::GeometryKind
 pub milgraphics::catalog::GeometryKind::Area
 pub milgraphics::catalog::GeometryKind::Line
 pub milgraphics::catalog::GeometryKind::Point
+impl core::clone::Clone for milgraphics::catalog::GeometryKind
+pub fn milgraphics::catalog::GeometryKind::clone(&self) -> milgraphics::catalog::GeometryKind
+impl core::cmp::Eq for milgraphics::catalog::GeometryKind
+impl core::cmp::PartialEq for milgraphics::catalog::GeometryKind
+pub fn milgraphics::catalog::GeometryKind::eq(&self, &milgraphics::catalog::GeometryKind) -> bool
+impl core::fmt::Debug for milgraphics::catalog::GeometryKind
+pub fn milgraphics::catalog::GeometryKind::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::hash::Hash for milgraphics::catalog::GeometryKind
+pub fn milgraphics::catalog::GeometryKind::hash<__H: core::hash::Hasher>(&self, &mut __H)
+impl core::marker::Copy for milgraphics::catalog::GeometryKind
+impl core::marker::StructuralPartialEq for milgraphics::catalog::GeometryKind
+#[non_exhaustive] pub enum milgraphics::catalog::MoDrawRule
+pub milgraphics::catalog::MoDrawRule::Area1
+pub milgraphics::catalog::MoDrawRule::Area2
+pub milgraphics::catalog::MoDrawRule::DoNotDraw
+pub milgraphics::catalog::MoDrawRule::Line1
+pub milgraphics::catalog::MoDrawRule::Line2
+pub milgraphics::catalog::MoDrawRule::Line3
+pub milgraphics::catalog::MoDrawRule::Line4
+pub milgraphics::catalog::MoDrawRule::Line5
+pub milgraphics::catalog::MoDrawRule::Line6
+pub milgraphics::catalog::MoDrawRule::Line7
+pub milgraphics::catalog::MoDrawRule::Line8
+pub milgraphics::catalog::MoDrawRule::Point1
+pub milgraphics::catalog::MoDrawRule::Point2
+pub milgraphics::catalog::MoDrawRule::Point3
+pub milgraphics::catalog::MoDrawRule::Point4
+pub milgraphics::catalog::MoDrawRule::Point5
+pub milgraphics::catalog::MoDrawRule::Point6
+pub milgraphics::catalog::MoDrawRule::Point7
+pub milgraphics::catalog::MoDrawRule::Point8
+impl milgraphics::catalog::MoDrawRule
+pub const milgraphics::catalog::MoDrawRule::ALL: &[Self]
+pub fn milgraphics::catalog::MoDrawRule::from_name(&str) -> core::option::Option<Self>
+pub const fn milgraphics::catalog::MoDrawRule::name(self) -> &'static str
+impl core::clone::Clone for milgraphics::catalog::MoDrawRule
+pub fn milgraphics::catalog::MoDrawRule::clone(&self) -> milgraphics::catalog::MoDrawRule
+impl core::cmp::Eq for milgraphics::catalog::MoDrawRule
+impl core::cmp::Ord for milgraphics::catalog::MoDrawRule
+pub fn milgraphics::catalog::MoDrawRule::cmp(&self, &milgraphics::catalog::MoDrawRule) -> core::cmp::Ordering
+impl core::cmp::PartialEq for milgraphics::catalog::MoDrawRule
+pub fn milgraphics::catalog::MoDrawRule::eq(&self, &milgraphics::catalog::MoDrawRule) -> bool
+impl core::cmp::PartialOrd for milgraphics::catalog::MoDrawRule
+pub fn milgraphics::catalog::MoDrawRule::partial_cmp(&self, &milgraphics::catalog::MoDrawRule) -> core::option::Option<core::cmp::Ordering>
+impl core::fmt::Debug for milgraphics::catalog::MoDrawRule
+pub fn milgraphics::catalog::MoDrawRule::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::hash::Hash for milgraphics::catalog::MoDrawRule
+pub fn milgraphics::catalog::MoDrawRule::hash<__H: core::hash::Hasher>(&self, &mut __H)
+impl core::marker::Copy for milgraphics::catalog::MoDrawRule
+impl core::marker::StructuralPartialEq for milgraphics::catalog::MoDrawRule
 #[non_exhaustive] pub struct milgraphics::catalog::CatalogEntry
 pub milgraphics::catalog::CatalogEntry::draw_rule: milgraphics::catalog::CatalogDrawRule
-pub milgraphics::catalog::CatalogEntry::entity: u32
+pub milgraphics::catalog::CatalogEntry::entity: milgraphics::sidc::EntityCode
 pub milgraphics::catalog::CatalogEntry::geometry: milgraphics::catalog::GeometryKind
 pub milgraphics::catalog::CatalogEntry::modifiers: &'static [milgraphics::ModifierField]
 pub milgraphics::catalog::CatalogEntry::name: &'static str
 pub milgraphics::catalog::CatalogEntry::path: &'static [&'static str]
 pub milgraphics::catalog::CatalogEntry::symbol_set: u8
 pub milgraphics::catalog::CatalogEntry::versions: milgraphics::catalog::VersionSet
+impl core::clone::Clone for milgraphics::catalog::CatalogEntry
+pub fn milgraphics::catalog::CatalogEntry::clone(&self) -> milgraphics::catalog::CatalogEntry
+impl core::cmp::Eq for milgraphics::catalog::CatalogEntry
+impl core::cmp::PartialEq for milgraphics::catalog::CatalogEntry
+pub fn milgraphics::catalog::CatalogEntry::eq(&self, &milgraphics::catalog::CatalogEntry) -> bool
+impl core::fmt::Debug for milgraphics::catalog::CatalogEntry
+pub fn milgraphics::catalog::CatalogEntry::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::marker::Copy for milgraphics::catalog::CatalogEntry
+impl core::marker::StructuralPartialEq for milgraphics::catalog::CatalogEntry
 pub struct milgraphics::catalog::VersionSet(_)
 impl milgraphics::catalog::VersionSet
-pub const fn milgraphics::catalog::VersionSet::contains(self, u8) -> bool
-pub fn milgraphics::catalog::VersionSet::iter(self) -> impl core::iter::traits::iterator::Iterator<Item = u8>
+pub const fn milgraphics::catalog::VersionSet::contains(self, milgraphics::standard::StandardVersion) -> bool
+pub fn milgraphics::catalog::VersionSet::iter(self) -> impl core::iter::traits::iterator::Iterator<Item = milgraphics::standard::StandardVersion>
+impl core::clone::Clone for milgraphics::catalog::VersionSet
+pub fn milgraphics::catalog::VersionSet::clone(&self) -> milgraphics::catalog::VersionSet
+impl core::cmp::Eq for milgraphics::catalog::VersionSet
+impl core::cmp::PartialEq for milgraphics::catalog::VersionSet
+pub fn milgraphics::catalog::VersionSet::eq(&self, &milgraphics::catalog::VersionSet) -> bool
+impl core::fmt::Debug for milgraphics::catalog::VersionSet
+pub fn milgraphics::catalog::VersionSet::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::hash::Hash for milgraphics::catalog::VersionSet
+pub fn milgraphics::catalog::VersionSet::hash<__H: core::hash::Hasher>(&self, &mut __H)
+impl core::marker::Copy for milgraphics::catalog::VersionSet
+impl core::marker::StructuralPartialEq for milgraphics::catalog::VersionSet
 pub fn milgraphics::catalog::entries() -> &'static [milgraphics::catalog::CatalogEntry]
-pub fn milgraphics::catalog::lookup(u8, u8, u32) -> core::option::Option<&'static milgraphics::catalog::CatalogEntry>
+pub fn milgraphics::catalog::lookup(milgraphics::standard::StandardVersion, u8, milgraphics::sidc::EntityCode) -> core::option::Option<&'static milgraphics::catalog::CatalogEntry>
 pub mod milgraphics::construction
-#[non_exhaustive] pub enum milgraphics::construction::GeoGeometry
-pub milgraphics::construction::GeoGeometry::Line(alloc::vec::Vec<milgraphics::geo::GeoPoint>)
-pub milgraphics::construction::GeoGeometry::Ring(alloc::vec::Vec<milgraphics::geo::GeoPoint>)
-impl milgraphics::construction::GeoGeometry
-pub fn milgraphics::construction::GeoGeometry::is_closed(&self) -> bool
-pub fn milgraphics::construction::GeoGeometry::points(&self) -> &[milgraphics::geo::GeoPoint]
 #[non_exhaustive] pub enum milgraphics::construction::HandleKind
 pub milgraphics::construction::HandleKind::Azimuth
 pub milgraphics::construction::HandleKind::Range
 pub milgraphics::construction::HandleKind::Vertex
 pub milgraphics::construction::HandleKind::Width
-#[non_exhaustive] pub enum milgraphics::construction::LabelPlacement
-pub milgraphics::construction::LabelPlacement::Along
-pub milgraphics::construction::LabelPlacement::Along::toward: milgraphics::geo::GeoPoint
-pub milgraphics::construction::LabelPlacement::Centered
-pub milgraphics::construction::LabelPlacement::LineEnd
-pub milgraphics::construction::LabelPlacement::LineEnd::inward: milgraphics::geo::GeoPoint
-pub milgraphics::construction::LabelPlacement::OutsideEdge
-pub milgraphics::construction::LabelPlacement::OutsideEdge::edges: [milgraphics::geo::GeoPoint; 2]
-pub milgraphics::construction::LabelPlacement::OutsideEdge::toward: milgraphics::geo::GeoPoint
+impl core::clone::Clone for milgraphics::construction::HandleKind
+pub fn milgraphics::construction::HandleKind::clone(&self) -> milgraphics::construction::HandleKind
+impl core::cmp::Eq for milgraphics::construction::HandleKind
+impl core::cmp::PartialEq for milgraphics::construction::HandleKind
+pub fn milgraphics::construction::HandleKind::eq(&self, &milgraphics::construction::HandleKind) -> bool
+impl core::fmt::Debug for milgraphics::construction::HandleKind
+pub fn milgraphics::construction::HandleKind::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::hash::Hash for milgraphics::construction::HandleKind
+pub fn milgraphics::construction::HandleKind::hash<__H: core::hash::Hasher>(&self, &mut __H)
+impl core::marker::Copy for milgraphics::construction::HandleKind
+impl core::marker::StructuralPartialEq for milgraphics::construction::HandleKind
 #[non_exhaustive] pub enum milgraphics::construction::PartRole
 pub milgraphics::construction::PartRole::Arrowhead
 pub milgraphics::construction::PartRole::Boundary
@@ -82,65 +290,82 @@ pub milgraphics::construction::PartRole::Hatch
 pub milgraphics::construction::PartRole::Line
 pub milgraphics::construction::PartRole::Orientation
 pub milgraphics::construction::PartRole::Pattern
-#[non_exhaustive] pub enum milgraphics::construction::SymbolSize
-pub milgraphics::construction::SymbolSize::Pixels(f64)
-pub milgraphics::construction::SymbolSize::WithinCircle
-pub milgraphics::construction::SymbolSize::WithinCircle::edge: milgraphics::geo::GeoPoint
+impl milgraphics::construction::PartRole
+pub const fn milgraphics::construction::PartRole::name(self) -> &'static str
+impl core::clone::Clone for milgraphics::construction::PartRole
+pub fn milgraphics::construction::PartRole::clone(&self) -> milgraphics::construction::PartRole
+impl core::cmp::Eq for milgraphics::construction::PartRole
+impl core::cmp::PartialEq for milgraphics::construction::PartRole
+pub fn milgraphics::construction::PartRole::eq(&self, &milgraphics::construction::PartRole) -> bool
+impl core::fmt::Debug for milgraphics::construction::PartRole
+pub fn milgraphics::construction::PartRole::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::hash::Hash for milgraphics::construction::PartRole
+pub fn milgraphics::construction::PartRole::hash<__H: core::hash::Hasher>(&self, &mut __H)
+impl core::marker::Copy for milgraphics::construction::PartRole
+impl core::marker::StructuralPartialEq for milgraphics::construction::PartRole
 #[non_exhaustive] pub struct milgraphics::construction::Construction
-pub milgraphics::construction::Construction::decorations: alloc::vec::Vec<milgraphics::construction::ScreenDecoration>
-pub milgraphics::construction::Construction::definition: milgraphics::definition::GraphicId
-pub milgraphics::construction::Construction::handles: alloc::vec::Vec<milgraphics::construction::HandleSpec>
-pub milgraphics::construction::Construction::labels: alloc::vec::Vec<milgraphics::construction::LabelSpec>
-pub milgraphics::construction::Construction::parts: alloc::vec::Vec<milgraphics::construction::GeoPart>
-pub milgraphics::construction::Construction::renderer_version: &'static str
-pub milgraphics::construction::Construction::revision: u64
-pub milgraphics::construction::Construction::symbols: alloc::vec::Vec<milgraphics::construction::EmbeddedSymbol>
-#[non_exhaustive] pub struct milgraphics::construction::EmbeddedSymbol
-pub milgraphics::construction::EmbeddedSymbol::anchor: milgraphics::geo::GeoPoint
-pub milgraphics::construction::EmbeddedSymbol::offset_px: [f64; 2]
-pub milgraphics::construction::EmbeddedSymbol::size: milgraphics::construction::SymbolSize
-pub milgraphics::construction::EmbeddedSymbol::symbol: milgraphics::sidc::SymbolId
-#[non_exhaustive] pub struct milgraphics::construction::GeoPart
-pub milgraphics::construction::GeoPart::fill: milgraphics::style::Fill
-pub milgraphics::construction::GeoPart::geometry: milgraphics::construction::GeoGeometry
-pub milgraphics::construction::GeoPart::id: milgraphics::construction::PartId
-pub milgraphics::construction::GeoPart::role: milgraphics::construction::PartRole
-pub milgraphics::construction::GeoPart::stroke: core::option::Option<milgraphics::style::Stroke>
-#[non_exhaustive] pub struct milgraphics::construction::HandleSpec
-pub milgraphics::construction::HandleSpec::at: milgraphics::geo::GeoPoint
-pub milgraphics::construction::HandleSpec::id: milgraphics::edit::HandleId
-pub milgraphics::construction::HandleSpec::kind: milgraphics::construction::HandleKind
-#[non_exhaustive] pub struct milgraphics::construction::LabelSpec
-pub milgraphics::construction::LabelSpec::anchor: milgraphics::geo::GeoPoint
-pub milgraphics::construction::LabelSpec::line_offset: f64
-pub milgraphics::construction::LabelSpec::may_hide: bool
-pub milgraphics::construction::LabelSpec::part: milgraphics::construction::PartId
-pub milgraphics::construction::LabelSpec::placement: milgraphics::construction::LabelPlacement
-pub milgraphics::construction::LabelSpec::text: alloc::string::String
+impl milgraphics::construction::Construction
+pub fn milgraphics::construction::Construction::definition(&self) -> &milgraphics::definition::GraphicId
+pub fn milgraphics::construction::Construction::renderer_version(&self) -> &'static str
+pub fn milgraphics::construction::Construction::revision(&self) -> u64
+impl core::clone::Clone for milgraphics::construction::Construction
+pub fn milgraphics::construction::Construction::clone(&self) -> milgraphics::construction::Construction
+impl core::cmp::PartialEq for milgraphics::construction::Construction
+pub fn milgraphics::construction::Construction::eq(&self, &milgraphics::construction::Construction) -> bool
+impl core::fmt::Debug for milgraphics::construction::Construction
+pub fn milgraphics::construction::Construction::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::marker::StructuralPartialEq for milgraphics::construction::Construction
 pub struct milgraphics::construction::PartId(_)
 impl milgraphics::construction::PartId
-pub const fn milgraphics::construction::PartId::get(self) -> u16
-pub struct milgraphics::construction::ScreenDecoration(_)
+pub const fn milgraphics::construction::PartId::get(self) -> u32
+impl core::clone::Clone for milgraphics::construction::PartId
+pub fn milgraphics::construction::PartId::clone(&self) -> milgraphics::construction::PartId
+impl core::cmp::Eq for milgraphics::construction::PartId
+impl core::cmp::Ord for milgraphics::construction::PartId
+pub fn milgraphics::construction::PartId::cmp(&self, &milgraphics::construction::PartId) -> core::cmp::Ordering
+impl core::cmp::PartialEq for milgraphics::construction::PartId
+pub fn milgraphics::construction::PartId::eq(&self, &milgraphics::construction::PartId) -> bool
+impl core::cmp::PartialOrd for milgraphics::construction::PartId
+pub fn milgraphics::construction::PartId::partial_cmp(&self, &milgraphics::construction::PartId) -> core::option::Option<core::cmp::Ordering>
+impl core::fmt::Debug for milgraphics::construction::PartId
+pub fn milgraphics::construction::PartId::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::hash::Hash for milgraphics::construction::PartId
+pub fn milgraphics::construction::PartId::hash<__H: core::hash::Hasher>(&self, &mut __H)
+impl core::marker::Copy for milgraphics::construction::PartId
+impl core::marker::StructuralPartialEq for milgraphics::construction::PartId
 pub mod milgraphics::definition
-#[non_exhaustive] pub enum milgraphics::definition::ControlPointError
-pub milgraphics::definition::ControlPointError::Altitude(serde_json::error::Error)
-pub milgraphics::definition::ControlPointError::Coordinates
-pub milgraphics::definition::ControlPointError::Geo(milgraphics::geo::GeoError)
 #[non_exhaustive] pub enum milgraphics::definition::GraphicIdError
 pub milgraphics::definition::GraphicIdError::Empty
 pub milgraphics::definition::GraphicIdError::TooLong
 pub milgraphics::definition::GraphicIdError::TooLong::len: usize
+impl core::clone::Clone for milgraphics::definition::GraphicIdError
+pub fn milgraphics::definition::GraphicIdError::clone(&self) -> milgraphics::definition::GraphicIdError
+impl core::cmp::Eq for milgraphics::definition::GraphicIdError
+impl core::cmp::PartialEq for milgraphics::definition::GraphicIdError
+pub fn milgraphics::definition::GraphicIdError::eq(&self, &milgraphics::definition::GraphicIdError) -> bool
+impl core::error::Error for milgraphics::definition::GraphicIdError
+impl core::fmt::Debug for milgraphics::definition::GraphicIdError
+pub fn milgraphics::definition::GraphicIdError::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::fmt::Display for milgraphics::definition::GraphicIdError
+pub fn milgraphics::definition::GraphicIdError::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::marker::StructuralPartialEq for milgraphics::definition::GraphicIdError
 #[non_exhaustive] pub struct milgraphics::definition::ControlPoint
 pub milgraphics::definition::ControlPoint::altitude: core::option::Option<milgraphics::geo::Altitude>
 pub milgraphics::definition::ControlPoint::position: milgraphics::geo::GeoPoint
 pub milgraphics::definition::ControlPoint::unknown: alloc::collections::btree::map::BTreeMap<alloc::string::String, serde_json::value::Value>
 impl milgraphics::definition::ControlPoint
 pub fn milgraphics::definition::ControlPoint::ground(milgraphics::geo::GeoPoint) -> Self
-impl core::convert::From<milgraphics::definition::ControlPoint> for serde_json::map::Map<alloc::string::String, serde_json::value::Value>
-pub fn serde_json::map::Map<alloc::string::String, serde_json::value::Value>::from(milgraphics::definition::ControlPoint) -> Self
-impl core::convert::TryFrom<serde_json::map::Map<alloc::string::String, serde_json::value::Value>> for milgraphics::definition::ControlPoint
-pub type milgraphics::definition::ControlPoint::Error = milgraphics::definition::ControlPointError
-pub fn milgraphics::definition::ControlPoint::try_from(serde_json::map::Map<alloc::string::String, serde_json::value::Value>) -> core::result::Result<Self, milgraphics::definition::ControlPointError>
+impl core::clone::Clone for milgraphics::definition::ControlPoint
+pub fn milgraphics::definition::ControlPoint::clone(&self) -> milgraphics::definition::ControlPoint
+impl core::cmp::PartialEq for milgraphics::definition::ControlPoint
+pub fn milgraphics::definition::ControlPoint::eq(&self, &milgraphics::definition::ControlPoint) -> bool
+impl core::fmt::Debug for milgraphics::definition::ControlPoint
+pub fn milgraphics::definition::ControlPoint::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::marker::StructuralPartialEq for milgraphics::definition::ControlPoint
+impl serde_core::ser::Serialize for milgraphics::definition::ControlPoint
+pub fn milgraphics::definition::ControlPoint::serialize<__S>(&self, __S) -> core::result::Result<<__S as serde_core::ser::Serializer>::Ok, <__S as serde_core::ser::Serializer>::Error> where __S: serde_core::ser::Serializer
+impl<'de> serde_core::de::Deserialize<'de> for milgraphics::definition::ControlPoint
+pub fn milgraphics::definition::ControlPoint::deserialize<__D>(__D) -> core::result::Result<Self, <__D as serde_core::de::Deserializer>::Error> where __D: serde_core::de::Deserializer<'de>
 #[non_exhaustive] pub struct milgraphics::definition::GraphicDefinition
 pub milgraphics::definition::GraphicDefinition::id: milgraphics::definition::GraphicId
 pub milgraphics::definition::GraphicDefinition::modifiers: milgraphics::modifier::Modifiers
@@ -153,40 +378,103 @@ pub milgraphics::definition::GraphicDefinition::validity: core::option::Option<m
 impl milgraphics::definition::GraphicDefinition
 pub fn milgraphics::definition::GraphicDefinition::new(milgraphics::definition::GraphicId, milgraphics::sidc::SymbolId, alloc::vec::Vec<milgraphics::definition::ControlPoint>) -> Self
 pub fn milgraphics::definition::GraphicDefinition::positions(&self) -> impl core::iter::traits::exact_size::ExactSizeIterator<Item = milgraphics::geo::GeoPoint> + '_
+impl core::clone::Clone for milgraphics::definition::GraphicDefinition
+pub fn milgraphics::definition::GraphicDefinition::clone(&self) -> milgraphics::definition::GraphicDefinition
+impl core::cmp::PartialEq for milgraphics::definition::GraphicDefinition
+pub fn milgraphics::definition::GraphicDefinition::eq(&self, &milgraphics::definition::GraphicDefinition) -> bool
+impl core::fmt::Debug for milgraphics::definition::GraphicDefinition
+pub fn milgraphics::definition::GraphicDefinition::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::marker::StructuralPartialEq for milgraphics::definition::GraphicDefinition
 pub struct milgraphics::definition::GraphicId(_)
 impl milgraphics::definition::GraphicId
 pub fn milgraphics::definition::GraphicId::as_str(&self) -> &str
 pub fn milgraphics::definition::GraphicId::new(impl core::convert::Into<alloc::string::String>) -> core::result::Result<Self, milgraphics::definition::GraphicIdError>
+impl core::clone::Clone for milgraphics::definition::GraphicId
+pub fn milgraphics::definition::GraphicId::clone(&self) -> milgraphics::definition::GraphicId
+impl core::cmp::Eq for milgraphics::definition::GraphicId
+impl core::cmp::Ord for milgraphics::definition::GraphicId
+pub fn milgraphics::definition::GraphicId::cmp(&self, &milgraphics::definition::GraphicId) -> core::cmp::Ordering
+impl core::cmp::PartialEq for milgraphics::definition::GraphicId
+pub fn milgraphics::definition::GraphicId::eq(&self, &milgraphics::definition::GraphicId) -> bool
+impl core::cmp::PartialOrd for milgraphics::definition::GraphicId
+pub fn milgraphics::definition::GraphicId::partial_cmp(&self, &milgraphics::definition::GraphicId) -> core::option::Option<core::cmp::Ordering>
 impl core::convert::From<milgraphics::definition::GraphicId> for alloc::string::String
 pub fn alloc::string::String::from(milgraphics::definition::GraphicId) -> Self
 impl core::convert::TryFrom<alloc::string::String> for milgraphics::definition::GraphicId
 pub type milgraphics::definition::GraphicId::Error = milgraphics::definition::GraphicIdError
 pub fn milgraphics::definition::GraphicId::try_from(alloc::string::String) -> core::result::Result<Self, milgraphics::definition::GraphicIdError>
+impl core::fmt::Debug for milgraphics::definition::GraphicId
+pub fn milgraphics::definition::GraphicId::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
 impl core::fmt::Display for milgraphics::definition::GraphicId
 pub fn milgraphics::definition::GraphicId::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::hash::Hash for milgraphics::definition::GraphicId
+pub fn milgraphics::definition::GraphicId::hash<__H: core::hash::Hasher>(&self, &mut __H)
+impl core::marker::StructuralPartialEq for milgraphics::definition::GraphicId
+impl serde_core::ser::Serialize for milgraphics::definition::GraphicId
+pub fn milgraphics::definition::GraphicId::serialize<__S>(&self, __S) -> core::result::Result<<__S as serde_core::ser::Serializer>::Ok, <__S as serde_core::ser::Serializer>::Error> where __S: serde_core::ser::Serializer
+impl<'de> serde_core::de::Deserialize<'de> for milgraphics::definition::GraphicId
+pub fn milgraphics::definition::GraphicId::deserialize<__D>(__D) -> core::result::Result<Self, <__D as serde_core::de::Deserializer>::Error> where __D: serde_core::de::Deserializer<'de>
 #[non_exhaustive] pub struct milgraphics::definition::StyleOverrides
-pub milgraphics::definition::StyleOverrides::fill_color: core::option::Option<alloc::string::String>
-pub milgraphics::definition::StyleOverrides::line_color: core::option::Option<alloc::string::String>
+pub milgraphics::definition::StyleOverrides::fill_color: core::option::Option<milgraphics::style::Rgba>
+pub milgraphics::definition::StyleOverrides::line_color: core::option::Option<milgraphics::style::Rgba>
 pub milgraphics::definition::StyleOverrides::unknown: alloc::collections::btree::map::BTreeMap<alloc::string::String, serde_json::value::Value>
 impl milgraphics::definition::StyleOverrides
 pub fn milgraphics::definition::StyleOverrides::is_empty(&self) -> bool
+impl core::clone::Clone for milgraphics::definition::StyleOverrides
+pub fn milgraphics::definition::StyleOverrides::clone(&self) -> milgraphics::definition::StyleOverrides
+impl core::cmp::PartialEq for milgraphics::definition::StyleOverrides
+pub fn milgraphics::definition::StyleOverrides::eq(&self, &milgraphics::definition::StyleOverrides) -> bool
+impl core::default::Default for milgraphics::definition::StyleOverrides
+pub fn milgraphics::definition::StyleOverrides::default() -> milgraphics::definition::StyleOverrides
+impl core::fmt::Debug for milgraphics::definition::StyleOverrides
+pub fn milgraphics::definition::StyleOverrides::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::marker::StructuralPartialEq for milgraphics::definition::StyleOverrides
+impl serde_core::ser::Serialize for milgraphics::definition::StyleOverrides
+pub fn milgraphics::definition::StyleOverrides::serialize<__S>(&self, __S) -> core::result::Result<<__S as serde_core::ser::Serializer>::Ok, <__S as serde_core::ser::Serializer>::Error> where __S: serde_core::ser::Serializer
+impl<'de> serde_core::de::Deserialize<'de> for milgraphics::definition::StyleOverrides
+pub fn milgraphics::definition::StyleOverrides::deserialize<__D>(__D) -> core::result::Result<Self, <__D as serde_core::de::Deserializer>::Error> where __D: serde_core::de::Deserializer<'de>
 #[non_exhaustive] pub struct milgraphics::definition::Validity
 pub milgraphics::definition::Validity::end: core::option::Option<alloc::string::String>
 pub milgraphics::definition::Validity::start: core::option::Option<alloc::string::String>
 pub milgraphics::definition::Validity::unknown: alloc::collections::btree::map::BTreeMap<alloc::string::String, serde_json::value::Value>
+impl core::clone::Clone for milgraphics::definition::Validity
+pub fn milgraphics::definition::Validity::clone(&self) -> milgraphics::definition::Validity
+impl core::cmp::PartialEq for milgraphics::definition::Validity
+pub fn milgraphics::definition::Validity::eq(&self, &milgraphics::definition::Validity) -> bool
+impl core::default::Default for milgraphics::definition::Validity
+pub fn milgraphics::definition::Validity::default() -> milgraphics::definition::Validity
+impl core::fmt::Debug for milgraphics::definition::Validity
+pub fn milgraphics::definition::Validity::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::marker::StructuralPartialEq for milgraphics::definition::Validity
+impl serde_core::ser::Serialize for milgraphics::definition::Validity
+pub fn milgraphics::definition::Validity::serialize<__S>(&self, __S) -> core::result::Result<<__S as serde_core::ser::Serializer>::Ok, <__S as serde_core::ser::Serializer>::Error> where __S: serde_core::ser::Serializer
+impl<'de> serde_core::de::Deserialize<'de> for milgraphics::definition::Validity
+pub fn milgraphics::definition::Validity::deserialize<__D>(__D) -> core::result::Result<Self, <__D as serde_core::de::Deserializer>::Error> where __D: serde_core::de::Deserializer<'de>
 pub const milgraphics::definition::MAX_ID_BYTES: usize
 pub mod milgraphics::edit
 #[non_exhaustive] pub enum milgraphics::edit::Edit
 pub milgraphics::edit::Edit::DeleteVertex
-pub milgraphics::edit::Edit::DeleteVertex::index: u16
+pub milgraphics::edit::Edit::DeleteVertex::index: u32
 pub milgraphics::edit::Edit::InsertVertex
 pub milgraphics::edit::Edit::InsertVertex::at: milgraphics::geo::GeoPoint
-pub milgraphics::edit::Edit::InsertVertex::index: u16
+pub milgraphics::edit::Edit::InsertVertex::index: u32
 pub milgraphics::edit::Edit::Move
 pub milgraphics::edit::Edit::Move::handle: milgraphics::edit::HandleId
 pub milgraphics::edit::Edit::Move::to: milgraphics::geo::GeoPoint
+pub milgraphics::edit::Edit::SetModifier
+pub milgraphics::edit::Edit::SetModifier::field: milgraphics::ModifierField
+pub milgraphics::edit::Edit::SetModifier::value: core::option::Option<milgraphics::modifier::ModifierValue>
+pub milgraphics::edit::Edit::SetModifiers(alloc::boxed::Box<milgraphics::modifier::Modifiers>)
+impl core::clone::Clone for milgraphics::edit::Edit
+pub fn milgraphics::edit::Edit::clone(&self) -> milgraphics::edit::Edit
+impl core::cmp::PartialEq for milgraphics::edit::Edit
+pub fn milgraphics::edit::Edit::eq(&self, &milgraphics::edit::Edit) -> bool
+impl core::fmt::Debug for milgraphics::edit::Edit
+pub fn milgraphics::edit::Edit::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::marker::StructuralPartialEq for milgraphics::edit::Edit
 #[non_exhaustive] pub enum milgraphics::edit::EditError
 pub milgraphics::edit::EditError::Invalid(milgraphics::ConstructError)
+pub milgraphics::edit::EditError::Modifier(milgraphics::modifier::ModifierValueError)
 pub milgraphics::edit::EditError::NoSuchHandle
 pub milgraphics::edit::EditError::NoSuchHandle::handle: milgraphics::edit::HandleId
 pub milgraphics::edit::EditError::PointCount
@@ -194,12 +482,61 @@ pub milgraphics::edit::EditError::PointCount::count: usize
 pub milgraphics::edit::EditError::PointCount::max: usize
 pub milgraphics::edit::EditError::PointCount::min: usize
 pub milgraphics::edit::EditError::Unsupported(milgraphics::support::Unsupported)
+pub milgraphics::edit::EditError::VertexEditsNotAllowed
+pub milgraphics::edit::EditError::VertexEditsNotAllowed::symbol: &'static str
+impl core::convert::From<milgraphics::modifier::ModifierValueError> for milgraphics::edit::EditError
+pub fn milgraphics::edit::EditError::from(milgraphics::modifier::ModifierValueError) -> Self
+impl core::convert::From<milgraphics::support::Unsupported> for milgraphics::edit::EditError
+pub fn milgraphics::edit::EditError::from(milgraphics::support::Unsupported) -> Self
+impl core::error::Error for milgraphics::edit::EditError
+pub fn milgraphics::edit::EditError::source(&self) -> core::option::Option<&(dyn core::error::Error + 'static)>
+impl core::fmt::Debug for milgraphics::edit::EditError
+pub fn milgraphics::edit::EditError::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::fmt::Display for milgraphics::edit::EditError
+pub fn milgraphics::edit::EditError::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
 #[non_exhaustive] pub enum milgraphics::edit::HandleId
-pub milgraphics::edit::HandleId::Azimuth(u16)
-pub milgraphics::edit::HandleId::Range(u16)
-pub milgraphics::edit::HandleId::Vertex(u16)
+pub milgraphics::edit::HandleId::Azimuth(u32)
+pub milgraphics::edit::HandleId::Range(u32)
+pub milgraphics::edit::HandleId::Vertex(u32)
 pub milgraphics::edit::HandleId::Width
-pub fn milgraphics::edit::apply_edit(&milgraphics::definition::GraphicDefinition, &milgraphics::edit::Edit) -> core::result::Result<milgraphics::definition::GraphicDefinition, milgraphics::edit::EditError>
+impl core::clone::Clone for milgraphics::edit::HandleId
+pub fn milgraphics::edit::HandleId::clone(&self) -> milgraphics::edit::HandleId
+impl core::cmp::Eq for milgraphics::edit::HandleId
+impl core::cmp::Ord for milgraphics::edit::HandleId
+pub fn milgraphics::edit::HandleId::cmp(&self, &milgraphics::edit::HandleId) -> core::cmp::Ordering
+impl core::cmp::PartialEq for milgraphics::edit::HandleId
+pub fn milgraphics::edit::HandleId::eq(&self, &milgraphics::edit::HandleId) -> bool
+impl core::cmp::PartialOrd for milgraphics::edit::HandleId
+pub fn milgraphics::edit::HandleId::partial_cmp(&self, &milgraphics::edit::HandleId) -> core::option::Option<core::cmp::Ordering>
+impl core::fmt::Debug for milgraphics::edit::HandleId
+pub fn milgraphics::edit::HandleId::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::hash::Hash for milgraphics::edit::HandleId
+pub fn milgraphics::edit::HandleId::hash<__H: core::hash::Hasher>(&self, &mut __H)
+impl core::marker::Copy for milgraphics::edit::HandleId
+impl core::marker::StructuralPartialEq for milgraphics::edit::HandleId
+impl serde_core::ser::Serialize for milgraphics::edit::HandleId
+pub fn milgraphics::edit::HandleId::serialize<__S>(&self, __S) -> core::result::Result<<__S as serde_core::ser::Serializer>::Ok, <__S as serde_core::ser::Serializer>::Error> where __S: serde_core::ser::Serializer
+impl<'de> serde_core::de::Deserialize<'de> for milgraphics::edit::HandleId
+pub fn milgraphics::edit::HandleId::deserialize<__D>(__D) -> core::result::Result<Self, <__D as serde_core::de::Deserializer>::Error> where __D: serde_core::de::Deserializer<'de>
+#[non_exhaustive] pub struct milgraphics::edit::EditContext
+impl milgraphics::edit::EditContext
+pub fn milgraphics::edit::EditContext::config(&self) -> &milgraphics::Config
+pub fn milgraphics::edit::EditContext::new(milgraphics::Config) -> Self
+impl core::clone::Clone for milgraphics::edit::EditContext
+pub fn milgraphics::edit::EditContext::clone(&self) -> milgraphics::edit::EditContext
+impl core::fmt::Debug for milgraphics::edit::EditContext
+pub fn milgraphics::edit::EditContext::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+#[non_exhaustive] pub struct milgraphics::edit::Edited
+pub milgraphics::edit::Edited::construction: milgraphics::construction::Construction
+pub milgraphics::edit::Edited::definition: milgraphics::definition::GraphicDefinition
+impl core::clone::Clone for milgraphics::edit::Edited
+pub fn milgraphics::edit::Edited::clone(&self) -> milgraphics::edit::Edited
+impl core::cmp::PartialEq for milgraphics::edit::Edited
+pub fn milgraphics::edit::Edited::eq(&self, &milgraphics::edit::Edited) -> bool
+impl core::fmt::Debug for milgraphics::edit::Edited
+pub fn milgraphics::edit::Edited::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::marker::StructuralPartialEq for milgraphics::edit::Edited
+pub fn milgraphics::edit::apply_edit(&milgraphics::definition::GraphicDefinition, &milgraphics::edit::Edit, &milgraphics::edit::EditContext) -> core::result::Result<milgraphics::edit::Edited, milgraphics::edit::EditError>
 pub mod milgraphics::geo
 #[non_exhaustive] pub enum milgraphics::geo::GeoError
 pub milgraphics::geo::GeoError::Latitude
@@ -207,21 +544,71 @@ pub milgraphics::geo::GeoError::Latitude::lat: f64
 pub milgraphics::geo::GeoError::NotFinite
 pub milgraphics::geo::GeoError::NotFinite::lat: f64
 pub milgraphics::geo::GeoError::NotFinite::lon: f64
+impl core::clone::Clone for milgraphics::geo::GeoError
+pub fn milgraphics::geo::GeoError::clone(&self) -> milgraphics::geo::GeoError
+impl core::cmp::PartialEq for milgraphics::geo::GeoError
+pub fn milgraphics::geo::GeoError::eq(&self, &milgraphics::geo::GeoError) -> bool
+impl core::error::Error for milgraphics::geo::GeoError
+impl core::fmt::Debug for milgraphics::geo::GeoError
+pub fn milgraphics::geo::GeoError::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::fmt::Display for milgraphics::geo::GeoError
+pub fn milgraphics::geo::GeoError::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::marker::Copy for milgraphics::geo::GeoError
+impl core::marker::StructuralPartialEq for milgraphics::geo::GeoError
 #[non_exhaustive] pub enum milgraphics::geo::VerticalDatum
 pub milgraphics::geo::VerticalDatum::AboveGround
 pub milgraphics::geo::VerticalDatum::Ellipsoid
 pub milgraphics::geo::VerticalDatum::MeanSeaLevel
+impl core::clone::Clone for milgraphics::geo::VerticalDatum
+pub fn milgraphics::geo::VerticalDatum::clone(&self) -> milgraphics::geo::VerticalDatum
+impl core::cmp::Eq for milgraphics::geo::VerticalDatum
+impl core::cmp::PartialEq for milgraphics::geo::VerticalDatum
+pub fn milgraphics::geo::VerticalDatum::eq(&self, &milgraphics::geo::VerticalDatum) -> bool
+impl core::fmt::Debug for milgraphics::geo::VerticalDatum
+pub fn milgraphics::geo::VerticalDatum::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::hash::Hash for milgraphics::geo::VerticalDatum
+pub fn milgraphics::geo::VerticalDatum::hash<__H: core::hash::Hasher>(&self, &mut __H)
+impl core::marker::Copy for milgraphics::geo::VerticalDatum
+impl core::marker::StructuralPartialEq for milgraphics::geo::VerticalDatum
+impl serde_core::ser::Serialize for milgraphics::geo::VerticalDatum
+pub fn milgraphics::geo::VerticalDatum::serialize<__S>(&self, __S) -> core::result::Result<<__S as serde_core::ser::Serializer>::Ok, <__S as serde_core::ser::Serializer>::Error> where __S: serde_core::ser::Serializer
+impl<'de> serde_core::de::Deserialize<'de> for milgraphics::geo::VerticalDatum
+pub fn milgraphics::geo::VerticalDatum::deserialize<__D>(__D) -> core::result::Result<Self, <__D as serde_core::de::Deserializer>::Error> where __D: serde_core::de::Deserializer<'de>
 #[non_exhaustive] pub struct milgraphics::geo::Altitude
 pub milgraphics::geo::Altitude::datum: milgraphics::geo::VerticalDatum
 pub milgraphics::geo::Altitude::metres: f64
 pub milgraphics::geo::Altitude::unknown: alloc::collections::btree::map::BTreeMap<alloc::string::String, serde_json::value::Value>
 impl milgraphics::geo::Altitude
 pub fn milgraphics::geo::Altitude::new(f64, milgraphics::geo::VerticalDatum) -> Self
+impl core::clone::Clone for milgraphics::geo::Altitude
+pub fn milgraphics::geo::Altitude::clone(&self) -> milgraphics::geo::Altitude
+impl core::cmp::PartialEq for milgraphics::geo::Altitude
+pub fn milgraphics::geo::Altitude::eq(&self, &milgraphics::geo::Altitude) -> bool
+impl core::fmt::Debug for milgraphics::geo::Altitude
+pub fn milgraphics::geo::Altitude::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::marker::StructuralPartialEq for milgraphics::geo::Altitude
+impl serde_core::ser::Serialize for milgraphics::geo::Altitude
+pub fn milgraphics::geo::Altitude::serialize<__S>(&self, __S) -> core::result::Result<<__S as serde_core::ser::Serializer>::Ok, <__S as serde_core::ser::Serializer>::Error> where __S: serde_core::ser::Serializer
+impl<'de> serde_core::de::Deserialize<'de> for milgraphics::geo::Altitude
+pub fn milgraphics::geo::Altitude::deserialize<__D>(__D) -> core::result::Result<Self, <__D as serde_core::de::Deserializer>::Error> where __D: serde_core::de::Deserializer<'de>
 pub struct milgraphics::geo::GeoPoint
 impl milgraphics::geo::GeoPoint
 pub fn milgraphics::geo::GeoPoint::lat(self) -> f64
 pub fn milgraphics::geo::GeoPoint::lon(self) -> f64
 pub fn milgraphics::geo::GeoPoint::new(f64, f64) -> core::result::Result<Self, milgraphics::geo::GeoError>
+impl core::clone::Clone for milgraphics::geo::GeoPoint
+pub fn milgraphics::geo::GeoPoint::clone(&self) -> milgraphics::geo::GeoPoint
+impl core::cmp::PartialEq for milgraphics::geo::GeoPoint
+pub fn milgraphics::geo::GeoPoint::eq(&self, &milgraphics::geo::GeoPoint) -> bool
+impl core::fmt::Debug for milgraphics::geo::GeoPoint
+pub fn milgraphics::geo::GeoPoint::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::marker::Copy for milgraphics::geo::GeoPoint
+impl core::marker::StructuralPartialEq for milgraphics::geo::GeoPoint
+impl serde_core::ser::Serialize for milgraphics::geo::GeoPoint
+pub fn milgraphics::geo::GeoPoint::serialize<__S>(&self, __S) -> core::result::Result<<__S as serde_core::ser::Serializer>::Ok, <__S as serde_core::ser::Serializer>::Error> where __S: serde_core::ser::Serializer
+impl<'de> serde_core::de::Deserialize<'de> for milgraphics::geo::GeoPoint
+pub fn milgraphics::geo::GeoPoint::deserialize<__D>(__D) -> core::result::Result<Self, <__D as serde_core::de::Deserializer>::Error> where __D: serde_core::de::Deserializer<'de>
+pub type milgraphics::geo::LonLat = [f64; 2]
 pub mod milgraphics::geojson
 pub fn milgraphics::geojson::geographic_features(&[milgraphics::render::GeoItem]) -> alloc::vec::Vec<serde_json::value::Value>
 pub fn milgraphics::geojson::to_geojson(&milgraphics::render::RenderPlan) -> serde_json::value::Value
@@ -248,12 +635,28 @@ pub milgraphics::modifier::ModifierField::W1
 pub milgraphics::modifier::ModifierField::X
 pub milgraphics::modifier::ModifierField::Y
 impl milgraphics::ModifierField
-pub const milgraphics::ModifierField::ALL: [Self; 20]
+pub const milgraphics::ModifierField::ALL: &'static [Self]
 pub fn milgraphics::ModifierField::from_name(&str) -> core::option::Option<Self>
 pub const fn milgraphics::ModifierField::kind(self) -> milgraphics::ModifierKind
+pub const fn milgraphics::ModifierField::label(self) -> &'static str
 pub const fn milgraphics::ModifierField::name(self) -> &'static str
+impl core::clone::Clone for milgraphics::ModifierField
+pub fn milgraphics::ModifierField::clone(&self) -> milgraphics::ModifierField
+impl core::cmp::Eq for milgraphics::ModifierField
+impl core::cmp::Ord for milgraphics::ModifierField
+pub fn milgraphics::ModifierField::cmp(&self, &milgraphics::ModifierField) -> core::cmp::Ordering
+impl core::cmp::PartialEq for milgraphics::ModifierField
+pub fn milgraphics::ModifierField::eq(&self, &milgraphics::ModifierField) -> bool
+impl core::cmp::PartialOrd for milgraphics::ModifierField
+pub fn milgraphics::ModifierField::partial_cmp(&self, &milgraphics::ModifierField) -> core::option::Option<core::cmp::Ordering>
+impl core::fmt::Debug for milgraphics::ModifierField
+pub fn milgraphics::ModifierField::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
 impl core::fmt::Display for milgraphics::ModifierField
 pub fn milgraphics::ModifierField::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::hash::Hash for milgraphics::ModifierField
+pub fn milgraphics::ModifierField::hash<__H: core::hash::Hasher>(&self, &mut __H)
+impl core::marker::Copy for milgraphics::ModifierField
+impl core::marker::StructuralPartialEq for milgraphics::ModifierField
 #[non_exhaustive] pub enum milgraphics::modifier::ModifierKind
 pub milgraphics::modifier::ModifierKind::Altitudes
 pub milgraphics::modifier::ModifierKind::Azimuths
@@ -262,10 +665,28 @@ pub milgraphics::modifier::ModifierKind::Direction
 pub milgraphics::modifier::ModifierKind::Distances
 pub milgraphics::modifier::ModifierKind::SymbolCode
 pub milgraphics::modifier::ModifierKind::Text
+impl core::clone::Clone for milgraphics::ModifierKind
+pub fn milgraphics::ModifierKind::clone(&self) -> milgraphics::ModifierKind
+impl core::cmp::Eq for milgraphics::ModifierKind
+impl core::cmp::PartialEq for milgraphics::ModifierKind
+pub fn milgraphics::ModifierKind::eq(&self, &milgraphics::ModifierKind) -> bool
+impl core::fmt::Debug for milgraphics::ModifierKind
+pub fn milgraphics::ModifierKind::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::hash::Hash for milgraphics::ModifierKind
+pub fn milgraphics::ModifierKind::hash<__H: core::hash::Hasher>(&self, &mut __H)
+impl core::marker::Copy for milgraphics::ModifierKind
+impl core::marker::StructuralPartialEq for milgraphics::ModifierKind
 #[non_exhaustive] pub enum milgraphics::modifier::ModifierValue
 pub milgraphics::modifier::ModifierValue::Altitudes(alloc::vec::Vec<milgraphics::geo::Altitude>)
 pub milgraphics::modifier::ModifierValue::Numbers(alloc::vec::Vec<f64>)
 pub milgraphics::modifier::ModifierValue::Text(alloc::string::String)
+impl core::clone::Clone for milgraphics::modifier::ModifierValue
+pub fn milgraphics::modifier::ModifierValue::clone(&self) -> milgraphics::modifier::ModifierValue
+impl core::cmp::PartialEq for milgraphics::modifier::ModifierValue
+pub fn milgraphics::modifier::ModifierValue::eq(&self, &milgraphics::modifier::ModifierValue) -> bool
+impl core::fmt::Debug for milgraphics::modifier::ModifierValue
+pub fn milgraphics::modifier::ModifierValue::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::marker::StructuralPartialEq for milgraphics::modifier::ModifierValue
 #[non_exhaustive] pub enum milgraphics::modifier::ModifierValueError
 pub milgraphics::modifier::ModifierValueError::Count
 pub milgraphics::modifier::ModifierValueError::Count::count: usize
@@ -273,28 +694,19 @@ pub milgraphics::modifier::ModifierValueError::Count::field: milgraphics::Modifi
 pub milgraphics::modifier::ModifierValueError::Kind
 pub milgraphics::modifier::ModifierValueError::Kind::field: milgraphics::ModifierField
 pub milgraphics::modifier::ModifierValueError::Kind::kind: milgraphics::ModifierKind
+impl core::clone::Clone for milgraphics::modifier::ModifierValueError
+pub fn milgraphics::modifier::ModifierValueError::clone(&self) -> milgraphics::modifier::ModifierValueError
+impl core::cmp::PartialEq for milgraphics::modifier::ModifierValueError
+pub fn milgraphics::modifier::ModifierValueError::eq(&self, &milgraphics::modifier::ModifierValueError) -> bool
+impl core::convert::From<milgraphics::modifier::ModifierValueError> for milgraphics::edit::EditError
+pub fn milgraphics::edit::EditError::from(milgraphics::modifier::ModifierValueError) -> Self
+impl core::error::Error for milgraphics::modifier::ModifierValueError
+impl core::fmt::Debug for milgraphics::modifier::ModifierValueError
+pub fn milgraphics::modifier::ModifierValueError::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::fmt::Display for milgraphics::modifier::ModifierValueError
+pub fn milgraphics::modifier::ModifierValueError::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::marker::StructuralPartialEq for milgraphics::modifier::ModifierValueError
 #[non_exhaustive] pub struct milgraphics::modifier::Modifiers
-pub milgraphics::modifier::Modifiers::additional_info: core::option::Option<alloc::string::String>
-pub milgraphics::modifier::Modifiers::additional_info2: core::option::Option<alloc::string::String>
-pub milgraphics::modifier::Modifiers::altitudes: alloc::vec::Vec<milgraphics::geo::Altitude>
-pub milgraphics::modifier::Modifiers::azimuths_deg: alloc::vec::Vec<f64>
-pub milgraphics::modifier::Modifiers::country: core::option::Option<alloc::string::String>
-pub milgraphics::modifier::Modifiers::designation: core::option::Option<alloc::string::String>
-pub milgraphics::modifier::Modifiers::designation2: core::option::Option<alloc::string::String>
-pub milgraphics::modifier::Modifiers::designation3: core::option::Option<alloc::string::String>
-pub milgraphics::modifier::Modifiers::direction_deg: core::option::Option<f64>
-pub milgraphics::modifier::Modifiers::distances_m: alloc::vec::Vec<f64>
-pub milgraphics::modifier::Modifiers::dtg_end: core::option::Option<alloc::string::String>
-pub milgraphics::modifier::Modifiers::dtg_start: core::option::Option<alloc::string::String>
-pub milgraphics::modifier::Modifiers::echelon: core::option::Option<alloc::string::String>
-pub milgraphics::modifier::Modifiers::equipment_type: core::option::Option<alloc::string::String>
-pub milgraphics::modifier::Modifiers::hostile: core::option::Option<alloc::string::String>
-pub milgraphics::modifier::Modifiers::location: core::option::Option<alloc::string::String>
-pub milgraphics::modifier::Modifiers::quantity: core::option::Option<alloc::string::String>
-pub milgraphics::modifier::Modifiers::symbol_icon: core::option::Option<alloc::string::String>
-pub milgraphics::modifier::Modifiers::target_number: core::option::Option<alloc::string::String>
-pub milgraphics::modifier::Modifiers::target_number_extension: core::option::Option<alloc::string::String>
-pub milgraphics::modifier::Modifiers::unknown: alloc::collections::btree::map::BTreeMap<alloc::string::String, serde_json::value::Value>
 impl milgraphics::modifier::Modifiers
 pub fn milgraphics::modifier::Modifiers::clear(&mut self, milgraphics::ModifierField)
 pub fn milgraphics::modifier::Modifiers::count(&self, milgraphics::ModifierField) -> usize
@@ -303,62 +715,162 @@ pub fn milgraphics::modifier::Modifiers::get(&self, milgraphics::ModifierField) 
 pub fn milgraphics::modifier::Modifiers::is_empty(&self) -> bool
 pub fn milgraphics::modifier::Modifiers::is_set(&self, milgraphics::ModifierField) -> bool
 pub fn milgraphics::modifier::Modifiers::set(&mut self, milgraphics::ModifierField, milgraphics::modifier::ModifierValue) -> core::result::Result<(), milgraphics::modifier::ModifierValueError>
-impl core::convert::From<milgraphics::modifier::Modifiers> for serde_json::map::Map<alloc::string::String, serde_json::value::Value>
-pub fn serde_json::map::Map<alloc::string::String, serde_json::value::Value>::from(milgraphics::modifier::Modifiers) -> Self
-impl core::convert::From<serde_json::map::Map<alloc::string::String, serde_json::value::Value>> for milgraphics::modifier::Modifiers
-pub fn milgraphics::modifier::Modifiers::from(serde_json::map::Map<alloc::string::String, serde_json::value::Value>) -> Self
+impl core::clone::Clone for milgraphics::modifier::Modifiers
+pub fn milgraphics::modifier::Modifiers::clone(&self) -> milgraphics::modifier::Modifiers
+impl core::cmp::PartialEq for milgraphics::modifier::Modifiers
+pub fn milgraphics::modifier::Modifiers::eq(&self, &milgraphics::modifier::Modifiers) -> bool
+impl core::default::Default for milgraphics::modifier::Modifiers
+pub fn milgraphics::modifier::Modifiers::default() -> milgraphics::modifier::Modifiers
+impl core::fmt::Debug for milgraphics::modifier::Modifiers
+pub fn milgraphics::modifier::Modifiers::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::marker::StructuralPartialEq for milgraphics::modifier::Modifiers
+impl serde_core::ser::Serialize for milgraphics::modifier::Modifiers
+pub fn milgraphics::modifier::Modifiers::serialize<__S>(&self, __S) -> core::result::Result<<__S as serde_core::ser::Serializer>::Ok, <__S as serde_core::ser::Serializer>::Error> where __S: serde_core::ser::Serializer
+impl<'de> serde_core::de::Deserialize<'de> for milgraphics::modifier::Modifiers
+pub fn milgraphics::modifier::Modifiers::deserialize<__D>(__D) -> core::result::Result<Self, <__D as serde_core::de::Deserializer>::Error> where __D: serde_core::de::Deserializer<'de>
 pub mod milgraphics::persist
 #[non_exhaustive] pub enum milgraphics::persist::PersistError
 pub milgraphics::persist::PersistError::Invalid(serde_json::error::Error)
-pub milgraphics::persist::PersistError::NotAnObject(serde_json::error::Error)
+pub milgraphics::persist::PersistError::InvalidJson(serde_json::error::Error)
+pub milgraphics::persist::PersistError::NonFinite
+pub milgraphics::persist::PersistError::NonFinite::field: alloc::string::String
+pub milgraphics::persist::PersistError::NonFinite::id: milgraphics::definition::GraphicId
 pub milgraphics::persist::PersistError::Serialize
-pub milgraphics::persist::PersistError::Serialize::id: alloc::string::String
+pub milgraphics::persist::PersistError::Serialize::id: milgraphics::definition::GraphicId
 pub milgraphics::persist::PersistError::Serialize::source: serde_json::error::Error
 pub milgraphics::persist::PersistError::UnknownSchema
 pub milgraphics::persist::PersistError::UnknownSchema::found: core::option::Option<serde_json::value::Value>
 pub milgraphics::persist::PersistError::WrongType
 pub milgraphics::persist::PersistError::WrongType::found: &'static str
+impl core::error::Error for milgraphics::persist::PersistError
+pub fn milgraphics::persist::PersistError::source(&self) -> core::option::Option<&(dyn core::error::Error + 'static)>
+impl core::fmt::Debug for milgraphics::persist::PersistError
+pub fn milgraphics::persist::PersistError::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::fmt::Display for milgraphics::persist::PersistError
+pub fn milgraphics::persist::PersistError::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
 #[non_exhaustive] pub struct milgraphics::persist::PersistedGraphic
 impl milgraphics::persist::PersistedGraphic
 pub fn milgraphics::persist::PersistedGraphic::as_json(&self) -> &str
 pub fn milgraphics::persist::PersistedGraphic::decode(&self) -> core::result::Result<milgraphics::definition::GraphicDefinition, milgraphics::persist::PersistError>
 pub fn milgraphics::persist::PersistedGraphic::from_definition(&milgraphics::definition::GraphicDefinition) -> core::result::Result<Self, milgraphics::persist::PersistError>
 pub fn milgraphics::persist::PersistedGraphic::from_json(&str) -> core::result::Result<Self, milgraphics::persist::PersistError>
+impl core::clone::Clone for milgraphics::persist::PersistedGraphic
+pub fn milgraphics::persist::PersistedGraphic::clone(&self) -> milgraphics::persist::PersistedGraphic
+impl core::cmp::Eq for milgraphics::persist::PersistedGraphic
+impl core::cmp::PartialEq for milgraphics::persist::PersistedGraphic
+pub fn milgraphics::persist::PersistedGraphic::eq(&self, &Self) -> bool
+impl core::fmt::Debug for milgraphics::persist::PersistedGraphic
+pub fn milgraphics::persist::PersistedGraphic::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
 pub const milgraphics::persist::SCHEMA_VERSION: u64
 pub mod milgraphics::pick
 #[non_exhaustive] pub enum milgraphics::pick::PickTarget
 pub milgraphics::pick::PickTarget::Handle(milgraphics::edit::HandleId)
 pub milgraphics::pick::PickTarget::Part(milgraphics::construction::PartId)
-pub milgraphics::pick::PickTarget::Symbol(u16)
+pub milgraphics::pick::PickTarget::Symbol(u32)
+impl core::clone::Clone for milgraphics::pick::PickTarget
+pub fn milgraphics::pick::PickTarget::clone(&self) -> milgraphics::pick::PickTarget
+impl core::cmp::Eq for milgraphics::pick::PickTarget
+impl core::cmp::PartialEq for milgraphics::pick::PickTarget
+pub fn milgraphics::pick::PickTarget::eq(&self, &milgraphics::pick::PickTarget) -> bool
+impl core::fmt::Debug for milgraphics::pick::PickTarget
+pub fn milgraphics::pick::PickTarget::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::hash::Hash for milgraphics::pick::PickTarget
+pub fn milgraphics::pick::PickTarget::hash<__H: core::hash::Hasher>(&self, &mut __H)
+impl core::marker::Copy for milgraphics::pick::PickTarget
+impl core::marker::StructuralPartialEq for milgraphics::pick::PickTarget
 #[non_exhaustive] pub struct milgraphics::pick::PickRef
 pub milgraphics::pick::PickRef::definition: milgraphics::definition::GraphicId
 pub milgraphics::pick::PickRef::target: milgraphics::pick::PickTarget
+impl core::clone::Clone for milgraphics::pick::PickRef
+pub fn milgraphics::pick::PickRef::clone(&self) -> milgraphics::pick::PickRef
+impl core::cmp::Eq for milgraphics::pick::PickRef
+impl core::cmp::PartialEq for milgraphics::pick::PickRef
+pub fn milgraphics::pick::PickRef::eq(&self, &milgraphics::pick::PickRef) -> bool
+impl core::fmt::Debug for milgraphics::pick::PickRef
+pub fn milgraphics::pick::PickRef::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::hash::Hash for milgraphics::pick::PickRef
+pub fn milgraphics::pick::PickRef::hash<__H: core::hash::Hasher>(&self, &mut __H)
+impl core::marker::StructuralPartialEq for milgraphics::pick::PickRef
 pub mod milgraphics::render
 #[non_exhaustive] pub enum milgraphics::render::GeoShape
-pub milgraphics::render::GeoShape::Lines(alloc::vec::Vec<alloc::vec::Vec<milgraphics::antimeridian::LonLat>>)
-pub milgraphics::render::GeoShape::Polygons(alloc::vec::Vec<alloc::vec::Vec<milgraphics::antimeridian::LonLat>>)
+pub milgraphics::render::GeoShape::Lines(alloc::vec::Vec<alloc::vec::Vec<milgraphics::geo::LonLat>>)
+pub milgraphics::render::GeoShape::Polygons(alloc::vec::Vec<alloc::vec::Vec<milgraphics::geo::LonLat>>)
 impl milgraphics::render::GeoShape
 pub fn milgraphics::render::GeoShape::is_closed(&self) -> bool
-pub fn milgraphics::render::GeoShape::pieces(&self) -> &[alloc::vec::Vec<milgraphics::antimeridian::LonLat>]
+pub fn milgraphics::render::GeoShape::pieces(&self) -> &[alloc::vec::Vec<milgraphics::geo::LonLat>]
+impl core::clone::Clone for milgraphics::render::GeoShape
+pub fn milgraphics::render::GeoShape::clone(&self) -> milgraphics::render::GeoShape
+impl core::cmp::PartialEq for milgraphics::render::GeoShape
+pub fn milgraphics::render::GeoShape::eq(&self, &milgraphics::render::GeoShape) -> bool
+impl core::fmt::Debug for milgraphics::render::GeoShape
+pub fn milgraphics::render::GeoShape::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::marker::StructuralPartialEq for milgraphics::render::GeoShape
 #[non_exhaustive] pub enum milgraphics::render::PlanContent
 pub milgraphics::render::PlanContent::Full
 pub milgraphics::render::PlanContent::Overlay
+impl core::clone::Clone for milgraphics::render::PlanContent
+pub fn milgraphics::render::PlanContent::clone(&self) -> milgraphics::render::PlanContent
+impl core::cmp::Eq for milgraphics::render::PlanContent
+impl core::cmp::PartialEq for milgraphics::render::PlanContent
+pub fn milgraphics::render::PlanContent::eq(&self, &milgraphics::render::PlanContent) -> bool
+impl core::default::Default for milgraphics::render::PlanContent
+pub fn milgraphics::render::PlanContent::default() -> milgraphics::render::PlanContent
+impl core::fmt::Debug for milgraphics::render::PlanContent
+pub fn milgraphics::render::PlanContent::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::hash::Hash for milgraphics::render::PlanContent
+pub fn milgraphics::render::PlanContent::hash<__H: core::hash::Hasher>(&self, &mut __H)
+impl core::marker::Copy for milgraphics::render::PlanContent
+impl core::marker::StructuralPartialEq for milgraphics::render::PlanContent
 #[non_exhaustive] pub enum milgraphics::render::RenderError
 pub milgraphics::render::RenderError::Budget(milgraphics::budget::BudgetError)
+impl core::convert::From<milgraphics::budget::BudgetError> for milgraphics::render::RenderError
+pub fn milgraphics::render::RenderError::from(milgraphics::budget::BudgetError) -> Self
+impl core::error::Error for milgraphics::render::RenderError
+pub fn milgraphics::render::RenderError::source(&self) -> core::option::Option<&(dyn core::error::Error + 'static)>
+impl core::fmt::Debug for milgraphics::render::RenderError
+pub fn milgraphics::render::RenderError::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::fmt::Display for milgraphics::render::RenderError
+pub fn milgraphics::render::RenderError::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
 #[non_exhaustive] pub enum milgraphics::render::ScreenShape
 pub milgraphics::render::ScreenShape::Polygon(alloc::vec::Vec<milgraphics::render::ScreenPoint>)
 pub milgraphics::render::ScreenShape::Polyline(alloc::vec::Vec<milgraphics::render::ScreenPoint>)
 impl milgraphics::render::ScreenShape
 pub fn milgraphics::render::ScreenShape::is_closed(&self) -> bool
 pub fn milgraphics::render::ScreenShape::points(&self) -> &[milgraphics::render::ScreenPoint]
+impl core::clone::Clone for milgraphics::render::ScreenShape
+pub fn milgraphics::render::ScreenShape::clone(&self) -> milgraphics::render::ScreenShape
+impl core::cmp::PartialEq for milgraphics::render::ScreenShape
+pub fn milgraphics::render::ScreenShape::eq(&self, &milgraphics::render::ScreenShape) -> bool
+impl core::fmt::Debug for milgraphics::render::ScreenShape
+pub fn milgraphics::render::ScreenShape::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::marker::StructuralPartialEq for milgraphics::render::ScreenShape
 #[non_exhaustive] pub enum milgraphics::render::TextAlign
 pub milgraphics::render::TextAlign::Center
 pub milgraphics::render::TextAlign::Left
 pub milgraphics::render::TextAlign::Right
+impl core::clone::Clone for milgraphics::render::TextAlign
+pub fn milgraphics::render::TextAlign::clone(&self) -> milgraphics::render::TextAlign
+impl core::cmp::Eq for milgraphics::render::TextAlign
+impl core::cmp::PartialEq for milgraphics::render::TextAlign
+pub fn milgraphics::render::TextAlign::eq(&self, &milgraphics::render::TextAlign) -> bool
+impl core::fmt::Debug for milgraphics::render::TextAlign
+pub fn milgraphics::render::TextAlign::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::hash::Hash for milgraphics::render::TextAlign
+pub fn milgraphics::render::TextAlign::hash<__H: core::hash::Hasher>(&self, &mut __H)
+impl core::marker::Copy for milgraphics::render::TextAlign
+impl core::marker::StructuralPartialEq for milgraphics::render::TextAlign
 #[non_exhaustive] pub struct milgraphics::render::FixedAdvanceMetrics
 pub milgraphics::render::FixedAdvanceMetrics::advance_em: f64
+impl core::clone::Clone for milgraphics::render::FixedAdvanceMetrics
+pub fn milgraphics::render::FixedAdvanceMetrics::clone(&self) -> milgraphics::render::FixedAdvanceMetrics
+impl core::cmp::PartialEq for milgraphics::render::FixedAdvanceMetrics
+pub fn milgraphics::render::FixedAdvanceMetrics::eq(&self, &milgraphics::render::FixedAdvanceMetrics) -> bool
 impl core::default::Default for milgraphics::render::FixedAdvanceMetrics
 pub fn milgraphics::render::FixedAdvanceMetrics::default() -> Self
+impl core::fmt::Debug for milgraphics::render::FixedAdvanceMetrics
+pub fn milgraphics::render::FixedAdvanceMetrics::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::marker::Copy for milgraphics::render::FixedAdvanceMetrics
+impl core::marker::StructuralPartialEq for milgraphics::render::FixedAdvanceMetrics
 impl milgraphics::render::FontMetrics for milgraphics::render::FixedAdvanceMetrics
 pub fn milgraphics::render::FixedAdvanceMetrics::identity(&self) -> &str
 pub fn milgraphics::render::FixedAdvanceMetrics::line_height_px(&self, &milgraphics::render::Font) -> f64
@@ -369,8 +881,15 @@ pub milgraphics::render::Font::family: alloc::string::String
 pub milgraphics::render::Font::size_px: f64
 impl milgraphics::render::Font
 pub fn milgraphics::render::Font::new(impl core::convert::Into<alloc::string::String>, f64, bool) -> Self
+impl core::clone::Clone for milgraphics::render::Font
+pub fn milgraphics::render::Font::clone(&self) -> milgraphics::render::Font
+impl core::cmp::PartialEq for milgraphics::render::Font
+pub fn milgraphics::render::Font::eq(&self, &milgraphics::render::Font) -> bool
 impl core::default::Default for milgraphics::render::Font
 pub fn milgraphics::render::Font::default() -> Self
+impl core::fmt::Debug for milgraphics::render::Font
+pub fn milgraphics::render::Font::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::marker::StructuralPartialEq for milgraphics::render::Font
 #[non_exhaustive] pub struct milgraphics::render::GeoItem
 pub milgraphics::render::GeoItem::fill: milgraphics::style::Fill
 pub milgraphics::render::GeoItem::pick: milgraphics::pick::PickRef
@@ -379,12 +898,26 @@ pub milgraphics::render::GeoItem::shape: milgraphics::render::GeoShape
 pub milgraphics::render::GeoItem::stroke: core::option::Option<milgraphics::style::Stroke>
 impl milgraphics::render::GeoItem
 pub fn milgraphics::render::GeoItem::vertex_count(&self) -> usize
+impl core::clone::Clone for milgraphics::render::GeoItem
+pub fn milgraphics::render::GeoItem::clone(&self) -> milgraphics::render::GeoItem
+impl core::cmp::PartialEq for milgraphics::render::GeoItem
+pub fn milgraphics::render::GeoItem::eq(&self, &milgraphics::render::GeoItem) -> bool
+impl core::fmt::Debug for milgraphics::render::GeoItem
+pub fn milgraphics::render::GeoItem::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::marker::StructuralPartialEq for milgraphics::render::GeoItem
 #[non_exhaustive] pub struct milgraphics::render::Handle
 pub milgraphics::render::Handle::at: milgraphics::geo::GeoPoint
 pub milgraphics::render::Handle::id: milgraphics::edit::HandleId
 pub milgraphics::render::Handle::kind: milgraphics::construction::HandleKind
 pub milgraphics::render::Handle::pick: milgraphics::pick::PickRef
 pub milgraphics::render::Handle::screen: core::option::Option<milgraphics::render::ScreenPoint>
+impl core::clone::Clone for milgraphics::render::Handle
+pub fn milgraphics::render::Handle::clone(&self) -> milgraphics::render::Handle
+impl core::cmp::PartialEq for milgraphics::render::Handle
+pub fn milgraphics::render::Handle::eq(&self, &milgraphics::render::Handle) -> bool
+impl core::fmt::Debug for milgraphics::render::Handle
+pub fn milgraphics::render::Handle::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::marker::StructuralPartialEq for milgraphics::render::Handle
 #[non_exhaustive] pub struct milgraphics::render::Label
 pub milgraphics::render::Label::align: milgraphics::render::TextAlign
 pub milgraphics::render::Label::anchor: milgraphics::geo::GeoPoint
@@ -398,10 +931,25 @@ pub milgraphics::render::Label::rotation_deg: f64
 pub milgraphics::render::Label::screen: core::option::Option<milgraphics::render::ScreenPoint>
 pub milgraphics::render::Label::text: alloc::string::String
 pub milgraphics::render::Label::width_px: f64
+impl core::clone::Clone for milgraphics::render::Label
+pub fn milgraphics::render::Label::clone(&self) -> milgraphics::render::Label
+impl core::cmp::PartialEq for milgraphics::render::Label
+pub fn milgraphics::render::Label::eq(&self, &milgraphics::render::Label) -> bool
+impl core::fmt::Debug for milgraphics::render::Label
+pub fn milgraphics::render::Label::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::marker::StructuralPartialEq for milgraphics::render::Label
 pub struct milgraphics::render::LocalEquirectangular
 impl milgraphics::render::LocalEquirectangular
 pub fn milgraphics::render::LocalEquirectangular::metres_per_px(&self) -> f64
 pub fn milgraphics::render::LocalEquirectangular::new(f64, f64, f64, f64) -> Self
+impl core::clone::Clone for milgraphics::render::LocalEquirectangular
+pub fn milgraphics::render::LocalEquirectangular::clone(&self) -> milgraphics::render::LocalEquirectangular
+impl core::cmp::PartialEq for milgraphics::render::LocalEquirectangular
+pub fn milgraphics::render::LocalEquirectangular::eq(&self, &milgraphics::render::LocalEquirectangular) -> bool
+impl core::fmt::Debug for milgraphics::render::LocalEquirectangular
+pub fn milgraphics::render::LocalEquirectangular::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::marker::Copy for milgraphics::render::LocalEquirectangular
+impl core::marker::StructuralPartialEq for milgraphics::render::LocalEquirectangular
 impl milgraphics::render::Projection for milgraphics::render::LocalEquirectangular
 pub fn milgraphics::render::LocalEquirectangular::project(&self, milgraphics::geo::GeoPoint) -> core::option::Option<milgraphics::render::ScreenPoint>
 pub fn milgraphics::render::LocalEquirectangular::segment_may_be_visible(&self, milgraphics::geo::GeoPoint, milgraphics::geo::GeoPoint) -> bool
@@ -412,13 +960,20 @@ pub fn milgraphics::render::LocalEquirectangular::viewport(&self) -> core::optio
 pub milgraphics::render::RenderPlan::geo: alloc::vec::Vec<milgraphics::render::GeoItem>
 pub milgraphics::render::RenderPlan::handles: alloc::vec::Vec<milgraphics::render::Handle>
 pub milgraphics::render::RenderPlan::labels: alloc::vec::Vec<milgraphics::render::Label>
-pub milgraphics::render::RenderPlan::metrics: alloc::string::String
+pub milgraphics::render::RenderPlan::metrics_identity: alloc::string::String
 pub milgraphics::render::RenderPlan::renderer_version: &'static str
 pub milgraphics::render::RenderPlan::revision: u64
 pub milgraphics::render::RenderPlan::screen: alloc::vec::Vec<milgraphics::render::ScreenItem>
 pub milgraphics::render::RenderPlan::surface_revision: u64
 pub milgraphics::render::RenderPlan::symbols: alloc::vec::Vec<milgraphics::render::SymbolPlacement>
 pub milgraphics::render::RenderPlan::view_revision: u64
+impl core::clone::Clone for milgraphics::render::RenderPlan
+pub fn milgraphics::render::RenderPlan::clone(&self) -> milgraphics::render::RenderPlan
+impl core::cmp::PartialEq for milgraphics::render::RenderPlan
+pub fn milgraphics::render::RenderPlan::eq(&self, &milgraphics::render::RenderPlan) -> bool
+impl core::fmt::Debug for milgraphics::render::RenderPlan
+pub fn milgraphics::render::RenderPlan::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::marker::StructuralPartialEq for milgraphics::render::RenderPlan
 #[non_exhaustive] pub struct milgraphics::render::ScreenItem
 pub milgraphics::render::ScreenItem::decoration: bool
 pub milgraphics::render::ScreenItem::fill: milgraphics::style::Fill
@@ -426,25 +981,66 @@ pub milgraphics::render::ScreenItem::pick: milgraphics::pick::PickRef
 pub milgraphics::render::ScreenItem::role: milgraphics::construction::PartRole
 pub milgraphics::render::ScreenItem::shape: milgraphics::render::ScreenShape
 pub milgraphics::render::ScreenItem::stroke: core::option::Option<milgraphics::style::Stroke>
+impl core::clone::Clone for milgraphics::render::ScreenItem
+pub fn milgraphics::render::ScreenItem::clone(&self) -> milgraphics::render::ScreenItem
+impl core::cmp::PartialEq for milgraphics::render::ScreenItem
+pub fn milgraphics::render::ScreenItem::eq(&self, &milgraphics::render::ScreenItem) -> bool
+impl core::fmt::Debug for milgraphics::render::ScreenItem
+pub fn milgraphics::render::ScreenItem::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::marker::StructuralPartialEq for milgraphics::render::ScreenItem
 pub struct milgraphics::render::ScreenPoint
 pub milgraphics::render::ScreenPoint::x: f64
 pub milgraphics::render::ScreenPoint::y: f64
+impl core::clone::Clone for milgraphics::render::ScreenPoint
+pub fn milgraphics::render::ScreenPoint::clone(&self) -> milgraphics::render::ScreenPoint
+impl core::cmp::PartialEq for milgraphics::render::ScreenPoint
+pub fn milgraphics::render::ScreenPoint::eq(&self, &milgraphics::render::ScreenPoint) -> bool
+impl core::fmt::Debug for milgraphics::render::ScreenPoint
+pub fn milgraphics::render::ScreenPoint::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::marker::Copy for milgraphics::render::ScreenPoint
+impl core::marker::StructuralPartialEq for milgraphics::render::ScreenPoint
 pub struct milgraphics::render::ScreenRect
 pub milgraphics::render::ScreenRect::max: milgraphics::render::ScreenPoint
 pub milgraphics::render::ScreenRect::min: milgraphics::render::ScreenPoint
+impl core::clone::Clone for milgraphics::render::ScreenRect
+pub fn milgraphics::render::ScreenRect::clone(&self) -> milgraphics::render::ScreenRect
+impl core::cmp::PartialEq for milgraphics::render::ScreenRect
+pub fn milgraphics::render::ScreenRect::eq(&self, &milgraphics::render::ScreenRect) -> bool
+impl core::fmt::Debug for milgraphics::render::ScreenRect
+pub fn milgraphics::render::ScreenRect::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::marker::Copy for milgraphics::render::ScreenRect
+impl core::marker::StructuralPartialEq for milgraphics::render::ScreenRect
 #[non_exhaustive] pub struct milgraphics::render::SymbolPlacement
 pub milgraphics::render::SymbolPlacement::anchor: milgraphics::geo::GeoPoint
+pub milgraphics::render::SymbolPlacement::offset_px: [f64; 2]
 pub milgraphics::render::SymbolPlacement::pick: milgraphics::pick::PickRef
+pub milgraphics::render::SymbolPlacement::rotation_deg: f64
 pub milgraphics::render::SymbolPlacement::screen: core::option::Option<milgraphics::render::ScreenPoint>
 pub milgraphics::render::SymbolPlacement::size_px: f64
 pub milgraphics::render::SymbolPlacement::symbol: milgraphics::sidc::SymbolId
+impl core::clone::Clone for milgraphics::render::SymbolPlacement
+pub fn milgraphics::render::SymbolPlacement::clone(&self) -> milgraphics::render::SymbolPlacement
+impl core::cmp::PartialEq for milgraphics::render::SymbolPlacement
+pub fn milgraphics::render::SymbolPlacement::eq(&self, &milgraphics::render::SymbolPlacement) -> bool
+impl core::fmt::Debug for milgraphics::render::SymbolPlacement
+pub fn milgraphics::render::SymbolPlacement::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::marker::StructuralPartialEq for milgraphics::render::SymbolPlacement
 #[non_exhaustive] pub struct milgraphics::render::View
+pub milgraphics::render::View::budget: milgraphics::budget::Budget
 pub milgraphics::render::View::content: milgraphics::render::PlanContent
 pub milgraphics::render::View::label_font: milgraphics::render::Font
 pub milgraphics::render::View::surface_revision: u64
 pub milgraphics::render::View::view_revision: u64
 impl milgraphics::render::View
 pub fn milgraphics::render::View::new(u64, u64) -> Self
+pub fn milgraphics::render::View::with_budget(self, milgraphics::budget::Budget) -> Self
+impl core::clone::Clone for milgraphics::render::View
+pub fn milgraphics::render::View::clone(&self) -> milgraphics::render::View
+impl core::cmp::PartialEq for milgraphics::render::View
+pub fn milgraphics::render::View::eq(&self, &milgraphics::render::View) -> bool
+impl core::fmt::Debug for milgraphics::render::View
+pub fn milgraphics::render::View::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::marker::StructuralPartialEq for milgraphics::render::View
 pub trait milgraphics::render::FontMetrics
 pub fn milgraphics::render::FontMetrics::identity(&self) -> &str
 pub fn milgraphics::render::FontMetrics::line_height_px(&self, &milgraphics::render::Font) -> f64
@@ -465,18 +1061,48 @@ pub fn milgraphics::render::LocalEquirectangular::segment_may_be_visible(&self, 
 pub fn milgraphics::render::LocalEquirectangular::tolerance_px(&self) -> f64
 pub fn milgraphics::render::LocalEquirectangular::unproject(&self, milgraphics::render::ScreenPoint) -> core::option::Option<milgraphics::geo::GeoPoint>
 pub fn milgraphics::render::LocalEquirectangular::viewport(&self) -> core::option::Option<milgraphics::render::ScreenRect>
-pub fn milgraphics::render::geographic(&milgraphics::construction::Construction, &milgraphics::budget::Budget) -> core::result::Result<alloc::vec::Vec<milgraphics::render::GeoItem>, milgraphics::render::RenderError>
-pub fn milgraphics::render::render(&milgraphics::construction::Construction, &milgraphics::render::View, &dyn milgraphics::render::Projection, &dyn milgraphics::render::FontMetrics, &milgraphics::budget::Budget) -> core::result::Result<milgraphics::render::RenderPlan, milgraphics::render::RenderError>
+pub fn milgraphics::render::geographic(&milgraphics::construction::Construction, &milgraphics::render::View) -> core::result::Result<alloc::vec::Vec<milgraphics::render::GeoItem>, milgraphics::render::RenderError>
+pub fn milgraphics::render::render(&milgraphics::construction::Construction, &milgraphics::render::View, &dyn milgraphics::render::Projection, &dyn milgraphics::render::FontMetrics) -> core::result::Result<milgraphics::render::RenderPlan, milgraphics::render::RenderError>
+pub type milgraphics::render::LonLat = [f64; 2]
 pub mod milgraphics::sidc
 #[non_exhaustive] pub enum milgraphics::sidc::SidcError
+pub milgraphics::sidc::SidcError::Digit
+pub milgraphics::sidc::SidcError::Digit::field: &'static str
+pub milgraphics::sidc::SidcError::Digit::value: u8
 pub milgraphics::sidc::SidcError::Format
 pub milgraphics::sidc::SidcError::Format::code: alloc::string::String
+impl core::clone::Clone for milgraphics::sidc::SidcError
+pub fn milgraphics::sidc::SidcError::clone(&self) -> milgraphics::sidc::SidcError
+impl core::cmp::Eq for milgraphics::sidc::SidcError
+impl core::cmp::PartialEq for milgraphics::sidc::SidcError
+pub fn milgraphics::sidc::SidcError::eq(&self, &milgraphics::sidc::SidcError) -> bool
+impl core::error::Error for milgraphics::sidc::SidcError
+impl core::fmt::Debug for milgraphics::sidc::SidcError
+pub fn milgraphics::sidc::SidcError::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::fmt::Display for milgraphics::sidc::SidcError
+pub fn milgraphics::sidc::SidcError::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::marker::StructuralPartialEq for milgraphics::sidc::SidcError
 pub struct milgraphics::sidc::EntityCode(_)
 impl milgraphics::sidc::EntityCode
 pub const fn milgraphics::sidc::EntityCode::get(self) -> u32
 pub const fn milgraphics::sidc::EntityCode::new(u32) -> core::option::Option<Self>
+impl core::clone::Clone for milgraphics::sidc::EntityCode
+pub fn milgraphics::sidc::EntityCode::clone(&self) -> milgraphics::sidc::EntityCode
+impl core::cmp::Eq for milgraphics::sidc::EntityCode
+impl core::cmp::Ord for milgraphics::sidc::EntityCode
+pub fn milgraphics::sidc::EntityCode::cmp(&self, &milgraphics::sidc::EntityCode) -> core::cmp::Ordering
+impl core::cmp::PartialEq for milgraphics::sidc::EntityCode
+pub fn milgraphics::sidc::EntityCode::eq(&self, &milgraphics::sidc::EntityCode) -> bool
+impl core::cmp::PartialOrd for milgraphics::sidc::EntityCode
+pub fn milgraphics::sidc::EntityCode::partial_cmp(&self, &milgraphics::sidc::EntityCode) -> core::option::Option<core::cmp::Ordering>
+impl core::fmt::Debug for milgraphics::sidc::EntityCode
+pub fn milgraphics::sidc::EntityCode::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
 impl core::fmt::Display for milgraphics::sidc::EntityCode
 pub fn milgraphics::sidc::EntityCode::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::hash::Hash for milgraphics::sidc::EntityCode
+pub fn milgraphics::sidc::EntityCode::hash<__H: core::hash::Hasher>(&self, &mut __H)
+impl core::marker::Copy for milgraphics::sidc::EntityCode
+impl core::marker::StructuralPartialEq for milgraphics::sidc::EntityCode
 pub struct milgraphics::sidc::SymbolId
 impl milgraphics::sidc::SymbolId
 pub fn milgraphics::sidc::SymbolId::amplifier(&self) -> u8
@@ -492,8 +1118,18 @@ pub fn milgraphics::sidc::SymbolId::standard(&self) -> core::option::Option<milg
 pub fn milgraphics::sidc::SymbolId::status(&self) -> u8
 pub fn milgraphics::sidc::SymbolId::symbol_set(&self) -> u8
 pub fn milgraphics::sidc::SymbolId::version_code(&self) -> u8
+impl core::clone::Clone for milgraphics::sidc::SymbolId
+pub fn milgraphics::sidc::SymbolId::clone(&self) -> milgraphics::sidc::SymbolId
+impl core::cmp::Eq for milgraphics::sidc::SymbolId
+impl core::cmp::PartialEq for milgraphics::sidc::SymbolId
+pub fn milgraphics::sidc::SymbolId::eq(&self, &milgraphics::sidc::SymbolId) -> bool
+impl core::fmt::Debug for milgraphics::sidc::SymbolId
+pub fn milgraphics::sidc::SymbolId::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
 impl core::fmt::Display for milgraphics::sidc::SymbolId
 pub fn milgraphics::sidc::SymbolId::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::hash::Hash for milgraphics::sidc::SymbolId
+pub fn milgraphics::sidc::SymbolId::hash<__H: core::hash::Hasher>(&self, &mut __H)
+impl core::marker::StructuralPartialEq for milgraphics::sidc::SymbolId
 impl core::str::traits::FromStr for milgraphics::sidc::SymbolId
 pub type milgraphics::sidc::SymbolId::Err = milgraphics::sidc::SidcError
 pub fn milgraphics::sidc::SymbolId::from_str(&str) -> core::result::Result<Self, Self::Err>
@@ -508,44 +1144,107 @@ pub milgraphics::standard::StandardVersion::App6Ech2
 pub milgraphics::standard::StandardVersion::Mil2525Dch1
 pub milgraphics::standard::StandardVersion::Mil2525Ech1
 impl milgraphics::standard::StandardVersion
-pub const milgraphics::standard::StandardVersion::ALL: [Self; 4]
+pub const milgraphics::standard::StandardVersion::ALL: &'static [Self]
 pub const fn milgraphics::standard::StandardVersion::code(self) -> u8
 pub const fn milgraphics::standard::StandardVersion::from_code(u8) -> core::option::Option<Self>
+impl core::clone::Clone for milgraphics::standard::StandardVersion
+pub fn milgraphics::standard::StandardVersion::clone(&self) -> milgraphics::standard::StandardVersion
+impl core::cmp::Eq for milgraphics::standard::StandardVersion
+impl core::cmp::Ord for milgraphics::standard::StandardVersion
+pub fn milgraphics::standard::StandardVersion::cmp(&self, &milgraphics::standard::StandardVersion) -> core::cmp::Ordering
+impl core::cmp::PartialEq for milgraphics::standard::StandardVersion
+pub fn milgraphics::standard::StandardVersion::eq(&self, &milgraphics::standard::StandardVersion) -> bool
+impl core::cmp::PartialOrd for milgraphics::standard::StandardVersion
+pub fn milgraphics::standard::StandardVersion::partial_cmp(&self, &milgraphics::standard::StandardVersion) -> core::option::Option<core::cmp::Ordering>
+impl core::fmt::Debug for milgraphics::standard::StandardVersion
+pub fn milgraphics::standard::StandardVersion::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
 impl core::fmt::Display for milgraphics::standard::StandardVersion
 pub fn milgraphics::standard::StandardVersion::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::hash::Hash for milgraphics::standard::StandardVersion
+pub fn milgraphics::standard::StandardVersion::hash<__H: core::hash::Hasher>(&self, &mut __H)
+impl core::marker::Copy for milgraphics::standard::StandardVersion
+impl core::marker::StructuralPartialEq for milgraphics::standard::StandardVersion
 pub mod milgraphics::style
 #[non_exhaustive] pub enum milgraphics::style::DashPattern
 pub milgraphics::style::DashPattern::Dashed
 pub milgraphics::style::DashPattern::Dotted
 pub milgraphics::style::DashPattern::Solid
 impl milgraphics::style::DashPattern
+pub const milgraphics::style::DashPattern::ALL: &'static [Self]
 pub fn milgraphics::style::DashPattern::array(self) -> &'static [f64]
+pub const fn milgraphics::style::DashPattern::name(self) -> &'static str
 pub fn milgraphics::style::DashPattern::round_caps(self) -> bool
+impl core::clone::Clone for milgraphics::style::DashPattern
+pub fn milgraphics::style::DashPattern::clone(&self) -> milgraphics::style::DashPattern
+impl core::cmp::Eq for milgraphics::style::DashPattern
+impl core::cmp::Ord for milgraphics::style::DashPattern
+pub fn milgraphics::style::DashPattern::cmp(&self, &milgraphics::style::DashPattern) -> core::cmp::Ordering
+impl core::cmp::PartialEq for milgraphics::style::DashPattern
+pub fn milgraphics::style::DashPattern::eq(&self, &milgraphics::style::DashPattern) -> bool
+impl core::cmp::PartialOrd for milgraphics::style::DashPattern
+pub fn milgraphics::style::DashPattern::partial_cmp(&self, &milgraphics::style::DashPattern) -> core::option::Option<core::cmp::Ordering>
+impl core::fmt::Debug for milgraphics::style::DashPattern
+pub fn milgraphics::style::DashPattern::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::hash::Hash for milgraphics::style::DashPattern
+pub fn milgraphics::style::DashPattern::hash<__H: core::hash::Hasher>(&self, &mut __H)
+impl core::marker::Copy for milgraphics::style::DashPattern
+impl core::marker::StructuralPartialEq for milgraphics::style::DashPattern
 #[non_exhaustive] pub enum milgraphics::style::Fill
 pub milgraphics::style::Fill::Hatch(milgraphics::style::Hatch)
 pub milgraphics::style::Fill::None
 pub milgraphics::style::Fill::Pattern(milgraphics::style::Pattern)
 pub milgraphics::style::Fill::Solid(milgraphics::style::Rgba)
+impl core::clone::Clone for milgraphics::style::Fill
+pub fn milgraphics::style::Fill::clone(&self) -> milgraphics::style::Fill
+impl core::cmp::PartialEq for milgraphics::style::Fill
+pub fn milgraphics::style::Fill::eq(&self, &milgraphics::style::Fill) -> bool
+impl core::fmt::Debug for milgraphics::style::Fill
+pub fn milgraphics::style::Fill::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::marker::Copy for milgraphics::style::Fill
+impl core::marker::StructuralPartialEq for milgraphics::style::Fill
 #[non_exhaustive] pub enum milgraphics::style::Motif
 pub milgraphics::style::Motif::Dot
 pub milgraphics::style::Motif::FishTrap
 pub milgraphics::style::Motif::Hash
 pub milgraphics::style::Motif::Kelp
+impl core::clone::Clone for milgraphics::style::Motif
+pub fn milgraphics::style::Motif::clone(&self) -> milgraphics::style::Motif
+impl core::cmp::Eq for milgraphics::style::Motif
+impl core::cmp::PartialEq for milgraphics::style::Motif
+pub fn milgraphics::style::Motif::eq(&self, &milgraphics::style::Motif) -> bool
+impl core::fmt::Debug for milgraphics::style::Motif
+pub fn milgraphics::style::Motif::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::hash::Hash for milgraphics::style::Motif
+pub fn milgraphics::style::Motif::hash<__H: core::hash::Hasher>(&self, &mut __H)
+impl core::marker::Copy for milgraphics::style::Motif
+impl core::marker::StructuralPartialEq for milgraphics::style::Motif
 #[non_exhaustive] pub struct milgraphics::style::Hatch
 pub milgraphics::style::Hatch::angle_deg: f64
 pub milgraphics::style::Hatch::color: milgraphics::style::Rgba
 pub milgraphics::style::Hatch::spacing_px: f64
 pub milgraphics::style::Hatch::width_px: f64
-impl milgraphics::style::Hatch
-pub const fn milgraphics::style::Hatch::new(milgraphics::style::Rgba, f64, f64, f64) -> Self
+impl core::clone::Clone for milgraphics::style::Hatch
+pub fn milgraphics::style::Hatch::clone(&self) -> milgraphics::style::Hatch
+impl core::cmp::PartialEq for milgraphics::style::Hatch
+pub fn milgraphics::style::Hatch::eq(&self, &milgraphics::style::Hatch) -> bool
+impl core::fmt::Debug for milgraphics::style::Hatch
+pub fn milgraphics::style::Hatch::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::marker::Copy for milgraphics::style::Hatch
+impl core::marker::StructuralPartialEq for milgraphics::style::Hatch
 #[non_exhaustive] pub struct milgraphics::style::Pattern
 pub milgraphics::style::Pattern::color: milgraphics::style::Rgba
 pub milgraphics::style::Pattern::motif: milgraphics::style::Motif
 pub milgraphics::style::Pattern::size_px: f64
 pub milgraphics::style::Pattern::spacing_px: [f64; 2]
 pub milgraphics::style::Pattern::staggered: bool
-impl milgraphics::style::Pattern
-pub const fn milgraphics::style::Pattern::new(milgraphics::style::Motif, milgraphics::style::Rgba, f64, [f64; 2], bool) -> Self
+impl core::clone::Clone for milgraphics::style::Pattern
+pub fn milgraphics::style::Pattern::clone(&self) -> milgraphics::style::Pattern
+impl core::cmp::PartialEq for milgraphics::style::Pattern
+pub fn milgraphics::style::Pattern::eq(&self, &milgraphics::style::Pattern) -> bool
+impl core::fmt::Debug for milgraphics::style::Pattern
+pub fn milgraphics::style::Pattern::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::marker::Copy for milgraphics::style::Pattern
+impl core::marker::StructuralPartialEq for milgraphics::style::Pattern
 pub struct milgraphics::style::Rgba
 pub milgraphics::style::Rgba::a: u8
 pub milgraphics::style::Rgba::b: u8
@@ -557,32 +1256,84 @@ pub const milgraphics::style::Rgba::RED: Self
 pub const fn milgraphics::style::Rgba::opaque(u8, u8, u8) -> Self
 pub fn milgraphics::style::Rgba::parse_hex(&str) -> core::option::Option<Self>
 pub fn milgraphics::style::Rgba::to_hex(self) -> alloc::string::String
+impl core::clone::Clone for milgraphics::style::Rgba
+pub fn milgraphics::style::Rgba::clone(&self) -> milgraphics::style::Rgba
+impl core::cmp::Eq for milgraphics::style::Rgba
+impl core::cmp::PartialEq for milgraphics::style::Rgba
+pub fn milgraphics::style::Rgba::eq(&self, &milgraphics::style::Rgba) -> bool
+impl core::fmt::Debug for milgraphics::style::Rgba
+pub fn milgraphics::style::Rgba::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::hash::Hash for milgraphics::style::Rgba
+pub fn milgraphics::style::Rgba::hash<__H: core::hash::Hasher>(&self, &mut __H)
+impl core::marker::Copy for milgraphics::style::Rgba
+impl core::marker::StructuralPartialEq for milgraphics::style::Rgba
 #[non_exhaustive] pub struct milgraphics::style::Stroke
 pub milgraphics::style::Stroke::color: milgraphics::style::Rgba
 pub milgraphics::style::Stroke::dash: milgraphics::style::DashPattern
 pub milgraphics::style::Stroke::width_px: f64
+impl core::clone::Clone for milgraphics::style::Stroke
+pub fn milgraphics::style::Stroke::clone(&self) -> milgraphics::style::Stroke
+impl core::cmp::PartialEq for milgraphics::style::Stroke
+pub fn milgraphics::style::Stroke::eq(&self, &milgraphics::style::Stroke) -> bool
+impl core::fmt::Debug for milgraphics::style::Stroke
+pub fn milgraphics::style::Stroke::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::marker::Copy for milgraphics::style::Stroke
+impl core::marker::StructuralPartialEq for milgraphics::style::Stroke
 pub const milgraphics::style::DEFAULT_LINE_WIDTH_PX: f64
 pub mod milgraphics::support
 #[non_exhaustive] pub enum milgraphics::support::Unsupported
 pub milgraphics::support::Unsupported::Standard
 pub milgraphics::support::Unsupported::Standard::code: u8
 pub milgraphics::support::Unsupported::Symbol
-pub milgraphics::support::Unsupported::Symbol::entity: u32
+pub milgraphics::support::Unsupported::Symbol::entity: milgraphics::sidc::EntityCode
 pub milgraphics::support::Unsupported::Symbol::standard: milgraphics::standard::StandardVersion
 pub milgraphics::support::Unsupported::Symbol::symbol_set: u8
+impl core::clone::Clone for milgraphics::support::Unsupported
+pub fn milgraphics::support::Unsupported::clone(&self) -> milgraphics::support::Unsupported
+impl core::cmp::Eq for milgraphics::support::Unsupported
+impl core::cmp::PartialEq for milgraphics::support::Unsupported
+pub fn milgraphics::support::Unsupported::eq(&self, &milgraphics::support::Unsupported) -> bool
+impl core::convert::From<milgraphics::support::Unsupported> for milgraphics::ConstructError
+pub fn milgraphics::ConstructError::from(milgraphics::support::Unsupported) -> Self
+impl core::convert::From<milgraphics::support::Unsupported> for milgraphics::edit::EditError
+pub fn milgraphics::edit::EditError::from(milgraphics::support::Unsupported) -> Self
+impl core::error::Error for milgraphics::support::Unsupported
+impl core::fmt::Debug for milgraphics::support::Unsupported
+pub fn milgraphics::support::Unsupported::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::fmt::Display for milgraphics::support::Unsupported
+pub fn milgraphics::support::Unsupported::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::marker::StructuralPartialEq for milgraphics::support::Unsupported
 #[non_exhaustive] pub struct milgraphics::support::ModifierSpec
 pub milgraphics::support::ModifierSpec::field: milgraphics::ModifierField
 pub milgraphics::support::ModifierSpec::max_count: usize
 pub milgraphics::support::ModifierSpec::min_count: usize
 pub milgraphics::support::ModifierSpec::required: bool
+impl core::clone::Clone for milgraphics::support::ModifierSpec
+pub fn milgraphics::support::ModifierSpec::clone(&self) -> milgraphics::support::ModifierSpec
+impl core::cmp::Eq for milgraphics::support::ModifierSpec
+impl core::cmp::PartialEq for milgraphics::support::ModifierSpec
+pub fn milgraphics::support::ModifierSpec::eq(&self, &milgraphics::support::ModifierSpec) -> bool
+impl core::fmt::Debug for milgraphics::support::ModifierSpec
+pub fn milgraphics::support::ModifierSpec::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::marker::Copy for milgraphics::support::ModifierSpec
+impl core::marker::StructuralPartialEq for milgraphics::support::ModifierSpec
 #[non_exhaustive] pub struct milgraphics::support::StandardRef
 pub milgraphics::support::StandardRef::document: &'static str
 pub milgraphics::support::StandardRef::draw_rule: core::option::Option<&'static str>
 pub milgraphics::support::StandardRef::name: core::option::Option<&'static str>
 pub milgraphics::support::StandardRef::pdf_page: u16
 pub milgraphics::support::StandardRef::table: &'static str
+impl core::clone::Clone for milgraphics::support::StandardRef
+pub fn milgraphics::support::StandardRef::clone(&self) -> milgraphics::support::StandardRef
+impl core::cmp::Eq for milgraphics::support::StandardRef
+impl core::cmp::PartialEq for milgraphics::support::StandardRef
+pub fn milgraphics::support::StandardRef::eq(&self, &milgraphics::support::StandardRef) -> bool
+impl core::fmt::Debug for milgraphics::support::StandardRef
+pub fn milgraphics::support::StandardRef::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::marker::Copy for milgraphics::support::StandardRef
+impl core::marker::StructuralPartialEq for milgraphics::support::StandardRef
 #[non_exhaustive] pub struct milgraphics::support::SymbolSpec
-pub milgraphics::support::SymbolSpec::entity: u32
+pub milgraphics::support::SymbolSpec::entity: milgraphics::sidc::EntityCode
 pub milgraphics::support::SymbolSpec::max_points: usize
 pub milgraphics::support::SymbolSpec::min_points: usize
 pub milgraphics::support::SymbolSpec::modifiers: &'static [milgraphics::support::ModifierSpec]
@@ -595,10 +1346,32 @@ pub fn milgraphics::support::SymbolSpec::modifier(&self, milgraphics::ModifierFi
 pub fn milgraphics::support::SymbolSpec::name(&self) -> &'static str
 pub fn milgraphics::support::SymbolSpec::reference(&self) -> core::option::Option<&'static milgraphics::support::StandardRef>
 pub fn milgraphics::support::SymbolSpec::required(&self) -> impl core::iter::traits::iterator::Iterator<Item = milgraphics::ModifierField> + 'static
+pub fn milgraphics::support::SymbolSpec::symbol_id(&self, u8, u8, u8) -> core::result::Result<milgraphics::sidc::SymbolId, milgraphics::sidc::SidcError>
+impl core::clone::Clone for milgraphics::support::SymbolSpec
+pub fn milgraphics::support::SymbolSpec::clone(&self) -> milgraphics::support::SymbolSpec
+impl core::cmp::PartialEq for milgraphics::support::SymbolSpec
+pub fn milgraphics::support::SymbolSpec::eq(&self, &milgraphics::support::SymbolSpec) -> bool
+impl core::fmt::Debug for milgraphics::support::SymbolSpec
+pub fn milgraphics::support::SymbolSpec::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::marker::Copy for milgraphics::support::SymbolSpec
+impl core::marker::StructuralPartialEq for milgraphics::support::SymbolSpec
 pub fn milgraphics::support::all() -> impl core::iter::traits::iterator::Iterator<Item = &'static milgraphics::support::SymbolSpec> + core::clone::Clone
 pub fn milgraphics::support::spec(&milgraphics::sidc::SymbolId) -> core::result::Result<&'static milgraphics::support::SymbolSpec, milgraphics::support::Unsupported>
 pub mod milgraphics::svg
-pub fn milgraphics::svg::to_svg(&milgraphics::render::RenderPlan, f64, f64) -> alloc::string::String
+#[non_exhaustive] pub struct milgraphics::svg::SvgOptions
+pub milgraphics::svg::SvgOptions::height_px: f64
+pub milgraphics::svg::SvgOptions::width_px: f64
+impl milgraphics::svg::SvgOptions
+pub fn milgraphics::svg::SvgOptions::new(f64, f64) -> Self
+impl core::clone::Clone for milgraphics::svg::SvgOptions
+pub fn milgraphics::svg::SvgOptions::clone(&self) -> milgraphics::svg::SvgOptions
+impl core::cmp::PartialEq for milgraphics::svg::SvgOptions
+pub fn milgraphics::svg::SvgOptions::eq(&self, &milgraphics::svg::SvgOptions) -> bool
+impl core::fmt::Debug for milgraphics::svg::SvgOptions
+pub fn milgraphics::svg::SvgOptions::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::marker::Copy for milgraphics::svg::SvgOptions
+impl core::marker::StructuralPartialEq for milgraphics::svg::SvgOptions
+pub fn milgraphics::svg::to_svg(&milgraphics::render::RenderPlan, &milgraphics::svg::SvgOptions) -> alloc::string::String
 #[non_exhaustive] pub enum milgraphics::BudgetError
 pub milgraphics::BudgetError::ControlPoints
 pub milgraphics::BudgetError::ControlPoints::count: usize
@@ -617,9 +1390,36 @@ pub milgraphics::BudgetError::Text::limit: usize
 pub milgraphics::BudgetError::Vertices
 pub milgraphics::BudgetError::Vertices::count: usize
 pub milgraphics::BudgetError::Vertices::limit: usize
+impl core::clone::Clone for milgraphics::budget::BudgetError
+pub fn milgraphics::budget::BudgetError::clone(&self) -> milgraphics::budget::BudgetError
+impl core::cmp::Eq for milgraphics::budget::BudgetError
+impl core::cmp::PartialEq for milgraphics::budget::BudgetError
+pub fn milgraphics::budget::BudgetError::eq(&self, &milgraphics::budget::BudgetError) -> bool
+impl core::convert::From<milgraphics::budget::BudgetError> for milgraphics::ConstructError
+pub fn milgraphics::ConstructError::from(milgraphics::budget::BudgetError) -> Self
+impl core::convert::From<milgraphics::budget::BudgetError> for milgraphics::render::RenderError
+pub fn milgraphics::render::RenderError::from(milgraphics::budget::BudgetError) -> Self
+impl core::error::Error for milgraphics::budget::BudgetError
+impl core::fmt::Debug for milgraphics::budget::BudgetError
+pub fn milgraphics::budget::BudgetError::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::fmt::Display for milgraphics::budget::BudgetError
+pub fn milgraphics::budget::BudgetError::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::marker::Copy for milgraphics::budget::BudgetError
+impl core::marker::StructuralPartialEq for milgraphics::budget::BudgetError
 #[non_exhaustive] pub enum milgraphics::CatalogDrawRule
-pub milgraphics::CatalogDrawRule::Metoc(milgraphics::MoDrawRule)
-pub milgraphics::CatalogDrawRule::Standard(milgraphics::DrawRule)
+pub milgraphics::CatalogDrawRule::Metoc(milgraphics::catalog::MoDrawRule)
+pub milgraphics::CatalogDrawRule::Standard(milgraphics::catalog::DrawRule)
+impl core::clone::Clone for milgraphics::catalog::CatalogDrawRule
+pub fn milgraphics::catalog::CatalogDrawRule::clone(&self) -> milgraphics::catalog::CatalogDrawRule
+impl core::cmp::Eq for milgraphics::catalog::CatalogDrawRule
+impl core::cmp::PartialEq for milgraphics::catalog::CatalogDrawRule
+pub fn milgraphics::catalog::CatalogDrawRule::eq(&self, &milgraphics::catalog::CatalogDrawRule) -> bool
+impl core::fmt::Debug for milgraphics::catalog::CatalogDrawRule
+pub fn milgraphics::catalog::CatalogDrawRule::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::hash::Hash for milgraphics::catalog::CatalogDrawRule
+pub fn milgraphics::catalog::CatalogDrawRule::hash<__H: core::hash::Hasher>(&self, &mut __H)
+impl core::marker::Copy for milgraphics::catalog::CatalogDrawRule
+impl core::marker::StructuralPartialEq for milgraphics::catalog::CatalogDrawRule
 #[non_exhaustive] pub enum milgraphics::ConstructError
 pub milgraphics::ConstructError::Budget(milgraphics::budget::BudgetError)
 pub milgraphics::ConstructError::Degenerate
@@ -660,112 +1460,39 @@ pub milgraphics::ConstructError::UnsupportedAltitude::symbol: &'static str
 pub milgraphics::ConstructError::UnsupportedModifier
 pub milgraphics::ConstructError::UnsupportedModifier::field: milgraphics::ModifierField
 pub milgraphics::ConstructError::UnsupportedModifier::symbol: &'static str
-#[non_exhaustive] pub enum milgraphics::DrawRule
-pub milgraphics::DrawRule::Arc1
-pub milgraphics::DrawRule::Area1
-pub milgraphics::DrawRule::Area10
-pub milgraphics::DrawRule::Area11
-pub milgraphics::DrawRule::Area12
-pub milgraphics::DrawRule::Area13
-pub milgraphics::DrawRule::Area14
-pub milgraphics::DrawRule::Area15
-pub milgraphics::DrawRule::Area16
-pub milgraphics::DrawRule::Area17
-pub milgraphics::DrawRule::Area18
-pub milgraphics::DrawRule::Area19
-pub milgraphics::DrawRule::Area2
-pub milgraphics::DrawRule::Area20
-pub milgraphics::DrawRule::Area21
-pub milgraphics::DrawRule::Area22
-pub milgraphics::DrawRule::Area23
-pub milgraphics::DrawRule::Area24
-pub milgraphics::DrawRule::Area25
-pub milgraphics::DrawRule::Area26
-pub milgraphics::DrawRule::Area27
-pub milgraphics::DrawRule::Area3
-pub milgraphics::DrawRule::Area4
-pub milgraphics::DrawRule::Area5
-pub milgraphics::DrawRule::Area6
-pub milgraphics::DrawRule::Area7
-pub milgraphics::DrawRule::Area8
-pub milgraphics::DrawRule::Area9
-pub milgraphics::DrawRule::Axis1
-pub milgraphics::DrawRule::Axis2
-pub milgraphics::DrawRule::Circular1
-pub milgraphics::DrawRule::Circular2
-pub milgraphics::DrawRule::Corridor1
-pub milgraphics::DrawRule::DoNotDraw
-pub milgraphics::DrawRule::Ellipse1
-pub milgraphics::DrawRule::Line1
-pub milgraphics::DrawRule::Line10
-pub milgraphics::DrawRule::Line11
-pub milgraphics::DrawRule::Line12
-pub milgraphics::DrawRule::Line13
-pub milgraphics::DrawRule::Line14
-pub milgraphics::DrawRule::Line16
-pub milgraphics::DrawRule::Line17
-pub milgraphics::DrawRule::Line18
-pub milgraphics::DrawRule::Line19
-pub milgraphics::DrawRule::Line2
-pub milgraphics::DrawRule::Line20
-pub milgraphics::DrawRule::Line21
-pub milgraphics::DrawRule::Line22
-pub milgraphics::DrawRule::Line23
-pub milgraphics::DrawRule::Line24
-pub milgraphics::DrawRule::Line25
-pub milgraphics::DrawRule::Line26
-pub milgraphics::DrawRule::Line27
-pub milgraphics::DrawRule::Line28
-pub milgraphics::DrawRule::Line29
-pub milgraphics::DrawRule::Line3
-pub milgraphics::DrawRule::Line30
-pub milgraphics::DrawRule::Line31
-pub milgraphics::DrawRule::Line32
-pub milgraphics::DrawRule::Line33
-pub milgraphics::DrawRule::Line4
-pub milgraphics::DrawRule::Line5
-pub milgraphics::DrawRule::Line50
-pub milgraphics::DrawRule::Line6
-pub milgraphics::DrawRule::Line7
-pub milgraphics::DrawRule::Line8
-pub milgraphics::DrawRule::Line9
-pub milgraphics::DrawRule::Point1
-pub milgraphics::DrawRule::Point10
-pub milgraphics::DrawRule::Point11
-pub milgraphics::DrawRule::Point12
-pub milgraphics::DrawRule::Point13
-pub milgraphics::DrawRule::Point14
-pub milgraphics::DrawRule::Point15
-pub milgraphics::DrawRule::Point16
-pub milgraphics::DrawRule::Point17
-pub milgraphics::DrawRule::Point18
-pub milgraphics::DrawRule::Point2
-pub milgraphics::DrawRule::Point3
-pub milgraphics::DrawRule::Point4
-pub milgraphics::DrawRule::Point5
-pub milgraphics::DrawRule::Point6
-pub milgraphics::DrawRule::Point7
-pub milgraphics::DrawRule::Point8
-pub milgraphics::DrawRule::Point9
-pub milgraphics::DrawRule::Polyline1
-pub milgraphics::DrawRule::Rectangular1
-pub milgraphics::DrawRule::Rectangular2
-pub milgraphics::DrawRule::Rectangular3
-impl milgraphics::DrawRule
-pub const milgraphics::DrawRule::ALL: &[Self]
-pub fn milgraphics::DrawRule::from_name(&str) -> core::option::Option<Self>
-pub const fn milgraphics::DrawRule::name(self) -> &'static str
+impl core::convert::From<milgraphics::budget::BudgetError> for milgraphics::ConstructError
+pub fn milgraphics::ConstructError::from(milgraphics::budget::BudgetError) -> Self
+impl core::convert::From<milgraphics::support::Unsupported> for milgraphics::ConstructError
+pub fn milgraphics::ConstructError::from(milgraphics::support::Unsupported) -> Self
+impl core::error::Error for milgraphics::ConstructError
+pub fn milgraphics::ConstructError::source(&self) -> core::option::Option<&(dyn core::error::Error + 'static)>
+impl core::fmt::Debug for milgraphics::ConstructError
+pub fn milgraphics::ConstructError::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::fmt::Display for milgraphics::ConstructError
+pub fn milgraphics::ConstructError::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
 #[non_exhaustive] pub enum milgraphics::Edit
 pub milgraphics::Edit::DeleteVertex
-pub milgraphics::Edit::DeleteVertex::index: u16
+pub milgraphics::Edit::DeleteVertex::index: u32
 pub milgraphics::Edit::InsertVertex
 pub milgraphics::Edit::InsertVertex::at: milgraphics::geo::GeoPoint
-pub milgraphics::Edit::InsertVertex::index: u16
+pub milgraphics::Edit::InsertVertex::index: u32
 pub milgraphics::Edit::Move
 pub milgraphics::Edit::Move::handle: milgraphics::edit::HandleId
 pub milgraphics::Edit::Move::to: milgraphics::geo::GeoPoint
+pub milgraphics::Edit::SetModifier
+pub milgraphics::Edit::SetModifier::field: milgraphics::ModifierField
+pub milgraphics::Edit::SetModifier::value: core::option::Option<milgraphics::modifier::ModifierValue>
+pub milgraphics::Edit::SetModifiers(alloc::boxed::Box<milgraphics::modifier::Modifiers>)
+impl core::clone::Clone for milgraphics::edit::Edit
+pub fn milgraphics::edit::Edit::clone(&self) -> milgraphics::edit::Edit
+impl core::cmp::PartialEq for milgraphics::edit::Edit
+pub fn milgraphics::edit::Edit::eq(&self, &milgraphics::edit::Edit) -> bool
+impl core::fmt::Debug for milgraphics::edit::Edit
+pub fn milgraphics::edit::Edit::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::marker::StructuralPartialEq for milgraphics::edit::Edit
 #[non_exhaustive] pub enum milgraphics::EditError
 pub milgraphics::EditError::Invalid(milgraphics::ConstructError)
+pub milgraphics::EditError::Modifier(milgraphics::modifier::ModifierValueError)
 pub milgraphics::EditError::NoSuchHandle
 pub milgraphics::EditError::NoSuchHandle::handle: milgraphics::edit::HandleId
 pub milgraphics::EditError::PointCount
@@ -773,39 +1500,57 @@ pub milgraphics::EditError::PointCount::count: usize
 pub milgraphics::EditError::PointCount::max: usize
 pub milgraphics::EditError::PointCount::min: usize
 pub milgraphics::EditError::Unsupported(milgraphics::support::Unsupported)
+pub milgraphics::EditError::VertexEditsNotAllowed
+pub milgraphics::EditError::VertexEditsNotAllowed::symbol: &'static str
+impl core::convert::From<milgraphics::modifier::ModifierValueError> for milgraphics::edit::EditError
+pub fn milgraphics::edit::EditError::from(milgraphics::modifier::ModifierValueError) -> Self
+impl core::convert::From<milgraphics::support::Unsupported> for milgraphics::edit::EditError
+pub fn milgraphics::edit::EditError::from(milgraphics::support::Unsupported) -> Self
+impl core::error::Error for milgraphics::edit::EditError
+pub fn milgraphics::edit::EditError::source(&self) -> core::option::Option<&(dyn core::error::Error + 'static)>
+impl core::fmt::Debug for milgraphics::edit::EditError
+pub fn milgraphics::edit::EditError::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::fmt::Display for milgraphics::edit::EditError
+pub fn milgraphics::edit::EditError::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
 #[non_exhaustive] pub enum milgraphics::GeometryKind
 pub milgraphics::GeometryKind::Area
 pub milgraphics::GeometryKind::Line
 pub milgraphics::GeometryKind::Point
+impl core::clone::Clone for milgraphics::catalog::GeometryKind
+pub fn milgraphics::catalog::GeometryKind::clone(&self) -> milgraphics::catalog::GeometryKind
+impl core::cmp::Eq for milgraphics::catalog::GeometryKind
+impl core::cmp::PartialEq for milgraphics::catalog::GeometryKind
+pub fn milgraphics::catalog::GeometryKind::eq(&self, &milgraphics::catalog::GeometryKind) -> bool
+impl core::fmt::Debug for milgraphics::catalog::GeometryKind
+pub fn milgraphics::catalog::GeometryKind::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::hash::Hash for milgraphics::catalog::GeometryKind
+pub fn milgraphics::catalog::GeometryKind::hash<__H: core::hash::Hasher>(&self, &mut __H)
+impl core::marker::Copy for milgraphics::catalog::GeometryKind
+impl core::marker::StructuralPartialEq for milgraphics::catalog::GeometryKind
 #[non_exhaustive] pub enum milgraphics::HandleId
-pub milgraphics::HandleId::Azimuth(u16)
-pub milgraphics::HandleId::Range(u16)
-pub milgraphics::HandleId::Vertex(u16)
+pub milgraphics::HandleId::Azimuth(u32)
+pub milgraphics::HandleId::Range(u32)
+pub milgraphics::HandleId::Vertex(u32)
 pub milgraphics::HandleId::Width
-#[non_exhaustive] pub enum milgraphics::MoDrawRule
-pub milgraphics::MoDrawRule::Area1
-pub milgraphics::MoDrawRule::Area2
-pub milgraphics::MoDrawRule::DoNotDraw
-pub milgraphics::MoDrawRule::Line1
-pub milgraphics::MoDrawRule::Line2
-pub milgraphics::MoDrawRule::Line3
-pub milgraphics::MoDrawRule::Line4
-pub milgraphics::MoDrawRule::Line5
-pub milgraphics::MoDrawRule::Line6
-pub milgraphics::MoDrawRule::Line7
-pub milgraphics::MoDrawRule::Line8
-pub milgraphics::MoDrawRule::Point1
-pub milgraphics::MoDrawRule::Point2
-pub milgraphics::MoDrawRule::Point3
-pub milgraphics::MoDrawRule::Point4
-pub milgraphics::MoDrawRule::Point5
-pub milgraphics::MoDrawRule::Point6
-pub milgraphics::MoDrawRule::Point7
-pub milgraphics::MoDrawRule::Point8
-impl milgraphics::MoDrawRule
-pub const milgraphics::MoDrawRule::ALL: &[Self]
-pub fn milgraphics::MoDrawRule::from_name(&str) -> core::option::Option<Self>
-pub const fn milgraphics::MoDrawRule::name(self) -> &'static str
+impl core::clone::Clone for milgraphics::edit::HandleId
+pub fn milgraphics::edit::HandleId::clone(&self) -> milgraphics::edit::HandleId
+impl core::cmp::Eq for milgraphics::edit::HandleId
+impl core::cmp::Ord for milgraphics::edit::HandleId
+pub fn milgraphics::edit::HandleId::cmp(&self, &milgraphics::edit::HandleId) -> core::cmp::Ordering
+impl core::cmp::PartialEq for milgraphics::edit::HandleId
+pub fn milgraphics::edit::HandleId::eq(&self, &milgraphics::edit::HandleId) -> bool
+impl core::cmp::PartialOrd for milgraphics::edit::HandleId
+pub fn milgraphics::edit::HandleId::partial_cmp(&self, &milgraphics::edit::HandleId) -> core::option::Option<core::cmp::Ordering>
+impl core::fmt::Debug for milgraphics::edit::HandleId
+pub fn milgraphics::edit::HandleId::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::hash::Hash for milgraphics::edit::HandleId
+pub fn milgraphics::edit::HandleId::hash<__H: core::hash::Hasher>(&self, &mut __H)
+impl core::marker::Copy for milgraphics::edit::HandleId
+impl core::marker::StructuralPartialEq for milgraphics::edit::HandleId
+impl serde_core::ser::Serialize for milgraphics::edit::HandleId
+pub fn milgraphics::edit::HandleId::serialize<__S>(&self, __S) -> core::result::Result<<__S as serde_core::ser::Serializer>::Ok, <__S as serde_core::ser::Serializer>::Error> where __S: serde_core::ser::Serializer
+impl<'de> serde_core::de::Deserialize<'de> for milgraphics::edit::HandleId
+pub fn milgraphics::edit::HandleId::deserialize<__D>(__D) -> core::result::Result<Self, <__D as serde_core::de::Deserializer>::Error> where __D: serde_core::de::Deserializer<'de>
 #[non_exhaustive] pub enum milgraphics::ModifierField
 pub milgraphics::ModifierField::A
 pub milgraphics::ModifierField::AM
@@ -828,12 +1573,28 @@ pub milgraphics::ModifierField::W1
 pub milgraphics::ModifierField::X
 pub milgraphics::ModifierField::Y
 impl milgraphics::ModifierField
-pub const milgraphics::ModifierField::ALL: [Self; 20]
+pub const milgraphics::ModifierField::ALL: &'static [Self]
 pub fn milgraphics::ModifierField::from_name(&str) -> core::option::Option<Self>
 pub const fn milgraphics::ModifierField::kind(self) -> milgraphics::ModifierKind
+pub const fn milgraphics::ModifierField::label(self) -> &'static str
 pub const fn milgraphics::ModifierField::name(self) -> &'static str
+impl core::clone::Clone for milgraphics::ModifierField
+pub fn milgraphics::ModifierField::clone(&self) -> milgraphics::ModifierField
+impl core::cmp::Eq for milgraphics::ModifierField
+impl core::cmp::Ord for milgraphics::ModifierField
+pub fn milgraphics::ModifierField::cmp(&self, &milgraphics::ModifierField) -> core::cmp::Ordering
+impl core::cmp::PartialEq for milgraphics::ModifierField
+pub fn milgraphics::ModifierField::eq(&self, &milgraphics::ModifierField) -> bool
+impl core::cmp::PartialOrd for milgraphics::ModifierField
+pub fn milgraphics::ModifierField::partial_cmp(&self, &milgraphics::ModifierField) -> core::option::Option<core::cmp::Ordering>
+impl core::fmt::Debug for milgraphics::ModifierField
+pub fn milgraphics::ModifierField::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
 impl core::fmt::Display for milgraphics::ModifierField
 pub fn milgraphics::ModifierField::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::hash::Hash for milgraphics::ModifierField
+pub fn milgraphics::ModifierField::hash<__H: core::hash::Hasher>(&self, &mut __H)
+impl core::marker::Copy for milgraphics::ModifierField
+impl core::marker::StructuralPartialEq for milgraphics::ModifierField
 #[non_exhaustive] pub enum milgraphics::ModifierKind
 pub milgraphics::ModifierKind::Altitudes
 pub milgraphics::ModifierKind::Azimuths
@@ -842,10 +1603,28 @@ pub milgraphics::ModifierKind::Direction
 pub milgraphics::ModifierKind::Distances
 pub milgraphics::ModifierKind::SymbolCode
 pub milgraphics::ModifierKind::Text
+impl core::clone::Clone for milgraphics::ModifierKind
+pub fn milgraphics::ModifierKind::clone(&self) -> milgraphics::ModifierKind
+impl core::cmp::Eq for milgraphics::ModifierKind
+impl core::cmp::PartialEq for milgraphics::ModifierKind
+pub fn milgraphics::ModifierKind::eq(&self, &milgraphics::ModifierKind) -> bool
+impl core::fmt::Debug for milgraphics::ModifierKind
+pub fn milgraphics::ModifierKind::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::hash::Hash for milgraphics::ModifierKind
+pub fn milgraphics::ModifierKind::hash<__H: core::hash::Hasher>(&self, &mut __H)
+impl core::marker::Copy for milgraphics::ModifierKind
+impl core::marker::StructuralPartialEq for milgraphics::ModifierKind
 #[non_exhaustive] pub enum milgraphics::ModifierValue
 pub milgraphics::ModifierValue::Altitudes(alloc::vec::Vec<milgraphics::geo::Altitude>)
 pub milgraphics::ModifierValue::Numbers(alloc::vec::Vec<f64>)
 pub milgraphics::ModifierValue::Text(alloc::string::String)
+impl core::clone::Clone for milgraphics::modifier::ModifierValue
+pub fn milgraphics::modifier::ModifierValue::clone(&self) -> milgraphics::modifier::ModifierValue
+impl core::cmp::PartialEq for milgraphics::modifier::ModifierValue
+pub fn milgraphics::modifier::ModifierValue::eq(&self, &milgraphics::modifier::ModifierValue) -> bool
+impl core::fmt::Debug for milgraphics::modifier::ModifierValue
+pub fn milgraphics::modifier::ModifierValue::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::marker::StructuralPartialEq for milgraphics::modifier::ModifierValue
 #[non_exhaustive] pub enum milgraphics::ModifierValueError
 pub milgraphics::ModifierValueError::Count
 pub milgraphics::ModifierValueError::Count::count: usize
@@ -853,103 +1632,279 @@ pub milgraphics::ModifierValueError::Count::field: milgraphics::ModifierField
 pub milgraphics::ModifierValueError::Kind
 pub milgraphics::ModifierValueError::Kind::field: milgraphics::ModifierField
 pub milgraphics::ModifierValueError::Kind::kind: milgraphics::ModifierKind
+impl core::clone::Clone for milgraphics::modifier::ModifierValueError
+pub fn milgraphics::modifier::ModifierValueError::clone(&self) -> milgraphics::modifier::ModifierValueError
+impl core::cmp::PartialEq for milgraphics::modifier::ModifierValueError
+pub fn milgraphics::modifier::ModifierValueError::eq(&self, &milgraphics::modifier::ModifierValueError) -> bool
+impl core::convert::From<milgraphics::modifier::ModifierValueError> for milgraphics::edit::EditError
+pub fn milgraphics::edit::EditError::from(milgraphics::modifier::ModifierValueError) -> Self
+impl core::error::Error for milgraphics::modifier::ModifierValueError
+impl core::fmt::Debug for milgraphics::modifier::ModifierValueError
+pub fn milgraphics::modifier::ModifierValueError::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::fmt::Display for milgraphics::modifier::ModifierValueError
+pub fn milgraphics::modifier::ModifierValueError::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::marker::StructuralPartialEq for milgraphics::modifier::ModifierValueError
 #[non_exhaustive] pub enum milgraphics::PersistError
 pub milgraphics::PersistError::Invalid(serde_json::error::Error)
-pub milgraphics::PersistError::NotAnObject(serde_json::error::Error)
+pub milgraphics::PersistError::InvalidJson(serde_json::error::Error)
+pub milgraphics::PersistError::NonFinite
+pub milgraphics::PersistError::NonFinite::field: alloc::string::String
+pub milgraphics::PersistError::NonFinite::id: milgraphics::definition::GraphicId
 pub milgraphics::PersistError::Serialize
-pub milgraphics::PersistError::Serialize::id: alloc::string::String
+pub milgraphics::PersistError::Serialize::id: milgraphics::definition::GraphicId
 pub milgraphics::PersistError::Serialize::source: serde_json::error::Error
 pub milgraphics::PersistError::UnknownSchema
 pub milgraphics::PersistError::UnknownSchema::found: core::option::Option<serde_json::value::Value>
 pub milgraphics::PersistError::WrongType
 pub milgraphics::PersistError::WrongType::found: &'static str
+impl core::error::Error for milgraphics::persist::PersistError
+pub fn milgraphics::persist::PersistError::source(&self) -> core::option::Option<&(dyn core::error::Error + 'static)>
+impl core::fmt::Debug for milgraphics::persist::PersistError
+pub fn milgraphics::persist::PersistError::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::fmt::Display for milgraphics::persist::PersistError
+pub fn milgraphics::persist::PersistError::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
 #[non_exhaustive] pub enum milgraphics::PickTarget
 pub milgraphics::PickTarget::Handle(milgraphics::edit::HandleId)
 pub milgraphics::PickTarget::Part(milgraphics::construction::PartId)
-pub milgraphics::PickTarget::Symbol(u16)
+pub milgraphics::PickTarget::Symbol(u32)
+impl core::clone::Clone for milgraphics::pick::PickTarget
+pub fn milgraphics::pick::PickTarget::clone(&self) -> milgraphics::pick::PickTarget
+impl core::cmp::Eq for milgraphics::pick::PickTarget
+impl core::cmp::PartialEq for milgraphics::pick::PickTarget
+pub fn milgraphics::pick::PickTarget::eq(&self, &milgraphics::pick::PickTarget) -> bool
+impl core::fmt::Debug for milgraphics::pick::PickTarget
+pub fn milgraphics::pick::PickTarget::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::hash::Hash for milgraphics::pick::PickTarget
+pub fn milgraphics::pick::PickTarget::hash<__H: core::hash::Hasher>(&self, &mut __H)
+impl core::marker::Copy for milgraphics::pick::PickTarget
+impl core::marker::StructuralPartialEq for milgraphics::pick::PickTarget
 #[non_exhaustive] pub enum milgraphics::RenderError
 pub milgraphics::RenderError::Budget(milgraphics::budget::BudgetError)
+impl core::convert::From<milgraphics::budget::BudgetError> for milgraphics::render::RenderError
+pub fn milgraphics::render::RenderError::from(milgraphics::budget::BudgetError) -> Self
+impl core::error::Error for milgraphics::render::RenderError
+pub fn milgraphics::render::RenderError::source(&self) -> core::option::Option<&(dyn core::error::Error + 'static)>
+impl core::fmt::Debug for milgraphics::render::RenderError
+pub fn milgraphics::render::RenderError::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::fmt::Display for milgraphics::render::RenderError
+pub fn milgraphics::render::RenderError::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
 #[non_exhaustive] pub enum milgraphics::StandardVersion
 pub milgraphics::StandardVersion::App6D
 pub milgraphics::StandardVersion::App6Ech2
 pub milgraphics::StandardVersion::Mil2525Dch1
 pub milgraphics::StandardVersion::Mil2525Ech1
 impl milgraphics::standard::StandardVersion
-pub const milgraphics::standard::StandardVersion::ALL: [Self; 4]
+pub const milgraphics::standard::StandardVersion::ALL: &'static [Self]
 pub const fn milgraphics::standard::StandardVersion::code(self) -> u8
 pub const fn milgraphics::standard::StandardVersion::from_code(u8) -> core::option::Option<Self>
+impl core::clone::Clone for milgraphics::standard::StandardVersion
+pub fn milgraphics::standard::StandardVersion::clone(&self) -> milgraphics::standard::StandardVersion
+impl core::cmp::Eq for milgraphics::standard::StandardVersion
+impl core::cmp::Ord for milgraphics::standard::StandardVersion
+pub fn milgraphics::standard::StandardVersion::cmp(&self, &milgraphics::standard::StandardVersion) -> core::cmp::Ordering
+impl core::cmp::PartialEq for milgraphics::standard::StandardVersion
+pub fn milgraphics::standard::StandardVersion::eq(&self, &milgraphics::standard::StandardVersion) -> bool
+impl core::cmp::PartialOrd for milgraphics::standard::StandardVersion
+pub fn milgraphics::standard::StandardVersion::partial_cmp(&self, &milgraphics::standard::StandardVersion) -> core::option::Option<core::cmp::Ordering>
+impl core::fmt::Debug for milgraphics::standard::StandardVersion
+pub fn milgraphics::standard::StandardVersion::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
 impl core::fmt::Display for milgraphics::standard::StandardVersion
 pub fn milgraphics::standard::StandardVersion::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::hash::Hash for milgraphics::standard::StandardVersion
+pub fn milgraphics::standard::StandardVersion::hash<__H: core::hash::Hasher>(&self, &mut __H)
+impl core::marker::Copy for milgraphics::standard::StandardVersion
+impl core::marker::StructuralPartialEq for milgraphics::standard::StandardVersion
 #[non_exhaustive] pub enum milgraphics::Unsupported
 pub milgraphics::Unsupported::Standard
 pub milgraphics::Unsupported::Standard::code: u8
 pub milgraphics::Unsupported::Symbol
-pub milgraphics::Unsupported::Symbol::entity: u32
+pub milgraphics::Unsupported::Symbol::entity: milgraphics::sidc::EntityCode
 pub milgraphics::Unsupported::Symbol::standard: milgraphics::standard::StandardVersion
 pub milgraphics::Unsupported::Symbol::symbol_set: u8
+impl core::clone::Clone for milgraphics::support::Unsupported
+pub fn milgraphics::support::Unsupported::clone(&self) -> milgraphics::support::Unsupported
+impl core::cmp::Eq for milgraphics::support::Unsupported
+impl core::cmp::PartialEq for milgraphics::support::Unsupported
+pub fn milgraphics::support::Unsupported::eq(&self, &milgraphics::support::Unsupported) -> bool
+impl core::convert::From<milgraphics::support::Unsupported> for milgraphics::ConstructError
+pub fn milgraphics::ConstructError::from(milgraphics::support::Unsupported) -> Self
+impl core::convert::From<milgraphics::support::Unsupported> for milgraphics::edit::EditError
+pub fn milgraphics::edit::EditError::from(milgraphics::support::Unsupported) -> Self
+impl core::error::Error for milgraphics::support::Unsupported
+impl core::fmt::Debug for milgraphics::support::Unsupported
+pub fn milgraphics::support::Unsupported::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::fmt::Display for milgraphics::support::Unsupported
+pub fn milgraphics::support::Unsupported::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::marker::StructuralPartialEq for milgraphics::support::Unsupported
 #[non_exhaustive] pub enum milgraphics::VerticalDatum
 pub milgraphics::VerticalDatum::AboveGround
 pub milgraphics::VerticalDatum::Ellipsoid
 pub milgraphics::VerticalDatum::MeanSeaLevel
+impl core::clone::Clone for milgraphics::geo::VerticalDatum
+pub fn milgraphics::geo::VerticalDatum::clone(&self) -> milgraphics::geo::VerticalDatum
+impl core::cmp::Eq for milgraphics::geo::VerticalDatum
+impl core::cmp::PartialEq for milgraphics::geo::VerticalDatum
+pub fn milgraphics::geo::VerticalDatum::eq(&self, &milgraphics::geo::VerticalDatum) -> bool
+impl core::fmt::Debug for milgraphics::geo::VerticalDatum
+pub fn milgraphics::geo::VerticalDatum::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::hash::Hash for milgraphics::geo::VerticalDatum
+pub fn milgraphics::geo::VerticalDatum::hash<__H: core::hash::Hasher>(&self, &mut __H)
+impl core::marker::Copy for milgraphics::geo::VerticalDatum
+impl core::marker::StructuralPartialEq for milgraphics::geo::VerticalDatum
+impl serde_core::ser::Serialize for milgraphics::geo::VerticalDatum
+pub fn milgraphics::geo::VerticalDatum::serialize<__S>(&self, __S) -> core::result::Result<<__S as serde_core::ser::Serializer>::Ok, <__S as serde_core::ser::Serializer>::Error> where __S: serde_core::ser::Serializer
+impl<'de> serde_core::de::Deserialize<'de> for milgraphics::geo::VerticalDatum
+pub fn milgraphics::geo::VerticalDatum::deserialize<__D>(__D) -> core::result::Result<Self, <__D as serde_core::de::Deserializer>::Error> where __D: serde_core::de::Deserializer<'de>
 #[non_exhaustive] pub struct milgraphics::Altitude
 pub milgraphics::Altitude::datum: milgraphics::geo::VerticalDatum
 pub milgraphics::Altitude::metres: f64
 pub milgraphics::Altitude::unknown: alloc::collections::btree::map::BTreeMap<alloc::string::String, serde_json::value::Value>
 impl milgraphics::geo::Altitude
 pub fn milgraphics::geo::Altitude::new(f64, milgraphics::geo::VerticalDatum) -> Self
+impl core::clone::Clone for milgraphics::geo::Altitude
+pub fn milgraphics::geo::Altitude::clone(&self) -> milgraphics::geo::Altitude
+impl core::cmp::PartialEq for milgraphics::geo::Altitude
+pub fn milgraphics::geo::Altitude::eq(&self, &milgraphics::geo::Altitude) -> bool
+impl core::fmt::Debug for milgraphics::geo::Altitude
+pub fn milgraphics::geo::Altitude::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::marker::StructuralPartialEq for milgraphics::geo::Altitude
+impl serde_core::ser::Serialize for milgraphics::geo::Altitude
+pub fn milgraphics::geo::Altitude::serialize<__S>(&self, __S) -> core::result::Result<<__S as serde_core::ser::Serializer>::Ok, <__S as serde_core::ser::Serializer>::Error> where __S: serde_core::ser::Serializer
+impl<'de> serde_core::de::Deserialize<'de> for milgraphics::geo::Altitude
+pub fn milgraphics::geo::Altitude::deserialize<__D>(__D) -> core::result::Result<Self, <__D as serde_core::de::Deserializer>::Error> where __D: serde_core::de::Deserializer<'de>
 #[non_exhaustive] pub struct milgraphics::Budget
 pub milgraphics::Budget::max_control_points: usize
 pub milgraphics::Budget::max_labels: usize
 pub milgraphics::Budget::max_modifier_values: usize
 pub milgraphics::Budget::max_text_chars: usize
 pub milgraphics::Budget::max_vertices: usize
+impl core::clone::Clone for milgraphics::budget::Budget
+pub fn milgraphics::budget::Budget::clone(&self) -> milgraphics::budget::Budget
+impl core::cmp::Eq for milgraphics::budget::Budget
+impl core::cmp::PartialEq for milgraphics::budget::Budget
+pub fn milgraphics::budget::Budget::eq(&self, &milgraphics::budget::Budget) -> bool
 impl core::default::Default for milgraphics::budget::Budget
 pub fn milgraphics::budget::Budget::default() -> Self
+impl core::fmt::Debug for milgraphics::budget::Budget
+pub fn milgraphics::budget::Budget::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::marker::Copy for milgraphics::budget::Budget
+impl core::marker::StructuralPartialEq for milgraphics::budget::Budget
 #[non_exhaustive] pub struct milgraphics::CatalogEntry
 pub milgraphics::CatalogEntry::draw_rule: milgraphics::catalog::CatalogDrawRule
-pub milgraphics::CatalogEntry::entity: u32
+pub milgraphics::CatalogEntry::entity: milgraphics::sidc::EntityCode
 pub milgraphics::CatalogEntry::geometry: milgraphics::catalog::GeometryKind
 pub milgraphics::CatalogEntry::modifiers: &'static [milgraphics::ModifierField]
 pub milgraphics::CatalogEntry::name: &'static str
 pub milgraphics::CatalogEntry::path: &'static [&'static str]
 pub milgraphics::CatalogEntry::symbol_set: u8
 pub milgraphics::CatalogEntry::versions: milgraphics::catalog::VersionSet
+impl core::clone::Clone for milgraphics::catalog::CatalogEntry
+pub fn milgraphics::catalog::CatalogEntry::clone(&self) -> milgraphics::catalog::CatalogEntry
+impl core::cmp::Eq for milgraphics::catalog::CatalogEntry
+impl core::cmp::PartialEq for milgraphics::catalog::CatalogEntry
+pub fn milgraphics::catalog::CatalogEntry::eq(&self, &milgraphics::catalog::CatalogEntry) -> bool
+impl core::fmt::Debug for milgraphics::catalog::CatalogEntry
+pub fn milgraphics::catalog::CatalogEntry::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::marker::Copy for milgraphics::catalog::CatalogEntry
+impl core::marker::StructuralPartialEq for milgraphics::catalog::CatalogEntry
 #[non_exhaustive] pub struct milgraphics::Config
 pub milgraphics::Config::budget: milgraphics::budget::Budget
 pub milgraphics::Config::geodesic_step_m: f64
+impl core::clone::Clone for milgraphics::Config
+pub fn milgraphics::Config::clone(&self) -> milgraphics::Config
+impl core::cmp::PartialEq for milgraphics::Config
+pub fn milgraphics::Config::eq(&self, &milgraphics::Config) -> bool
 impl core::default::Default for milgraphics::Config
 pub fn milgraphics::Config::default() -> Self
+impl core::fmt::Debug for milgraphics::Config
+pub fn milgraphics::Config::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::marker::Copy for milgraphics::Config
+impl core::marker::StructuralPartialEq for milgraphics::Config
 #[non_exhaustive] pub struct milgraphics::Construction
-pub milgraphics::Construction::decorations: alloc::vec::Vec<milgraphics::construction::ScreenDecoration>
-pub milgraphics::Construction::definition: milgraphics::definition::GraphicId
-pub milgraphics::Construction::handles: alloc::vec::Vec<milgraphics::construction::HandleSpec>
-pub milgraphics::Construction::labels: alloc::vec::Vec<milgraphics::construction::LabelSpec>
-pub milgraphics::Construction::parts: alloc::vec::Vec<milgraphics::construction::GeoPart>
-pub milgraphics::Construction::renderer_version: &'static str
-pub milgraphics::Construction::revision: u64
-pub milgraphics::Construction::symbols: alloc::vec::Vec<milgraphics::construction::EmbeddedSymbol>
+impl milgraphics::construction::Construction
+pub fn milgraphics::construction::Construction::definition(&self) -> &milgraphics::definition::GraphicId
+pub fn milgraphics::construction::Construction::renderer_version(&self) -> &'static str
+pub fn milgraphics::construction::Construction::revision(&self) -> u64
+impl core::clone::Clone for milgraphics::construction::Construction
+pub fn milgraphics::construction::Construction::clone(&self) -> milgraphics::construction::Construction
+impl core::cmp::PartialEq for milgraphics::construction::Construction
+pub fn milgraphics::construction::Construction::eq(&self, &milgraphics::construction::Construction) -> bool
+impl core::fmt::Debug for milgraphics::construction::Construction
+pub fn milgraphics::construction::Construction::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::marker::StructuralPartialEq for milgraphics::construction::Construction
 #[non_exhaustive] pub struct milgraphics::ControlPoint
 pub milgraphics::ControlPoint::altitude: core::option::Option<milgraphics::geo::Altitude>
 pub milgraphics::ControlPoint::position: milgraphics::geo::GeoPoint
 pub milgraphics::ControlPoint::unknown: alloc::collections::btree::map::BTreeMap<alloc::string::String, serde_json::value::Value>
 impl milgraphics::definition::ControlPoint
 pub fn milgraphics::definition::ControlPoint::ground(milgraphics::geo::GeoPoint) -> Self
-impl core::convert::From<milgraphics::definition::ControlPoint> for serde_json::map::Map<alloc::string::String, serde_json::value::Value>
-pub fn serde_json::map::Map<alloc::string::String, serde_json::value::Value>::from(milgraphics::definition::ControlPoint) -> Self
-impl core::convert::TryFrom<serde_json::map::Map<alloc::string::String, serde_json::value::Value>> for milgraphics::definition::ControlPoint
-pub type milgraphics::definition::ControlPoint::Error = milgraphics::definition::ControlPointError
-pub fn milgraphics::definition::ControlPoint::try_from(serde_json::map::Map<alloc::string::String, serde_json::value::Value>) -> core::result::Result<Self, milgraphics::definition::ControlPointError>
+impl core::clone::Clone for milgraphics::definition::ControlPoint
+pub fn milgraphics::definition::ControlPoint::clone(&self) -> milgraphics::definition::ControlPoint
+impl core::cmp::PartialEq for milgraphics::definition::ControlPoint
+pub fn milgraphics::definition::ControlPoint::eq(&self, &milgraphics::definition::ControlPoint) -> bool
+impl core::fmt::Debug for milgraphics::definition::ControlPoint
+pub fn milgraphics::definition::ControlPoint::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::marker::StructuralPartialEq for milgraphics::definition::ControlPoint
+impl serde_core::ser::Serialize for milgraphics::definition::ControlPoint
+pub fn milgraphics::definition::ControlPoint::serialize<__S>(&self, __S) -> core::result::Result<<__S as serde_core::ser::Serializer>::Ok, <__S as serde_core::ser::Serializer>::Error> where __S: serde_core::ser::Serializer
+impl<'de> serde_core::de::Deserialize<'de> for milgraphics::definition::ControlPoint
+pub fn milgraphics::definition::ControlPoint::deserialize<__D>(__D) -> core::result::Result<Self, <__D as serde_core::de::Deserializer>::Error> where __D: serde_core::de::Deserializer<'de>
+#[non_exhaustive] pub struct milgraphics::EditContext
+impl milgraphics::edit::EditContext
+pub fn milgraphics::edit::EditContext::config(&self) -> &milgraphics::Config
+pub fn milgraphics::edit::EditContext::new(milgraphics::Config) -> Self
+impl core::clone::Clone for milgraphics::edit::EditContext
+pub fn milgraphics::edit::EditContext::clone(&self) -> milgraphics::edit::EditContext
+impl core::fmt::Debug for milgraphics::edit::EditContext
+pub fn milgraphics::edit::EditContext::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+#[non_exhaustive] pub struct milgraphics::Edited
+pub milgraphics::Edited::construction: milgraphics::construction::Construction
+pub milgraphics::Edited::definition: milgraphics::definition::GraphicDefinition
+impl core::clone::Clone for milgraphics::edit::Edited
+pub fn milgraphics::edit::Edited::clone(&self) -> milgraphics::edit::Edited
+impl core::cmp::PartialEq for milgraphics::edit::Edited
+pub fn milgraphics::edit::Edited::eq(&self, &milgraphics::edit::Edited) -> bool
+impl core::fmt::Debug for milgraphics::edit::Edited
+pub fn milgraphics::edit::Edited::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::marker::StructuralPartialEq for milgraphics::edit::Edited
 pub struct milgraphics::EntityCode(_)
 impl milgraphics::sidc::EntityCode
 pub const fn milgraphics::sidc::EntityCode::get(self) -> u32
 pub const fn milgraphics::sidc::EntityCode::new(u32) -> core::option::Option<Self>
+impl core::clone::Clone for milgraphics::sidc::EntityCode
+pub fn milgraphics::sidc::EntityCode::clone(&self) -> milgraphics::sidc::EntityCode
+impl core::cmp::Eq for milgraphics::sidc::EntityCode
+impl core::cmp::Ord for milgraphics::sidc::EntityCode
+pub fn milgraphics::sidc::EntityCode::cmp(&self, &milgraphics::sidc::EntityCode) -> core::cmp::Ordering
+impl core::cmp::PartialEq for milgraphics::sidc::EntityCode
+pub fn milgraphics::sidc::EntityCode::eq(&self, &milgraphics::sidc::EntityCode) -> bool
+impl core::cmp::PartialOrd for milgraphics::sidc::EntityCode
+pub fn milgraphics::sidc::EntityCode::partial_cmp(&self, &milgraphics::sidc::EntityCode) -> core::option::Option<core::cmp::Ordering>
+impl core::fmt::Debug for milgraphics::sidc::EntityCode
+pub fn milgraphics::sidc::EntityCode::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
 impl core::fmt::Display for milgraphics::sidc::EntityCode
 pub fn milgraphics::sidc::EntityCode::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::hash::Hash for milgraphics::sidc::EntityCode
+pub fn milgraphics::sidc::EntityCode::hash<__H: core::hash::Hasher>(&self, &mut __H)
+impl core::marker::Copy for milgraphics::sidc::EntityCode
+impl core::marker::StructuralPartialEq for milgraphics::sidc::EntityCode
 pub struct milgraphics::GeoPoint
 impl milgraphics::geo::GeoPoint
 pub fn milgraphics::geo::GeoPoint::lat(self) -> f64
 pub fn milgraphics::geo::GeoPoint::lon(self) -> f64
 pub fn milgraphics::geo::GeoPoint::new(f64, f64) -> core::result::Result<Self, milgraphics::geo::GeoError>
+impl core::clone::Clone for milgraphics::geo::GeoPoint
+pub fn milgraphics::geo::GeoPoint::clone(&self) -> milgraphics::geo::GeoPoint
+impl core::cmp::PartialEq for milgraphics::geo::GeoPoint
+pub fn milgraphics::geo::GeoPoint::eq(&self, &milgraphics::geo::GeoPoint) -> bool
+impl core::fmt::Debug for milgraphics::geo::GeoPoint
+pub fn milgraphics::geo::GeoPoint::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::marker::Copy for milgraphics::geo::GeoPoint
+impl core::marker::StructuralPartialEq for milgraphics::geo::GeoPoint
+impl serde_core::ser::Serialize for milgraphics::geo::GeoPoint
+pub fn milgraphics::geo::GeoPoint::serialize<__S>(&self, __S) -> core::result::Result<<__S as serde_core::ser::Serializer>::Ok, <__S as serde_core::ser::Serializer>::Error> where __S: serde_core::ser::Serializer
+impl<'de> serde_core::de::Deserialize<'de> for milgraphics::geo::GeoPoint
+pub fn milgraphics::geo::GeoPoint::deserialize<__D>(__D) -> core::result::Result<Self, <__D as serde_core::de::Deserializer>::Error> where __D: serde_core::de::Deserializer<'de>
 #[non_exhaustive] pub struct milgraphics::GraphicDefinition
 pub milgraphics::GraphicDefinition::id: milgraphics::definition::GraphicId
 pub milgraphics::GraphicDefinition::modifiers: milgraphics::modifier::Modifiers
@@ -962,44 +1917,57 @@ pub milgraphics::GraphicDefinition::validity: core::option::Option<milgraphics::
 impl milgraphics::definition::GraphicDefinition
 pub fn milgraphics::definition::GraphicDefinition::new(milgraphics::definition::GraphicId, milgraphics::sidc::SymbolId, alloc::vec::Vec<milgraphics::definition::ControlPoint>) -> Self
 pub fn milgraphics::definition::GraphicDefinition::positions(&self) -> impl core::iter::traits::exact_size::ExactSizeIterator<Item = milgraphics::geo::GeoPoint> + '_
+impl core::clone::Clone for milgraphics::definition::GraphicDefinition
+pub fn milgraphics::definition::GraphicDefinition::clone(&self) -> milgraphics::definition::GraphicDefinition
+impl core::cmp::PartialEq for milgraphics::definition::GraphicDefinition
+pub fn milgraphics::definition::GraphicDefinition::eq(&self, &milgraphics::definition::GraphicDefinition) -> bool
+impl core::fmt::Debug for milgraphics::definition::GraphicDefinition
+pub fn milgraphics::definition::GraphicDefinition::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::marker::StructuralPartialEq for milgraphics::definition::GraphicDefinition
 pub struct milgraphics::GraphicId(_)
 impl milgraphics::definition::GraphicId
 pub fn milgraphics::definition::GraphicId::as_str(&self) -> &str
 pub fn milgraphics::definition::GraphicId::new(impl core::convert::Into<alloc::string::String>) -> core::result::Result<Self, milgraphics::definition::GraphicIdError>
+impl core::clone::Clone for milgraphics::definition::GraphicId
+pub fn milgraphics::definition::GraphicId::clone(&self) -> milgraphics::definition::GraphicId
+impl core::cmp::Eq for milgraphics::definition::GraphicId
+impl core::cmp::Ord for milgraphics::definition::GraphicId
+pub fn milgraphics::definition::GraphicId::cmp(&self, &milgraphics::definition::GraphicId) -> core::cmp::Ordering
+impl core::cmp::PartialEq for milgraphics::definition::GraphicId
+pub fn milgraphics::definition::GraphicId::eq(&self, &milgraphics::definition::GraphicId) -> bool
+impl core::cmp::PartialOrd for milgraphics::definition::GraphicId
+pub fn milgraphics::definition::GraphicId::partial_cmp(&self, &milgraphics::definition::GraphicId) -> core::option::Option<core::cmp::Ordering>
 impl core::convert::From<milgraphics::definition::GraphicId> for alloc::string::String
 pub fn alloc::string::String::from(milgraphics::definition::GraphicId) -> Self
 impl core::convert::TryFrom<alloc::string::String> for milgraphics::definition::GraphicId
 pub type milgraphics::definition::GraphicId::Error = milgraphics::definition::GraphicIdError
 pub fn milgraphics::definition::GraphicId::try_from(alloc::string::String) -> core::result::Result<Self, milgraphics::definition::GraphicIdError>
+impl core::fmt::Debug for milgraphics::definition::GraphicId
+pub fn milgraphics::definition::GraphicId::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
 impl core::fmt::Display for milgraphics::definition::GraphicId
 pub fn milgraphics::definition::GraphicId::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::hash::Hash for milgraphics::definition::GraphicId
+pub fn milgraphics::definition::GraphicId::hash<__H: core::hash::Hasher>(&self, &mut __H)
+impl core::marker::StructuralPartialEq for milgraphics::definition::GraphicId
+impl serde_core::ser::Serialize for milgraphics::definition::GraphicId
+pub fn milgraphics::definition::GraphicId::serialize<__S>(&self, __S) -> core::result::Result<<__S as serde_core::ser::Serializer>::Ok, <__S as serde_core::ser::Serializer>::Error> where __S: serde_core::ser::Serializer
+impl<'de> serde_core::de::Deserialize<'de> for milgraphics::definition::GraphicId
+pub fn milgraphics::definition::GraphicId::deserialize<__D>(__D) -> core::result::Result<Self, <__D as serde_core::de::Deserializer>::Error> where __D: serde_core::de::Deserializer<'de>
 #[non_exhaustive] pub struct milgraphics::ModifierSpec
 pub milgraphics::ModifierSpec::field: milgraphics::ModifierField
 pub milgraphics::ModifierSpec::max_count: usize
 pub milgraphics::ModifierSpec::min_count: usize
 pub milgraphics::ModifierSpec::required: bool
+impl core::clone::Clone for milgraphics::support::ModifierSpec
+pub fn milgraphics::support::ModifierSpec::clone(&self) -> milgraphics::support::ModifierSpec
+impl core::cmp::Eq for milgraphics::support::ModifierSpec
+impl core::cmp::PartialEq for milgraphics::support::ModifierSpec
+pub fn milgraphics::support::ModifierSpec::eq(&self, &milgraphics::support::ModifierSpec) -> bool
+impl core::fmt::Debug for milgraphics::support::ModifierSpec
+pub fn milgraphics::support::ModifierSpec::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::marker::Copy for milgraphics::support::ModifierSpec
+impl core::marker::StructuralPartialEq for milgraphics::support::ModifierSpec
 #[non_exhaustive] pub struct milgraphics::Modifiers
-pub milgraphics::Modifiers::additional_info: core::option::Option<alloc::string::String>
-pub milgraphics::Modifiers::additional_info2: core::option::Option<alloc::string::String>
-pub milgraphics::Modifiers::altitudes: alloc::vec::Vec<milgraphics::geo::Altitude>
-pub milgraphics::Modifiers::azimuths_deg: alloc::vec::Vec<f64>
-pub milgraphics::Modifiers::country: core::option::Option<alloc::string::String>
-pub milgraphics::Modifiers::designation: core::option::Option<alloc::string::String>
-pub milgraphics::Modifiers::designation2: core::option::Option<alloc::string::String>
-pub milgraphics::Modifiers::designation3: core::option::Option<alloc::string::String>
-pub milgraphics::Modifiers::direction_deg: core::option::Option<f64>
-pub milgraphics::Modifiers::distances_m: alloc::vec::Vec<f64>
-pub milgraphics::Modifiers::dtg_end: core::option::Option<alloc::string::String>
-pub milgraphics::Modifiers::dtg_start: core::option::Option<alloc::string::String>
-pub milgraphics::Modifiers::echelon: core::option::Option<alloc::string::String>
-pub milgraphics::Modifiers::equipment_type: core::option::Option<alloc::string::String>
-pub milgraphics::Modifiers::hostile: core::option::Option<alloc::string::String>
-pub milgraphics::Modifiers::location: core::option::Option<alloc::string::String>
-pub milgraphics::Modifiers::quantity: core::option::Option<alloc::string::String>
-pub milgraphics::Modifiers::symbol_icon: core::option::Option<alloc::string::String>
-pub milgraphics::Modifiers::target_number: core::option::Option<alloc::string::String>
-pub milgraphics::Modifiers::target_number_extension: core::option::Option<alloc::string::String>
-pub milgraphics::Modifiers::unknown: alloc::collections::btree::map::BTreeMap<alloc::string::String, serde_json::value::Value>
 impl milgraphics::modifier::Modifiers
 pub fn milgraphics::modifier::Modifiers::clear(&mut self, milgraphics::ModifierField)
 pub fn milgraphics::modifier::Modifiers::count(&self, milgraphics::ModifierField) -> usize
@@ -1008,42 +1976,97 @@ pub fn milgraphics::modifier::Modifiers::get(&self, milgraphics::ModifierField) 
 pub fn milgraphics::modifier::Modifiers::is_empty(&self) -> bool
 pub fn milgraphics::modifier::Modifiers::is_set(&self, milgraphics::ModifierField) -> bool
 pub fn milgraphics::modifier::Modifiers::set(&mut self, milgraphics::ModifierField, milgraphics::modifier::ModifierValue) -> core::result::Result<(), milgraphics::modifier::ModifierValueError>
-impl core::convert::From<milgraphics::modifier::Modifiers> for serde_json::map::Map<alloc::string::String, serde_json::value::Value>
-pub fn serde_json::map::Map<alloc::string::String, serde_json::value::Value>::from(milgraphics::modifier::Modifiers) -> Self
-impl core::convert::From<serde_json::map::Map<alloc::string::String, serde_json::value::Value>> for milgraphics::modifier::Modifiers
-pub fn milgraphics::modifier::Modifiers::from(serde_json::map::Map<alloc::string::String, serde_json::value::Value>) -> Self
+impl core::clone::Clone for milgraphics::modifier::Modifiers
+pub fn milgraphics::modifier::Modifiers::clone(&self) -> milgraphics::modifier::Modifiers
+impl core::cmp::PartialEq for milgraphics::modifier::Modifiers
+pub fn milgraphics::modifier::Modifiers::eq(&self, &milgraphics::modifier::Modifiers) -> bool
+impl core::default::Default for milgraphics::modifier::Modifiers
+pub fn milgraphics::modifier::Modifiers::default() -> milgraphics::modifier::Modifiers
+impl core::fmt::Debug for milgraphics::modifier::Modifiers
+pub fn milgraphics::modifier::Modifiers::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::marker::StructuralPartialEq for milgraphics::modifier::Modifiers
+impl serde_core::ser::Serialize for milgraphics::modifier::Modifiers
+pub fn milgraphics::modifier::Modifiers::serialize<__S>(&self, __S) -> core::result::Result<<__S as serde_core::ser::Serializer>::Ok, <__S as serde_core::ser::Serializer>::Error> where __S: serde_core::ser::Serializer
+impl<'de> serde_core::de::Deserialize<'de> for milgraphics::modifier::Modifiers
+pub fn milgraphics::modifier::Modifiers::deserialize<__D>(__D) -> core::result::Result<Self, <__D as serde_core::de::Deserializer>::Error> where __D: serde_core::de::Deserializer<'de>
 #[non_exhaustive] pub struct milgraphics::PersistedGraphic
 impl milgraphics::persist::PersistedGraphic
 pub fn milgraphics::persist::PersistedGraphic::as_json(&self) -> &str
 pub fn milgraphics::persist::PersistedGraphic::decode(&self) -> core::result::Result<milgraphics::definition::GraphicDefinition, milgraphics::persist::PersistError>
 pub fn milgraphics::persist::PersistedGraphic::from_definition(&milgraphics::definition::GraphicDefinition) -> core::result::Result<Self, milgraphics::persist::PersistError>
 pub fn milgraphics::persist::PersistedGraphic::from_json(&str) -> core::result::Result<Self, milgraphics::persist::PersistError>
+impl core::clone::Clone for milgraphics::persist::PersistedGraphic
+pub fn milgraphics::persist::PersistedGraphic::clone(&self) -> milgraphics::persist::PersistedGraphic
+impl core::cmp::Eq for milgraphics::persist::PersistedGraphic
+impl core::cmp::PartialEq for milgraphics::persist::PersistedGraphic
+pub fn milgraphics::persist::PersistedGraphic::eq(&self, &Self) -> bool
+impl core::fmt::Debug for milgraphics::persist::PersistedGraphic
+pub fn milgraphics::persist::PersistedGraphic::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
 #[non_exhaustive] pub struct milgraphics::PickRef
 pub milgraphics::PickRef::definition: milgraphics::definition::GraphicId
 pub milgraphics::PickRef::target: milgraphics::pick::PickTarget
+impl core::clone::Clone for milgraphics::pick::PickRef
+pub fn milgraphics::pick::PickRef::clone(&self) -> milgraphics::pick::PickRef
+impl core::cmp::Eq for milgraphics::pick::PickRef
+impl core::cmp::PartialEq for milgraphics::pick::PickRef
+pub fn milgraphics::pick::PickRef::eq(&self, &milgraphics::pick::PickRef) -> bool
+impl core::fmt::Debug for milgraphics::pick::PickRef
+pub fn milgraphics::pick::PickRef::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::hash::Hash for milgraphics::pick::PickRef
+pub fn milgraphics::pick::PickRef::hash<__H: core::hash::Hasher>(&self, &mut __H)
+impl core::marker::StructuralPartialEq for milgraphics::pick::PickRef
 #[non_exhaustive] pub struct milgraphics::RenderPlan
 pub milgraphics::RenderPlan::geo: alloc::vec::Vec<milgraphics::render::GeoItem>
 pub milgraphics::RenderPlan::handles: alloc::vec::Vec<milgraphics::render::Handle>
 pub milgraphics::RenderPlan::labels: alloc::vec::Vec<milgraphics::render::Label>
-pub milgraphics::RenderPlan::metrics: alloc::string::String
+pub milgraphics::RenderPlan::metrics_identity: alloc::string::String
 pub milgraphics::RenderPlan::renderer_version: &'static str
 pub milgraphics::RenderPlan::revision: u64
 pub milgraphics::RenderPlan::screen: alloc::vec::Vec<milgraphics::render::ScreenItem>
 pub milgraphics::RenderPlan::surface_revision: u64
 pub milgraphics::RenderPlan::symbols: alloc::vec::Vec<milgraphics::render::SymbolPlacement>
 pub milgraphics::RenderPlan::view_revision: u64
+impl core::clone::Clone for milgraphics::render::RenderPlan
+pub fn milgraphics::render::RenderPlan::clone(&self) -> milgraphics::render::RenderPlan
+impl core::cmp::PartialEq for milgraphics::render::RenderPlan
+pub fn milgraphics::render::RenderPlan::eq(&self, &milgraphics::render::RenderPlan) -> bool
+impl core::fmt::Debug for milgraphics::render::RenderPlan
+pub fn milgraphics::render::RenderPlan::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::marker::StructuralPartialEq for milgraphics::render::RenderPlan
 #[non_exhaustive] pub struct milgraphics::StandardRef
 pub milgraphics::StandardRef::document: &'static str
 pub milgraphics::StandardRef::draw_rule: core::option::Option<&'static str>
 pub milgraphics::StandardRef::name: core::option::Option<&'static str>
 pub milgraphics::StandardRef::pdf_page: u16
 pub milgraphics::StandardRef::table: &'static str
+impl core::clone::Clone for milgraphics::support::StandardRef
+pub fn milgraphics::support::StandardRef::clone(&self) -> milgraphics::support::StandardRef
+impl core::cmp::Eq for milgraphics::support::StandardRef
+impl core::cmp::PartialEq for milgraphics::support::StandardRef
+pub fn milgraphics::support::StandardRef::eq(&self, &milgraphics::support::StandardRef) -> bool
+impl core::fmt::Debug for milgraphics::support::StandardRef
+pub fn milgraphics::support::StandardRef::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::marker::Copy for milgraphics::support::StandardRef
+impl core::marker::StructuralPartialEq for milgraphics::support::StandardRef
 #[non_exhaustive] pub struct milgraphics::StyleOverrides
-pub milgraphics::StyleOverrides::fill_color: core::option::Option<alloc::string::String>
-pub milgraphics::StyleOverrides::line_color: core::option::Option<alloc::string::String>
+pub milgraphics::StyleOverrides::fill_color: core::option::Option<milgraphics::style::Rgba>
+pub milgraphics::StyleOverrides::line_color: core::option::Option<milgraphics::style::Rgba>
 pub milgraphics::StyleOverrides::unknown: alloc::collections::btree::map::BTreeMap<alloc::string::String, serde_json::value::Value>
 impl milgraphics::definition::StyleOverrides
 pub fn milgraphics::definition::StyleOverrides::is_empty(&self) -> bool
+impl core::clone::Clone for milgraphics::definition::StyleOverrides
+pub fn milgraphics::definition::StyleOverrides::clone(&self) -> milgraphics::definition::StyleOverrides
+impl core::cmp::PartialEq for milgraphics::definition::StyleOverrides
+pub fn milgraphics::definition::StyleOverrides::eq(&self, &milgraphics::definition::StyleOverrides) -> bool
+impl core::default::Default for milgraphics::definition::StyleOverrides
+pub fn milgraphics::definition::StyleOverrides::default() -> milgraphics::definition::StyleOverrides
+impl core::fmt::Debug for milgraphics::definition::StyleOverrides
+pub fn milgraphics::definition::StyleOverrides::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::marker::StructuralPartialEq for milgraphics::definition::StyleOverrides
+impl serde_core::ser::Serialize for milgraphics::definition::StyleOverrides
+pub fn milgraphics::definition::StyleOverrides::serialize<__S>(&self, __S) -> core::result::Result<<__S as serde_core::ser::Serializer>::Ok, <__S as serde_core::ser::Serializer>::Error> where __S: serde_core::ser::Serializer
+impl<'de> serde_core::de::Deserialize<'de> for milgraphics::definition::StyleOverrides
+pub fn milgraphics::definition::StyleOverrides::deserialize<__D>(__D) -> core::result::Result<Self, <__D as serde_core::de::Deserializer>::Error> where __D: serde_core::de::Deserializer<'de>
 pub struct milgraphics::SymbolId
 impl milgraphics::sidc::SymbolId
 pub fn milgraphics::sidc::SymbolId::amplifier(&self) -> u8
@@ -1059,8 +2082,18 @@ pub fn milgraphics::sidc::SymbolId::standard(&self) -> core::option::Option<milg
 pub fn milgraphics::sidc::SymbolId::status(&self) -> u8
 pub fn milgraphics::sidc::SymbolId::symbol_set(&self) -> u8
 pub fn milgraphics::sidc::SymbolId::version_code(&self) -> u8
+impl core::clone::Clone for milgraphics::sidc::SymbolId
+pub fn milgraphics::sidc::SymbolId::clone(&self) -> milgraphics::sidc::SymbolId
+impl core::cmp::Eq for milgraphics::sidc::SymbolId
+impl core::cmp::PartialEq for milgraphics::sidc::SymbolId
+pub fn milgraphics::sidc::SymbolId::eq(&self, &milgraphics::sidc::SymbolId) -> bool
+impl core::fmt::Debug for milgraphics::sidc::SymbolId
+pub fn milgraphics::sidc::SymbolId::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
 impl core::fmt::Display for milgraphics::sidc::SymbolId
 pub fn milgraphics::sidc::SymbolId::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::hash::Hash for milgraphics::sidc::SymbolId
+pub fn milgraphics::sidc::SymbolId::hash<__H: core::hash::Hasher>(&self, &mut __H)
+impl core::marker::StructuralPartialEq for milgraphics::sidc::SymbolId
 impl core::str::traits::FromStr for milgraphics::sidc::SymbolId
 pub type milgraphics::sidc::SymbolId::Err = milgraphics::sidc::SidcError
 pub fn milgraphics::sidc::SymbolId::from_str(&str) -> core::result::Result<Self, Self::Err>
@@ -1069,7 +2102,7 @@ pub fn milgraphics::sidc::SymbolId::serialize<S: serde_core::ser::Serializer>(&s
 impl<'de> serde_core::de::Deserialize<'de> for milgraphics::sidc::SymbolId
 pub fn milgraphics::sidc::SymbolId::deserialize<D: serde_core::de::Deserializer<'de>>(D) -> core::result::Result<Self, <D as serde_core::de::Deserializer>::Error>
 #[non_exhaustive] pub struct milgraphics::SymbolSpec
-pub milgraphics::SymbolSpec::entity: u32
+pub milgraphics::SymbolSpec::entity: milgraphics::sidc::EntityCode
 pub milgraphics::SymbolSpec::max_points: usize
 pub milgraphics::SymbolSpec::min_points: usize
 pub milgraphics::SymbolSpec::modifiers: &'static [milgraphics::support::ModifierSpec]
@@ -1082,22 +2115,64 @@ pub fn milgraphics::support::SymbolSpec::modifier(&self, milgraphics::ModifierFi
 pub fn milgraphics::support::SymbolSpec::name(&self) -> &'static str
 pub fn milgraphics::support::SymbolSpec::reference(&self) -> core::option::Option<&'static milgraphics::support::StandardRef>
 pub fn milgraphics::support::SymbolSpec::required(&self) -> impl core::iter::traits::iterator::Iterator<Item = milgraphics::ModifierField> + 'static
+pub fn milgraphics::support::SymbolSpec::symbol_id(&self, u8, u8, u8) -> core::result::Result<milgraphics::sidc::SymbolId, milgraphics::sidc::SidcError>
+impl core::clone::Clone for milgraphics::support::SymbolSpec
+pub fn milgraphics::support::SymbolSpec::clone(&self) -> milgraphics::support::SymbolSpec
+impl core::cmp::PartialEq for milgraphics::support::SymbolSpec
+pub fn milgraphics::support::SymbolSpec::eq(&self, &milgraphics::support::SymbolSpec) -> bool
+impl core::fmt::Debug for milgraphics::support::SymbolSpec
+pub fn milgraphics::support::SymbolSpec::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::marker::Copy for milgraphics::support::SymbolSpec
+impl core::marker::StructuralPartialEq for milgraphics::support::SymbolSpec
 #[non_exhaustive] pub struct milgraphics::Validity
 pub milgraphics::Validity::end: core::option::Option<alloc::string::String>
 pub milgraphics::Validity::start: core::option::Option<alloc::string::String>
 pub milgraphics::Validity::unknown: alloc::collections::btree::map::BTreeMap<alloc::string::String, serde_json::value::Value>
+impl core::clone::Clone for milgraphics::definition::Validity
+pub fn milgraphics::definition::Validity::clone(&self) -> milgraphics::definition::Validity
+impl core::cmp::PartialEq for milgraphics::definition::Validity
+pub fn milgraphics::definition::Validity::eq(&self, &milgraphics::definition::Validity) -> bool
+impl core::default::Default for milgraphics::definition::Validity
+pub fn milgraphics::definition::Validity::default() -> milgraphics::definition::Validity
+impl core::fmt::Debug for milgraphics::definition::Validity
+pub fn milgraphics::definition::Validity::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::marker::StructuralPartialEq for milgraphics::definition::Validity
+impl serde_core::ser::Serialize for milgraphics::definition::Validity
+pub fn milgraphics::definition::Validity::serialize<__S>(&self, __S) -> core::result::Result<<__S as serde_core::ser::Serializer>::Ok, <__S as serde_core::ser::Serializer>::Error> where __S: serde_core::ser::Serializer
+impl<'de> serde_core::de::Deserialize<'de> for milgraphics::definition::Validity
+pub fn milgraphics::definition::Validity::deserialize<__D>(__D) -> core::result::Result<Self, <__D as serde_core::de::Deserializer>::Error> where __D: serde_core::de::Deserializer<'de>
 pub struct milgraphics::VersionSet(_)
 impl milgraphics::catalog::VersionSet
-pub const fn milgraphics::catalog::VersionSet::contains(self, u8) -> bool
-pub fn milgraphics::catalog::VersionSet::iter(self) -> impl core::iter::traits::iterator::Iterator<Item = u8>
+pub const fn milgraphics::catalog::VersionSet::contains(self, milgraphics::standard::StandardVersion) -> bool
+pub fn milgraphics::catalog::VersionSet::iter(self) -> impl core::iter::traits::iterator::Iterator<Item = milgraphics::standard::StandardVersion>
+impl core::clone::Clone for milgraphics::catalog::VersionSet
+pub fn milgraphics::catalog::VersionSet::clone(&self) -> milgraphics::catalog::VersionSet
+impl core::cmp::Eq for milgraphics::catalog::VersionSet
+impl core::cmp::PartialEq for milgraphics::catalog::VersionSet
+pub fn milgraphics::catalog::VersionSet::eq(&self, &milgraphics::catalog::VersionSet) -> bool
+impl core::fmt::Debug for milgraphics::catalog::VersionSet
+pub fn milgraphics::catalog::VersionSet::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::hash::Hash for milgraphics::catalog::VersionSet
+pub fn milgraphics::catalog::VersionSet::hash<__H: core::hash::Hasher>(&self, &mut __H)
+impl core::marker::Copy for milgraphics::catalog::VersionSet
+impl core::marker::StructuralPartialEq for milgraphics::catalog::VersionSet
 #[non_exhaustive] pub struct milgraphics::View
+pub milgraphics::View::budget: milgraphics::budget::Budget
 pub milgraphics::View::content: milgraphics::render::PlanContent
 pub milgraphics::View::label_font: milgraphics::render::Font
 pub milgraphics::View::surface_revision: u64
 pub milgraphics::View::view_revision: u64
 impl milgraphics::render::View
 pub fn milgraphics::render::View::new(u64, u64) -> Self
+pub fn milgraphics::render::View::with_budget(self, milgraphics::budget::Budget) -> Self
+impl core::clone::Clone for milgraphics::render::View
+pub fn milgraphics::render::View::clone(&self) -> milgraphics::render::View
+impl core::cmp::PartialEq for milgraphics::render::View
+pub fn milgraphics::render::View::eq(&self, &milgraphics::render::View) -> bool
+impl core::fmt::Debug for milgraphics::render::View
+pub fn milgraphics::render::View::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::marker::StructuralPartialEq for milgraphics::render::View
 pub const milgraphics::RENDERER_VERSION: &str
-pub fn milgraphics::apply_edit(&milgraphics::definition::GraphicDefinition, &milgraphics::edit::Edit) -> core::result::Result<milgraphics::definition::GraphicDefinition, milgraphics::edit::EditError>
+pub fn milgraphics::apply_edit(&milgraphics::definition::GraphicDefinition, &milgraphics::edit::Edit, &milgraphics::edit::EditContext) -> core::result::Result<milgraphics::edit::Edited, milgraphics::edit::EditError>
 pub fn milgraphics::construct(&milgraphics::definition::GraphicDefinition, &milgraphics::Config) -> core::result::Result<milgraphics::construction::Construction, milgraphics::ConstructError>
-pub fn milgraphics::render(&milgraphics::construction::Construction, &milgraphics::render::View, &dyn milgraphics::render::Projection, &dyn milgraphics::render::FontMetrics, &milgraphics::budget::Budget) -> core::result::Result<milgraphics::render::RenderPlan, milgraphics::render::RenderError>
+pub fn milgraphics::render(&milgraphics::construction::Construction, &milgraphics::render::View, &dyn milgraphics::render::Projection, &dyn milgraphics::render::FontMetrics) -> core::result::Result<milgraphics::render::RenderPlan, milgraphics::render::RenderError>

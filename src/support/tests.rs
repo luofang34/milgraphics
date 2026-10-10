@@ -123,7 +123,7 @@ fn draw_rules_agree_with_the_catalog_or_are_listed_divergences() {
             CatalogDrawRule::Metoc(rule) => rule.name(),
         };
         let printed = s.reference().and_then(|r| r.draw_rule);
-        let listed = DIVERGENCES.contains(&(s.standard, s.entity));
+        let listed = DIVERGENCES.contains(&(s.standard, s.entity.get()));
         let differs = printed.is_some_and(|p| p != upstream);
         assert_eq!(
             differs,
@@ -173,4 +173,34 @@ fn point_counts_follow_the_standards_text_where_upstream_differs() {
     ] {
         assert_eq!(points(code), (2, 2), "{code}");
     }
+}
+
+#[test]
+fn table_entity_codes_have_six_digits() {
+    for s in all() {
+        assert!(s.entity.get() <= 999_999, "{}", s.name());
+    }
+    for e in crate::catalog::entries() {
+        assert!(e.entity.get() <= 999_999, "{}", e.name);
+    }
+}
+
+#[test]
+fn symbol_ids_are_built_from_a_declaration() {
+    for s in all() {
+        let id = s.symbol_id(0, 6, 1).unwrap();
+        assert_eq!(spec(&id).unwrap(), s);
+        assert_eq!((id.context(), id.identity(), id.status()), (0, 6, 1));
+        assert_eq!(id.as_str().len(), 20);
+    }
+    let pl = SymbolId::parse("11032500001403000000").unwrap();
+    let s = spec(&pl).unwrap();
+    assert_eq!(s.symbol_id(0, 3, 0).unwrap(), pl);
+    assert_eq!(
+        s.symbol_id(0, 10, 0),
+        Err(SidcError::Digit {
+            field: "identity",
+            value: 10
+        })
+    );
 }

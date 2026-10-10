@@ -9,8 +9,8 @@ use std::path::PathBuf;
 
 use milgraphics::render::{FixedAdvanceMetrics, LocalEquirectangular};
 use milgraphics::{
-    Altitude, Budget, Config, ControlPoint, GeoPoint, GraphicDefinition, GraphicId, SymbolId,
-    VerticalDatum, View, construct, render,
+    Altitude, Config, ControlPoint, GeoPoint, GraphicDefinition, GraphicId, ModifierField,
+    ModifierValue, SymbolId, VerticalDatum, View, construct, render,
 };
 
 /// One graphic: name, entity digits, control points (lon, lat), frame
@@ -101,14 +101,28 @@ fn definition(case: &Case) -> Result<GraphicDefinition, Box<dyn Error>> {
         .map(|&(lon, lat)| Ok(ControlPoint::ground(GeoPoint::new(lon, lat)?)))
         .collect::<Result<Vec<_>, Box<dyn Error>>>()?;
     let mut d = GraphicDefinition::new(GraphicId::new(case.name)?, SymbolId::parse(&sidc)?, points);
-    d.modifiers.designation = case.designation.map(str::to_owned);
-    d.modifiers.distances_m = case.distances_m.to_vec();
-    d.modifiers.azimuths_deg = case.azimuths_deg.to_vec();
-    d.modifiers.altitudes = case
+    if let Some(t) = case.designation {
+        d.modifiers
+            .set(ModifierField::T, ModifierValue::Text(t.to_owned()))?;
+    }
+    let altitudes = case
         .altitudes_m
         .iter()
         .map(|&metres| Altitude::new(metres, VerticalDatum::MeanSeaLevel))
         .collect();
+    for (field, value) in [
+        (
+            ModifierField::AM,
+            ModifierValue::Numbers(case.distances_m.to_vec()),
+        ),
+        (
+            ModifierField::AN,
+            ModifierValue::Numbers(case.azimuths_deg.to_vec()),
+        ),
+        (ModifierField::X, ModifierValue::Altitudes(altitudes)),
+    ] {
+        d.modifiers.set(field, value)?;
+    }
     Ok(d)
 }
 
@@ -123,7 +137,6 @@ fn svg(case: &Case) -> Result<String, Box<dyn Error>> {
         &view,
         &frame,
         &FixedAdvanceMetrics::default(),
-        &Budget::default(),
     )?;
     let anchors = plan.labels.iter().filter_map(|l| l.screen);
     let shapes = plan
@@ -136,7 +149,10 @@ fn svg(case: &Case) -> Result<String, Box<dyn Error>> {
     }
     let (x0, y0) = ((x0 - MARGIN).floor(), (y0 - MARGIN).floor());
     let (w, h) = ((x1 + MARGIN).ceil() - x0, (y1 + MARGIN).ceil() - y0);
-    let full = milgraphics::svg::to_svg(&plan, x1 + MARGIN, y1 + MARGIN);
+    let full = milgraphics::svg::to_svg(
+        &plan,
+        &milgraphics::svg::SvgOptions::new(x1 + MARGIN, y1 + MARGIN),
+    );
     let body = full.split_once('\n').map_or("", |(_, body)| body);
     Ok(format!(
         concat!(

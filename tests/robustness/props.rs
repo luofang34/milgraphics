@@ -1,8 +1,8 @@
 //! Property tests: random valid-looking graphics anywhere on Earth.
 
 use milgraphics::{
-    Altitude, Budget, Config, Edit, GeoPoint, GraphicDefinition, Modifiers, VerticalDatum,
-    apply_edit,
+    Altitude, Budget, Config, Edit, EditContext, GeoPoint, GraphicDefinition, ModifierField,
+    ModifierValue, Modifiers, VerticalDatum, apply_edit,
 };
 use proptest::prelude::*;
 use proptest::test_runner::{Config as RunConfig, TestCaseError, TestRunner};
@@ -121,24 +121,31 @@ fn modifiers(sym: Sym, count: usize) -> impl Strategy<Value = Modifiers> {
     )
         .prop_map(move |(t, w, w1, width, x, am, an)| {
             let mut m = Modifiers::default();
+            // Every value below has its field's shape, so `set` cannot refuse it.
+            let mut put = |field, value| {
+                m.set(field, value).ok();
+            };
+            let text = |t: Option<String>| ModifierValue::Text(t.unwrap_or_default());
             match sym.entity {
                 AIR_CORRIDOR => {
-                    m.designation = t;
-                    m.dtg_start = w;
-                    m.dtg_end = w1;
-                    m.distances_m = vec![width];
-                    m.altitudes = x
+                    put(ModifierField::T, text(t));
+                    put(ModifierField::W, text(w));
+                    put(ModifierField::W1, text(w1));
+                    put(ModifierField::AM, ModifierValue::Numbers(vec![width]));
+                    let x = x
                         .into_iter()
                         .map(|metres| Altitude::new(metres, VerticalDatum::MeanSeaLevel))
                         .collect();
+                    put(ModifierField::X, ModifierValue::Altitudes(x));
                 }
                 RANGE_FAN => {
                     let pairs = am.len() * 2;
-                    m.distances_m = am;
-                    m.azimuths_deg = an.into_iter().take(pairs).collect();
+                    put(ModifierField::AM, ModifierValue::Numbers(am));
+                    let an = an.into_iter().take(pairs).collect();
+                    put(ModifierField::AN, ModifierValue::Numbers(an));
                 }
                 BYPASS_EASY => {}
-                _ => m.designation = t,
+                _ => put(ModifierField::T, text(t)),
             }
             m
         })
@@ -286,9 +293,14 @@ fn moving_any_handle_is_pure_and_bumps_the_revision() {
                 let Ok(c) = built(&def, &config()) else {
                     return Ok(());
                 };
+                // Every handle is in every plan, visible or not.
+                let projection = &projections(&def, 1.0e5)[0];
+                let Ok(plan) = rendered(&c, projection.as_ref(), &config().budget) else {
+                    return Ok(());
+                };
                 // One random handle per case; across cases every handle kind,
                 // widths and azimuths included, is reached.
-                let Some(handle) = c.handles.get(pick % c.handles.len().max(1)) else {
+                let Some(handle) = plan.handles.get(pick % plan.handles.len().max(1)) else {
                     return Ok(());
                 };
                 let before = def.clone();
@@ -298,17 +310,20 @@ fn moving_any_handle_is_pure_and_bumps_the_revision() {
                         handle: handle.id,
                         to,
                     },
+                    &EditContext::new(config()),
                 );
                 prop_assert_eq!(&def, &before, "apply_edit mutated its input");
                 if let Ok(next) = result {
-                    prop_assert_eq!(next.revision, def.revision.wrapping_add(1));
-                    // The edited graphic is constructible or refused with a
-                    // typed error, and renders sanely.
-                    if let Ok(c) = built(&next, &config()) {
-                        let projection = &projections(&next, 1.0e5)[0];
-                        if let Ok(plan) = rendered(&c, projection.as_ref(), &config().budget) {
-                            assert_plan_sane(&plan);
-                        }
+                    prop_assert_eq!(next.definition.revision, def.revision.wrapping_add(1));
+                    // An accepted edit comes with the construction of the
+                    // edited graphic, which renders sanely.
+                    let rebuilt = built(&next.definition, &config());
+                    prop_assert_eq!(Ok(&next.construction), rebuilt.as_ref());
+                    let projection = &projections(&next.definition, 1.0e5)[0];
+                    if let Ok(plan) =
+                        rendered(&next.construction, projection.as_ref(), &config().budget)
+                    {
+                        assert_plan_sane(&plan);
                     }
                 }
                 Ok(())

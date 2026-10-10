@@ -3,7 +3,7 @@
 use std::collections::BTreeMap;
 
 use serde::{Deserialize, Serialize};
-use serde_json::{Map, Value};
+use serde_json::Value;
 
 use crate::geo::Altitude;
 
@@ -23,54 +23,55 @@ pub use field::{ModifierField, ModifierKind};
 /// around a field are construction output. Fields this version does not
 /// model are kept in `unknown` and written back unchanged.
 ///
-/// Editors that work from a symbol's declaration rather than per-field code
-/// use [`Modifiers::get`] and [`Modifiers::set`].
+/// Fields are read with [`Modifiers::get`] and written with
+/// [`Modifiers::set`] and [`Modifiers::clear`], so editors can work from a
+/// symbol's declaration rather than per-field code.
 #[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
-#[serde(from = "Map<String, Value>", into = "Map<String, Value>")]
+#[serde(from = "stored::StoredModifiers", into = "stored::StoredModifiers")]
 #[non_exhaustive]
 pub struct Modifiers {
     /// `A`: code of a symbol drawn inside the graphic.
-    pub symbol_icon: Option<String>,
+    pub(crate) symbol_icon: Option<String>,
     /// `AM`: distances in metres (widths, radii, ranges), in field order.
-    pub distances_m: Vec<f64>,
+    pub(crate) distances_m: Vec<f64>,
     /// `AN`: azimuths in degrees clockwise from true north, in field order.
-    pub azimuths_deg: Vec<f64>,
+    pub(crate) azimuths_deg: Vec<f64>,
     /// `AP`: target number.
-    pub target_number: Option<String>,
+    pub(crate) target_number: Option<String>,
     /// `AP1`: target number extension.
-    pub target_number_extension: Option<String>,
+    pub(crate) target_number_extension: Option<String>,
     /// `AS`: country.
-    pub country: Option<String>,
+    pub(crate) country: Option<String>,
     /// `B`: echelon.
-    pub echelon: Option<String>,
+    pub(crate) echelon: Option<String>,
     /// `C`: quantity.
-    pub quantity: Option<String>,
+    pub(crate) quantity: Option<String>,
     /// `H`: additional information.
-    pub additional_info: Option<String>,
+    pub(crate) additional_info: Option<String>,
     /// `H1`: second additional information.
-    pub additional_info2: Option<String>,
+    pub(crate) additional_info2: Option<String>,
     /// `N`: hostile marking.
-    pub hostile: Option<String>,
+    pub(crate) hostile: Option<String>,
     /// `Q`: direction of movement in degrees clockwise from true north.
-    pub direction_deg: Option<f64>,
+    pub(crate) direction_deg: Option<f64>,
     /// `T`: unique designation.
-    pub designation: Option<String>,
+    pub(crate) designation: Option<String>,
     /// `T1`: second unique designation.
-    pub designation2: Option<String>,
+    pub(crate) designation2: Option<String>,
     /// `T2`: third unique designation.
-    pub designation3: Option<String>,
+    pub(crate) designation3: Option<String>,
     /// `V`: equipment type.
-    pub equipment_type: Option<String>,
+    pub(crate) equipment_type: Option<String>,
     /// `W`: date-time group, start of validity.
-    pub dtg_start: Option<String>,
+    pub(crate) dtg_start: Option<String>,
     /// `W1`: date-time group, end of validity.
-    pub dtg_end: Option<String>,
+    pub(crate) dtg_end: Option<String>,
     /// `X`: altitudes or depths, in field order.
-    pub altitudes: Vec<Altitude>,
+    pub(crate) altitudes: Vec<Altitude>,
     /// `Y`: location.
-    pub location: Option<String>,
+    pub(crate) location: Option<String>,
     /// Fields this version does not model, preserved as JSON content.
-    pub unknown: BTreeMap<String, Value>,
+    pub(crate) unknown: BTreeMap<String, Value>,
 }
 
 /// The value of one amplifier field, in the shape its [`ModifierKind`] gives.

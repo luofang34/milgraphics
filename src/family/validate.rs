@@ -14,8 +14,8 @@ pub(super) fn validate(
     budget: &Budget,
 ) -> Result<(), ConstructError> {
     let count = def.points.len();
-    if count > budget.max_control_points {
-        let limit = budget.max_control_points;
+    let limit = budget.control_point_limit();
+    if count > limit {
         return Err(BudgetError::ControlPoints { count, limit }.into());
     }
     if count < spec.min_points || count > spec.max_points {
@@ -38,7 +38,7 @@ pub(super) fn validate(
             key: key.clone(),
         });
     }
-    for field in ModifierField::ALL {
+    for &field in ModifierField::ALL {
         check_field(spec, def, budget, field)?;
     }
     Ok(())

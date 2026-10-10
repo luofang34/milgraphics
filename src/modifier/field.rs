@@ -73,7 +73,7 @@ pub enum ModifierKind {
 
 impl ModifierField {
     /// Every field.
-    pub const ALL: [Self; 20] = [
+    pub const ALL: &'static [Self] = &[
         Self::A,
         Self::AM,
         Self::AN,
@@ -123,9 +123,36 @@ impl ModifierField {
         }
     }
 
+    /// A short English label for the field, for editor forms. Labels may be
+    /// reworded; [`ModifierField::name`] is the stable key.
+    pub const fn label(self) -> &'static str {
+        match self {
+            Self::A => "Symbol icon",
+            Self::AM => "Distance",
+            Self::AN => "Azimuth",
+            Self::AP => "Target number",
+            Self::AP1 => "Target number extension",
+            Self::AS => "Country",
+            Self::B => "Echelon",
+            Self::C => "Quantity",
+            Self::H => "Additional information",
+            Self::H1 => "Additional information 1",
+            Self::N => "Hostile",
+            Self::Q => "Direction of movement",
+            Self::T => "Unique designation",
+            Self::T1 => "Unique designation 1",
+            Self::T2 => "Unique designation 2",
+            Self::V => "Equipment type",
+            Self::W => "Date-time group",
+            Self::W1 => "Date-time group 1",
+            Self::X => "Altitude/depth",
+            Self::Y => "Location",
+        }
+    }
+
     /// The field whose letters are `name`, if any.
     pub fn from_name(name: &str) -> Option<Self> {
-        Self::ALL.into_iter().find(|f| f.name() == name)
+        Self::ALL.iter().copied().find(|f| f.name() == name)
     }
 
     /// The kind of value the field holds.

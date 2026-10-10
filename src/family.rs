@@ -231,7 +231,7 @@ pub(crate) fn vertex_handles(definition: &GraphicDefinition) -> Vec<HandleSpec> 
         .positions()
         .enumerate()
         .map(|(i, at)| HandleSpec {
-            id: HandleId::Vertex(i as u16),
+            id: HandleId::Vertex(u32::try_from(i).unwrap_or(u32::MAX)),
             kind: HandleKind::Vertex,
             at,
         })

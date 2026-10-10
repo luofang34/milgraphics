@@ -1,5 +1,19 @@
 use super::*;
 use crate::geo::VerticalDatum;
+use crate::persist::PersistedGraphic;
+
+/// The definition as stored.
+fn stored(def: &GraphicDefinition) -> String {
+    PersistedGraphic::from_definition(def)
+        .unwrap()
+        .as_json()
+        .to_owned()
+}
+
+/// A stored definition decoded.
+fn decoded(json: &str) -> GraphicDefinition {
+    PersistedGraphic::from_json(json).unwrap().decode().unwrap()
+}
 
 fn sample() -> GraphicDefinition {
     let mut def = GraphicDefinition::new(
@@ -22,33 +36,30 @@ fn sample() -> GraphicDefinition {
 #[test]
 fn round_trips_through_json() {
     let def = sample();
-    let json = serde_json::to_string(&def).unwrap();
+    let json = stored(&def);
     assert_eq!(
         json,
         concat!(
-            r#"{"id":"pl-1","symbol":"11032500001403000000","points":["#,
+            r#"{"id":"pl-1","modifiers":{"AM":[1000.0,5000.5],"T":"ALPHA"},"points":["#,
             r#"{"lat":50.0,"lon":20.0},"#,
             r#"{"altitude":{"datum":"msl","metres":10.0},"lat":50.02,"lon":20.1}],"#,
-            r#""modifiers":{"AM":[1000.0,5000.5],"T":"ALPHA"},"revision":0}"#
+            r#""revision":0,"schema":1,"symbol":"11032500001403000000"}"#
         )
     );
-    assert_eq!(
-        serde_json::from_str::<GraphicDefinition>(&json).unwrap(),
-        def
-    );
+    assert_eq!(decoded(&json), def);
 }
 
 #[test]
 fn unknown_fields_survive_at_every_level() {
-    let json = r#"{"id":"a","symbol":"11032500001403000000",
+    let json = r#"{"schema":1,"id":"a","symbol":"11032500001403000000",
         "points":[{"lon":1,"lat":2,"z_future":true}],
         "modifiers":{"T":"X","Q":"9"},"style":{"glow":3},"revision":7,"layer":"ops"}"#;
-    let def: GraphicDefinition = serde_json::from_str(json).unwrap();
+    let def = decoded(json);
     assert_eq!(def.unknown["layer"], "ops");
     assert_eq!(def.points[0].unknown["z_future"], true);
     assert_eq!(def.modifiers.unknown["Q"], "9");
     assert_eq!(def.style.unknown["glow"], 3);
-    let back: Value = serde_json::to_value(&def).unwrap();
+    let back: Value = serde_json::from_str(&stored(&def)).unwrap();
     assert_eq!(back["layer"], "ops");
     assert_eq!(back["modifiers"]["Q"], "9");
     assert_eq!(back["style"]["glow"], 3);

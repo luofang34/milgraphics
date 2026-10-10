@@ -9,9 +9,33 @@ use crate::style::{Fill, Stroke};
 #[cfg(test)]
 mod tests;
 
-/// Writes the plan's screen items and labels as an SVG document of the
-/// given pixel size. Coordinates are rounded to 0.01 px so output is stable.
-pub fn to_svg(plan: &RenderPlan, width_px: f64, height_px: f64) -> String {
+/// How [`to_svg`] writes a document.
+#[derive(Clone, Copy, Debug, PartialEq)]
+#[non_exhaustive]
+pub struct SvgOptions {
+    /// Document width in pixels.
+    pub width_px: f64,
+    /// Document height in pixels.
+    pub height_px: f64,
+}
+
+impl SvgOptions {
+    /// A document of `width_px` by `height_px` pixels.
+    pub fn new(width_px: f64, height_px: f64) -> Self {
+        Self {
+            width_px,
+            height_px,
+        }
+    }
+}
+
+/// Writes the plan's screen items and labels as an SVG document.
+/// Coordinates are rounded to 0.01 px so output is stable.
+pub fn to_svg(plan: &RenderPlan, options: &SvgOptions) -> String {
+    let SvgOptions {
+        width_px,
+        height_px,
+    } = *options;
     let mut out = String::new();
     let _ = writeln!(
         out,

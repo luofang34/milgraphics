@@ -4,7 +4,7 @@
 use milgraphics::render::{LocalEquirectangular, Projection, ScreenPoint, ScreenRect};
 use milgraphics::{
     Altitude, Budget, BudgetError, Config, ConstructError, GeoPoint, GraphicDefinition,
-    VerticalDatum, construct,
+    ModifierField, ModifierValue, VerticalDatum, construct,
 };
 
 use crate::fixtures::{
@@ -16,16 +16,24 @@ const SCALE: f64 = 250_000.0;
 
 fn corridor(points: &[(f64, f64)], width_m: f64) -> GraphicDefinition {
     let mut d = definition(AIR_CORRIDOR, points);
-    d.modifiers.distances_m = vec![width_m];
-    d.modifiers.altitudes = vec![Altitude::new(500.0, VerticalDatum::MeanSeaLevel)];
-    d.modifiers.designation = Some("ROUTE".to_owned());
+    let altitude = Altitude::new(500.0, VerticalDatum::MeanSeaLevel);
+    for (field, value) in [
+        (ModifierField::AM, ModifierValue::Numbers(vec![width_m])),
+        (ModifierField::X, ModifierValue::Altitudes(vec![altitude])),
+        (ModifierField::T, ModifierValue::Text("ROUTE".to_owned())),
+    ] {
+        d.modifiers.set(field, value).unwrap();
+    }
     d
 }
 
 fn fan(at: (f64, f64), ranges: &[f64], azimuths: &[f64]) -> GraphicDefinition {
     let mut d = definition(RANGE_FAN, &[at]);
-    d.modifiers.distances_m = ranges.to_vec();
-    d.modifiers.azimuths_deg = azimuths.to_vec();
+    let m = &mut d.modifiers;
+    m.set(ModifierField::AM, ModifierValue::Numbers(ranges.to_vec()))
+        .unwrap();
+    m.set(ModifierField::AN, ModifierValue::Numbers(azimuths.to_vec()))
+        .unwrap();
     d
 }
 
@@ -182,7 +190,10 @@ fn non_finite_amplifiers_are_typed_errors() {
         let d = fan((0.0, 0.0), &[1_000.0], &[0.0, bad]);
         assert!(construct(&d, &Config::default()).is_err(), "fan AN {bad}");
         let mut d = corridor(&[(0.0, 0.0), (1.0, 1.0)], 1_000.0);
-        d.modifiers.altitudes[0].metres = bad;
+        let altitude = Altitude::new(bad, VerticalDatum::MeanSeaLevel);
+        d.modifiers
+            .set(ModifierField::X, ModifierValue::Altitudes(vec![altitude]))
+            .unwrap();
         assert!(construct(&d, &Config::default()).is_err(), "X {bad}");
     }
 }
@@ -206,7 +217,9 @@ fn too_many_control_points_is_a_budget_error() {
 #[cfg_attr(target_arch = "wasm32", wasm_bindgen_test::wasm_bindgen_test)]
 fn overlong_designation_is_a_budget_error() {
     let mut d = definition(PHASE_LINE, &[(0.0, 0.0), (1.0, 1.0)]);
-    d.modifiers.designation = Some("T".repeat(300));
+    d.modifiers
+        .set(ModifierField::T, ModifierValue::Text("T".repeat(300)))
+        .unwrap();
     let err = construct(&d, &Config::default()).unwrap_err();
     assert!(
         matches!(err, ConstructError::Budget(BudgetError::Text { .. })),
@@ -218,15 +231,20 @@ fn overlong_designation_is_a_budget_error() {
 #[cfg_attr(target_arch = "wasm32", wasm_bindgen_test::wasm_bindgen_test)]
 fn antimeridian_cuts_count_against_the_vertex_budget() {
     let d = definition(PHASE_LINE, &[(170.0, 0.0), (-170.0, 0.0), (170.0, 0.0)]);
-    let full = construct(&d, &Config::default()).unwrap();
-    let built: usize = full.parts.iter().map(|p| p.geometry.points().len()).sum();
-    // The tightest budget that still constructs.
-    let (max, c) = (built..built + 8)
-        .find_map(|max| {
-            let budget = budget_of(max);
-            construct(&d, &config_of(budget)).ok().map(|c| (max, c))
-        })
-        .unwrap();
+    // The tightest budget that still constructs: construction succeeds for
+    // every budget at or above it, so bisect.
+    let constructs = |max: usize| construct(&d, &config_of(budget_of(max))).ok();
+    let (mut fails, mut fits) = (0, 1 << 20);
+    assert!(constructs(fails).is_none() && constructs(fits).is_some());
+    while fits - fails > 1 {
+        let mid = fails + (fits - fails) / 2;
+        if constructs(mid).is_some() {
+            fits = mid;
+        } else {
+            fails = mid;
+        }
+    }
+    let (max, c) = (fits, constructs(fits).unwrap());
     let budget = budget_of(max);
     let projection = &projections(&d, SCALE)[0];
     if let Ok(plan) = rendered(&c, projection.as_ref(), &budget) {

@@ -1,6 +1,5 @@
 use core::cell::Cell;
 
-use crate::budget::Budget;
 use crate::definition::{ControlPoint, GraphicDefinition, GraphicId};
 use crate::family::{Config, construct};
 use crate::geo::GeoPoint;
@@ -66,14 +65,7 @@ fn plan_with(
     let c = construct(d, &Config::default()).unwrap();
     let mut view = View::new(1, 0);
     view.content = content;
-    render(
-        &c,
-        &view,
-        projection,
-        &FixedAdvanceMetrics::default(),
-        &Budget::default(),
-    )
-    .unwrap()
+    render(&c, &view, projection, &FixedAdvanceMetrics::default()).unwrap()
 }
 
 fn lines(plan: &RenderPlan) -> Vec<Vec<ScreenPoint>> {

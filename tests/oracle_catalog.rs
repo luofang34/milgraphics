@@ -15,10 +15,12 @@ mod catalog {
     use std::collections::BTreeSet;
 
     use milgraphics::construction::PartRole;
-    use milgraphics::render::{FixedAdvanceMetrics, LocalEquirectangular, Projection, ScreenPoint};
+    use milgraphics::render::{
+        FixedAdvanceMetrics, LocalEquirectangular, LonLat, Projection, ScreenPoint, geographic,
+    };
     use milgraphics::{
-        Altitude, Budget, Config, ControlPoint, GeoPoint, GraphicDefinition, GraphicId,
-        ModifierField, ModifierValue, SymbolId, VerticalDatum, View, construct, render, support,
+        Altitude, Config, ControlPoint, GeoPoint, GraphicDefinition, GraphicId, ModifierField,
+        ModifierValue, SymbolId, VerticalDatum, View, construct, render, support,
     };
     use serde_json::Value;
 
@@ -190,13 +192,7 @@ mod catalog {
             Err(e) => return Some(format!("not constructed: {e}")),
         };
         let f = frame(r);
-        let plan = match render(
-            &c,
-            &View::new(0, 0),
-            &f,
-            &FixedAdvanceMetrics::default(),
-            &Budget::default(),
-        ) {
+        let plan = match render(&c, &View::new(0, 0), &f, &FixedAdvanceMetrics::default()) {
             Ok(p) => p,
             Err(e) => return Some(format!("not rendered: {e}")),
         };
@@ -260,20 +256,19 @@ mod catalog {
                 continue;
             };
             let origin = d.points[0].position;
-            for p in &c.parts {
+            for p in geographic(&c, &View::new(0, 0)).unwrap() {
                 let worst = p
-                    .geometry
-                    .points()
+                    .shape
+                    .pieces()
                     .iter()
-                    .map(|q| {
-                        ((q.lon() - origin.lon()) * 71.0).hypot((q.lat() - origin.lat()) * 111.0)
-                    })
+                    .flatten()
+                    .map(|q| ((q[0] - origin.lon()) * 71.0).hypot((q[1] - origin.lat()) * 111.0))
                     .fold(0.0, f64::max);
                 if worst > 50.0 {
                     far.push(format!(
                         "{} part {:?} {worst:.0} km",
                         r["case"].as_str().unwrap_or_default(),
-                        p.id
+                        p.pick.target
                     ));
                 }
             }
@@ -295,23 +290,27 @@ mod catalog {
             let Ok(c) = construct(&definition(&r), &Config::default()) else {
                 continue;
             };
-            for p in &c.parts {
-                let distinct = |pts: &[GeoPoint]| {
+            for p in geographic(&c, &View::new(0, 0)).unwrap() {
+                let distinct = |pts: &[LonLat]| {
                     let mut d: Vec<(i64, i64)> = pts
                         .iter()
-                        .map(|q| ((q.lon() * 1e7) as i64, (q.lat() * 1e7) as i64))
+                        .map(|q| ((q[0] * 1e7) as i64, (q[1] * 1e7) as i64))
                         .collect();
                     d.sort_unstable();
                     d.dedup();
                     d.len()
                 };
-                let needed = if p.geometry.is_closed() { 3 } else { 2 };
-                let ok = distinct(p.geometry.points()) >= needed;
+                let needed = if p.shape.is_closed() { 3 } else { 2 };
+                let ok = p
+                    .shape
+                    .pieces()
+                    .iter()
+                    .all(|piece| distinct(piece) >= needed);
                 if !ok {
                     bad.push(format!(
                         "{} part {:?}",
                         r["case"].as_str().unwrap_or_default(),
-                        p.id
+                        p.pick.target
                     ));
                 }
             }

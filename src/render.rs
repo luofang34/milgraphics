@@ -1,6 +1,6 @@
 //! Render plans: a construction resolved for one view.
 
-use crate::antimeridian::{self, LonLat};
+use crate::antimeridian;
 use crate::budget::{Budget, BudgetError, VertexMeter};
 use crate::construction::{Construction, GeoGeometry, HandleKind, PartRole};
 use crate::edit::HandleId;
@@ -21,6 +21,7 @@ mod projection;
 mod screen;
 mod symbols;
 
+pub use crate::geo::LonLat;
 pub use label::{Label, TextAlign};
 pub use local::LocalEquirectangular;
 pub use projection::{FixedAdvanceMetrics, Font, FontMetrics, Projection, ScreenPoint, ScreenRect};
@@ -42,6 +43,8 @@ pub struct View {
     pub label_font: Font,
     /// What the plan resolves.
     pub content: PlanContent,
+    /// Limits on the plan's size.
+    pub budget: Budget,
 }
 
 /// What a plan resolves.
@@ -61,14 +64,21 @@ pub enum PlanContent {
 }
 
 impl View {
-    /// A view with these revisions and the default label font.
+    /// A view with these revisions, the default label font and the default
+    /// [`Budget`].
     pub fn new(view_revision: u64, surface_revision: u64) -> Self {
         Self {
             view_revision,
             surface_revision,
             label_font: Font::default(),
             content: PlanContent::Full,
+            budget: Budget::default(),
         }
+    }
+
+    /// The same view with `budget` limiting its plans.
+    pub fn with_budget(self, budget: Budget) -> Self {
+        Self { budget, ..self }
     }
 }
 
@@ -184,8 +194,8 @@ pub struct RenderPlan {
     pub view_revision: u64,
     /// Surface revision it was built for.
     pub surface_revision: u64,
-    /// Font-metrics identity used for labels.
-    pub metrics: String,
+    /// [`FontMetrics::identity`] of the metrics labels were measured with.
+    pub metrics_identity: String,
     /// Items for the map engine.
     pub geo: Vec<GeoItem>,
     /// Items for a screen overlay, in drawing order.
@@ -210,11 +220,11 @@ pub enum RenderError {
 /// The geographic tier alone: what a map engine draws and drapes itself.
 /// It does not depend on the view, so engines update it only when a
 /// graphic changes.
-pub fn geographic(
-    construction: &Construction,
-    budget: &Budget,
-) -> Result<Vec<GeoItem>, RenderError> {
-    let mut meter = VertexMeter::new(budget);
+///
+/// Only `view.budget` is used, so the result can be kept across view
+/// changes that keep the budget.
+pub fn geographic(construction: &Construction, view: &View) -> Result<Vec<GeoItem>, RenderError> {
+    let mut meter = VertexMeter::new(&view.budget);
     construction
         .parts
         .iter()
@@ -337,10 +347,9 @@ pub fn render(
     view: &View,
     projection: &dyn Projection,
     metrics: &dyn FontMetrics,
-    budget: &Budget,
 ) -> Result<RenderPlan, RenderError> {
     let earth = Earth::wgs84();
-    let mut meter = VertexMeter::new(budget);
+    let mut meter = VertexMeter::new(&view.budget);
     let mut ctx = screen::ScreenCtx::new(&earth, projection, &mut meter);
     let pick = |target| PickRef {
         definition: construction.definition.clone(),
@@ -402,7 +411,7 @@ pub fn render(
         revision: construction.revision,
         view_revision: view.view_revision,
         surface_revision: view.surface_revision,
-        metrics: metrics.identity().to_owned(),
+        metrics_identity: metrics.identity().to_owned(),
         geo,
         screen: items,
         labels,

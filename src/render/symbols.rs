@@ -21,10 +21,16 @@ pub struct SymbolPlacement {
     pub symbol: SymbolId,
     /// Where its centre is on the ground.
     pub anchor: GeoPoint,
-    /// Where its centre is on screen, if the anchor is visible.
+    /// Where its centre is on screen, if the anchor is visible: the
+    /// anchor's projection moved by `offset_px`.
     pub screen: Option<ScreenPoint>,
+    /// Pixels from the anchor's screen position to the symbol's centre,
+    /// y downward, for engines that place icons at `anchor` themselves.
+    pub offset_px: [f64; 2],
     /// Its size in pixels (the height a single-point renderer is asked for).
     pub size_px: f64,
+    /// Rotation in degrees clockwise on screen; 0 draws it upright.
+    pub rotation_deg: f64,
 }
 
 pub(crate) fn resolve(
@@ -49,14 +55,16 @@ pub(crate) fn resolve(
                 },
             };
             SymbolPlacement {
-                pick: pick(PickTarget::Symbol(i as u16)),
+                pick: pick(PickTarget::Symbol(u32::try_from(i).unwrap_or(u32::MAX))),
                 symbol: s.symbol.clone(),
                 anchor: s.anchor,
                 screen: centre.map(|c| ScreenPoint {
                     x: c.x + s.offset_px[0],
                     y: c.y + s.offset_px[1],
                 }),
+                offset_px: s.offset_px,
                 size_px,
+                rotation_deg: 0.0,
             }
         })
         .collect()

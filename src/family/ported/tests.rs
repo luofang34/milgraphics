@@ -98,7 +98,6 @@ fn pattern_areas_carry_their_figures_without_an_outline() {
         &View::new(0, 0),
         &frame,
         &FixedAdvanceMetrics::default(),
-        &crate::Budget::default(),
     )
     .unwrap();
     let dots = plan.screen.iter().filter(|i| i.role == PartRole::Pattern);
@@ -137,7 +136,6 @@ fn a_pattern_zoomed_far_in_stays_within_the_vertex_budget() {
         &View::new(0, 0),
         &frame,
         &FixedAdvanceMetrics::default(),
-        &crate::Budget::default(),
     )
     .unwrap();
     let dots = plan
@@ -150,14 +148,7 @@ fn a_pattern_zoomed_far_in_stays_within_the_vertex_budget() {
 
 fn render_texts(c: &crate::construction::Construction) -> Vec<String> {
     let frame = LocalEquirectangular::new(19.9, 50.1, 250_000.0, 96.0);
-    let plan = render(
-        c,
-        &View::new(0, 0),
-        &frame,
-        &FixedAdvanceMetrics::default(),
-        &crate::Budget::default(),
-    )
-    .unwrap();
+    let plan = render(c, &View::new(0, 0), &frame, &FixedAdvanceMetrics::default()).unwrap();
     plan.labels.iter().map(|l| l.text.clone()).collect()
 }
 

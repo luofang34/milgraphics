@@ -39,10 +39,9 @@ pub(crate) struct Style {
 impl Style {
     /// The overrides of a definition.
     pub(crate) fn of(style: &crate::definition::StyleOverrides) -> Self {
-        let parse = |c: &Option<String>| c.as_deref().and_then(crate::style::Rgba::parse_hex);
         Self {
-            line_color: parse(&style.line_color),
-            fill_color: parse(&style.fill_color),
+            line_color: style.line_color,
+            fill_color: style.fill_color,
         }
     }
 }

@@ -5,15 +5,22 @@
 //! so it is reported when the graphic is constructed and written back
 //! unchanged, instead of making the whole definition unreadable.
 
+use serde::{Deserialize, Serialize};
 use serde_json::{Map, Value};
 
 use super::{ModifierField, ModifierKind, Modifiers};
 use crate::geo::Altitude;
 
-impl From<Map<String, Value>> for Modifiers {
-    fn from(mut map: Map<String, Value>) -> Self {
+/// The stored JSON object, kept out of the public API so the conversion is
+/// an implementation detail of serialization.
+#[derive(Serialize, Deserialize)]
+#[serde(transparent)]
+pub(super) struct StoredModifiers(Map<String, Value>);
+
+impl From<StoredModifiers> for Modifiers {
+    fn from(StoredModifiers(mut map): StoredModifiers) -> Self {
         let mut m = Modifiers::default();
-        for field in ModifierField::ALL {
+        for &field in ModifierField::ALL {
             let Some(value) = map.remove(field.name()) else {
                 continue;
             };
@@ -26,16 +33,16 @@ impl From<Map<String, Value>> for Modifiers {
     }
 }
 
-impl From<Modifiers> for Map<String, Value> {
+impl From<Modifiers> for StoredModifiers {
     fn from(m: Modifiers) -> Self {
         let mut map = Map::new();
-        for field in ModifierField::ALL {
+        for &field in ModifierField::ALL {
             if let Some(value) = m.stored(field) {
                 map.insert(field.name().to_owned(), value);
             }
         }
         map.extend(m.unknown);
-        map
+        Self(map)
     }
 }
 

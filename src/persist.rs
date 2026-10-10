@@ -3,7 +3,9 @@
 use serde_json::value::RawValue;
 use serde_json::{Map, Value};
 
-use crate::definition::GraphicDefinition;
+use crate::definition::{GraphicDefinition, GraphicId};
+
+mod stored;
 
 #[cfg(test)]
 mod tests;
@@ -23,13 +25,22 @@ pub struct PersistedGraphic {
     raw: Box<RawValue>,
 }
 
+/// Two stored graphics are equal when their stored JSON is the same text.
+impl PartialEq for PersistedGraphic {
+    fn eq(&self, other: &Self) -> bool {
+        self.as_json() == other.as_json()
+    }
+}
+
+impl Eq for PersistedGraphic {}
+
 /// Why stored JSON could not be accepted or decoded.
 #[derive(Debug, thiserror::Error)]
 #[non_exhaustive]
 pub enum PersistError {
-    /// The input is not a JSON object.
-    #[error("stored graphic is not a JSON object: {0}")]
-    NotAnObject(#[source] serde_json::Error),
+    /// The input is not valid JSON.
+    #[error("stored graphic is not valid JSON: {0}")]
+    InvalidJson(#[source] serde_json::Error),
     /// The input is a JSON value other than an object.
     #[error("stored graphic is a JSON {found}, not an object")]
     WrongType {
@@ -49,17 +60,26 @@ pub enum PersistError {
     #[error("graphic {id} could not be serialized: {source}")]
     Serialize {
         /// ID of the definition.
-        id: String,
+        id: GraphicId,
         /// The serializer error.
         #[source]
         source: serde_json::Error,
+    },
+    /// A number in the definition is NaN or infinite, which JSON cannot
+    /// hold; writing it would silently store `null` instead.
+    #[error("graphic {id} has a non-finite number in {field}")]
+    NonFinite {
+        /// ID of the definition.
+        id: GraphicId,
+        /// Where the number is: an amplifier's letters, or `points[n].altitude`.
+        field: String,
     },
 }
 
 impl PersistedGraphic {
     /// Accepts any JSON object, whether or not this version can decode it.
     pub fn from_json(json: &str) -> Result<Self, PersistError> {
-        let raw: Box<RawValue> = serde_json::from_str(json).map_err(PersistError::NotAnObject)?;
+        let raw: Box<RawValue> = serde_json::from_str(json).map_err(PersistError::InvalidJson)?;
         let found = json_type(raw.get());
         if found != "object" {
             return Err(PersistError::WrongType { found });
@@ -74,11 +94,13 @@ impl PersistedGraphic {
 
     /// Encodes a definition with the current schema version.
     pub fn from_definition(definition: &GraphicDefinition) -> Result<Self, PersistError> {
+        stored::check_finite(definition)?;
         let serialize = |source| PersistError::Serialize {
-            id: definition.id.to_string(),
+            id: definition.id.clone(),
             source,
         };
-        let mut object = match serde_json::to_value(definition).map_err(serialize)? {
+        let stored = stored::StoredDefinition::from(definition.clone());
+        let mut object = match serde_json::to_value(stored).map_err(serialize)? {
             Value::Object(object) => object,
             _ => Map::new(),
         };
@@ -99,7 +121,9 @@ impl PersistedGraphic {
             Some(v) if v.as_u64() == Some(SCHEMA_VERSION) => {}
             found => return Err(PersistError::UnknownSchema { found }),
         }
-        serde_json::from_value(Value::Object(object)).map_err(PersistError::Invalid)
+        serde_json::from_value::<stored::StoredDefinition>(Value::Object(object))
+            .map(GraphicDefinition::from)
+            .map_err(PersistError::Invalid)
     }
 }
 

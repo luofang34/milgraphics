@@ -9,7 +9,9 @@ use crate::modifier::ModifierField;
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 #[non_exhaustive]
 pub struct Budget {
-    /// Control points per graphic.
+    /// Control points per graphic. Control points are indexed by `u32`
+    /// (in [`crate::HandleId::Vertex`] and vertex edits), so a larger value
+    /// acts as `u32::MAX`.
     pub max_control_points: usize,
     /// Characters in one text amplifier.
     pub max_text_chars: usize,
@@ -32,6 +34,15 @@ impl Default for Budget {
             max_vertices: 200_000,
             max_labels: 256,
         }
+    }
+}
+
+impl Budget {
+    /// The control-point limit in force: `max_control_points`, at most
+    /// `u32::MAX`.
+    pub(crate) fn control_point_limit(&self) -> usize {
+        self.max_control_points
+            .min(usize::try_from(u32::MAX).unwrap_or(usize::MAX))
     }
 }
 

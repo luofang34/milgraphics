@@ -4,6 +4,7 @@
 use super::{ModifierSpec, SymbolSpec};
 use crate::family::Family;
 use crate::modifier::ModifierField;
+use crate::sidc::EntityCode;
 use crate::standard::StandardVersion;
 
 mod app6e;
@@ -47,7 +48,7 @@ pub(super) const fn cm(standard: StandardVersion, entity: u32, family: Family) -
     SymbolSpec {
         standard,
         symbol_set: 25,
-        entity,
+        entity: EntityCode::from_table(entity),
         min_points: 1,
         max_points: 1,
         modifiers: &[],
@@ -61,7 +62,7 @@ pub(crate) const fn ported(standard: StandardVersion, symbol_set: u8, entity: u3
     SymbolSpec {
         standard,
         symbol_set,
-        entity,
+        entity: EntityCode::from_table(entity),
         min_points: 1,
         max_points: 1,
         modifiers: &[],

@@ -24,6 +24,12 @@ impl EntityCode {
         }
     }
 
+    /// A code from a generated or declared table, whose generator and
+    /// tests check it has at most six digits.
+    pub(crate) const fn from_table(code: u32) -> Self {
+        Self(code)
+    }
+
     /// The code as a number, e.g. `140300`.
     pub const fn get(self) -> u32 {
         self.0
@@ -45,6 +51,14 @@ pub enum SidcError {
     Format {
         /// The rejected input, truncated to 40 characters.
         code: String,
+    },
+    /// A one-digit field was given a value above 9.
+    #[error("symbol ID {field} must be one digit; {value} given")]
+    Digit {
+        /// The field: `"context"`, `"identity"` or `"status"`.
+        field: &'static str,
+        /// The value given.
+        value: u8,
     },
 }
 
@@ -72,6 +86,30 @@ impl SymbolId {
                 code: code.chars().take(40).collect(),
             })
         }
+    }
+
+    /// The 20-digit code of a graphic: `standard`, `context`, `identity`,
+    /// `symbol_set`, `status` and `entity`, with headquarters, amplifier and
+    /// sector modifiers zero.
+    pub(crate) fn graphic(
+        standard: StandardVersion,
+        [context, identity, status]: [u8; 3],
+        symbol_set: u8,
+        entity: EntityCode,
+    ) -> Result<Self, SidcError> {
+        for (field, value) in [
+            ("context", context),
+            ("identity", identity),
+            ("status", status),
+        ] {
+            if value > 9 {
+                return Err(SidcError::Digit { field, value });
+            }
+        }
+        Self::parse(&format!(
+            "{:02}{context}{identity}{symbol_set:02}{status}000{entity}0000",
+            standard.code()
+        ))
     }
 
     /// Value of the digits at `range`, which `parse` guarantees exist.

@@ -49,10 +49,18 @@ pub(super) fn catalog_module(
         "use crate::catalog::{CatalogDrawRule, CatalogEntry, GeometryKind, VersionSet};\n",
     );
     out.push_str("use crate::modifier::ModifierField;\n");
+    out.push_str("use crate::sidc::EntityCode;\n");
     check_modifiers(modifiers)?;
     out.push_str("\n/// Catalog rows ordered by `(symbol_set, entity, first version)`.\n");
     out.push_str("pub(crate) static ENTRIES: &[CatalogEntry] = &[\n");
     for row in rows {
+        // `EntityCode::from_table` trusts the table to hold six digits.
+        if row.entity > 999_999 {
+            return Err(XtaskError::Invariant(format!(
+                "entity {} of symbol set {} has more than six digits",
+                row.entity, row.symbol_set
+            )));
+        }
         writeln!(out, "    {},", entry(row))?;
     }
     out.push_str("];\n");
@@ -93,7 +101,7 @@ fn entry(row: &Row) -> String {
         format!("CatalogDrawRule::Metoc(MoDrawRule::{})", row.draw_rule)
     };
     format!(
-        "CatalogEntry {{ symbol_set: {}, entity: {}, name: {:?}, path: &[{}], versions: VersionSet::from_bits({:#06x}), geometry: GeometryKind::{geometry}, draw_rule: {rule}, modifiers: &[{}] }}",
+        "CatalogEntry {{ symbol_set: {}, entity: EntityCode::from_table({}), name: {:?}, path: &[{}], versions: VersionSet::from_bits({:#06x}), geometry: GeometryKind::{geometry}, draw_rule: {rule}, modifiers: &[{}] }}",
         row.symbol_set,
         row.entity,
         row.name,

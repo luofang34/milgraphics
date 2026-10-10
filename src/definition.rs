@@ -9,6 +9,7 @@ use serde_json::{Map, Value};
 use crate::geo::{Altitude, GeoPoint};
 use crate::modifier::Modifiers;
 use crate::sidc::SymbolId;
+use crate::style::Rgba;
 
 #[cfg(test)]
 mod tests;
@@ -80,7 +81,7 @@ impl fmt::Display for GraphicId {
 /// Stored as a JSON object with `lon`, `lat`, an optional `altitude`, and
 /// any fields a newer version added, which are kept as JSON content.
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-#[serde(try_from = "Map<String, Value>", into = "Map<String, Value>")]
+#[serde(try_from = "StoredPoint", into = "StoredPoint")]
 #[non_exhaustive]
 pub struct ControlPoint {
     /// Horizontal position.
@@ -102,10 +103,15 @@ impl ControlPoint {
     }
 }
 
+/// The stored JSON object of a control point, kept out of the public API so
+/// the conversion is an implementation detail of serialization.
+#[derive(Serialize, Deserialize)]
+#[serde(transparent)]
+struct StoredPoint(Map<String, Value>);
+
 /// Why a stored control point was rejected.
 #[derive(Debug, thiserror::Error)]
-#[non_exhaustive]
-pub enum ControlPointError {
+pub(crate) enum ControlPointError {
     /// `lon` or `lat` is missing or not a number.
     #[error("control point needs numeric lon and lat")]
     Coordinates,
@@ -117,10 +123,10 @@ pub enum ControlPointError {
     Altitude(#[source] serde_json::Error),
 }
 
-impl TryFrom<Map<String, Value>> for ControlPoint {
+impl TryFrom<StoredPoint> for ControlPoint {
     type Error = ControlPointError;
 
-    fn try_from(mut map: Map<String, Value>) -> Result<Self, ControlPointError> {
+    fn try_from(StoredPoint(mut map): StoredPoint) -> Result<Self, ControlPointError> {
         let mut number = |key: &str| {
             map.remove(key)
                 .and_then(|v| v.as_f64())
@@ -139,7 +145,7 @@ impl TryFrom<Map<String, Value>> for ControlPoint {
     }
 }
 
-impl From<ControlPoint> for Map<String, Value> {
+impl From<ControlPoint> for StoredPoint {
     fn from(p: ControlPoint) -> Self {
         let mut map = Map::new();
         map.insert("lon".to_owned(), Value::from(p.position.lon()));
@@ -152,20 +158,25 @@ impl From<ControlPoint> for Map<String, Value> {
             }
         }
         map.extend(p.unknown);
-        map
+        Self(map)
     }
 }
 
 /// Display overrides chosen by the operator; absent fields follow the standard.
+///
+/// Colours are stored as lower-case `#rrggbb` when opaque and `#rrggbbaa`
+/// otherwise. A stored colour that is not `#rrggbb` or `#rrggbbaa` makes the
+/// whole definition undecodable, so the host keeps it as stored rather than
+/// drawing it in a colour the operator did not choose.
 #[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
 #[non_exhaustive]
 pub struct StyleOverrides {
-    /// Line colour as `#rrggbb` or `#rrggbbaa`.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub line_color: Option<String>,
-    /// Fill colour as `#rrggbb` or `#rrggbbaa`.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub fill_color: Option<String>,
+    /// Line colour.
+    #[serde(default, skip_serializing_if = "Option::is_none", with = "hex_color")]
+    pub line_color: Option<Rgba>,
+    /// Fill colour.
+    #[serde(default, skip_serializing_if = "Option::is_none", with = "hex_color")]
+    pub fill_color: Option<Rgba>,
     /// Fields this version does not model, preserved as JSON content.
     #[serde(flatten)]
     pub unknown: BTreeMap<String, Value>,
@@ -196,9 +207,11 @@ pub struct Validity {
 /// A tactical graphic as persisted and edited: the only authority from which
 /// constructions and render plans are derived.
 ///
-/// Fields this version does not understand are carried in `unknown`, so an
-/// edit made by an older version does not drop data written by a newer one.
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+/// It is stored through [`crate::PersistedGraphic`] only, which adds the
+/// schema version. Fields this version does not understand are carried in
+/// `unknown`, so an edit made by an older version does not drop data written
+/// by a newer one.
+#[derive(Clone, Debug, PartialEq)]
 #[non_exhaustive]
 pub struct GraphicDefinition {
     /// Stable identifier.
@@ -208,20 +221,15 @@ pub struct GraphicDefinition {
     /// Ordered control points.
     pub points: Vec<ControlPoint>,
     /// Amplifiers.
-    #[serde(default, skip_serializing_if = "Modifiers::is_empty")]
     pub modifiers: Modifiers,
     /// Display overrides.
-    #[serde(default, skip_serializing_if = "StyleOverrides::is_empty")]
     pub style: StyleOverrides,
     /// When the graphic applies.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub validity: Option<Validity>,
     /// Change counter, advanced by every edit with `wrapping_add(1)`. It does
     /// not identify commands; hosts use their own event IDs for that.
-    #[serde(default)]
     pub revision: u64,
     /// Fields this version does not model, preserved as JSON content.
-    #[serde(flatten)]
     pub unknown: BTreeMap<String, Value>,
 }
 
@@ -243,5 +251,33 @@ impl GraphicDefinition {
     /// Control-point positions, in order.
     pub fn positions(&self) -> impl ExactSizeIterator<Item = GeoPoint> + '_ {
         self.points.iter().map(|p| p.position)
+    }
+}
+
+/// Serde form of an optional colour: a hex string.
+mod hex_color {
+    use serde::{Deserialize, Deserializer, Serializer};
+
+    use crate::style::Rgba;
+
+    pub(super) fn serialize<S: Serializer>(
+        color: &Option<Rgba>,
+        serializer: S,
+    ) -> Result<S::Ok, S::Error> {
+        match color {
+            Some(c) => serializer.serialize_str(&c.to_stored_hex()),
+            None => serializer.serialize_none(),
+        }
+    }
+
+    pub(super) fn deserialize<'de, D: Deserializer<'de>>(
+        deserializer: D,
+    ) -> Result<Option<Rgba>, D::Error> {
+        let Some(text) = Option::<String>::deserialize(deserializer)? else {
+            return Ok(None);
+        };
+        Rgba::parse_hex(&text).map(Some).ok_or_else(|| {
+            serde::de::Error::custom(format!("colour {text:?} is not #rrggbb or #rrggbbaa"))
+        })
     }
 }

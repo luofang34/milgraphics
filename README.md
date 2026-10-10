@@ -25,8 +25,9 @@ JavaScript, JVM or map engine at runtime.
 
 ```rust
 use milgraphics::render::{FixedAdvanceMetrics, Font, LocalEquirectangular};
-use milgraphics::{Budget, Config, ControlPoint, GeoPoint, GraphicDefinition, GraphicId};
-use milgraphics::{SymbolId, View, construct, render};
+use milgraphics::{Config, ControlPoint, GeoPoint, GraphicDefinition, GraphicId};
+use milgraphics::{ModifierField, ModifierValue, SymbolId, View, construct, render};
+use milgraphics::svg::{SvgOptions, to_svg};
 
 # fn main() -> Result<(), Box<dyn std::error::Error>> {
 // A MIL-STD-2525D change 1 phase line, "PL ALPHA".
@@ -36,16 +37,16 @@ let points = vec![
 ];
 let symbol = SymbolId::parse("11032500001403000000")?;
 let mut def = GraphicDefinition::new(GraphicId::new("pl-1")?, symbol, points);
-def.modifiers.designation = Some("ALPHA".into());
+def.modifiers.set(ModifierField::T, ModifierValue::Text("ALPHA".into()))?;
 
 // Geographic construction, then a plan for one view. A map host passes its
 // own projection and font metrics; this fixed frame suits tests and SVG.
 let construction = construct(&def, &Config::default())?;
 let frame = LocalEquirectangular::new(19.95, 50.07, 50_000.0, 96.0);
 let view = View::new(0, 0);
-let plan = render(&construction, &view, &frame, &FixedAdvanceMetrics::default(), &Budget::default())?;
+let plan = render(&construction, &view, &frame, &FixedAdvanceMetrics::default())?;
 
-let svg = milgraphics::svg::to_svg(&plan, 1100.0, 900.0);
+let svg = to_svg(&plan, &SvgOptions::new(1100.0, 900.0));
 # assert!(svg.contains("PL ALPHA"));
 # Ok(())
 # }

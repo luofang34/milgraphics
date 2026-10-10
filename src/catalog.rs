@@ -4,14 +4,15 @@
 //! and lookup.
 
 use crate::generated::catalog::ENTRIES;
-use crate::generated::draw_rule::{DrawRule, MoDrawRule};
+pub use crate::generated::draw_rule::{DrawRule, MoDrawRule};
 use crate::modifier::ModifierField;
+use crate::sidc::EntityCode;
+use crate::standard::StandardVersion;
 
 #[cfg(test)]
 mod tests;
 
-/// Version codes (the first two digits of a symbol ID) a catalog row applies
-/// to. Bit `n` is set when version code `n` is present.
+/// The standard editions a catalog row applies to.
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
 pub struct VersionSet(u32);
 
@@ -21,14 +22,22 @@ impl VersionSet {
         Self(bits)
     }
 
-    /// Whether version code `code` is in the set.
-    pub const fn contains(self, code: u8) -> bool {
+    /// Whether `standard` is in the set.
+    pub const fn contains(self, standard: StandardVersion) -> bool {
+        self.contains_code(standard.code())
+    }
+
+    /// Whether version code `code` (bit `code` of the mask) is in the set.
+    pub(crate) const fn contains_code(self, code: u8) -> bool {
         code < 32 && (self.0 >> code) & 1 == 1
     }
 
-    /// The version codes in the set, ascending.
-    pub fn iter(self) -> impl Iterator<Item = u8> {
-        (0..32u8).filter(move |code| self.contains(*code))
+    /// The editions in the set, in version-code order.
+    pub fn iter(self) -> impl Iterator<Item = StandardVersion> {
+        StandardVersion::ALL
+            .iter()
+            .copied()
+            .filter(move |s| self.contains(*s))
     }
 }
 
@@ -61,7 +70,7 @@ pub struct CatalogEntry {
     /// Two-digit symbol set.
     pub symbol_set: u8,
     /// Six-digit entity code.
-    pub entity: u32,
+    pub entity: EntityCode,
     /// Display name of the entity.
     pub name: &'static str,
     /// Names of the enclosing hierarchy levels, outermost first.
@@ -82,12 +91,16 @@ pub fn entries() -> &'static [CatalogEntry] {
     ENTRIES
 }
 
-/// The row for `entity` in `symbol_set` under version code `version_code`.
-pub fn lookup(version_code: u8, symbol_set: u8, entity: u32) -> Option<&'static CatalogEntry> {
+/// The row for `entity` in `symbol_set` under `standard`.
+pub fn lookup(
+    standard: StandardVersion,
+    symbol_set: u8,
+    entity: EntityCode,
+) -> Option<&'static CatalogEntry> {
     let all = entries();
     let start = all.partition_point(|e| (e.symbol_set, e.entity) < (symbol_set, entity));
     all.iter()
         .skip(start)
         .take_while(|e| e.symbol_set == symbol_set && e.entity == entity)
-        .find(|e| e.versions.contains(version_code))
+        .find(|e| e.versions.contains(standard))
 }

@@ -1,5 +1,6 @@
 use super::*;
 use crate::definition::GraphicId;
+use crate::modifier::{ModifierField, ModifierValue, Modifiers};
 use crate::sidc::SymbolId;
 
 fn phase_line(points: &[(f64, f64)]) -> GraphicDefinition {
@@ -13,6 +14,11 @@ fn phase_line(points: &[(f64, f64)]) -> GraphicDefinition {
     )
 }
 
+/// The edited definition under the default configuration.
+fn edit_def(def: &GraphicDefinition, edit: &Edit) -> Result<GraphicDefinition, EditError> {
+    apply_edit(def, edit, &EditContext::new(Config::default())).map(|e| e.definition)
+}
+
 fn p(lon: f64, lat: f64) -> GeoPoint {
     GeoPoint::new(lon, lat).unwrap()
 }
@@ -20,7 +26,7 @@ fn p(lon: f64, lat: f64) -> GeoPoint {
 #[test]
 fn moving_a_vertex_changes_only_that_point_and_the_revision() {
     let def = phase_line(&[(20.0, 50.0), (20.1, 50.0)]);
-    let edited = apply_edit(
+    let edited = edit_def(
         &def,
         &Edit::Move {
             handle: HandleId::Vertex(1),
@@ -37,7 +43,7 @@ fn moving_a_vertex_changes_only_that_point_and_the_revision() {
 #[test]
 fn insert_and_delete_respect_point_limits() {
     let def = phase_line(&[(20.0, 50.0), (20.1, 50.0)]);
-    let three = apply_edit(
+    let three = edit_def(
         &def,
         &Edit::InsertVertex {
             index: 1,
@@ -47,11 +53,11 @@ fn insert_and_delete_respect_point_limits() {
     .unwrap();
     assert_eq!(three.points.len(), 3);
     assert_eq!(three.points[1].position, p(20.05, 50.02));
-    let two = apply_edit(&three, &Edit::DeleteVertex { index: 1 }).unwrap();
+    let two = edit_def(&three, &Edit::DeleteVertex { index: 1 }).unwrap();
     assert_eq!(two.points, def.points);
     assert_eq!(two.revision, 2);
     assert!(matches!(
-        apply_edit(&two, &Edit::DeleteVertex { index: 0 }),
+        edit_def(&two, &Edit::DeleteVertex { index: 0 }),
         Err(EditError::PointCount {
             count: 1,
             min: 2,
@@ -79,14 +85,14 @@ fn missing_handles_and_unsupported_symbols_are_refused() {
         },
     ] {
         assert!(
-            matches!(apply_edit(&def, &edit), Err(EditError::NoSuchHandle { .. })),
+            matches!(edit_def(&def, &edit), Err(EditError::NoSuchHandle { .. })),
             "{edit:?}"
         );
     }
     let mut other = def.clone();
     other.symbol = SymbolId::parse("11032500009999990000").unwrap();
     assert!(matches!(
-        apply_edit(&other, &Edit::DeleteVertex { index: 0 }),
+        edit_def(&other, &Edit::DeleteVertex { index: 0 }),
         Err(EditError::Unsupported(_))
     ));
 }
@@ -95,7 +101,7 @@ fn missing_handles_and_unsupported_symbols_are_refused() {
 fn revisions_wrap_instead_of_overflowing() {
     let mut def = phase_line(&[(20.0, 50.0), (20.1, 50.0)]);
     def.revision = u64::MAX;
-    let edited = apply_edit(
+    let edited = edit_def(
         &def,
         &Edit::Move {
             handle: HandleId::Vertex(0),
@@ -122,7 +128,7 @@ fn range_fan() -> GraphicDefinition {
 /// Applies `edit` and checks the input is unchanged whatever the outcome.
 fn apply(def: &GraphicDefinition, edit: Edit) -> Result<GraphicDefinition, EditError> {
     let before = def.clone();
-    let result = apply_edit(def, &edit);
+    let result = edit_def(def, &edit);
     assert_eq!(def, &before, "apply_edit must not modify its input");
     result
 }
@@ -209,17 +215,20 @@ fn fixed_shape_symbols_refuse_vertex_insertion_and_deletion() {
         &[(20.0, 50.0), (20.04, 50.03), (20.08, 50.0)],
     );
     for def in [&axis, &bypass, &range_fan()] {
-        assert!(
+        assert!(matches!(
             apply(
                 def,
                 Edit::InsertVertex {
                     index: 1,
                     at: p(20.0, 50.0)
                 }
-            )
-            .is_err()
-        );
-        assert!(apply(def, Edit::DeleteVertex { index: 0 }).is_err());
+            ),
+            Err(EditError::VertexEditsNotAllowed { .. })
+        ));
+        assert!(matches!(
+            apply(def, Edit::DeleteVertex { index: 0 }),
+            Err(EditError::VertexEditsNotAllowed { .. })
+        ));
     }
     // Moving the width point of an axis is a vertex move.
     axis.revision = 9;
@@ -308,6 +317,98 @@ fn edits_that_would_break_the_graphic_are_refused() {
                 to: centre
             }
         ),
+        Err(EditError::Invalid(_))
+    ));
+}
+
+#[test]
+fn accepted_edits_return_the_construction_of_the_edited_definition() {
+    let def = phase_line(&[(20.0, 50.0), (20.1, 50.0)]);
+    let edited = apply_edit(
+        &def,
+        &Edit::Move {
+            handle: HandleId::Vertex(1),
+            to: p(20.2, 50.1),
+        },
+        &EditContext::new(Config::default()),
+    )
+    .unwrap();
+    let rebuilt = crate::family::construct(&edited.definition, &Config::default()).unwrap();
+    assert_eq!(edited.construction, rebuilt);
+    assert_eq!(edited.construction.revision(), edited.definition.revision);
+}
+
+#[test]
+fn edits_are_checked_with_the_context_configuration() {
+    let def = phase_line(&[(20.0, 50.0), (20.1, 50.0)]);
+    let mut config = Config::default();
+    config.budget.max_control_points = 2;
+    let context = EditContext::new(config);
+    assert_eq!(context.config().budget.max_control_points, 2);
+    let insert = Edit::InsertVertex {
+        index: 1,
+        at: p(20.05, 50.02),
+    };
+    assert!(edit_def(&def, &insert).is_ok());
+    assert!(matches!(
+        apply_edit(&def, &insert, &context),
+        Err(EditError::Invalid(crate::family::ConstructError::Budget(_)))
+    ));
+}
+
+#[test]
+fn amplifier_edits_set_and_clear_fields() {
+    let def = phase_line(&[(20.0, 50.0), (20.1, 50.0)]);
+    let set = Edit::SetModifier {
+        field: ModifierField::T,
+        value: Some(ModifierValue::Text("ALPHA".into())),
+    };
+    let named = apply(&def, set).unwrap();
+    assert_eq!(named.modifiers.designation(), Some("ALPHA"));
+    assert_eq!(named.revision, def.revision.wrapping_add(1));
+    let cleared = apply(
+        &named,
+        Edit::SetModifier {
+            field: ModifierField::T,
+            value: None,
+        },
+    )
+    .unwrap();
+    assert!(!cleared.modifiers.is_set(ModifierField::T));
+    assert_eq!(cleared.revision, named.revision.wrapping_add(1));
+
+    let mut all = Modifiers::default();
+    all.set(ModifierField::T, ModifierValue::Text("B".into()))
+        .unwrap();
+    let replaced = apply(&named, Edit::SetModifiers(Box::new(all.clone()))).unwrap();
+    assert_eq!(replaced.modifiers, all);
+}
+
+#[test]
+fn amplifier_edits_are_validated() {
+    let def = phase_line(&[(20.0, 50.0), (20.1, 50.0)]);
+    // A phase line does not draw AM.
+    let undrawn = Edit::SetModifier {
+        field: ModifierField::AM,
+        value: Some(ModifierValue::Numbers(vec![100.0])),
+    };
+    assert!(matches!(apply(&def, undrawn), Err(EditError::Invalid(_))));
+    let wrong_kind = Edit::SetModifier {
+        field: ModifierField::T,
+        value: Some(ModifierValue::Numbers(vec![1.0])),
+    };
+    assert!(matches!(
+        apply(&def, wrong_kind),
+        Err(EditError::Modifier(_))
+    ));
+    let mut fan = range_fan();
+    fan.modifiers.azimuths_deg = vec![30.0, 90.0];
+    let missing_range = Edit::SetModifier {
+        field: ModifierField::AM,
+        value: None,
+    };
+    assert!(matches!(
+        apply(&fan, missing_range),
         Err(EditError::Invalid(_))
     ));
 }

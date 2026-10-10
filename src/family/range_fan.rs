@@ -182,12 +182,12 @@ fn handles(
 ) -> Vec<HandleSpec> {
     let fan = sectors(ranges, azimuths);
     let ranges = ranges.iter().enumerate().map(|(i, &r)| HandleSpec {
-        id: HandleId::Range(i as u16),
+        id: HandleId::Range(u32::try_from(i).unwrap_or(u32::MAX)),
         kind: HandleKind::Range,
         at: earth.direct(center, bearing, r),
     });
     let azimuths = azimuths.iter().enumerate().map(|(i, &a)| HandleSpec {
-        id: HandleId::Azimuth(i as u16),
+        id: HandleId::Azimuth(u32::try_from(i).unwrap_or(u32::MAX)),
         kind: HandleKind::Azimuth,
         at: earth.direct(center, a, fan.get(i / 2).map_or(0.0, |s| s.max_m)),
     });
@@ -206,13 +206,13 @@ pub(crate) fn move_handle(
     let inv = Earth::wgs84().inverse(center, to);
     let m = &mut def.modifiers;
     let slot = match handle {
-        HandleId::Range(i) => m
-            .distances_m
-            .get_mut(usize::from(i))
+        HandleId::Range(i) => usize::try_from(i)
+            .ok()
+            .and_then(|i| m.distances_m.get_mut(i))
             .map(|v| (v, inv.distance_m)),
-        HandleId::Azimuth(i) => m
-            .azimuths_deg
-            .get_mut(usize::from(i))
+        HandleId::Azimuth(i) => usize::try_from(i)
+            .ok()
+            .and_then(|i| m.azimuths_deg.get_mut(i))
             .map(|v| (v, inv.azimuth1.rem_euclid(360.0))),
         HandleId::Vertex(_) | HandleId::Width => None,
     };
