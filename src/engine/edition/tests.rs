@@ -415,3 +415,26 @@ fn recover_is_drawn_as_evacuate_with_r() {
     let evacuate = out("16032500003445000000", tl::EVACUATE, &points, &none);
     assert_eq!(lines(&recover), lines(&evacuate));
 }
+
+#[test]
+fn the_code_10_trip_wire_is_the_base_2525d_glyph_on_its_three_points() {
+    let none = Modifiers::default();
+    // Stem from (100, 100) down to (100, 300); point 3 is 40 px to the right.
+    let points = [(100.0, 100.0), (100.0, 300.0), (140.0, 130.0)];
+    let o = out("10032500002905000000", tl::TRIP, &points, &none);
+    assert!(o.labels.iter().all(|l| l.text != "t"));
+    let all = lines(&o);
+    let [stem, bar, wire] = all.as_slice() else {
+        panic!("stem, bar and wire: {all:?}")
+    };
+    assert_eq!(stem[..2], [(100.0, 100.0), (100.0, 300.0)]);
+    // The hook turns toward point 3 with point 3's distance as its radius.
+    let foot = stem[stem.len() - 1];
+    assert!(dist(foot, (140.0, 340.0)) < 1e-9, "{foot:?}");
+    // The bar ends at point 3 and reaches as far the other side.
+    assert!(dist(bar[1], (140.0, 130.0)) < 1e-9 && dist(bar[0], (60.0, 130.0)) < 1e-9);
+    assert!(wire.iter().all(|p| (p.1 - 220.0).abs() < 1e-9));
+    // Version 11 keeps upstream's line.
+    let d = out("11032500002905000000", tl::TRIP, &points[..2], &none);
+    assert_eq!(lines(&d).len(), 1);
+}

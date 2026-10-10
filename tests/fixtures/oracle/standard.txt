@@ -75,6 +75,7 @@
 25272200-app6e the template labels the contour with H, not T
 25290301-app6e the X marks stand apart, with clear space between them
 25290301-e the X marks stand apart, with clear space between them
+25290500-app6d base MIL-STD-2525D glyph on three points: stem with a hook, bar to point 3, wire across
 25290500-app6e the version 16 template draws the trip wire glyph at point 1 and no "t"
 25290600-app6e the template stacks T, AM, W and W1 beside the lane
 25290600-app6e-anticipated the template stacks T, AM, W and W1 beside the lane

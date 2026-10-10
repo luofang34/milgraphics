@@ -158,6 +158,11 @@ fn point_counts_follow_the_standards_text_where_upstream_differs() {
     ] {
         assert_eq!(points(code), (3, 3), "{code}");
     }
+    // Code 10 follows base MIL-STD-2525D: the Trip Wire glyph on three
+    // points, the Minimum Safe Distance Zone's centre and three radii.
+    assert_eq!(points("10032500002905000000"), (3, 3));
+    assert_eq!(points("10032500002721000000"), (4, 4));
+    assert_eq!(points("10032500001701000000"), (2, 99));
     // Trip Wire (2525D Line15, APP-6(E)), Bearing Line and Linear Target
     // (APP-6(E)): two.
     for code in [

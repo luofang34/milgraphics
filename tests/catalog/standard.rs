@@ -1,6 +1,7 @@
-//! Every declared MIL-STD-2525E change 1 and APP-6(E)(2) graphic, drawn with
-//! all of its declared amplifiers filled, is compared with a golden SVG reviewed
-//! against the standard's template. `UPDATE_GOLDEN=1` rewrites
+//! Every declared MIL-STD-2525E change 1 and APP-6(E)(2) graphic, and every
+//! code 10 graphic drawn as base MIL-STD-2525D rather than as the oracle,
+//! drawn with all of its declared amplifiers filled, is compared with a golden
+//! SVG reviewed against the standard's template. `UPDATE_GOLDEN=1` rewrites
 //! `tests/golden/standard/`; a golden without a declared graphic fails.
 
 use std::collections::BTreeSet;
@@ -18,7 +19,13 @@ const SUFFIXES: [&str; 2] = ["-e", "-app6e"];
 /// letters, so each one is visible where the graphic places it.
 fn filled(r: &Value) -> Option<(String, GraphicDefinition)> {
     let case = r["case"].as_str()?;
-    if !SUFFIXES.iter().any(|s| case.ends_with(s)) {
+    let listed = STANDARD
+        .lines()
+        .any(|l| l.split_whitespace().next() == Some(case));
+    // Code 10 is checked against the oracle, except where it follows base
+    // MIL-STD-2525D instead.
+    let drawn_as_standard = case.ends_with("-app6d") && listed;
+    if !SUFFIXES.iter().any(|s| case.ends_with(s)) && !drawn_as_standard {
         return None;
     }
     let symbol = SymbolId::parse(r["symbol"].as_str()?).ok()?;
@@ -26,9 +33,6 @@ fn filled(r: &Value) -> Option<(String, GraphicDefinition)> {
     let mut d = definition(r);
     // A case listed as differing from the oracle may give a field the
     // template does not show, which the graphic then does not declare.
-    let listed = STANDARD
-        .lines()
-        .any(|l| l.split_whitespace().next() == Some(case));
     for field in ModifierField::ALL {
         if listed && !spec.modifiers.iter().any(|m| m.field == field) {
             d.modifiers.clear(field);

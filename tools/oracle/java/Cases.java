@@ -37,13 +37,17 @@ public final class Cases {
      * Layouts for "version:entity" where the standard's text gives other
      * control points than upstream's draw rule (xtask/src/specs/rules.rs,
      * standard_points): Withdraw and Withdraw Under Pressure take three in
-     * 2525E and APP-6(E); Trip Wire, Bearing Line and Linear Target two.
+     * 2525E and APP-6(E); Trip Wire, Bearing Line and Linear Target two; and
+     * code 10 follows base MIL-STD-2525D.
      */
-    static final Map<String, String> STANDARD_LAYOUT = Map.of(
-            "15:342400", "cm:Line24", "16:342400", "cm:Line24",
-            "15:342500", "cm:Line24", "16:342500", "cm:Line24",
-            "11:290500", "cm:Line14", "16:290500", "cm:Line14",
-            "16:220100", "cm:Line14", "16:240701", "cm:Line14");
+    static final Map<String, String> STANDARD_LAYOUT = Map.ofEntries(
+            Map.entry("15:342400", "cm:Line24"), Map.entry("16:342400", "cm:Line24"),
+            Map.entry("15:342500", "cm:Line24"), Map.entry("16:342500", "cm:Line24"),
+            Map.entry("11:290500", "cm:Line14"), Map.entry("16:290500", "cm:Line14"),
+            Map.entry("16:220100", "cm:Line14"), Map.entry("16:240701", "cm:Line14"),
+            // Base 2525D (code 10): centre and three radii; the trip wire glyph's
+            // stem top, stem foot and the end of its bar.
+            Map.entry("10:272100", "std:Area14x4"), Map.entry("10:290500", "std:Trip3"));
 
     static double[][] p(double... v) {
         double[][] r = new double[v.length / 2][2];
@@ -96,6 +100,8 @@ public final class Cases {
         layout("cm:Area8", p(0, 1500, 0, -1500, 4000, 2500, 4000, -2500));
         layout("cm:Area13", p(-2000, 0, 2000, 0));
         layout("cm:Area14", p(0, 0, 1500, 0, 3000, 0));
+        layout("std:Area14x4", p(0, 0, 1000, 0, 2000, 0, 3000, 0));
+        layout("std:Trip3", p(0, 1000, 0, -1000, 700, 670));
         // Points 1 and 2 the first arrow (tip, end), 3 and 4 the second (tip at
         // the end of the curve from point 2, end).
         layout("cm:Area18", p(0, 2500, 3500, 2500, 3500, -2500, 0, -2500));
