@@ -12,8 +12,8 @@ mod native {
     use criterion::{BenchmarkId, Criterion, criterion_group};
     use milgraphics::render::{FixedAdvanceMetrics, LocalEquirectangular};
     use milgraphics::{
-        Budget, Config, Construction, ControlPoint, GeoPoint, GraphicDefinition, GraphicId,
-        SymbolId, View, construct, render,
+        Config, Construction, ControlPoint, GeoPoint, GraphicDefinition, GraphicId, ModifierField,
+        ModifierValue, SymbolId, View, construct, render,
     };
     use std::hint::black_box;
 
@@ -51,16 +51,22 @@ mod native {
         };
         let symbol = SymbolId::parse(&format!("1103250000{entity}0000")).ok()?;
         let mut d = GraphicDefinition::new(GraphicId::new(format!("g{i}")).ok()?, symbol, points);
-        d.modifiers.designation = Some(format!("{i}"));
-        match i % 6 {
-            3 => d.modifiers.distances_m = vec![200.0],
-            4 => {
-                d.modifiers.designation = None;
-                d.modifiers.distances_m = vec![100.0, 500.0];
-                d.modifiers.azimuths_deg = vec![30.0, 90.0];
-            }
-            5 => d.modifiers.designation = None,
-            _ => {}
+        let numbers = ModifierValue::Numbers;
+        let set = |field, value| (field, value);
+        let fields = match i % 6 {
+            3 => vec![
+                set(ModifierField::T, ModifierValue::Text(format!("{i}"))),
+                set(ModifierField::AM, numbers(vec![200.0])),
+            ],
+            4 => vec![
+                set(ModifierField::AM, numbers(vec![100.0, 500.0])),
+                set(ModifierField::AN, numbers(vec![30.0, 90.0])),
+            ],
+            5 => vec![],
+            _ => vec![set(ModifierField::T, ModifierValue::Text(format!("{i}")))],
+        };
+        for (field, value) in fields {
+            d.modifiers.set(field, value).ok()?;
         }
         Some(d)
     }
@@ -77,7 +83,6 @@ mod native {
         let view = View::new(0, 0);
         let frame = LocalEquirectangular::new(19.99, 51.01, 50_000.0, 96.0);
         let metrics = FixedAdvanceMetrics::default();
-        let budget = Budget::default();
         let mut g = c.benchmark_group("plan");
         g.sample_size(10);
         for n in SIZES {
@@ -94,7 +99,7 @@ mod native {
                 b.iter(|| {
                     built
                         .iter()
-                        .filter_map(|c| render(black_box(c), &view, &frame, &metrics, &budget).ok())
+                        .filter_map(|c| render(black_box(c), &view, &frame, &metrics).ok())
                         .count()
                 })
             });

@@ -7,7 +7,7 @@ use crate::catalog::CatalogEntry;
 use crate::family::Family;
 use crate::generated::references::REFERENCES;
 use crate::modifier::ModifierField;
-use crate::sidc::SymbolId;
+use crate::sidc::{EntityCode, SidcError, SymbolId};
 use crate::standard::StandardVersion;
 
 pub(crate) mod table;
@@ -83,7 +83,7 @@ pub struct SymbolSpec {
     /// Two-digit symbol set: 25 for control measures, 45 and 46 for METOC.
     pub symbol_set: u8,
     /// Six-digit entity code.
-    pub entity: u32,
+    pub entity: EntityCode,
     /// Fewest control points.
     pub min_points: usize,
     /// Most control points.
@@ -113,7 +113,7 @@ impl SymbolSpec {
         REFERENCES
             .iter()
             .find(|(standard, set, entity, _)| {
-                (*standard, *set, *entity) == (self.standard, self.symbol_set, self.entity)
+                (*standard, *set, *entity) == (self.standard, self.symbol_set, self.entity.get())
             })
             .map(|(_, _, _, r)| r)
     }
@@ -144,7 +144,21 @@ impl SymbolSpec {
     /// The upstream catalog row for this symbol: its hierarchy path and
     /// geometry, for grouping a palette.
     pub fn catalog_entry(&self) -> Option<&'static CatalogEntry> {
-        crate::catalog::lookup(self.standard.code(), self.symbol_set, self.entity)
+        crate::catalog::lookup(self.standard, self.symbol_set, self.entity)
+    }
+
+    /// The 20-digit symbol ID of this symbol with the given `context`
+    /// (0 reality, 1 exercise, 2 simulation), standard `identity` (3 friend,
+    /// 6 hostile, …) and `status` (0 present, 1 planned), each one digit;
+    /// headquarters, amplifier and sector modifier digits are zero. Hosts
+    /// build new graphics' symbols this way rather than formatting codes.
+    pub fn symbol_id(&self, context: u8, identity: u8, status: u8) -> Result<SymbolId, SidcError> {
+        SymbolId::graphic(
+            self.standard,
+            [context, identity, status],
+            self.symbol_set,
+            self.entity,
+        )
     }
 }
 
@@ -159,14 +173,14 @@ pub enum Unsupported {
         code: u8,
     },
     /// The symbol is not declared for this edition.
-    #[error("{standard} symbol set {symbol_set} entity {entity:06} is not supported")]
+    #[error("{standard} symbol set {symbol_set} entity {entity} is not supported")]
     Symbol {
         /// The edition.
         standard: StandardVersion,
         /// Symbol set.
         symbol_set: u8,
         /// Entity code.
-        entity: u32,
+        entity: EntityCode,
     },
 }
 
@@ -174,7 +188,7 @@ pub enum Unsupported {
 pub fn spec(symbol: &SymbolId) -> Result<&'static SymbolSpec, Unsupported> {
     let code = symbol.version_code();
     let standard = symbol.standard().ok_or(Unsupported::Standard { code })?;
-    let (symbol_set, entity) = (symbol.symbol_set(), symbol.entity().get());
+    let (symbol_set, entity) = (symbol.symbol_set(), symbol.entity());
     all()
         .find(|s| s.symbol_set == symbol_set && s.standard == standard && s.entity == entity)
         .ok_or(Unsupported::Symbol {

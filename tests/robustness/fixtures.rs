@@ -88,14 +88,8 @@ pub(crate) fn rendered(
     projection: &dyn Projection,
     budget: &Budget,
 ) -> Result<RenderPlan, String> {
-    render(
-        c,
-        &view(),
-        projection,
-        &FixedAdvanceMetrics::default(),
-        budget,
-    )
-    .map_err(|e| e.to_string())
+    let view = view().with_budget(*budget);
+    render(c, &view, projection, &FixedAdvanceMetrics::default()).map_err(|e| e.to_string())
 }
 
 fn finite(v: f64, what: &str) {

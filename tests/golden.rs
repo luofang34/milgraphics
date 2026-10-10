@@ -11,8 +11,8 @@ wasm_bindgen_test::wasm_bindgen_test_configure!(run_in_browser);
 mod golden {
     use milgraphics::render::{FixedAdvanceMetrics, LocalEquirectangular};
     use milgraphics::{
-        Altitude, Budget, Config, ControlPoint, GeoPoint, GraphicDefinition, GraphicId, SymbolId,
-        VerticalDatum, View, construct, render,
+        Altitude, Config, ControlPoint, GeoPoint, GraphicDefinition, GraphicId, ModifierField,
+        ModifierValue, SymbolId, VerticalDatum, View, construct, render,
     };
 
     /// One graphic: name, entity digits, control points (lon, lat), frame
@@ -192,14 +192,28 @@ mod golden {
             SymbolId::parse(&sidc).unwrap(),
             points,
         );
-        d.modifiers.designation = case.designation.map(str::to_owned);
-        d.modifiers.distances_m = case.distances_m.to_vec();
-        d.modifiers.azimuths_deg = case.azimuths_deg.to_vec();
-        d.modifiers.altitudes = case
+        let m = &mut d.modifiers;
+        if let Some(t) = case.designation {
+            m.set(ModifierField::T, ModifierValue::Text(t.to_owned()))
+                .unwrap();
+        }
+        m.set(
+            ModifierField::AM,
+            ModifierValue::Numbers(case.distances_m.to_vec()),
+        )
+        .unwrap();
+        m.set(
+            ModifierField::AN,
+            ModifierValue::Numbers(case.azimuths_deg.to_vec()),
+        )
+        .unwrap();
+        let altitudes = case
             .altitudes_m
             .iter()
             .map(|&metres| Altitude::new(metres, VerticalDatum::MeanSeaLevel))
             .collect();
+        m.set(ModifierField::X, ModifierValue::Altitudes(altitudes))
+            .unwrap();
         d
     }
 
@@ -215,7 +229,6 @@ mod golden {
             &view,
             &frame,
             &FixedAdvanceMetrics::default(),
-            &Budget::default(),
         )
         .unwrap();
         let anchors = plan.labels.iter().filter_map(|l| l.screen);
@@ -228,7 +241,7 @@ mod golden {
             w = w.max((p.x + 60.0).ceil());
             h = h.max((p.y + 60.0).ceil());
         }
-        milgraphics::svg::to_svg(&plan, w, h)
+        milgraphics::svg::to_svg(&plan, &milgraphics::svg::SvgOptions::new(w, h))
     }
 
     #[cfg(not(target_arch = "wasm32"))]

@@ -8,11 +8,11 @@ use crate::style::{Fill, Stroke};
 /// Index of a part within one graphic's construction, stable for a given
 /// symbol and control-point count, so picks and styling can refer to it.
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord)]
-pub struct PartId(pub(crate) u16);
+pub struct PartId(pub(crate) u32);
 
 impl PartId {
     /// The part's index.
-    pub const fn get(self) -> u16 {
+    pub const fn get(self) -> u32 {
         self.0
     }
 }
@@ -37,12 +37,30 @@ pub enum PartRole {
     Pattern,
 }
 
+impl PartRole {
+    /// The role's name in lower snake case (`"line"`, `"boundary"`,
+    /// `"arrowhead"`, `"orientation"`, `"decoration"`, `"hatch"`,
+    /// `"pattern"`). Names are stable; GeoJSON output and map styles key on
+    /// them.
+    pub const fn name(self) -> &'static str {
+        match self {
+            Self::Line => "line",
+            Self::Boundary => "boundary",
+            Self::Arrowhead => "arrowhead",
+            Self::Orientation => "orientation",
+            Self::Decoration => "decoration",
+            Self::Hatch => "hatch",
+            Self::Pattern => "pattern",
+        }
+    }
+}
+
 /// Geometry in WGS84 degrees. Edges are geodesics and are already densified,
 /// so an engine that draws straight segments in its own projection shows the
 /// geodesic within the construction tolerance.
 #[derive(Clone, Debug, PartialEq)]
 #[non_exhaustive]
-pub enum GeoGeometry {
+pub(crate) enum GeoGeometry {
     /// An open polyline.
     Line(Vec<GeoPoint>),
     /// A closed ring, listed without repeating the first point.
@@ -51,32 +69,27 @@ pub enum GeoGeometry {
 
 impl GeoGeometry {
     /// The vertices, without the closing repeat for rings.
-    pub fn points(&self) -> &[GeoPoint] {
+    pub(crate) fn points(&self) -> &[GeoPoint] {
         match self {
             Self::Line(p) | Self::Ring(p) => p,
         }
-    }
-
-    /// Whether the last vertex joins back to the first.
-    pub fn is_closed(&self) -> bool {
-        matches!(self, Self::Ring(_))
     }
 }
 
 /// A drawn part in geographic space.
 #[derive(Clone, Debug, PartialEq)]
 #[non_exhaustive]
-pub struct GeoPart {
+pub(crate) struct GeoPart {
     /// Index of the part.
-    pub id: PartId,
+    pub(crate) id: PartId,
     /// What it represents.
-    pub role: PartRole,
+    pub(crate) role: PartRole,
     /// Where it is.
-    pub geometry: GeoGeometry,
+    pub(crate) geometry: GeoGeometry,
     /// Outline, if stroked.
-    pub stroke: Option<Stroke>,
+    pub(crate) stroke: Option<Stroke>,
     /// Interior, for rings.
-    pub fill: Fill,
+    pub(crate) fill: Fill,
 }
 
 /// How large a pixel-sized decoration is.
@@ -100,7 +113,7 @@ pub(crate) enum DecorationSize {
 /// resolved once a projection is known. Rendering turns it into screen-tier
 /// items marked as decorations; its contents are internal.
 #[derive(Clone, Debug, PartialEq)]
-pub struct ScreenDecoration(pub(crate) Decoration);
+pub(crate) struct ScreenDecoration(pub(crate) Decoration);
 
 /// The kinds of pixel-sized decoration.
 #[derive(Clone, Debug, PartialEq)]
@@ -176,7 +189,7 @@ pub(crate) enum Decoration {
 /// How a label is positioned relative to its anchor.
 #[derive(Clone, Copy, Debug, PartialEq)]
 #[non_exhaustive]
-pub enum LabelPlacement {
+pub(crate) enum LabelPlacement {
     /// Horizontal text centred on the anchor.
     Centered,
     /// At the end of a line, rotated along the end segment (kept upright)
@@ -205,20 +218,20 @@ pub enum LabelPlacement {
 /// A label in geographic terms.
 #[derive(Clone, Debug, PartialEq)]
 #[non_exhaustive]
-pub struct LabelSpec {
+pub(crate) struct LabelSpec {
     /// The part the label belongs to.
-    pub part: PartId,
+    pub(crate) part: PartId,
     /// Full text, prefixes included.
-    pub text: String,
+    pub(crate) text: String,
     /// Geographic anchor.
-    pub anchor: GeoPoint,
+    pub(crate) anchor: GeoPoint,
     /// How the text sits on the anchor.
-    pub placement: LabelPlacement,
+    pub(crate) placement: LabelPlacement,
     /// Offset perpendicular to the text in ems, positive downward on screen;
     /// stacked labels use whole ems.
-    pub line_offset: f64,
+    pub(crate) line_offset: f64,
     /// Whether map label collision may hide it.
-    pub may_hide: bool,
+    pub(crate) may_hide: bool,
 }
 
 /// What dragging a handle changes.
@@ -238,13 +251,13 @@ pub enum HandleKind {
 /// An edit handle in geographic terms.
 #[derive(Clone, Copy, Debug, PartialEq)]
 #[non_exhaustive]
-pub struct HandleSpec {
+pub(crate) struct HandleSpec {
     /// Stable identity, used to apply an edit.
-    pub id: HandleId,
+    pub(crate) id: HandleId,
     /// What it changes.
-    pub kind: HandleKind,
+    pub(crate) kind: HandleKind,
     /// Where it is drawn.
-    pub at: GeoPoint,
+    pub(crate) at: GeoPoint,
 }
 
 /// A graphic constructed in geographic space. Depends only on the
@@ -253,42 +266,59 @@ pub struct HandleSpec {
 #[non_exhaustive]
 pub struct Construction {
     /// [`crate::RENDERER_VERSION`] that built it.
-    pub renderer_version: &'static str,
+    pub(crate) renderer_version: &'static str,
     /// The definition it was built from.
-    pub definition: GraphicId,
+    pub(crate) definition: GraphicId,
     /// The definition's revision.
-    pub revision: u64,
+    pub(crate) revision: u64,
     /// Drawn parts, in drawing order.
-    pub parts: Vec<GeoPart>,
+    pub(crate) parts: Vec<GeoPart>,
     /// Pixel-sized decorations.
-    pub decorations: Vec<ScreenDecoration>,
+    pub(crate) decorations: Vec<ScreenDecoration>,
     /// Labels.
-    pub labels: Vec<LabelSpec>,
+    pub(crate) labels: Vec<LabelSpec>,
     /// Edit handles.
-    pub handles: Vec<HandleSpec>,
+    pub(crate) handles: Vec<HandleSpec>,
     /// Single-point symbols the graphic embeds, for the host to draw.
-    pub symbols: Vec<EmbeddedSymbol>,
+    pub(crate) symbols: Vec<EmbeddedSymbol>,
+}
+
+impl Construction {
+    /// The definition it was built from.
+    pub fn definition(&self) -> &GraphicId {
+        &self.definition
+    }
+
+    /// The definition's revision.
+    pub fn revision(&self) -> u64 {
+        self.revision
+    }
+
+    /// The [`crate::RENDERER_VERSION`] that built it.
+    pub fn renderer_version(&self) -> &'static str {
+        self.renderer_version
+    }
 }
 
 /// A single-point symbol drawn as part of a graphic: the unit assigned a
 /// task (amplifier `A`) or an icon the standard puts inside an area.
 #[derive(Clone, Debug, PartialEq)]
 #[non_exhaustive]
-pub struct EmbeddedSymbol {
+pub(crate) struct EmbeddedSymbol {
     /// The symbol to draw.
-    pub symbol: crate::sidc::SymbolId,
+    pub(crate) symbol: crate::sidc::SymbolId,
     /// Where its centre goes.
-    pub anchor: GeoPoint,
+    pub(crate) anchor: GeoPoint,
     /// Pixels to move it from the anchor once projected, y downward.
-    pub offset_px: [f64; 2],
+    pub(crate) offset_px: [f64; 2],
     /// How large it is drawn.
-    pub size: SymbolSize,
+    pub(crate) size: SymbolSize,
 }
 
 /// How large an embedded symbol is drawn.
 #[derive(Clone, Copy, Debug, PartialEq)]
 #[non_exhaustive]
-pub enum SymbolSize {
+pub(crate) enum SymbolSize {
     /// A fixed size in pixels.
     Pixels(f64),
     /// Fitted inside the circle centred on the anchor through `edge`.

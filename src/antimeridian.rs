@@ -5,13 +5,10 @@
 //! therefore cut at the antimeridian. Coordinates are `[lon, lat]` pairs
 //! because a cut point on the eastern side must be written as +180.
 
-use crate::geo::GeoPoint;
+use crate::geo::{GeoPoint, LonLat};
 
 #[cfg(test)]
 mod tests;
-
-/// `[lon, lat]` in degrees.
-pub type LonLat = [f64; 2];
 
 /// Longitudes made continuous along the path: each step takes the shorter
 /// way round, so values may leave [-180, 180].
@@ -40,7 +37,7 @@ fn shift(p: LonLat, copies: i64) -> LonLat {
 }
 
 /// Splits an open polyline into pieces that each stay within [-180, 180].
-pub fn split_line(points: &[GeoPoint]) -> Vec<Vec<LonLat>> {
+pub(crate) fn split_line(points: &[GeoPoint]) -> Vec<Vec<LonLat>> {
     let path = unwrap(points);
     let mut pieces: Vec<Vec<LonLat>> = Vec::new();
     let mut current: Vec<LonLat> = Vec::new();
@@ -80,7 +77,7 @@ pub fn split_line(points: &[GeoPoint]) -> Vec<Vec<LonLat>> {
 ///
 /// Rings that enclose a pole cannot be represented this way; they are
 /// returned unsplit, wrapped into [-180, 180] point by point.
-pub fn split_ring(points: &[GeoPoint]) -> Vec<Vec<LonLat>> {
+pub(crate) fn split_ring(points: &[GeoPoint]) -> Vec<Vec<LonLat>> {
     let ring = unwrap(points);
     let span = ring
         .iter()

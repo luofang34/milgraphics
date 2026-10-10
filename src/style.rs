@@ -52,6 +52,16 @@ impl Rgba {
     pub fn to_hex(self) -> String {
         format!("#{:02x}{:02x}{:02x}{:02x}", self.r, self.g, self.b, self.a)
     }
+
+    /// `#rrggbb` when opaque, else `#rrggbbaa`: the stored form, which keeps
+    /// the six-digit colours operators usually enter unchanged.
+    pub(crate) fn to_stored_hex(self) -> String {
+        if self.a == 255 {
+            format!("#{:02x}{:02x}{:02x}", self.r, self.g, self.b)
+        } else {
+            self.to_hex()
+        }
+    }
 }
 
 /// Dash patterns the engine can draw as fixed layers. Lengths are in
@@ -69,6 +79,19 @@ pub enum DashPattern {
 }
 
 impl DashPattern {
+    /// Every pattern, so an adapter can create one map layer per pattern.
+    pub const ALL: &'static [Self] = &[Self::Solid, Self::Dashed, Self::Dotted];
+
+    /// The pattern's name: `"solid"`, `"dashed"` or `"dotted"`. Names are
+    /// stable; GeoJSON output and map styles key on them.
+    pub const fn name(self) -> &'static str {
+        match self {
+            Self::Solid => "solid",
+            Self::Dashed => "dashed",
+            Self::Dotted => "dotted",
+        }
+    }
+
     /// Dash and gap lengths in line widths; empty for solid.
     pub fn array(self) -> &'static [f64] {
         match self {
@@ -151,7 +174,7 @@ pub struct Pattern {
 impl Pattern {
     /// `motif` in `color`, `size_px` wide, every `spacing_px`, with or without
     /// a figure in the middle of each cell.
-    pub const fn new(
+    pub(crate) const fn new(
         motif: Motif,
         color: Rgba,
         size_px: f64,
@@ -186,7 +209,7 @@ pub struct Hatch {
 impl Hatch {
     /// A hatch of `color` lines at `angle_deg`, `spacing_px` apart and
     /// `width_px` wide.
-    pub const fn new(color: Rgba, angle_deg: f64, spacing_px: f64, width_px: f64) -> Self {
+    pub(crate) const fn new(color: Rgba, angle_deg: f64, spacing_px: f64, width_px: f64) -> Self {
         Self {
             color,
             angle_deg,
@@ -216,11 +239,7 @@ pub(crate) fn palette(symbol: &SymbolId, overrides: &StyleOverrides) -> Palette 
         5 | 6 => Rgba::RED,
         _ => Rgba::BLACK,
     };
-    let color = overrides
-        .line_color
-        .as_deref()
-        .and_then(Rgba::parse_hex)
-        .unwrap_or(base);
+    let color = overrides.line_color.unwrap_or(base);
     let dash = if symbol.status() == 1 {
         DashPattern::Dashed
     } else {
@@ -234,6 +253,6 @@ pub(crate) fn palette(symbol: &SymbolId, overrides: &StyleOverrides) -> Palette 
     Palette {
         line: Stroke { dash, ..solid_line },
         solid_line,
-        fill: overrides.fill_color.as_deref().and_then(Rgba::parse_hex),
+        fill: overrides.fill_color,
     }
 }

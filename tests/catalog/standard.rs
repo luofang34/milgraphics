@@ -33,7 +33,7 @@ fn filled(r: &Value) -> Option<(String, GraphicDefinition)> {
     let mut d = definition(r);
     // A case listed as differing from the oracle may give a field the
     // template does not show, which the graphic then does not declare.
-    for field in ModifierField::ALL {
+    for &field in ModifierField::ALL {
         if listed && !spec.modifiers.iter().any(|m| m.field == field) {
             d.modifiers.clear(field);
         }
@@ -61,14 +61,7 @@ fn filled(r: &Value) -> Option<(String, GraphicDefinition)> {
 fn svg(r: &Value, d: &GraphicDefinition) -> String {
     let f = frame(r);
     let c = construct(d, &Config::default()).unwrap();
-    let plan = render(
-        &c,
-        &View::new(0, 0),
-        &f,
-        &FixedAdvanceMetrics::default(),
-        &Budget::default(),
-    )
-    .unwrap();
+    let plan = render(&c, &View::new(0, 0), &f, &FixedAdvanceMetrics::default()).unwrap();
     let anchors = plan.labels.iter().filter_map(|l| l.screen);
     let points = plan
         .screen
@@ -79,7 +72,7 @@ fn svg(r: &Value, d: &GraphicDefinition) -> String {
         w = w.max((p.x + 80.0).ceil());
         h = h.max((p.y + 80.0).ceil());
     }
-    milgraphics::svg::to_svg(&plan, w, h)
+    milgraphics::svg::to_svg(&plan, &milgraphics::svg::SvgOptions::new(w, h))
 }
 
 #[test]

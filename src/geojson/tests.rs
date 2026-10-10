@@ -1,5 +1,4 @@
 use super::*;
-use crate::Budget;
 use crate::definition::{ControlPoint, GraphicDefinition, GraphicId};
 use crate::family::{Config, construct};
 use crate::geo::GeoPoint;
@@ -18,16 +17,7 @@ fn geojson_for(sidc: &str, points: &[(f64, f64)]) -> Value {
     let c = construct(&d, &Config::default()).unwrap();
     let view = View::new(0, 0);
     let frame = LocalEquirectangular::new(points[0].0 - 1.0, 60.0, 50_000.0, 96.0);
-    to_geojson(
-        &render(
-            &c,
-            &view,
-            &frame,
-            &FixedAdvanceMetrics::default(),
-            &Budget::default(),
-        )
-        .unwrap(),
-    )
+    to_geojson(&render(&c, &view, &frame, &FixedAdvanceMetrics::default()).unwrap())
 }
 
 #[test]
@@ -39,10 +29,24 @@ fn line_features_carry_pick_and_style() {
     assert_eq!(line["geometry"]["type"], "MultiLineString");
     assert_eq!(line["properties"]["graphic"], "graphic-7");
     assert_eq!(line["properties"]["part"], 0);
-    assert_eq!(line["properties"]["dash"], "Dashed");
+    assert_eq!(line["properties"]["role"], "line");
+    assert_eq!(line["properties"]["dash"], "dashed");
     assert_eq!(line["properties"]["dasharray"], json!([2.0, 2.0]));
     assert_eq!(features[1]["geometry"]["type"], "Point");
-    assert_eq!(features[1]["properties"]["label"], "PL");
+    let label = &features[1]["properties"];
+    assert_eq!(label["label"], "PL");
+    for key in ["offset-em", "font-size-px", "may-hide"] {
+        assert!(label.get(key).is_some(), "{key}");
+    }
+}
+
+#[test]
+fn style_names_are_lower_case_and_distinct() {
+    let names: Vec<&str> = crate::style::DashPattern::ALL
+        .iter()
+        .map(|d| d.name())
+        .collect();
+    assert_eq!(names, ["solid", "dashed", "dotted"]);
 }
 
 #[test]

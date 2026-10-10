@@ -1,9 +1,19 @@
 //! Catalog invariants and the draw rules of the six first-milestone graphics.
 
 use super::*;
+use crate::sidc::EntityCode;
+
+/// The row for numeric keys, as tests write them.
+fn find(version: u8, set: u8, entity: u32) -> Option<&'static CatalogEntry> {
+    lookup(
+        StandardVersion::from_code(version)?,
+        set,
+        EntityCode::new(entity)?,
+    )
+}
 
 fn rule(version: u8, set: u8, entity: u32) -> CatalogDrawRule {
-    lookup(version, set, entity)
+    find(version, set, entity)
         .expect("catalog row present")
         .draw_rule
 }
@@ -33,7 +43,7 @@ fn main_attack_follows_upstream_in_both_editions() {
 
 #[test]
 fn air_corridor_takes_width() {
-    let entry = lookup(11, 25, 170100).expect("air corridor");
+    let entry = find(11, 25, 170100).expect("air corridor");
     assert_eq!(entry.draw_rule, standard(DrawRule::Corridor1));
     assert!(entry.modifiers.contains(&ModifierField::AM));
 }
@@ -50,7 +60,7 @@ fn bypass_easy_is_a_fixed_three_point_task() {
 
 #[test]
 fn metoc_rows_carry_metoc_rules_and_no_modifiers() {
-    let front = lookup(11, 45, 110301).expect("cold front");
+    let front = find(11, 45, 110301).expect("cold front");
     assert_eq!(front.geometry, GeometryKind::Line);
     assert_eq!(front.draw_rule, CatalogDrawRule::Metoc(MoDrawRule::Line1));
     assert!(front.modifiers.is_empty());
@@ -58,15 +68,15 @@ fn metoc_rows_carry_metoc_rules_and_no_modifiers() {
 
 #[test]
 fn later_upstream_row_wins_a_duplicated_version() {
-    let probable = lookup(15, 25, 141200).expect("v15");
-    let nai = lookup(16, 25, 141200).expect("v16");
+    let probable = find(15, 25, 141200).expect("v15");
+    let nai = find(16, 25, 141200).expect("v16");
     assert_ne!(probable.name, nai.name);
-    assert!(!probable.versions.contains(16));
+    assert!(!probable.versions.contains(StandardVersion::App6Ech2));
 }
 
 #[test]
 fn hierarchy_names_are_outermost_first() {
-    let entry = lookup(11, 25, 140300).expect("phase line");
+    let entry = find(11, 25, 140300).expect("phase line");
     assert_eq!(entry.path.first().copied(), Some("Maneuver Lines"));
     assert_ne!(entry.path.last().copied(), Some(entry.name));
 }
@@ -97,7 +107,8 @@ fn entries_are_sorted_and_keys_unique() {
 #[test]
 fn versions_are_known_codes_and_geometry_matches_family() {
     for e in entries() {
-        assert!(e.versions.iter().all(|v| (10..=16).contains(&v)));
+        let codes = (0..32).filter(|c| e.versions.contains_code(*c)).count();
+        assert_eq!(e.versions.iter().count(), codes, "every code is an edition");
         assert!(e.versions.iter().next().is_some());
         match e.draw_rule {
             CatalogDrawRule::Standard(_) => assert_eq!(e.symbol_set, 25),
@@ -113,10 +124,10 @@ fn versions_are_known_codes_and_geometry_matches_family() {
 
 #[test]
 fn unknown_entities_are_absent() {
-    assert!(lookup(11, 25, 999_999).is_none());
-    assert!(lookup(11, 99, 140_300).is_none());
-    assert!(lookup(12, 25, 140_300).is_none());
-    assert!(lookup(255, 25, 140_300).is_none());
+    assert!(find(11, 25, 999_999).is_none());
+    assert!(find(11, 99, 140_300).is_none());
+    assert!(find(12, 25, 140_300).is_none());
+    assert!(find(255, 25, 140_300).is_none());
 }
 
 #[test]
@@ -136,7 +147,12 @@ fn names_round_trip() {
 #[test]
 fn version_set_membership() {
     let set = VersionSet::from_bits((1 << 11) | (1 << 15));
-    assert!(set.contains(11) && set.contains(15));
-    assert!(!set.contains(10) && !set.contains(200));
-    assert_eq!(set.iter().collect::<Vec<_>>(), [11, 15]);
+    assert!(
+        set.contains(StandardVersion::Mil2525Dch1) && set.contains(StandardVersion::Mil2525Ech1)
+    );
+    assert!(!set.contains(StandardVersion::App6D) && !set.contains_code(200));
+    assert_eq!(
+        set.iter().collect::<Vec<_>>(),
+        [StandardVersion::Mil2525Dch1, StandardVersion::Mil2525Ech1]
+    );
 }

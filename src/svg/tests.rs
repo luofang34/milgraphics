@@ -1,5 +1,4 @@
 use super::*;
-use crate::Budget;
 use crate::definition::{ControlPoint, GraphicDefinition, GraphicId};
 use crate::family::{Config, construct};
 use crate::geo::GeoPoint;
@@ -19,15 +18,8 @@ fn svg_for(sidc: &str, t: &str) -> String {
     let c = construct(&d, &Config::default()).unwrap();
     let view = View::new(0, 0);
     let frame = LocalEquirectangular::new(19.95, 50.07, 50_000.0, 96.0);
-    let plan = render(
-        &c,
-        &view,
-        &frame,
-        &FixedAdvanceMetrics::default(),
-        &Budget::default(),
-    )
-    .unwrap();
-    to_svg(&plan, 1100.0, 900.0)
+    let plan = render(&c, &view, &frame, &FixedAdvanceMetrics::default()).unwrap();
+    to_svg(&plan, &SvgOptions::new(1100.0, 900.0))
 }
 
 #[test]

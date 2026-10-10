@@ -61,14 +61,7 @@ fn view() -> View {
 
 fn plan(d: &GraphicDefinition, projection: &dyn Projection) -> RenderPlan {
     let c = construct(d, &Config::default()).unwrap();
-    render(
-        &c,
-        &view(),
-        projection,
-        &FixedAdvanceMetrics::default(),
-        &Budget::default(),
-    )
-    .unwrap()
+    render(&c, &view(), projection, &FixedAdvanceMetrics::default()).unwrap()
 }
 
 const PL: &str = "11032500001403000000";
@@ -181,7 +174,12 @@ fn render_budget_is_enforced() {
         max_vertices: 50,
         ..Budget::default()
     };
-    let r = render(&c, &view(), &globe, &FixedAdvanceMetrics::default(), &tight);
+    let r = render(
+        &c,
+        &view().with_budget(tight),
+        &globe,
+        &FixedAdvanceMetrics::default(),
+    );
     assert!(matches!(
         r,
         Err(RenderError::Budget(BudgetError::Vertices { .. }))
@@ -395,14 +393,14 @@ fn the_geographic_tier_alone_matches_the_plan_and_is_budgeted() {
         Some("1"),
     );
     let c = construct(&d, &Config::default()).unwrap();
-    let alone = geographic(&c, &Budget::default()).unwrap();
+    let alone = geographic(&c, &View::new(0, 0)).unwrap();
     assert_eq!(alone, plan(&d, &frame).geo);
     let tight = Budget {
         max_vertices: 3,
         ..Budget::default()
     };
     assert!(matches!(
-        geographic(&c, &tight),
+        geographic(&c, &View::new(0, 0).with_budget(tight)),
         Err(RenderError::Budget(_))
     ));
 }

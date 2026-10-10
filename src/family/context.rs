@@ -55,7 +55,7 @@ impl<'a> Ctx<'a> {
 
     /// The id the next part will get.
     pub(crate) fn next_part(&self) -> PartId {
-        PartId(self.parts.len() as u16)
+        PartId(u32::try_from(self.parts.len()).unwrap_or(u32::MAX))
     }
 
     /// Geodesic polyline through `points`, densified; the last point is kept.

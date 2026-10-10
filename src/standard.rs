@@ -23,7 +23,7 @@ pub enum StandardVersion {
 
 impl StandardVersion {
     /// Every edition, in version-code order.
-    pub const ALL: [Self; 4] = [
+    pub const ALL: &'static [Self] = &[
         Self::App6D,
         Self::Mil2525Dch1,
         Self::Mil2525Ech1,

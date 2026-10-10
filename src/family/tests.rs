@@ -201,7 +201,7 @@ fn control_point_altitudes_are_refused_not_ignored() {
 fn ported_graphics_take_the_operators_colour() {
     // Light Line, drawn by the ported renderer.
     let mut d = def("11032500001102000000", &[(20.0, 50.0), (20.1, 50.0)]);
-    d.style.line_color = Some("#0000ff".to_owned());
+    d.style.line_color = Some(crate::style::Rgba::opaque(0, 0, 255));
     let c = construct(&d, &Config::default()).unwrap();
     let blue = crate::style::Rgba::opaque(0, 0, 255);
     assert!(
@@ -214,16 +214,17 @@ fn ported_graphics_take_the_operators_colour() {
 
 #[test]
 fn ported_graphics_allow_vertex_edits_unless_their_point_count_is_fixed() {
-    use crate::edit::{Edit, apply_edit};
+    use crate::edit::{Edit, EditContext, apply_edit};
+    let context = EditContext::new(Config::default());
     let line = def("11032500001102000000", &[(20.0, 50.0), (20.1, 50.0)]);
     let at = crate::geo::GeoPoint::new(20.05, 50.01).unwrap();
-    assert!(apply_edit(&line, &Edit::InsertVertex { index: 1, at }).is_ok());
+    assert!(apply_edit(&line, &Edit::InsertVertex { index: 1, at }, &context).is_ok());
     // A bypass task takes exactly three points.
     let task = def(
         "11032500002705010000",
         &[(20.0, 50.0), (20.1, 50.0), (20.05, 50.05)],
     );
-    assert!(apply_edit(&task, &Edit::InsertVertex { index: 1, at }).is_err());
+    assert!(apply_edit(&task, &Edit::InsertVertex { index: 1, at }, &context).is_err());
 }
 
 /// Edition changes add pixel-sized shapes; the shapes upstream draws in
@@ -253,4 +254,18 @@ fn edition_shapes_keep_the_proportional_ones_geographic() {
         });
         assert_eq!(counted, Some(shapes), "{code}");
     }
+}
+
+#[test]
+fn the_control_point_limit_fits_vertex_handle_indices() {
+    let budget = Budget {
+        max_control_points: usize::MAX,
+        ..Budget::default()
+    };
+    assert_eq!(
+        u32::try_from(budget.control_point_limit()),
+        Ok(u32::MAX),
+        "HandleId::Vertex can index every accepted point"
+    );
+    assert_eq!(Budget::default().control_point_limit(), 10_000);
 }

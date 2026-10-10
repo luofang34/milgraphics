@@ -2,9 +2,12 @@
 
 use serde::{Deserialize, Serialize};
 
+use crate::construction::Construction;
 use crate::definition::{ControlPoint, GraphicDefinition};
+use crate::family::Config;
 use crate::geo::GeoPoint;
-use crate::support::{self, Unsupported};
+use crate::modifier::{ModifierField, ModifierValue, ModifierValueError, Modifiers};
+use crate::support::{self, SymbolSpec, Unsupported};
 
 #[cfg(test)]
 mod tests;
@@ -14,13 +17,13 @@ mod tests;
 #[non_exhaustive]
 pub enum HandleId {
     /// Control point `n` (0-based).
-    Vertex(u16),
+    Vertex(u32),
     /// The width of an axis or corridor.
     Width,
     /// Range value `n` of `AM`.
-    Range(u16),
+    Range(u32),
     /// Azimuth value `n` of `AN`.
-    Azimuth(u16),
+    Azimuth(u32),
 }
 
 /// A change requested by the user, in geographic terms. Hosts convert the
@@ -38,15 +41,24 @@ pub enum Edit {
     /// Insert a control point before index `index`.
     InsertVertex {
         /// Position in the control-point list.
-        index: u16,
+        index: u32,
         /// The new point.
         at: GeoPoint,
     },
     /// Remove control point `index`.
     DeleteVertex {
         /// Position in the control-point list.
-        index: u16,
+        index: u32,
     },
+    /// Set one amplifier, or clear it with `None`.
+    SetModifier {
+        /// The field.
+        field: ModifierField,
+        /// Its new value.
+        value: Option<ModifierValue>,
+    },
+    /// Replace every amplifier at once, as a form editor does on save.
+    SetModifiers(Box<Modifiers>),
 }
 
 /// Why an edit was refused. The original definition is never modified.
@@ -62,6 +74,16 @@ pub enum EditError {
         /// The requested handle.
         handle: HandleId,
     },
+    /// The symbol takes a fixed set of control points, so none can be
+    /// inserted or deleted.
+    #[error("{symbol} does not allow inserting or deleting control points")]
+    VertexEditsNotAllowed {
+        /// Symbol name.
+        symbol: &'static str,
+    },
+    /// The value's shape does not fit the amplifier field.
+    #[error(transparent)]
+    Modifier(#[from] ModifierValueError),
     /// The edited graphic could not be constructed (e.g. a zero width).
     #[error("edit would leave an invalid graphic: {0}")]
     Invalid(#[source] crate::family::ConstructError),
@@ -77,39 +99,52 @@ pub enum EditError {
     },
 }
 
+/// What an edit is checked against: the configuration its result is
+/// constructed with.
+#[derive(Clone, Debug)]
+#[non_exhaustive]
+pub struct EditContext {
+    config: Config,
+}
+
+impl EditContext {
+    /// A context that constructs edited graphics with `config`, which
+    /// should be the configuration the host draws them with.
+    pub fn new(config: Config) -> Self {
+        Self { config }
+    }
+
+    /// The construction configuration.
+    pub fn config(&self) -> &Config {
+        &self.config
+    }
+}
+
+/// An accepted edit: the new definition and its construction, which was
+/// built to check the edit and can be cached in place of the old one.
+#[derive(Clone, Debug, PartialEq)]
+#[non_exhaustive]
+pub struct Edited {
+    /// The edited definition, its revision advanced.
+    pub definition: GraphicDefinition,
+    /// Its construction under the context's configuration.
+    pub construction: Construction,
+}
+
 /// Applies `edit` to `definition`, returning the edited copy with its
-/// revision advanced.
+/// revision advanced and its construction.
 ///
-/// The result is checked like a construction with the default
-/// [`crate::Config`], so an accepted edit never yields a graphic that cannot
-/// be drawn; a refused edit leaves nothing changed.
+/// The result is constructed with the context's configuration, so an
+/// accepted edit never yields a graphic that cannot be drawn; a refused
+/// edit leaves nothing changed.
 pub fn apply_edit(
     definition: &GraphicDefinition,
     edit: &Edit,
-) -> Result<GraphicDefinition, EditError> {
+    context: &EditContext,
+) -> Result<Edited, EditError> {
     let spec = support::spec(&definition.symbol)?;
     let mut next = definition.clone();
-    match *edit {
-        Edit::Move { handle, to } => crate::family::move_handle(spec, &mut next, handle, to)?,
-        Edit::InsertVertex { index, at } => {
-            let index = usize::from(index);
-            if index > next.points.len() || !spec.allows_vertex_edits() {
-                return Err(EditError::NoSuchHandle {
-                    handle: HandleId::Vertex(index as u16),
-                });
-            }
-            next.points.insert(index, ControlPoint::ground(at));
-        }
-        Edit::DeleteVertex { index } => {
-            let at = usize::from(index);
-            if at >= next.points.len() || !spec.allows_vertex_edits() {
-                return Err(EditError::NoSuchHandle {
-                    handle: HandleId::Vertex(index),
-                });
-            }
-            next.points.remove(at);
-        }
-    }
+    change(spec, &mut next, edit)?;
     let count = next.points.len();
     if count < spec.min_points || count > spec.max_points {
         return Err(EditError::PointCount {
@@ -118,24 +153,74 @@ pub fn apply_edit(
             max: spec.max_points,
         });
     }
-    // The edited graphic must be one that can be drawn: the same checks as
-    // construction (amplifier values, geometry) decide, before the revision
-    // advances.
-    crate::family::construct(&next, &crate::family::Config::default())
-        .map_err(EditError::Invalid)?;
     next.revision = next.revision.wrapping_add(1);
-    Ok(next)
+    // The edited graphic must be one that can be drawn: the same checks as
+    // construction (amplifier values, geometry) decide.
+    let construction =
+        crate::family::construct(&next, &context.config).map_err(EditError::Invalid)?;
+    Ok(Edited {
+        definition: next,
+        construction,
+    })
+}
+
+/// Applies `edit` to `next` without checking the result.
+fn change(spec: &SymbolSpec, next: &mut GraphicDefinition, edit: &Edit) -> Result<(), EditError> {
+    match edit {
+        Edit::Move { handle, to } => crate::family::move_handle(spec, next, *handle, *to)?,
+        Edit::InsertVertex { index, at } => {
+            vertex_edits(spec)?;
+            let at_index = usize::try_from(*index)
+                .ok()
+                .filter(|i| *i <= next.points.len());
+            let Some(i) = at_index else {
+                return Err(EditError::NoSuchHandle {
+                    handle: HandleId::Vertex(*index),
+                });
+            };
+            next.points.insert(i, ControlPoint::ground(*at));
+        }
+        Edit::DeleteVertex { index } => {
+            vertex_edits(spec)?;
+            let at_index = usize::try_from(*index)
+                .ok()
+                .filter(|i| *i < next.points.len());
+            let Some(i) = at_index else {
+                return Err(EditError::NoSuchHandle {
+                    handle: HandleId::Vertex(*index),
+                });
+            };
+            next.points.remove(i);
+        }
+        Edit::SetModifier { field, value: None } => next.modifiers.clear(*field),
+        Edit::SetModifier {
+            field,
+            value: Some(value),
+        } => next.modifiers.set(*field, value.clone())?,
+        Edit::SetModifiers(modifiers) => next.modifiers = Modifiers::clone(modifiers),
+    }
+    Ok(())
+}
+
+fn vertex_edits(spec: &SymbolSpec) -> Result<(), EditError> {
+    if spec.allows_vertex_edits() {
+        Ok(())
+    } else {
+        Err(EditError::VertexEditsNotAllowed {
+            symbol: spec.name(),
+        })
+    }
 }
 
 /// Moves control point `index` to `to`, keeping its altitude.
 pub(crate) fn move_vertex(
     definition: &mut GraphicDefinition,
-    index: u16,
+    index: u32,
     to: GeoPoint,
 ) -> Result<(), EditError> {
-    let point = definition
-        .points
-        .get_mut(usize::from(index))
+    let point = usize::try_from(index)
+        .ok()
+        .and_then(|i| definition.points.get_mut(i))
         .ok_or(EditError::NoSuchHandle {
             handle: HandleId::Vertex(index),
         })?;

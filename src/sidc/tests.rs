@@ -56,7 +56,7 @@ fn serde_uses_the_digit_string() {
 
 #[test]
 fn every_standard_round_trips_its_code() {
-    for standard in StandardVersion::ALL {
+    for &standard in StandardVersion::ALL {
         assert_eq!(StandardVersion::from_code(standard.code()), Some(standard));
     }
 }

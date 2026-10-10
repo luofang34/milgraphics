@@ -3,7 +3,7 @@ use crate::geo::{Altitude, VerticalDatum};
 
 #[test]
 fn every_field_round_trips_through_get_and_set() {
-    for field in ModifierField::ALL {
+    for &field in ModifierField::ALL {
         let mut m = Modifiers::default();
         let value = match field.kind() {
             ModifierKind::Distances | ModifierKind::Azimuths => {
@@ -18,7 +18,7 @@ fn every_field_round_trips_through_get_and_set() {
         m.set(field, value.clone()).unwrap();
         assert_eq!(m.get(field), Some(value), "{field}");
         assert!(m.is_set(field));
-        let others = ModifierField::ALL.into_iter().filter(|f| *f != field);
+        let others = ModifierField::ALL.iter().copied().filter(|f| *f != field);
         assert!(
             others.clone().all(|f| !m.is_set(f)),
             "{field} set only itself"
@@ -51,7 +51,7 @@ fn values_of_the_wrong_shape_are_refused() {
 
 #[test]
 fn every_field_is_stored_under_its_letters() {
-    for field in ModifierField::ALL {
+    for &field in ModifierField::ALL {
         let mut m = Modifiers::default();
         let value = match field.kind() {
             ModifierKind::Distances | ModifierKind::Azimuths | ModifierKind::Direction => {
@@ -96,4 +96,14 @@ fn a_stored_value_of_the_wrong_shape_is_kept_not_fatal() {
         back, original,
         "written back unchanged, empty text included"
     );
+}
+
+#[test]
+fn every_field_has_a_distinct_label() {
+    let mut labels: Vec<&str> = ModifierField::ALL.iter().map(|f| f.label()).collect();
+    assert!(labels.iter().all(|l| !l.is_empty()));
+    labels.sort_unstable();
+    labels.dedup();
+    assert_eq!(labels.len(), ModifierField::ALL.len());
+    assert_eq!(ModifierField::T.label(), "Unique designation");
 }

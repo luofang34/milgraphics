@@ -30,10 +30,10 @@ fn identity_and_status_choose_colour_and_dash() {
 }
 
 #[test]
-fn overrides_win_and_bad_overrides_fall_back() {
-    let mut style = StyleOverrides {
-        line_color: Some("#00ff00".to_owned()),
-        fill_color: Some("#0000ff40".to_owned()),
+fn overrides_win() {
+    let style = StyleOverrides {
+        line_color: Some(Rgba::opaque(0, 255, 0)),
+        fill_color: Rgba::parse_hex("#0000ff40"),
         ..StyleOverrides::default()
     };
     let p = palette(&sid("11032500001202000000"), &style);
@@ -47,9 +47,14 @@ fn overrides_win_and_bad_overrides_fall_back() {
             a: 64
         })
     );
-    style.line_color = Some("green".to_owned());
-    assert_eq!(
-        palette(&sid("11032500001202000000"), &style).line.color,
-        Rgba::BLACK
-    );
+}
+
+#[test]
+fn stored_hex_is_six_digits_when_opaque() {
+    assert_eq!(Rgba::opaque(0x11, 0x22, 0x33).to_stored_hex(), "#112233");
+    let translucent = Rgba::parse_hex("#11223340").unwrap();
+    assert_eq!(translucent.to_stored_hex(), "#11223340");
+    for text in ["#112233", "#11223340"] {
+        assert_eq!(Rgba::parse_hex(text).unwrap().to_stored_hex(), text);
+    }
 }

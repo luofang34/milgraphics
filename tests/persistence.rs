@@ -9,8 +9,8 @@ wasm_bindgen_test::wasm_bindgen_test_configure!(run_in_browser);
 #[cfg(test)]
 mod persistence {
     use milgraphics::{
-        Config, ConstructError, Edit, GeoPoint, HandleId, PersistError, PersistedGraphic,
-        Unsupported, apply_edit, construct,
+        Config, ConstructError, Edit, EditContext, GeoPoint, HandleId, PersistError,
+        PersistedGraphic, Unsupported, apply_edit, construct,
     };
     use serde_json::Value;
 
@@ -32,8 +32,10 @@ mod persistence {
                 handle: HandleId::Vertex(1),
                 to,
             },
+            &EditContext::new(Config::default()),
         )
-        .unwrap();
+        .unwrap()
+        .definition;
         let written = PersistedGraphic::from_definition(&edited).unwrap();
         let before: Value = serde_json::from_str(FROM_NEWER_VERSION).unwrap();
         let after: Value = serde_json::from_str(written.as_json()).unwrap();
@@ -124,6 +126,7 @@ mod persistence {
                 handle: HandleId::Vertex(1),
                 to,
             },
+            &EditContext::new(Config::default()),
         );
         assert!(refused.is_err());
         for written in [&def] {

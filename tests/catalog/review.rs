@@ -25,7 +25,6 @@ fn timing() {
             &View::new(0, 0),
             &frame(r),
             &FixedAdvanceMetrics::default(),
-            &Budget::default(),
         )
         .ok();
     }
@@ -97,21 +96,14 @@ fn cell(r: &Value) -> Option<String> {
     let f = frame(r);
     let oracle = oracle_lines(r, &f);
     let c = construct(&definition(r), &Config::default()).ok()?;
-    let plan = render(
-        &c,
-        &View::new(0, 0),
-        &f,
-        &FixedAdvanceMetrics::default(),
-        &Budget::default(),
-    )
-    .ok()?;
+    let plan = render(&c, &View::new(0, 0), &f, &FixedAdvanceMetrics::default()).ok()?;
     let pts = plan.screen.iter().flat_map(|i| i.shape.points().to_vec());
     let (mut x0, mut y0, mut x1, mut y1) = (f64::MAX, f64::MAX, f64::MIN, f64::MIN);
     for p in pts.chain(oracle.iter().flatten().copied()) {
         (x0, y0, x1, y1) = (x0.min(p.x), y0.min(p.y), x1.max(p.x), y1.max(p.y));
     }
     let (w, h) = ((x1 - x0).max(1.0) + 60.0, (y1 - y0).max(1.0) + 60.0);
-    let inner = milgraphics::svg::to_svg(&plan, 4000.0, 4000.0);
+    let inner = milgraphics::svg::to_svg(&plan, &milgraphics::svg::SvgOptions::new(4000.0, 4000.0));
     let inner = inner.split_once('\n')?.1.trim_end_matches("</svg>\n");
     let under: String = oracle
         .iter()
@@ -154,14 +146,7 @@ fn dump() {
         eprintln!("oracle {pts:?}");
     }
     let c = construct(&definition(&r), &Config::default()).unwrap();
-    let plan = render(
-        &c,
-        &View::new(0, 0),
-        &f,
-        &FixedAdvanceMetrics::default(),
-        &Budget::default(),
-    )
-    .unwrap();
+    let plan = render(&c, &View::new(0, 0), &f, &FixedAdvanceMetrics::default()).unwrap();
     for i in &plan.screen {
         let pts: Vec<(i64, i64)> = i
             .shape

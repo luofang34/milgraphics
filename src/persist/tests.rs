@@ -74,3 +74,74 @@ fn fresh_definitions_encode_with_the_schema_version() {
     assert!(written.as_json().contains(r#""schema":1"#));
     assert_eq!(written.decode().unwrap(), def);
 }
+
+#[test]
+fn malformed_json_is_reported_as_invalid_json() {
+    assert!(matches!(
+        PersistedGraphic::from_json("{"),
+        Err(PersistError::InvalidJson(_))
+    ));
+}
+
+#[test]
+fn an_unreadable_colour_makes_the_graphic_undecodable_not_recoloured() {
+    let bad = r##"{"schema":1,"id":"a","symbol":"11032500001403000000",
+        "points":[{"lon":20.0,"lat":50.0},{"lon":20.1,"lat":50.0}],"style":{"line_color":"green"}}"##;
+    let stored = PersistedGraphic::from_json(bad).unwrap();
+    assert!(matches!(stored.decode(), Err(PersistError::Invalid(_))));
+    assert_eq!(stored.as_json(), bad);
+}
+
+#[test]
+fn colours_keep_their_stored_form() {
+    for color in ["#112233", "#11223340"] {
+        let json = format!(
+            r#"{{"id":"a","points":[],"revision":0,"schema":1,"style":{{"fill_color":"{color}","line_color":"{color}"}},"symbol":"11032500001403000000"}}"#
+        );
+        let def = PersistedGraphic::from_json(&json)
+            .unwrap()
+            .decode()
+            .unwrap();
+        let written = PersistedGraphic::from_definition(&def).unwrap();
+        assert_eq!(written.as_json(), json);
+    }
+}
+
+#[test]
+fn non_finite_numbers_are_refused_not_written_as_null() {
+    use crate::geo::{Altitude, VerticalDatum};
+    use crate::modifier::{ModifierField, ModifierValue};
+    let base = GraphicDefinition::new(
+        GraphicId::new("x").unwrap(),
+        SymbolId::parse("11032500002422000000").unwrap(),
+        vec![ControlPoint::ground(GeoPoint::new(20.0, 50.0).unwrap())],
+    );
+    let mut numbers = base.clone();
+    numbers
+        .modifiers
+        .set(
+            ModifierField::AM,
+            ModifierValue::Numbers(vec![1.0, f64::NAN]),
+        )
+        .unwrap();
+    let mut altitudes = base.clone();
+    let infinite = Altitude::new(f64::INFINITY, VerticalDatum::MeanSeaLevel);
+    altitudes
+        .modifiers
+        .set(ModifierField::X, ModifierValue::Altitudes(vec![infinite]))
+        .unwrap();
+    let mut point = base;
+    point.points[0].altitude = Some(Altitude::new(f64::NEG_INFINITY, VerticalDatum::AboveGround));
+    for (def, at) in [
+        (numbers, "AM"),
+        (altitudes, "X"),
+        (point, "points[0].altitude"),
+    ] {
+        match PersistedGraphic::from_definition(&def) {
+            Err(PersistError::NonFinite { id, field }) => {
+                assert_eq!((id.as_str(), field.as_str()), ("x", at));
+            }
+            other => panic!("{at}: {other:?}"),
+        }
+    }
+}

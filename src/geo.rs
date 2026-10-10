@@ -8,6 +8,11 @@ use serde_json::Value;
 #[cfg(test)]
 mod tests;
 
+/// `[lon, lat]` in degrees, the coordinate order of GeoJSON. Output
+/// geometry uses it where a cut at the antimeridian must be written as
+/// +180, which [`GeoPoint`] normalizes away.
+pub type LonLat = [f64; 2];
+
 /// A position on the WGS84 ellipsoid, in degrees.
 ///
 /// Construction through [`GeoPoint::new`] guarantees finite coordinates,
