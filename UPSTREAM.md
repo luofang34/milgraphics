@@ -57,6 +57,9 @@ undeclared symbol (`tests/fixtures/oracle/unimplemented.txt`):
 | Rectangular Target 240802, 2525E change 1 | Rectangular1, but the template has one centre point with AM length and width and AN attitude (Rectangular2) | `mse.txt`: Rectangular2 | The template is followed: one point, as upstream |
 | Ferry 290700, 2525E change 1 | Line14 | `mse.txt`: Line18 | Both take two points; drawn as upstream (matches the oracle) |
 | Withdraw 342400 and Withdraw Under Pressure 342500, 2525E change 1 | Line24: three anchor points, the arc from point 3 | `mse.txt`: Line14 (two points) | Three points, drawn as the 2525D code draws them; listed in `tests/fixtures/oracle/standard.txt` |
+| Trip Wire 290500, code 10 | Base MIL-STD-2525D TABLE H-XIX: a glyph on three points (stem with a hook, bar to point 3, wire across) | `msd.txt`: Line1 | The base 2525D glyph; listed in `tests/fixtures/oracle/standard.txt` |
+| Minimum Safe Distance Zone 272100, code 10 | Base MIL-STD-2525D TABLE H-XXI: centre and three radii | `msd.txt`: Area14 (three or four points) | Four points (matches the oracle) |
+| Air Corridor 170100 and Minimum Risk Route 170200, code 10 | Base MIL-STD-2525D TABLE H-XIII: at most 99 points | `msd.txt`: Corridor1 | At most 99 points |
 
 Each is listed in `src/support/tests.rs` (`DIVERGENCES`), which fails if a
 declared symbol's printed and catalog rules differ without being listed.

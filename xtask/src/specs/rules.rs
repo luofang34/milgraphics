@@ -13,9 +13,16 @@ pub(super) const MANY: &str = "MANY";
 /// - Trip Wire takes two: 2525D change 1 prints Line15 (Table H-XVIII),
 ///   "requires two anchor points", as APP-6(E) Table 8-17 does;
 /// - Bearing Line and Linear Target take two in APP-6(E) (Tables 8-12 and
-///   8-15), which 2525E's Line1 leaves open.
+///   8-15), which 2525E's Line1 leaves open;
+/// - code 10 is also base MIL-STD-2525D (APP-6(E) Table A-1), whose Table
+///   H-XIX Trip Wire is a glyph on three points, Table H-XXI Minimum Safe
+///   Distance Zone takes a centre and three radii, and Table H-XIII corridors
+///   take at most 99 points.
 pub(super) fn standard_points(version: u32, entity: u32) -> Option<(u32, &'static str)> {
     match (version, entity) {
+        (10, 290_500) => Some((3, "3")),
+        (10, 272_100) => Some((4, "4")),
+        (10, 170_100 | 170_200) => Some((2, "99")),
         (15 | 16, 342_400 | 342_500) => Some((3, "3")),
         (11 | 16, 290_500) | (16, 220_100 | 240_701) => Some((2, "2")),
         _ => None,

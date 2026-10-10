@@ -1,8 +1,9 @@
-//! Where the templates of version 15 (MIL-STD-2525E change 1) and version 16
-//! draw a graphic differently from upstream's renderer. Each change applies
-//! to the renderer's finished output, only for the versions whose template
-//! shows it, and leaves the output unchanged when its shapes are not the
-//! ones upstream draws for the symbol. Every case it changes is listed in
+//! Where the templates of version 15 (MIL-STD-2525E change 1), version 16
+//! and, for code 10, base MIL-STD-2525D draw a graphic differently from
+//! upstream's renderer. Each change applies to the renderer's finished
+//! output, only for the versions whose template shows it, and leaves the
+//! output unchanged when its shapes are not the ones upstream draws for the
+//! symbol. Every case it changes is listed in
 //! `tests/fixtures/oracle/standard.txt`.
 
 use super::api::{Input, Justify, Label, Output};
@@ -46,6 +47,12 @@ pub(crate) fn spreads_wire(symbol: &crate::sidc::SymbolId) -> bool {
 pub(crate) fn adjust(input: &Input<'_>, out: &mut Output) {
     let symbol = input.symbol;
     let version = symbol.version_code();
+    // Code 10 is also base MIL-STD-2525D, whose Trip Wire is a glyph on
+    // three points.
+    if (version, symbol.symbol_set(), symbol.entity().get()) == (10, 25, 290_500) {
+        trip::glyph_on_points(input, out);
+        return;
+    }
     if symbol.symbol_set() != 25 || !matches!(version, 15 | 16) {
         return;
     }
