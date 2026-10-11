@@ -1,5 +1,22 @@
 # Changelog
 
+## 0.1.1 — 2026-10-11
+
+Graphics on terrain and in tilted views.
+
+- `Projection::max_chord_px` lets a host that projects onto terrain bound
+  the chords drawn without sampling the ground, so lines follow it.
+- Pixel-sized decorations (teeth, scallops, wire, arrowheads) and the range
+  fan's pointer lie on the ground and are cut at the horizon, rather than
+  running straight between the control points' screen positions.
+- With a viewport, the screen tier is cut a viewport's size past it and
+  every screen position is finite, whatever the camera.
+- Stacked labels are a host's line height apart
+  (`FontMetrics::line_height_px`) and keep their pixel spacing and their
+  distance from the line in tilted views (`Label::offset_em`).
+- `Construction::has_screen_decorations` tells a host which graphics have
+  decorations only the screen tier draws.
+
 ## 0.1.0 — 2026-10-10
 
 First release: native Rust multi-point tactical graphics.
