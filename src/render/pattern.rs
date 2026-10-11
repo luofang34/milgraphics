@@ -225,6 +225,7 @@ pub(crate) fn items<'a>(
                     stroke,
                     fill,
                     decoration: true,
+                    depth: Vec::new(),
                 });
             }
         }

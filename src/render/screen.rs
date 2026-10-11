@@ -4,6 +4,7 @@ use crate::budget::{BudgetError, VertexMeter};
 use crate::construction::GeoGeometry;
 use crate::geo::GeoPoint;
 use crate::geodesy::{Earth, Line};
+use crate::render::depth::DepthTable;
 use crate::render::near;
 use crate::render::{Projection, ScreenPoint, ScreenRect, ScreenShape};
 use crate::style::Fill;
@@ -55,6 +56,8 @@ pub(crate) struct ScreenCtx<'a> {
     meter: &'a mut VertexMeter,
     /// Whether a segment hidden at both ends is searched for a visible span.
     probe_hidden: bool,
+    /// Depths of the points projected, when the host gives them.
+    depths: DepthTable,
 }
 
 impl<'a> ScreenCtx<'a> {
@@ -68,6 +71,7 @@ impl<'a> ScreenCtx<'a> {
             projection,
             meter,
             probe_hidden: true,
+            depths: DepthTable::default(),
         }
     }
 
@@ -108,7 +112,16 @@ impl<'a> ScreenCtx<'a> {
 
     /// Screen position of a ground-clamped point.
     pub(crate) fn project(&mut self, p: GeoPoint) -> Option<ScreenPoint> {
-        self.projection.project(p)
+        let (s, depth) = self.projection.project_depth(p)?;
+        if let Some(depth) = depth {
+            self.depths.record(s, depth);
+        }
+        Some(s)
+    }
+
+    /// Depths of the points projected so far.
+    pub(crate) fn depths(&self) -> &DepthTable {
+        &self.depths
     }
 
     /// Screen pieces of a part. A ring cut by the horizon or the near box is

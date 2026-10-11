@@ -43,6 +43,15 @@ pub trait Projection {
     /// hidden, which for points merely off screen is wasted work.
     fn project(&self, point: GeoPoint) -> Option<ScreenPoint>;
 
+    /// [`Self::project`] together with the depth the host's frame would store for the
+    /// point, for a host that tests the screen tier against its frame's depth (see
+    /// [`ScreenItem::depth`](crate::render::ScreenItem::depth)) so that terrain hides what
+    /// lies behind it. Hosts that implement it keep [`Self::project`] consistent with it;
+    /// the library calls only this. The default gives no depth.
+    fn project_depth(&self, point: GeoPoint) -> Option<(ScreenPoint, Option<f32>)> {
+        self.project(point).map(|s| (s, None))
+    }
+
     /// Geographic position under a screen point, if it hits the surface.
     fn unproject(&self, point: ScreenPoint) -> Option<GeoPoint>;
 

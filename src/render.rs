@@ -10,6 +10,7 @@ use crate::pick::{PickRef, PickTarget};
 use crate::style::{Fill, Stroke};
 
 mod decoration;
+mod depth;
 mod extent;
 mod hatch;
 mod knockout;
@@ -165,6 +166,12 @@ pub struct ScreenItem {
     /// adapters that draw the geographic tier in the map engine overlay only
     /// these.
     pub decoration: bool,
+    /// Depth the host's frame would store at each point of `shape`, in order, as its
+    /// [`Projection::project_depth`] gives it, for testing the item against the frame's
+    /// depth; empty when the host gives none. Points the library places on screen itself
+    /// (cut ends, arrowheads, glyphs) take the depth of the projected points beside them;
+    /// one with none near is NaN.
+    pub depth: Vec<f32>,
 }
 
 /// An edit handle for this view.
@@ -181,6 +188,8 @@ pub struct Handle {
     pub at: GeoPoint,
     /// Screen position, if visible.
     pub screen: Option<ScreenPoint>,
+    /// Depth the host's frame would store at `screen`, when the host gives depth.
+    pub depth: Option<f32>,
 }
 
 /// A construction resolved for one view.
@@ -304,6 +313,7 @@ fn parts(
                 stroke: part.stroke,
                 fill,
                 decoration: false,
+                depth: Vec::new(),
             };
             if full {
                 out.items.push(item);
@@ -405,6 +415,7 @@ pub fn render(
             kind: h.kind,
             at: h.at,
             screen: ctx.project(h.at),
+            depth: None,
         })
         .collect();
     let mut plan = RenderPlan {
@@ -420,5 +431,6 @@ pub fn render(
         symbols,
     };
     near::bound(&mut plan, projection.viewport());
+    depth::fill(&mut plan, ctx.depths());
     Ok(plan)
 }

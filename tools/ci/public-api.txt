@@ -908,6 +908,7 @@ pub fn milgraphics::render::GeoItem::fmt(&self, &mut core::fmt::Formatter<'_>) -
 impl core::marker::StructuralPartialEq for milgraphics::render::GeoItem
 #[non_exhaustive] pub struct milgraphics::render::Handle
 pub milgraphics::render::Handle::at: milgraphics::geo::GeoPoint
+pub milgraphics::render::Handle::depth: core::option::Option<f32>
 pub milgraphics::render::Handle::id: milgraphics::edit::HandleId
 pub milgraphics::render::Handle::kind: milgraphics::construction::HandleKind
 pub milgraphics::render::Handle::pick: milgraphics::pick::PickRef
@@ -923,6 +924,7 @@ impl core::marker::StructuralPartialEq for milgraphics::render::Handle
 pub milgraphics::render::Label::align: milgraphics::render::TextAlign
 pub milgraphics::render::Label::anchor: milgraphics::geo::GeoPoint
 pub milgraphics::render::Label::corners: core::option::Option<[milgraphics::render::ScreenPoint; 4]>
+pub milgraphics::render::Label::depth: core::option::Option<f32>
 pub milgraphics::render::Label::font: milgraphics::render::Font
 pub milgraphics::render::Label::knockout: bool
 pub milgraphics::render::Label::may_hide: bool
@@ -954,6 +956,7 @@ impl core::marker::StructuralPartialEq for milgraphics::render::LocalEquirectang
 impl milgraphics::render::Projection for milgraphics::render::LocalEquirectangular
 pub fn milgraphics::render::LocalEquirectangular::max_chord_px(&self) -> core::option::Option<f64>
 pub fn milgraphics::render::LocalEquirectangular::project(&self, milgraphics::geo::GeoPoint) -> core::option::Option<milgraphics::render::ScreenPoint>
+pub fn milgraphics::render::LocalEquirectangular::project_depth(&self, milgraphics::geo::GeoPoint) -> core::option::Option<(milgraphics::render::ScreenPoint, core::option::Option<f32>)>
 pub fn milgraphics::render::LocalEquirectangular::segment_may_be_visible(&self, milgraphics::geo::GeoPoint, milgraphics::geo::GeoPoint) -> bool
 pub fn milgraphics::render::LocalEquirectangular::tolerance_px(&self) -> f64
 pub fn milgraphics::render::LocalEquirectangular::unproject(&self, milgraphics::render::ScreenPoint) -> core::option::Option<milgraphics::geo::GeoPoint>
@@ -978,6 +981,7 @@ pub fn milgraphics::render::RenderPlan::fmt(&self, &mut core::fmt::Formatter<'_>
 impl core::marker::StructuralPartialEq for milgraphics::render::RenderPlan
 #[non_exhaustive] pub struct milgraphics::render::ScreenItem
 pub milgraphics::render::ScreenItem::decoration: bool
+pub milgraphics::render::ScreenItem::depth: alloc::vec::Vec<f32>
 pub milgraphics::render::ScreenItem::fill: milgraphics::style::Fill
 pub milgraphics::render::ScreenItem::pick: milgraphics::pick::PickRef
 pub milgraphics::render::ScreenItem::role: milgraphics::construction::PartRole
@@ -1014,6 +1018,7 @@ impl core::marker::Copy for milgraphics::render::ScreenRect
 impl core::marker::StructuralPartialEq for milgraphics::render::ScreenRect
 #[non_exhaustive] pub struct milgraphics::render::SymbolPlacement
 pub milgraphics::render::SymbolPlacement::anchor: milgraphics::geo::GeoPoint
+pub milgraphics::render::SymbolPlacement::depth: core::option::Option<f32>
 pub milgraphics::render::SymbolPlacement::offset_px: [f64; 2]
 pub milgraphics::render::SymbolPlacement::pick: milgraphics::pick::PickRef
 pub milgraphics::render::SymbolPlacement::rotation_deg: f64
@@ -1054,6 +1059,7 @@ pub fn milgraphics::render::FixedAdvanceMetrics::text_width_px(&self, &milgraphi
 pub trait milgraphics::render::Projection
 pub fn milgraphics::render::Projection::max_chord_px(&self) -> core::option::Option<f64>
 pub fn milgraphics::render::Projection::project(&self, milgraphics::geo::GeoPoint) -> core::option::Option<milgraphics::render::ScreenPoint>
+pub fn milgraphics::render::Projection::project_depth(&self, milgraphics::geo::GeoPoint) -> core::option::Option<(milgraphics::render::ScreenPoint, core::option::Option<f32>)>
 pub fn milgraphics::render::Projection::segment_may_be_visible(&self, milgraphics::geo::GeoPoint, milgraphics::geo::GeoPoint) -> bool
 pub fn milgraphics::render::Projection::tolerance_px(&self) -> f64
 pub fn milgraphics::render::Projection::unproject(&self, milgraphics::render::ScreenPoint) -> core::option::Option<milgraphics::geo::GeoPoint>
@@ -1061,6 +1067,7 @@ pub fn milgraphics::render::Projection::viewport(&self) -> core::option::Option<
 impl milgraphics::render::Projection for milgraphics::render::LocalEquirectangular
 pub fn milgraphics::render::LocalEquirectangular::max_chord_px(&self) -> core::option::Option<f64>
 pub fn milgraphics::render::LocalEquirectangular::project(&self, milgraphics::geo::GeoPoint) -> core::option::Option<milgraphics::render::ScreenPoint>
+pub fn milgraphics::render::LocalEquirectangular::project_depth(&self, milgraphics::geo::GeoPoint) -> core::option::Option<(milgraphics::render::ScreenPoint, core::option::Option<f32>)>
 pub fn milgraphics::render::LocalEquirectangular::segment_may_be_visible(&self, milgraphics::geo::GeoPoint, milgraphics::geo::GeoPoint) -> bool
 pub fn milgraphics::render::LocalEquirectangular::tolerance_px(&self) -> f64
 pub fn milgraphics::render::LocalEquirectangular::unproject(&self, milgraphics::render::ScreenPoint) -> core::option::Option<milgraphics::geo::GeoPoint>
