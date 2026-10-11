@@ -159,12 +159,17 @@ fn scale_along(ctx: &mut ScreenCtx<'_>, anchors: &[GeoPoint]) -> Option<f64> {
     if !(total.is_finite() && total > 0.0) {
         return None;
     }
+    // Samples evenly spaced along each geodesic, each with the ground length to the next:
+    // the geodesic solved once per edge, and no length measured again.
     let mut samples = Vec::with_capacity(SCALE_SAMPLES + anchors.len());
+    let mut step_m = Vec::with_capacity(SCALE_SAMPLES + anchors.len());
     for (pair, &len) in anchors.windows(2).zip(&lengths) {
         let &[a, b] = pair else { continue };
         let steps = ((len / total) * SCALE_SAMPLES as f64).ceil().max(1.0) as usize;
+        let line = earth.line(a, b);
         for k in 0..steps {
-            samples.push(earth.interpolate(a, b, k as f64 / steps as f64));
+            samples.push(line.at(k as f64 / steps as f64));
+            step_m.push(len / steps as f64);
         }
     }
     samples.extend(anchors.last());
@@ -175,12 +180,12 @@ fn scale_along(ctx: &mut ScreenCtx<'_>, anchors: &[GeoPoint]) -> Option<f64> {
     };
     let projected: Vec<Option<ScreenPoint>> = samples.iter().map(|&p| ctx.project(p)).collect();
     let (mut screen, mut ground) = (0.0, 0.0);
-    for (pair, s) in samples.windows(2).zip(projected.windows(2)) {
-        if let (&[a, b], &[Some(sa), Some(sb)]) = (pair, s) {
+    for (s, &len) in projected.windows(2).zip(&step_m) {
+        if let &[Some(sa), Some(sb)] = s {
             if on_screen(sa) || on_screen(sb) {
                 let (dx, dy) = sb.sub(sa);
                 screen += dx.hypot(dy);
-                ground += earth.inverse(a, b).distance_m;
+                ground += len;
             }
         }
     }
