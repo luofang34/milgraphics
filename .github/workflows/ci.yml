@@ -101,6 +101,7 @@ jobs:
       - uses: Swatinem/rust-cache@v2
       - run: tools/ci/changelog.sh
       - run: cargo publish --locked --dry-run -p milgraphics
+      - run: cargo package --locked --no-verify -p milgraphics
       - name: Package stays small and omits development tooling
         run: |
           crate=target/package/milgraphics-$(cargo pkgid -p milgraphics | sed 's/.*[#@]//').crate
