@@ -15,6 +15,7 @@ mod hatch;
 mod knockout;
 mod label;
 mod local;
+mod near;
 mod pattern;
 mod ported;
 mod projection;
