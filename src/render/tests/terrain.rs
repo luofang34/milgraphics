@@ -169,3 +169,57 @@ fn a_range_fan_pointer_follows_the_ground() {
         at.y
     );
 }
+
+/// A view tilted toward the north: ground distances north–south show at a
+/// quarter of their east–west size, as a camera pitched about 75° shows
+/// them.
+struct Tilted;
+
+impl Tilted {
+    const PX_PER_DEG: f64 = 20_000.0;
+}
+
+impl Projection for Tilted {
+    fn project(&self, p: GeoPoint) -> Option<ScreenPoint> {
+        Some(ScreenPoint {
+            x: (p.lon() - 19.95) * Self::PX_PER_DEG,
+            y: (50.05 - p.lat()) * Self::PX_PER_DEG * 0.25 / 50.0_f64.to_radians().cos(),
+        })
+    }
+
+    fn unproject(&self, _s: ScreenPoint) -> Option<GeoPoint> {
+        None
+    }
+}
+
+/// Where a label's text sits on screen: its anchor moved by its offset.
+fn text_position(l: &Label) -> ScreenPoint {
+    let s = l.screen.unwrap();
+    let em = l.font.size_px;
+    let (sin, cos) = l.rotation_deg.to_radians().sin_cos();
+    let (x, y) = (l.offset_em[0] * em, l.offset_em[1] * em);
+    ScreenPoint {
+        x: s.x + x * cos - y * sin,
+        y: s.y + x * sin + y * cos,
+    }
+}
+
+#[test]
+fn stacked_labels_keep_their_spacing_in_a_tilted_view() {
+    let mut d = def("11032500002407030000", &[(20.0, 50.0), (20.1, 50.0)], None);
+    d.modifiers.target_number = Some("AP1".into());
+    d.modifiers.designation2 = Some("T2Y".into());
+    d.modifiers.equipment_type = Some("VV".into());
+    let p = plan(&d, &Tilted);
+    let stack: Vec<ScreenPoint> = p.labels.iter().map(text_position).collect();
+    assert!(stack.len() >= 3, "{} labels", stack.len());
+    let size = p.labels[0].font.size_px;
+    for pair in stack.windows(2) {
+        let (dx, dy) = pair[1].sub(pair[0]);
+        assert!(
+            dx.hypot(dy) >= 0.95 * size,
+            "lines {} px apart at a {size} px font",
+            dx.hypot(dy)
+        );
+    }
+}
