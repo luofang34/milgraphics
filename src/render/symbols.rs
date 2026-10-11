@@ -31,6 +31,8 @@ pub struct SymbolPlacement {
     pub size_px: f64,
     /// Rotation in degrees clockwise on screen; 0 draws it upright.
     pub rotation_deg: f64,
+    /// Depth the host's frame would store at the anchor, when the host gives depth.
+    pub depth: Option<f32>,
 }
 
 pub(crate) fn resolve(
@@ -65,6 +67,7 @@ pub(crate) fn resolve(
                 offset_px: s.offset_px,
                 size_px,
                 rotation_deg: 0.0,
+                depth: None,
             }
         })
         .collect()

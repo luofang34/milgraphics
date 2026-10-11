@@ -62,6 +62,7 @@ pub(crate) fn resolve(
                 stroke: Some(stroke),
                 fill,
                 decoration: true,
+                depth: Vec::new(),
             }
         }
         &Decoration::Pointer {
@@ -81,6 +82,7 @@ pub(crate) fn resolve(
                 stroke: Some(stroke),
                 fill: Fill::None,
                 decoration: true,
+                depth: Vec::new(),
             }
         }
     };
@@ -184,6 +186,7 @@ fn glyph(
         stroke: Some(stroke),
         fill: Fill::None,
         decoration: true,
+        depth: Vec::new(),
     }
 }
 

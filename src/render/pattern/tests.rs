@@ -82,6 +82,7 @@ fn area(fill: Fill) -> ScreenItem {
         stroke: None,
         fill,
         decoration: false,
+        depth: Vec::new(),
     }
 }
 

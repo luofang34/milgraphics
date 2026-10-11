@@ -93,6 +93,7 @@ pub(crate) fn items<'a>(
             stroke: Some(stroke),
             fill: Fill::None,
             decoration: true,
+            depth: Vec::new(),
         }));
     }
     out

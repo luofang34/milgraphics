@@ -54,6 +54,8 @@ pub struct Label {
     /// draws the geographic tier, which cannot carry a gap sized in pixels,
     /// draws this text on a background (e.g. a halo) instead.
     pub knockout: bool,
+    /// Depth the host's frame would store at `screen`, when the host gives depth.
+    pub depth: Option<f32>,
 }
 
 /// Gap between a line end and its label, in ems.
@@ -93,6 +95,7 @@ pub(crate) fn place(
         width_px,
         corners,
         knockout: false,
+        depth: None,
     }
 }
 
@@ -157,6 +160,7 @@ pub(crate) fn at_screen(
         width_px,
         corners: Some(corners),
         knockout,
+        depth: None,
     }
 }
 

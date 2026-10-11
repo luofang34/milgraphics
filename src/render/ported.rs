@@ -126,6 +126,7 @@ fn screen_items(
                 stroke: outline,
                 fill,
                 decoration: true,
+                depth: Vec::new(),
             });
         }
     }
