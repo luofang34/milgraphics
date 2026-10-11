@@ -10,7 +10,9 @@ repository = "https://github.com/luofang34/milgraphics"
 readme = "README.md"
 keywords = ["mil-std-2525", "app-6", "tactical-graphics", "symbology", "gis"]
 categories = ["graphics", "science::geo"]
-publish = false
+# Development tooling stays in the repository; the packaged tests need only
+# the oracle cases and fixtures.
+exclude = [".cargo/", ".github/", "AGENTS.md", "docs/", "tools/ci/", "tools/standards/", "tools/oracle/java/", "tools/oracle/*.py", "tools/oracle/*.sh"]
 
 [dependencies]
 geographiclib-rs = { version = "0.2.7", default-features = false }

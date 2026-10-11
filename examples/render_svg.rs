@@ -1,7 +1,8 @@
-//! Renders the six first-milestone graphics (2525D change 1) to SVG files.
+//! Renders one graphic from each of several families (2525D change 1) to SVG
+//! files.
 //!
 //! Usage: `cargo run --example render_svg [out_dir]` (default `target/svg`).
-//! `docs/images` holds three of them for the README.
+//! `docs/images` holds six of them for the README.
 
 use std::error::Error;
 use std::fs;
@@ -13,10 +14,11 @@ use milgraphics::{
     ModifierValue, SymbolId, VerticalDatum, View, construct, render,
 };
 
-/// One graphic: name, entity digits, control points (lon, lat), frame
+/// One graphic: name, symbol set and entity digits, control points (lon, lat), frame
 /// origin (west, north) and the modifiers the graphic needs.
 struct Case {
     name: &'static str,
+    symbol_set: &'static str,
     entity: &'static str,
     points: &'static [(f64, f64)],
     west_north: (f64, f64),
@@ -30,9 +32,10 @@ const SCALE: f64 = 50000.0;
 /// Space around the drawing, in pixels, for label text past its anchor.
 const MARGIN: f64 = 80.0;
 
-const CASES: [Case; 6] = [
+const CASES: [Case; 9] = [
     Case {
         name: "phase-line",
+        symbol_set: "25",
         entity: "140300",
         points: &[(20.0, 50.0), (20.1, 50.02)],
         west_north: (19.95, 50.07),
@@ -43,6 +46,7 @@ const CASES: [Case; 6] = [
     },
     Case {
         name: "nai",
+        symbol_set: "25",
         entity: "120200",
         points: &[(20.0, 50.0), (20.08, 50.0), (20.08, 50.05), (20.0, 50.05)],
         west_north: (19.95, 50.1),
@@ -53,6 +57,7 @@ const CASES: [Case; 6] = [
     },
     Case {
         name: "main-attack",
+        symbol_set: "25",
         entity: "151403",
         points: &[(20.0, 50.0), (20.1, 50.03), (20.0, 50.01)],
         west_north: (19.95, 50.08),
@@ -63,6 +68,7 @@ const CASES: [Case; 6] = [
     },
     Case {
         name: "air-corridor",
+        symbol_set: "25",
         entity: "170100",
         points: &[(20.0, 50.0), (20.05, 50.03), (20.1, 50.02)],
         west_north: (19.95, 50.08),
@@ -73,6 +79,7 @@ const CASES: [Case; 6] = [
     },
     Case {
         name: "range-fan-sector",
+        symbol_set: "25",
         entity: "242200",
         points: &[(20.0, 50.0)],
         west_north: (19.9, 50.1),
@@ -83,8 +90,42 @@ const CASES: [Case; 6] = [
     },
     Case {
         name: "bypass-easy",
+        symbol_set: "25",
         entity: "270601",
         points: &[(20.0, 50.0), (20.04, 50.03), (20.08, 50.0)],
+        west_north: (19.95, 50.08),
+        designation: None,
+        distances_m: &[],
+        azimuths_deg: &[],
+        altitudes_m: &[],
+    },
+    Case {
+        name: "flot",
+        symbol_set: "25",
+        entity: "140100",
+        points: &[(20.0, 50.0), (20.04, 50.025), (20.1, 50.02)],
+        west_north: (19.95, 50.07),
+        designation: None,
+        distances_m: &[],
+        azimuths_deg: &[],
+        altitudes_m: &[],
+    },
+    Case {
+        name: "double-apron-fence",
+        symbol_set: "25",
+        entity: "290304",
+        points: &[(20.0, 50.0), (20.05, 50.02), (20.1, 50.01)],
+        west_north: (19.95, 50.07),
+        designation: None,
+        distances_m: &[],
+        azimuths_deg: &[],
+        altitudes_m: &[],
+    },
+    Case {
+        name: "cold-front",
+        symbol_set: "45",
+        entity: "110301",
+        points: &[(20.0, 50.0), (20.05, 50.03), (20.1, 50.02)],
         west_north: (19.95, 50.08),
         designation: None,
         distances_m: &[],
@@ -94,7 +135,7 @@ const CASES: [Case; 6] = [
 ];
 
 fn definition(case: &Case) -> Result<GraphicDefinition, Box<dyn Error>> {
-    let sidc = format!("1103250000{}0000", case.entity);
+    let sidc = format!("1103{}0000{}0000", case.symbol_set, case.entity);
     let points = case
         .points
         .iter()

@@ -1,0 +1,83 @@
+name: Release
+
+# A v* tag publishes to crates.io once the tagged commit is on main and has a
+# successful CI run. Manual runs only check the Trusted Publishing token
+# exchange and upload nothing.
+#
+# Authentication: Trusted Publishing (OIDC) when the repository variable
+# CRATES_IO_TRUSTED_PUBLISHING is "true" and the crate's trusted publisher is
+# configured on crates.io; otherwise the CARGO_REGISTRY_TOKEN secret, which a
+# crate's first release needs because crates.io accepts Trusted Publishing
+# only for existing crates.
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify-trusted-publishing:
+    name: Verify Trusted Publishing (no upload)
+    if: github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    environment: crates-io
+    permissions:
+      id-token: write
+    steps:
+      - name: Authenticate with Trusted Publishing
+        id: trusted
+        uses: rust-lang/crates-io-auth-action@v1
+      - name: Verify token exchange
+        env:
+          CARGO_REGISTRY_TOKEN: ${{ steps.trusted.outputs.token }}
+        run: |
+          test -n "$CARGO_REGISTRY_TOKEN"
+          echo "OIDC token exchange succeeded; no crate was uploaded." >> "$GITHUB_STEP_SUMMARY"
+
+  publish:
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    environment: crates-io
+    permissions:
+      contents: read
+      actions: read # look up the CI run of the tagged commit
+      id-token: write # OIDC token for Trusted Publishing
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+      - name: Tagged commit is on main
+        run: |
+          git fetch --no-tags origin main
+          if ! git merge-base --is-ancestor "$GITHUB_SHA" origin/main; then
+            echo "::error::$GITHUB_REF_NAME ($GITHUB_SHA) is not on main"
+            exit 1
+          fi
+      - name: CI passed for the tagged commit
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          passed=$(gh run list --repo "$GITHUB_REPOSITORY" --workflow ci.yml \
+            --commit "$GITHUB_SHA" --status success --json databaseId --jq length)
+          if [ "$passed" -lt 1 ]; then
+            echo "::error::no successful CI run for $GITHUB_SHA; wait for CI on main to pass, then re-run this job"
+            exit 1
+          fi
+      - uses: dtolnay/rust-toolchain@stable
+      - name: Tag matches Cargo.toml version
+        run: |
+          version=$(cargo metadata --no-deps --format-version 1 | jq -r '.packages[] | select(.name == "milgraphics") | .version')
+          test "v$version" = "$GITHUB_REF_NAME"
+      - name: Changelog entry is dated
+        run: tools/ci/changelog.sh --release
+      - run: cargo test --locked --release -p milgraphics
+      - name: Authenticate with Trusted Publishing
+        if: vars.CRATES_IO_TRUSTED_PUBLISHING == 'true'
+        id: trusted
+        uses: rust-lang/crates-io-auth-action@v1
+      - name: Publish
+        run: cargo publish --locked -p milgraphics
+        env:
+          CARGO_REGISTRY_TOKEN: ${{ steps.trusted.outputs.token || secrets.CARGO_REGISTRY_TOKEN }}
