@@ -299,6 +299,15 @@ impl Construction {
     pub fn renderer_version(&self) -> &'static str {
         self.renderer_version
     }
+
+    /// Whether the graphic has decorations sized in pixels (teeth, scallops, arrowheads),
+    /// which only the screen tier draws. It does not depend on the view, so a host can use
+    /// it to choose, once per definition, which graphics it draws whole in screen space so
+    /// that their lines and decorations are ordered together, and which it leaves to the
+    /// map engine.
+    pub fn has_screen_decorations(&self) -> bool {
+        !self.decorations.is_empty()
+    }
 }
 
 /// A single-point symbol drawn as part of a graphic: the unit assigned a
