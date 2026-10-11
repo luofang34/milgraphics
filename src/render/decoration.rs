@@ -1,7 +1,8 @@
 //! Resolving pixel-sized decorations for a view.
 
 use crate::budget::BudgetError;
-use crate::construction::{Decoration, DecorationSize, PartRole, ScreenDecoration};
+use crate::construction::{Decoration, DecorationSize, GeoGeometry, PartRole, ScreenDecoration};
+use crate::geo::GeoPoint;
 use crate::pick::{PickRef, PickTarget};
 use crate::render::screen::ScreenCtx;
 use crate::render::{ScreenItem, ScreenPoint, ScreenShape};
@@ -70,10 +71,7 @@ pub(crate) fn resolve(
             head_px,
             stroke,
         } => {
-            let (Some(f), Some(t)) = (ctx.project(from), ctx.project(through)) else {
-                return Ok(None);
-            };
-            let Some(shape) = pointer(f, t, head_px) else {
+            let Some(shape) = pointer_on_ground(ctx, from, through, head_px)? else {
                 return Ok(None);
             };
             ScreenItem {
@@ -109,12 +107,43 @@ fn arrowhead(
     Some(vec![wing(1.0), t, wing(-1.0)])
 }
 
-/// A line from `f` past `t` to an open arrowhead `head_px` long.
-fn pointer(f: ScreenPoint, t: ScreenPoint, head_px: f64) -> Option<ScreenShape> {
-    let (dx, dy) = t.sub(f);
-    let u = unit((dx, dy))?;
+/// A pointer whose shaft is projected as a geographic line, so it lies on
+/// the ground with the fan; the head continues the shaft's last direction.
+fn pointer_on_ground(
+    ctx: &mut ScreenCtx<'_>,
+    from: GeoPoint,
+    through: GeoPoint,
+    head_px: f64,
+) -> Result<Option<ScreenShape>, BudgetError> {
+    let Some(t) = ctx.project(through) else {
+        return Ok(None);
+    };
+    let shaft = ctx
+        .part(&GeoGeometry::Line(vec![from, through]), Fill::None)?
+        .into_iter()
+        .map(|(shape, _)| match shape {
+            ScreenShape::Polyline(p) | ScreenShape::Polygon(p) => p,
+        })
+        .find(|p| p.last() == Some(&t));
+    Ok(shaft.and_then(|p| pointer(p, head_px)))
+}
+
+/// `shaft` extended past its end by an open arrowhead `head_px` long.
+fn pointer(mut shaft: Vec<ScreenPoint>, head_px: f64) -> Option<ScreenShape> {
+    let (&t, rest) = shaft.split_last()?;
+    let &before = rest.last()?;
+    let u = unit(t.sub(before))?;
     // Short pointers get a proportionally smaller head.
-    let dist = dx.hypot(dy);
+    let dist: f64 = shaft
+        .windows(2)
+        .map(|w| match w {
+            [a, b] => {
+                let (dx, dy) = b.sub(*a);
+                dx.hypot(dy)
+            }
+            _ => 0.0,
+        })
+        .sum();
     let base = if dist < 10.0 * head_px {
         (dist / 10.0).max(head_px / 2.0)
     } else {
@@ -125,13 +154,8 @@ fn pointer(f: ScreenPoint, t: ScreenPoint, head_px: f64) -> Option<ScreenShape> 
         y: t.y + u.1 * k * base + u.0 * side * base,
     };
     let tip = at(2.0, 0.0);
-    Some(ScreenShape::Polyline(vec![
-        f,
-        tip,
-        at(1.0, -1.0),
-        tip,
-        at(1.0, 1.0),
-    ]))
+    shaft.extend([tip, at(1.0, -1.0), tip, at(1.0, 1.0)]);
+    Some(ScreenShape::Polyline(shaft))
 }
 
 /// A glyph's outline placed at `at`.
