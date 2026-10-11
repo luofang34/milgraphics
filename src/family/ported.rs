@@ -171,6 +171,7 @@ fn run(
         modifiers,
         meters_per_pixel: mpp,
         text_width: &width,
+        line_height: None,
         ms_info: crate::family::ported::ms_info(symbol),
         style: crate::engine::api::Style::of(&def.style),
         visible: None,

@@ -12,7 +12,7 @@
 <polyline points="675.94,441.13 682.49,432.8 670.94,433.12" fill="none" stroke="#000000ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt"/>
 <polyline points="599.57,461.29 675.24,419.64" fill="none" stroke="#000000ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt"/>
 <polyline points="604.95,452.07 599.57,461.29 609.96,460.08" fill="none" stroke="#000000ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt"/>
-<text transform="translate(323.38 438.79) rotate(-32.86)" x="0" y="-3.6" text-anchor="middle" dominant-baseline="central" font-family="PT Sans" font-size="12" font-weight="bold">ASR T1X</text>
-<text transform="translate(519.51 426.22) rotate(26.46)" x="0" y="-3.6" text-anchor="middle" dominant-baseline="central" font-family="PT Sans" font-size="12" font-weight="bold">ASR T1X</text>
-<text transform="translate(629.07 421.71) rotate(-28.89)" x="0" y="-3.6" text-anchor="middle" dominant-baseline="central" font-family="PT Sans" font-size="12" font-weight="bold">ASR T1X</text>
+<text transform="translate(321.17 435.36) rotate(-32.86)" x="0" y="-3.6" text-anchor="middle" dominant-baseline="central" font-family="PT Sans" font-size="12" font-weight="bold">ASR T1X</text>
+<text transform="translate(521.32 422.57) rotate(26.46)" x="0" y="-3.6" text-anchor="middle" dominant-baseline="central" font-family="PT Sans" font-size="12" font-weight="bold">ASR T1X</text>
+<text transform="translate(627.1 418.13) rotate(-28.89)" x="0" y="-3.6" text-anchor="middle" dominant-baseline="central" font-family="PT Sans" font-size="12" font-weight="bold">ASR T1X</text>
 </svg>

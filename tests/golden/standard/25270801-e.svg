@@ -131,9 +131,9 @@
 <polyline points="265.83,615.86 275.83,625.91" fill="none" stroke="#00ff00ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt"/>
 <polyline points="265.83,625.87 275.82,615.9" fill="none" stroke="#00ff00ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt"/>
 <text transform="translate(270.92 533.93) rotate(0)" x="0" y="-3.6" text-anchor="middle" dominant-baseline="central" font-family="PT Sans" font-size="12" font-weight="bold">M</text>
-<text transform="translate(649.85 534.1) rotate(0.05)" x="0" y="-3.6" text-anchor="middle" dominant-baseline="central" font-family="PT Sans" font-size="12" font-weight="bold">M</text>
-<text transform="translate(459.96 648.04) rotate(0.03)" x="0" y="-3.6" text-anchor="middle" dominant-baseline="central" font-family="PT Sans" font-size="12" font-weight="bold">M</text>
-<text transform="translate(459.81 420.9) rotate(0.03)" x="0" y="-3.6" text-anchor="middle" dominant-baseline="central" font-family="PT Sans" font-size="12" font-weight="bold">M</text>
+<text transform="translate(649.46 534.1) rotate(0.05)" x="0.39" y="-3.6" text-anchor="middle" dominant-baseline="central" font-family="PT Sans" font-size="12" font-weight="bold">M</text>
+<text transform="translate(459.96 647.86) rotate(0.03)" x="0" y="-3.42" text-anchor="middle" dominant-baseline="central" font-family="PT Sans" font-size="12" font-weight="bold">M</text>
+<text transform="translate(459.81 420.72) rotate(0.03)" x="0" y="-3.42" text-anchor="middle" dominant-baseline="central" font-family="PT Sans" font-size="12" font-weight="bold">M</text>
 <rect x="426.12" y="524.29" width="20" height="20" fill="none" stroke="#808080" stroke-dasharray="3 2"/><text x="436.12" y="534.29" text-anchor="middle" dominant-baseline="central" font-family="sans-serif" font-size="6">15032500002806000000</text>
 <rect x="450.12" y="524.29" width="20" height="20" fill="none" stroke="#808080" stroke-dasharray="3 2"/><text x="460.12" y="534.29" text-anchor="middle" dominant-baseline="central" font-family="sans-serif" font-size="6">15032500002806000000</text>
 <rect x="474.12" y="524.29" width="20" height="20" fill="none" stroke="#808080" stroke-dasharray="3 2"/><text x="484.12" y="534.29" text-anchor="middle" dominant-baseline="central" font-family="sans-serif" font-size="6">15032500002806000000</text>

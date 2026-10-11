@@ -17,6 +17,7 @@ fn a_phase_line_draws_its_line_and_both_end_labels() {
         modifiers: &modifiers,
         meters_per_pixel: 10.0,
         text_width: &width,
+        line_height: None,
         ms_info: None,
         style: crate::engine::api::Style::default(),
         visible: None,

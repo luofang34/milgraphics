@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="806" height="607" viewBox="0 0 806 607">
 <polyline points="270.86,526.75 422.25,428.32 573.81,504.04 725.15,420.75" fill="none" stroke="#00ff00ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt"/>
-<text transform="translate(346.96 469.56) rotate(0.01)" x="0" y="-3.6" text-anchor="middle" dominant-baseline="central" font-family="PT Sans" font-size="12" font-weight="bold">t</text>
-<text transform="translate(497.95 457.61) rotate(0.03)" x="0" y="-3.6" text-anchor="middle" dominant-baseline="central" font-family="PT Sans" font-size="12" font-weight="bold">t</text>
-<text transform="translate(649.95 453.71) rotate(0.05)" x="0" y="-3.6" text-anchor="middle" dominant-baseline="central" font-family="PT Sans" font-size="12" font-weight="bold">t</text>
+<text transform="translate(351.25 474.48) rotate(0.01)" x="-4.28" y="-10.19" text-anchor="middle" dominant-baseline="central" font-family="PT Sans" font-size="12" font-weight="bold">t</text>
+<text transform="translate(493.88 464.1) rotate(0.03)" x="4.08" y="-11.77" text-anchor="middle" dominant-baseline="central" font-family="PT Sans" font-size="12" font-weight="bold">t</text>
+<text transform="translate(654.22 459.78) rotate(0.05)" x="-4.26" y="-11.34" text-anchor="middle" dominant-baseline="central" font-family="PT Sans" font-size="12" font-weight="bold">t</text>
 </svg>

@@ -4,5 +4,5 @@
 <polyline points="270.85,420.77 294.25,397.32" fill="none" stroke="#000000ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt"/>
 <polyline points="270.85,420.77 294.29,444.2" fill="none" stroke="#000000ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt"/>
 <polyline points="536.31,799.36 573.21,795.73 608.67,784.96 641.35,767.47 669.98,743.94 693.47,715.26 710.9,682.54 721.62,647.04 725.2,610.11 721.52,573.18 710.71,537.66 693.19,504.93 669.63,476.23 640.94,452.68 608.21,435.18 572.72,424.41 535.81,420.77" fill="none" stroke="#000000ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt"/>
-<text transform="translate(403.46 421.02) rotate(0.02)" x="0" y="-3.6" text-anchor="middle" dominant-baseline="central" font-family="PT Sans" font-size="12" font-weight="bold">DEM</text>
+<text transform="translate(403.45 420.75) rotate(0.02)" x="0" y="-3.33" text-anchor="middle" dominant-baseline="central" font-family="PT Sans" font-size="12" font-weight="bold">DEM</text>
 </svg>

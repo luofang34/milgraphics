@@ -2,6 +2,6 @@
 <polyline points="180.09,534.34 187.03,569.15 206.75,598.66 236.25,618.37 271.04,625.29 305.81,618.37 335.29,598.66 354.97,569.15 361.86,534.34 354.92,499.53 335.2,470.02 305.7,450.3 270.91,443.37 236.14,450.3 206.67,470.02 186.99,499.53 180.09,534.34" fill="none" stroke="#000000ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt"/>
 <polyline points="649.49,420.76 629.77,411.1 609.35,403.02 588.37,396.57 566.94,391.78 545.22,388.7 523.31,387.32 501.37,387.68 479.53,389.75 457.92,393.54 436.68,399.01 415.93,406.13 395.8,414.87 376.43,425.15 357.92,436.93 340.39,450.13 325.35,463.43" fill="none" stroke="#000000ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt"/>
 <polyline points="602.17,434.94 649.49,420.76 635.25,373.39" fill="none" stroke="#000000ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt"/>
-<text transform="translate(446.91 394.42) rotate(0.02)" x="0" y="-3.6" text-anchor="middle" dominant-baseline="central" font-family="PT Sans" font-size="12" font-weight="bold">R</text>
+<text transform="translate(446.91 394.12) rotate(0.02)" x="0" y="-3.6" text-anchor="middle" dominant-baseline="central" font-family="PT Sans" font-size="12" font-weight="bold">R</text>
 <rect x="207.36" y="470.71" width="127.24" height="127.24" fill="none" stroke="#808080" stroke-dasharray="3 2"/><text x="270.98" y="534.33" text-anchor="middle" dominant-baseline="central" font-family="sans-serif" font-size="6">10031000001211000000</text>
 </svg>

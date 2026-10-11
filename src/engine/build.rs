@@ -88,6 +88,7 @@ pub(crate) fn build_tg(
     let mut tg = Tg::new(settings);
     tg.set_symbol_id(input.symbol.as_str(), &|_| None)?;
     tg.line_type = input.line_type;
+    tg.line_height = input.line_height;
     tg.pixels.clone_from(&input.pixels);
     set_appearance(&mut tg, input, overrides);
     set_text_fields(&mut tg, input);

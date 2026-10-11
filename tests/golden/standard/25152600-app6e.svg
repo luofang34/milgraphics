@@ -16,5 +16,5 @@
 <polygon points="120.02,408.11 90.94,362.73 141.34,342.25 126.87,373.94" fill="#000000ff" stroke="none"/>
 <polygon points="162.66,314.7 169.87,261.62 221.04,277.58 189.7,292.76" fill="#000000ff" stroke="none"/>
 <polygon points="255.01,269.97 293.85,233.58 323.65,278.64 289.83,270.33" fill="#000000ff" stroke="none"/>
-<text transform="translate(121 423.53) rotate(-0.02)" x="0" y="-3.6" text-anchor="middle" dominant-baseline="central" font-family="PT Sans" font-size="12" font-weight="bold">AD</text>
+<text transform="translate(121 423.23) rotate(-0.02)" x="0" y="-3.6" text-anchor="middle" dominant-baseline="central" font-family="PT Sans" font-size="12" font-weight="bold">AD</text>
 </svg>

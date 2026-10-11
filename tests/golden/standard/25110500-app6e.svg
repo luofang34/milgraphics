@@ -3,5 +3,5 @@
 <polyline points="251.32,498.37 260.55,526.75 290.37,526.75 266.26,544.29 275.49,572.67 251.36,555.13 227.24,572.68 236.44,544.29 212.3,526.76 242.12,526.75 251.32,498.37" fill="none" stroke="#000000ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt"/>
 <polyline points="741.36,370.75 750.59,399.14 780.41,399.18 756.3,416.69 765.53,445.08 741.4,427.51 717.28,445.02 726.48,416.65 702.34,399.09 732.16,399.12 741.36,370.75" fill="none" stroke="#000000ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt"/>
 <text transform="translate(251.35 543.05) rotate(0)" x="0" y="-3.6" text-anchor="middle" dominant-baseline="central" font-family="PT Sans" font-size="12" font-weight="bold">T1X/US</text>
-<text transform="translate(741.39 415.42) rotate(0.07)" x="0" y="-3.6" text-anchor="middle" dominant-baseline="central" font-family="PT Sans" font-size="12" font-weight="bold">T1X/US</text>
+<text transform="translate(725.15 420.75) rotate(0.06)" x="16.24" y="-8.94" text-anchor="middle" dominant-baseline="central" font-family="PT Sans" font-size="12" font-weight="bold">T1X/US</text>
 </svg>

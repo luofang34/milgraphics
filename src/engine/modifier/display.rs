@@ -51,7 +51,8 @@ pub(crate) fn display_modifiers2(
     if tg.modifiers.is_empty() || tg.font.size == 0 {
         return out;
     }
-    let string_height = f64::from(tg.font.size);
+    // Lines stack a line height apart, so a host's halos do not overlap.
+    let string_height = tg.line_height.unwrap_or(f64::from(tg.font.size));
     for label in &tg.modifiers {
         if label.text.is_empty() {
             continue;

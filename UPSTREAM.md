@@ -115,6 +115,7 @@ Accepted differences, each bounded by a per-case tolerance there:
 | Graphic | Difference | Reason | Bound |
 |---|---|---|---|
 | Depth Area (46 120104) | Its two bands along the inside of the outline are drawn as mitred lines along their centres, as wide as the bands; upstream fills each band as a stroked area intersected with the polygon, a fill with a hole | The output's polygons are single rings; the drawn band is the same | 7.5 px (half the wider band) |
+| All with stacked labels | Lines of a label block are a host's line of text apart (`FontMetrics::line_height_px`); upstream stacks them a font size apart. A block beside the graphic's line keeps its offset from the line in pixels in any view | Hosts draw labels with halos, which overlap at a font size apart; in tilted views the text keeps its pixel size while the ground foreshortens | Label texts compared; positions reviewed in the golden SVGs |
 
 Upstream paints some METOC fills from bitmaps its geometry output does not
 carry (`PatternFillRenderer.MakeMetocPatternFill`). They are drawn as

@@ -3,5 +3,5 @@
 <polyline points="273.99,574.64 541.67,536.41 674.85,483.11" fill="none" stroke="#000000ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt" stroke-dasharray="6 6"/>
 <polyline points="725.14,439.26 650.26,421.75 658.46,442.2" fill="none" stroke="#000000ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt" stroke-dasharray="6 6"/>
 <polyline points="674.85,483.11 683.05,503.56 725.14,439.26 725.14,439.26" fill="none" stroke="#000000ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt" stroke-dasharray="6 6"/>
-<text transform="translate(630.54 477.05) rotate(-21.95)" x="0" y="-3.6" text-anchor="middle" dominant-baseline="central" font-family="PT Sans" font-size="12" font-weight="bold">CATK T</text>
+<text transform="translate(630.56 477.1) rotate(-21.95)" x="0" y="-3.65" text-anchor="middle" dominant-baseline="central" font-family="PT Sans" font-size="12" font-weight="bold">CATK T</text>
 </svg>

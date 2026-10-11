@@ -12,5 +12,5 @@
 <polyline points="605.15,430.33 606.61,397.51 584.68,421.84 595.33,425.08 605.15,430.33" fill="none" stroke="#000000ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt"/>
 <polyline points="308.52,420.73 330.66,420.73 319.56,390.92 308.52,420.73" fill="none" stroke="#000000ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt"/>
 <polyline points="308.64,534.32 330.78,534.32 319.74,564.13 308.64,534.32" fill="none" stroke="#000000ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt"/>
-<text transform="translate(629.94 483.12) rotate(0.05)" x="0" y="-3.6" text-anchor="middle" dominant-baseline="central" font-family="PT Sans" font-size="12" font-weight="bold">MD</text>
+<text transform="translate(629.94 484.12) rotate(0.05)" x="0" y="-3.6" text-anchor="middle" dominant-baseline="central" font-family="PT Sans" font-size="12" font-weight="bold">MD</text>
 </svg>

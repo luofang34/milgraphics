@@ -6,8 +6,8 @@
 <polygon points="451.37,530.28 456.87,530.29 456.87,532.29 451.37,532.28" fill="#000000ff" stroke="none"/>
 <polygon points="451.37,536.29 456.87,536.29 456.87,538.29 451.37,538.29" fill="#000000ff" stroke="none"/>
 <polygon points="451.38,542.29 456.88,542.29 456.88,544.29 451.38,544.29" fill="#000000ff" stroke="none"/>
-<text transform="translate(270.85 432.87) rotate(0)" x="0" y="-9.6" text-anchor="end" dominant-baseline="central" font-family="PT Sans" font-size="12" font-weight="bold">W0800Z - </text>
-<text transform="translate(270.85 432.87) rotate(0)" x="0" y="2.4" text-anchor="end" dominant-baseline="central" font-family="PT Sans" font-size="12" font-weight="bold">W1200Z</text>
+<text transform="translate(270.84 420.76) rotate(0)" x="0.01" y="3.7" text-anchor="end" dominant-baseline="central" font-family="PT Sans" font-size="12" font-weight="bold">W0800Z - </text>
+<text transform="translate(270.84 420.76) rotate(0)" x="0.01" y="18.1" text-anchor="end" dominant-baseline="central" font-family="PT Sans" font-size="12" font-weight="bold">W1200Z</text>
 <text transform="translate(462.87 537.89) rotate(0.03)" x="0" y="-9.6" text-anchor="start" dominant-baseline="central" font-family="PT Sans" font-size="12" font-weight="bold">HH</text>
 <text transform="translate(462.87 537.89) rotate(0.03)" x="0" y="2.4" text-anchor="start" dominant-baseline="central" font-family="PT Sans" font-size="12" font-weight="bold">T1X</text>
 </svg>

@@ -75,6 +75,8 @@ pub(crate) struct Tg {
     pub(crate) modifiers: Vec<ModifierLabel>,
     /// Label font.
     pub(crate) font: FontSpec,
+    /// Height in pixels of a line of label text, when the host measures it.
+    pub(crate) line_height: Option<f64>,
     /// Size in pixels of the symbol drawn inside some areas.
     pub(crate) icon_size: i32,
     /// Keep the unit symbol's aspect ratio.
@@ -165,6 +167,7 @@ impl Tg {
             pixels: Vec::new(),
             modifiers: Vec::new(),
             font: settings.label_font.clone(),
+            line_height: None,
             icon_size: 50,
             keep_unit_ratio: true,
             line_type: 0,
