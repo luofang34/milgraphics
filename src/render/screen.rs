@@ -4,6 +4,7 @@ use crate::budget::{BudgetError, VertexMeter};
 use crate::construction::GeoGeometry;
 use crate::geo::GeoPoint;
 use crate::geodesy::{Earth, Line};
+use crate::render::near;
 use crate::render::{Projection, ScreenPoint, ScreenRect, ScreenShape};
 use crate::style::Fill;
 
@@ -25,6 +26,18 @@ struct Runs {
     clipped: bool,
 }
 
+/// Cuts every piece at the near box `r`; see [`near`].
+fn bound(runs: &mut Runs, r: ScreenRect) {
+    if runs.pieces.iter().flatten().all(|&p| near::contains(r, p)) {
+        return;
+    }
+    runs.clipped = true;
+    runs.pieces = core::mem::take(&mut runs.pieces)
+        .iter()
+        .flat_map(|piece| near::clip(piece, r))
+        .collect();
+}
+
 impl Runs {
     /// Ends the current run, keeping it if it has a length.
     fn cut(&mut self) {
@@ -40,6 +53,8 @@ pub(crate) struct ScreenCtx<'a> {
     earth: &'a Earth,
     projection: &'a dyn Projection,
     meter: &'a mut VertexMeter,
+    /// Whether a segment hidden at both ends is searched for a visible span.
+    probe_hidden: bool,
 }
 
 impl<'a> ScreenCtx<'a> {
@@ -52,7 +67,23 @@ impl<'a> ScreenCtx<'a> {
             earth,
             projection,
             meter,
+            probe_hidden: true,
         }
+    }
+
+    /// [`Self::part`] for a path whose vertices are a few pixels apart, such
+    /// as a decoration drawn in pixels: a visible span between two hidden
+    /// vertices would be as narrow, so hidden segments are not searched.
+    /// Tens of thousands of such segments can lie behind a camera.
+    pub(crate) fn dense_part(
+        &mut self,
+        geometry: &GeoGeometry,
+        fill: Fill,
+    ) -> Result<Vec<(ScreenShape, Fill)>, BudgetError> {
+        self.probe_hidden = false;
+        let out = self.part(geometry, fill);
+        self.probe_hidden = true;
+        out
     }
 
     /// Reserves `count` output vertices from the render budget.
@@ -71,7 +102,7 @@ impl<'a> ScreenCtx<'a> {
     }
 
     /// The WGS84 model used for geodesics.
-    pub(crate) fn earth(&self) -> &Earth {
+    pub(crate) fn earth(&self) -> &'a Earth {
         self.earth
     }
 
@@ -80,8 +111,8 @@ impl<'a> ScreenCtx<'a> {
         self.projection.project(p)
     }
 
-    /// Screen pieces of a part. A ring cut by the horizon is returned as
-    /// open polylines without fill.
+    /// Screen pieces of a part. A ring cut by the horizon or the near box is
+    /// returned as open polylines without fill.
     pub(crate) fn part(
         &mut self,
         geometry: &GeoGeometry,
@@ -116,7 +147,11 @@ impl<'a> ScreenCtx<'a> {
                 }
                 // The first run starts at the ring's first vertex and the last
                 // ends there when that vertex is visible: they are one line.
-                let start_visible = points.first().is_some_and(|&p| self.project(p).is_some());
+                let start_visible = points.first().is_some_and(|&p| {
+                    self.project(p).is_some_and(|s| {
+                        near::near_rect(self.viewport()).is_none_or(|r| near::contains(r, s))
+                    })
+                });
                 if start_visible && pieces.len() >= 2 {
                     let first = pieces.remove(0);
                     if let Some(last) = pieces.last_mut() {
@@ -144,6 +179,9 @@ impl<'a> ScreenCtx<'a> {
             prev = Some((p, s));
         }
         runs.cut();
+        if let Some(r) = near::near_rect(self.viewport()) {
+            bound(&mut runs, r);
+        }
         Ok(runs)
     }
 
@@ -181,6 +219,7 @@ impl<'a> ScreenCtx<'a> {
                     }
                 }
             }
+            (None, None) if !self.probe_hidden => Ok(()),
             (None, None) if depth == 0 && !self.projection.segment_may_be_visible(a, b) => Ok(()),
             (None, None) if depth < HIDDEN_PROBE_DEPTH => {
                 // Both ends hidden, but the middle may cross the view.
@@ -247,7 +286,7 @@ impl<'a> ScreenCtx<'a> {
             y: (sa.y + sb.y) / 2.0,
         };
         let (dx, dy) = sm.sub(chord_mid);
-        if dx.hypot(dy) <= self.projection.tolerance_px() {
+        if dx.hypot(dy) <= self.projection.tolerance_px() && !self.too_long(sa, sb) {
             return Ok(());
         }
         if depth + 1 < MAX_DEPTH && self.may_stray(sa, sm) {
@@ -259,6 +298,14 @@ impl<'a> ScreenCtx<'a> {
             self.refine(line, (tm, sm), (tb, sb), depth + 1, run)?;
         }
         Ok(())
+    }
+
+    /// Whether a chord is too long to accept on its midpoint alone.
+    fn too_long(&self, sa: ScreenPoint, sb: ScreenPoint) -> bool {
+        let (dx, dy) = sb.sub(sa);
+        self.projection
+            .max_chord_px()
+            .is_some_and(|max| dx.hypot(dy) > max)
     }
 
     /// Whether the curve between two projected ends may stray from their

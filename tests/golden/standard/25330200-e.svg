@@ -1,7 +1,7 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="731" height="592" viewBox="0 0 731 592">
-<polyline points="616.09,411.66 267.77,481.31 273.82,511.6 622.14,441.95 616.09,411.66 619.12,426.8 619.12,426.8 645,406 651,435 619.12,426.8" fill="none" stroke="#000000ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt"/>
-<text transform="translate(286 493) rotate(-11.21)" x="0" y="-3.6" text-anchor="start" dominant-baseline="central" font-family="PT Sans" font-size="12" font-weight="bold">VV</text>
-<text transform="translate(603 430) rotate(-11.21)" x="0" y="-3.6" text-anchor="start" dominant-baseline="central" font-family="PT Sans" font-size="12" font-weight="bold">HH</text>
-<text transform="translate(447.8 475.63) rotate(-11.21)" x="0" y="-3.6" text-anchor="middle" dominant-baseline="central" font-family="PT Sans" font-size="12" font-weight="bold">W0800Z - </text>
-<text transform="translate(450.13 487.4) rotate(-11.21)" x="0" y="-3.6" text-anchor="middle" dominant-baseline="central" font-family="PT Sans" font-size="12" font-weight="bold">W1200Z</text>
+<svg xmlns="http://www.w3.org/2000/svg" width="732" height="592" viewBox="0 0 732 592">
+<polyline points="616.07,411.63 267.75,481.3 273.84,511.62 622.16,441.95 616.07,411.63 619.12,426.79 619.12,426.79 644.98,405.99 651.02,435.01 619.12,426.79" fill="none" stroke="#000000ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt"/>
+<text transform="translate(286.05 493.24) rotate(-11.28)" x="0" y="-3.6" text-anchor="start" dominant-baseline="central" font-family="PT Sans" font-size="12" font-weight="bold">VV</text>
+<text transform="translate(603.01 430.01) rotate(-11.23)" x="0" y="-3.6" text-anchor="start" dominant-baseline="central" font-family="PT Sans" font-size="12" font-weight="bold">HH</text>
+<text transform="translate(449.03 481.62) rotate(-11.26)" x="0" y="-9.6" text-anchor="middle" dominant-baseline="central" font-family="PT Sans" font-size="12" font-weight="bold">W0800Z - </text>
+<text transform="translate(449.03 481.62) rotate(-11.26)" x="0" y="2.4" text-anchor="middle" dominant-baseline="central" font-family="PT Sans" font-size="12" font-weight="bold">W1200Z</text>
 </svg>

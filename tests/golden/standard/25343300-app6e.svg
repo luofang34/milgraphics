@@ -1,8 +1,8 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="806" height="880" viewBox="0 0 806 880">
 <polyline points="270.85,420.77 535.81,420.77" fill="none" stroke="#000000ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt"/>
 <polyline points="536.31,799.36 271.1,799.36" fill="none" stroke="#000000ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt"/>
-<polyline points="270.85,420.77 294.27,397.35" fill="none" stroke="#000000ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt"/>
-<polyline points="270.85,420.77 294.27,444.19" fill="none" stroke="#000000ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt"/>
-<polyline points="536.31,799.36 573.24,795.68 608.73,784.86 641.44,767.32 670.09,743.74 693.59,715.03 711.04,682.28 721.77,646.75 725.36,609.82 721.67,572.89 710.85,537.39 693.32,504.69 669.74,476.04 641.02,452.53 608.27,435.08 572.75,424.36 535.81,420.77" fill="none" stroke="#000000ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt"/>
-<text transform="translate(403.5 421) rotate(0)" x="0" y="-3.6" text-anchor="middle" dominant-baseline="central" font-family="PT Sans" font-size="12" font-weight="bold">DEM</text>
+<polyline points="270.85,420.77 294.25,397.32" fill="none" stroke="#000000ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt"/>
+<polyline points="270.85,420.77 294.29,444.2" fill="none" stroke="#000000ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt"/>
+<polyline points="536.31,799.36 573.21,795.73 608.67,784.96 641.35,767.47 669.98,743.94 693.47,715.26 710.9,682.54 721.62,647.04 725.2,610.11 721.52,573.18 710.71,537.66 693.19,504.93 669.63,476.23 640.94,452.68 608.21,435.18 572.72,424.41 535.81,420.77" fill="none" stroke="#000000ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt"/>
+<text transform="translate(403.46 421.02) rotate(0.02)" x="0" y="-3.6" text-anchor="middle" dominant-baseline="central" font-family="PT Sans" font-size="12" font-weight="bold">DEM</text>
 </svg>

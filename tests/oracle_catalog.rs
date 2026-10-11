@@ -24,6 +24,7 @@ mod catalog {
     };
     use serde_json::Value;
 
+    mod perspective;
     mod review;
     mod standard;
 

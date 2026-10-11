@@ -191,3 +191,100 @@ fn an_overlay_plan_is_the_full_plan_without_its_parts() {
     let decorations: Vec<_> = full.screen.iter().filter(|i| i.decoration).collect();
     assert_eq!(overlay.screen.iter().collect::<Vec<_>>(), decorations);
 }
+
+/// A camera on the ground at 50°N looking north: ground just ahead of it
+/// projects arbitrarily far down and to the side, and ground behind it is
+/// hidden, as a tilted perspective view projects the ground under it.
+struct Pinhole;
+
+impl Projection for Pinhole {
+    fn project(&self, p: GeoPoint) -> Option<ScreenPoint> {
+        let ahead = p.lat() - 50.0;
+        (ahead > 0.0).then(|| ScreenPoint {
+            x: 500.0 + 50.0 * (p.lon() - 20.0) / ahead,
+            y: 50.0 / ahead,
+        })
+    }
+
+    fn unproject(&self, _s: ScreenPoint) -> Option<GeoPoint> {
+        None
+    }
+
+    fn viewport(&self) -> Option<ScreenRect> {
+        Some(ScreenRect {
+            min: ScreenPoint { x: 0.0, y: 0.0 },
+            max: ScreenPoint {
+                x: 1_000.0,
+                y: 1_000.0,
+            },
+        })
+    }
+}
+
+#[test]
+fn ground_under_a_perspective_camera_is_cut_near_the_viewport() {
+    for sidc in ["11032500001403000000", "11032500001401000000"] {
+        let d = GraphicDefinition::new(
+            GraphicId::new("g").unwrap(),
+            SymbolId::parse(sidc).unwrap(),
+            [(20.01, 49.9), (20.01, 50.1)]
+                .iter()
+                .map(|&(lon, lat)| ControlPoint::ground(GeoPoint::new(lon, lat).unwrap()))
+                .collect(),
+        );
+        let p = plan(&d, &Pinhole);
+        let points: Vec<ScreenPoint> = p
+            .screen
+            .iter()
+            .flat_map(|i| i.shape.points().iter().copied())
+            .collect();
+        // The far end projects to (505, 500): the line is still drawn.
+        assert!(points.iter().any(|s| s.y < 1_000.0), "{sidc} is drawn");
+        for s in points {
+            assert!(
+                (-1_000.0..=2_000.0).contains(&s.x) && (-1_000.0..=2_000.0).contains(&s.y),
+                "{sidc}: vertex at ({}, {}) is beyond the near box",
+                s.x,
+                s.y
+            );
+        }
+    }
+}
+
+/// [`Pinhole`], counting its projections.
+struct CountedPinhole(Cell<usize>);
+
+impl Projection for CountedPinhole {
+    fn project(&self, p: GeoPoint) -> Option<ScreenPoint> {
+        self.0.set(self.0.get() + 1);
+        Pinhole.project(p)
+    }
+
+    fn unproject(&self, s: ScreenPoint) -> Option<GeoPoint> {
+        Pinhole.unproject(s)
+    }
+
+    fn viewport(&self) -> Option<ScreenRect> {
+        Pinhole.viewport()
+    }
+}
+
+#[test]
+fn wire_behind_the_camera_is_not_searched_mark_by_mark() {
+    // Single concertina, mostly behind the camera: its loops are a few
+    // pixels apart, and each pair hidden at both ends is skipped.
+    let d = GraphicDefinition::new(
+        GraphicId::new("g").unwrap(),
+        SymbolId::parse("11032500002903070000").unwrap(),
+        [(20.01, 49.0), (20.01, 50.1)]
+            .iter()
+            .map(|&(lon, lat)| ControlPoint::ground(GeoPoint::new(lon, lat).unwrap()))
+            .collect(),
+    );
+    let camera = CountedPinhole(Cell::new(0));
+    let p = plan(&d, &camera);
+    let marks = p.screen.iter().filter(|i| i.decoration).count();
+    assert!(marks > 0);
+    // Searching every hidden pair takes over a million projections.
+    assert!(camera.0.get() < 100_000, "{} projections", camera.0.get());
+}

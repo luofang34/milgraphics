@@ -1,9 +1,9 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="579" height="884" viewBox="0 0 579 884">
-<polyline points="498.01,572.21 380.49,477.16 388.23,515.81 270.71,420.77" fill="none" stroke="#000000ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt"/>
-<polyline points="274.58,440.09 270.71,420.77 290.03,416.9" fill="none" stroke="#000000ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt"/>
-<polyline points="498.1,647.92 380.67,742.97 388.4,704.32 270.96,799.36" fill="none" stroke="#000000ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt"/>
-<polyline points="274.83,780.04 270.96,799.36 290.29,803.23" fill="none" stroke="#000000ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt"/>
-<text transform="translate(498 578) rotate(0)" x="0" y="-3.6" text-anchor="middle" dominant-baseline="central" font-family="PT Sans" font-size="12" font-weight="bold">S</text>
-<text transform="translate(498 654) rotate(0)" x="0" y="-3.6" text-anchor="middle" dominant-baseline="central" font-family="PT Sans" font-size="12" font-weight="bold">S</text>
+<polyline points="498.01,572.21 380.47,477.13 388.25,515.81 270.71,420.77" fill="none" stroke="#000000ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt"/>
+<polyline points="274.6,440.11 270.71,420.77 290.03,416.89" fill="none" stroke="#000000ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt"/>
+<polyline points="498.1,647.92 380.67,742.96 388.39,704.29 270.96,799.36" fill="none" stroke="#000000ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt"/>
+<polyline points="274.82,780.02 270.96,799.36 290.29,803.24" fill="none" stroke="#000000ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt"/>
+<text transform="translate(498.03 578.14) rotate(0.03)" x="0" y="-3.6" text-anchor="middle" dominant-baseline="central" font-family="PT Sans" font-size="12" font-weight="bold">S</text>
+<text transform="translate(498.09 654.18) rotate(0.03)" x="0" y="-3.6" text-anchor="middle" dominant-baseline="central" font-family="PT Sans" font-size="12" font-weight="bold">S</text>
 <rect x="483.05" y="595.07" width="30" height="30" fill="none" stroke="#808080" stroke-dasharray="3 2"/><text x="498.05" y="610.07" text-anchor="middle" dominant-baseline="central" font-family="sans-serif" font-size="6">10031000001211000000</text>
 </svg>

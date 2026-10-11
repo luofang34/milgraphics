@@ -3,6 +3,8 @@ use crate::definition::{ControlPoint, GraphicDefinition, GraphicId};
 use crate::family::{Config, construct};
 use crate::sidc::SymbolId;
 
+mod terrain;
+
 /// Orthographic globe view centred on (`lon0`, `lat0`); the far hemisphere
 /// is hidden, so it exercises horizon clipping.
 struct Orthographic {

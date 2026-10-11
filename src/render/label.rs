@@ -105,6 +105,8 @@ pub(crate) struct PlacedText {
     pub(crate) screen: ScreenPoint,
     /// The ground point under `screen`.
     pub(crate) anchor: GeoPoint,
+    /// Where the text sits from `screen`, in pixels in the text frame.
+    pub(crate) offset_px: (f64, f64),
     pub(crate) rotation_deg: f64,
     pub(crate) align: TextAlign,
     /// Whether the outline is left out under the text.
@@ -121,6 +123,7 @@ pub(crate) fn at_screen(
         text,
         screen,
         anchor,
+        offset_px,
         rotation_deg,
         align,
         knockout,
@@ -128,7 +131,10 @@ pub(crate) fn at_screen(
     let width_px = metrics.text_width_px(font, &text);
     let height_px = metrics.line_height_px(font);
     // Upstream gives the baseline; the anchor here is the middle of the line.
-    let offset_em = [0.0, -BASELINE_TO_MIDDLE_EM];
+    let offset_em = [
+        offset_px.0 / font.size_px,
+        offset_px.1 / font.size_px - BASELINE_TO_MIDDLE_EM,
+    ];
     let corners = text_box(
         screen,
         rotation_deg,

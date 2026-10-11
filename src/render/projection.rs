@@ -52,9 +52,23 @@ pub trait Projection {
         0.5
     }
 
+    /// Longest chord in pixels that may be drawn without sampling its
+    /// middle, or `None` to trust the midpoint test alone.
+    ///
+    /// The midpoint test assumes the projection is smooth between samples.
+    /// Ground on terrain is not: a chord's midpoint can fall on the chord
+    /// while the ground on either side of it rises and falls, so a host
+    /// that projects onto terrain returns about the screen size of the
+    /// finest relief it draws, and lines then follow the ground as the
+    /// engine's draped lines do.
+    fn max_chord_px(&self) -> Option<f64> {
+        None
+    }
+
     /// The part of the screen the host draws, if it knows it. Geometry
-    /// beyond it is still returned, but chords that cannot reach it are not
-    /// refined, which keeps off-screen graphics cheap. A line whose
+    /// beyond it is still returned up to a viewport's size past each edge,
+    /// where the screen tier is cut, but chords that cannot reach it are
+    /// not refined, which keeps off-screen graphics cheap. A line whose
     /// screen-sized decorations would stretch over more than 100,000 pixels
     /// keeps them only near the viewport, and loses them without one. The
     /// default `None` refines everywhere.
