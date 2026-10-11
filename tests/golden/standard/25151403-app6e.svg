@@ -2,7 +2,7 @@
 <polyline points="267.73,531.04 530.18,493.55 658.46,442.2" fill="none" stroke="#000000ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt"/>
 <polyline points="273.99,574.64 541.67,536.41 674.85,483.11" fill="none" stroke="#000000ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt"/>
 <polyline points="725.14,439.26 650.26,421.75 658.46,442.2 704.61,447.17 674.85,483.11 683.05,503.56 725.14,439.26 725.14,439.26" fill="none" stroke="#000000ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt"/>
-<text transform="translate(403.09 534.23) rotate(-0.05)" x="0" y="-3.6" text-anchor="middle" dominant-baseline="central" font-family="PT Sans" font-size="12" font-weight="bold">W0800Z - </text>
+<text transform="translate(403.11 546.25) rotate(-0.05)" x="0" y="-15.6" text-anchor="middle" dominant-baseline="central" font-family="PT Sans" font-size="12" font-weight="bold">W0800Z - </text>
 <text transform="translate(403.11 546.25) rotate(-0.05)" x="0" y="-3.6" text-anchor="middle" dominant-baseline="central" font-family="PT Sans" font-size="12" font-weight="bold">W1200Z</text>
-<text transform="translate(403.13 558.26) rotate(-0.05)" x="0" y="-3.6" text-anchor="middle" dominant-baseline="central" font-family="PT Sans" font-size="12" font-weight="bold">T1X</text>
+<text transform="translate(403.11 546.25) rotate(-0.05)" x="0" y="8.4" text-anchor="middle" dominant-baseline="central" font-family="PT Sans" font-size="12" font-weight="bold">T1X</text>
 </svg>

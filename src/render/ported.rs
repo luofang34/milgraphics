@@ -2,16 +2,17 @@
 
 mod clip;
 mod frame;
+mod labels;
 #[cfg(test)]
 mod tests;
 
 use crate::budget::BudgetError;
 use crate::construction::{Decoration, GeoGeometry, PartRole};
-use crate::engine::api::{self, Input, Justify};
+use crate::engine::api::{self, Input};
 use crate::engine::base::{Pt, Shape};
 use crate::family::{shape_fill, shape_outline};
 use crate::pick::{PickRef, PickTarget};
-use crate::render::label::{self, Label, TextAlign};
+use crate::render::label::Label;
 use crate::render::screen::ScreenCtx;
 use crate::render::{Font, FontMetrics, ScreenItem, ScreenPoint};
 use crate::style::{Fill, Rgba};
@@ -81,7 +82,7 @@ pub(crate) fn resolve(
                 pick(PickTarget::Part(*part)),
             )?);
         }
-        labels.extend(placed_labels(
+        labels.extend(labels::placed(
             ctx,
             &frame,
             out.labels,
@@ -91,61 +92,6 @@ pub(crate) fn resolve(
         ));
     }
     Ok((items, labels))
-}
-
-/// Labels at their ground points, turned as the line they were set along
-/// runs on screen; a label whose point is hidden is not drawn.
-fn placed_labels(
-    ctx: &mut ScreenCtx<'_>,
-    frame: &Frame<'_>,
-    labels: Vec<api::Label>,
-    font: &Font,
-    metrics: &dyn FontMetrics,
-    pick: &dyn Fn() -> PickRef,
-) -> Vec<Label> {
-    labels
-        .into_iter()
-        .filter_map(|l| {
-            let anchor = frame.to_geo((l.x, l.y));
-            let screen = ctx.project(anchor)?;
-            let turned = frame
-                .screen_angle(ctx, (l.x, l.y), l.angle_deg)
-                .unwrap_or(l.angle_deg);
-            // Kept upright: a label turned past vertical reads the other
-            // way, so it extends from its anchor to the other side.
-            let (rotation_deg, flipped) = upright(turned);
-            let align = match (l.justify, flipped) {
-                (Justify::Left, false) | (Justify::Right, true) => TextAlign::Left,
-                (Justify::Center, _) => TextAlign::Center,
-                (Justify::Right, false) | (Justify::Left, true) => TextAlign::Right,
-            };
-            Some(label::at_screen(
-                label::PlacedText {
-                    text: l.text,
-                    screen,
-                    anchor,
-                    rotation_deg,
-                    align,
-                    knockout: l.knockout,
-                },
-                font,
-                metrics,
-                pick(),
-            ))
-        })
-        .collect()
-}
-
-/// `deg` brought within (-90, 90], and whether that turned it half round.
-fn upright(deg: f64) -> (f64, bool) {
-    let d = (deg + 180.0).rem_euclid(360.0) - 180.0;
-    if d > 90.0 {
-        (d - 180.0, true)
-    } else if d <= -90.0 {
-        (d + 180.0, true)
-    } else {
-        (d, false)
-    }
 }
 
 /// An engine shape's lines as screen items, each vertex carried to the

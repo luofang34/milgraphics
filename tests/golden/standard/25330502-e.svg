@@ -9,10 +9,10 @@
 <polyline points="606.82,474.44 682.49,432.8" fill="none" stroke="#000000ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt"/>
 <polyline points="675.94,441.13 682.49,432.8 670.94,433.12" fill="none" stroke="#000000ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt"/>
 <polyline points="612.96,465.09 606.82,474.44 617.96,473.1" fill="none" stroke="#000000ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt"/>
-<text transform="translate(329.9 451.8) rotate(-32.84)" x="0" y="-3.6" text-anchor="middle" dominant-baseline="central" font-family="PT Sans" font-size="12" font-weight="bold">ROUTE T1X</text>
-<text transform="translate(340.96 468.96) rotate(-32.84)" x="0" y="-3.6" text-anchor="middle" dominant-baseline="central" font-family="PT Sans" font-size="12" font-weight="bold">ALT</text>
-<text transform="translate(512.06 438.75) rotate(26.6)" x="0" y="-3.6" text-anchor="middle" dominant-baseline="central" font-family="PT Sans" font-size="12" font-weight="bold">ROUTE T1X</text>
-<text transform="translate(502.95 457.01) rotate(26.6)" x="0" y="-3.6" text-anchor="middle" dominant-baseline="central" font-family="PT Sans" font-size="12" font-weight="bold">ALT</text>
-<text transform="translate(635.16 435.68) rotate(-28.63)" x="0" y="-3.6" text-anchor="middle" dominant-baseline="central" font-family="PT Sans" font-size="12" font-weight="bold">ROUTE T1X</text>
-<text transform="translate(644.95 453.61) rotate(-28.62)" x="0" y="-3.6" text-anchor="middle" dominant-baseline="central" font-family="PT Sans" font-size="12" font-weight="bold">ALT</text>
+<text transform="translate(335.43 460.38) rotate(-32.84)" x="0" y="-13.8" text-anchor="middle" dominant-baseline="central" font-family="PT Sans" font-size="12" font-weight="bold">ROUTE T1X</text>
+<text transform="translate(335.43 460.38) rotate(-32.84)" x="0" y="6.6" text-anchor="middle" dominant-baseline="central" font-family="PT Sans" font-size="12" font-weight="bold">ALT</text>
+<text transform="translate(507.51 447.88) rotate(26.6)" x="0" y="-13.8" text-anchor="middle" dominant-baseline="central" font-family="PT Sans" font-size="12" font-weight="bold">ROUTE T1X</text>
+<text transform="translate(507.51 447.88) rotate(26.6)" x="0" y="6.6" text-anchor="middle" dominant-baseline="central" font-family="PT Sans" font-size="12" font-weight="bold">ALT</text>
+<text transform="translate(640.06 444.65) rotate(-28.63)" x="0" y="-13.8" text-anchor="middle" dominant-baseline="central" font-family="PT Sans" font-size="12" font-weight="bold">ROUTE T1X</text>
+<text transform="translate(640.06 444.65) rotate(-28.63)" x="0" y="6.6" text-anchor="middle" dominant-baseline="central" font-family="PT Sans" font-size="12" font-weight="bold">ALT</text>
 </svg>
