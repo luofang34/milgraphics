@@ -136,3 +136,36 @@ fn a_decorated_line_running_over_the_horizon_keeps_its_visible_part() {
             .all(|s| s.x.hypot(s.y) <= globe.radius_px + 1e-6)
     );
 }
+
+#[test]
+fn a_range_fan_pointer_follows_the_ground() {
+    let mut d = def("11032500002422000000", &[(20.0, 50.0)], None);
+    // A 90° bearing and a 6.5 km range put the pointer's far end about 0.1°
+    // east, over two periods of the ripple.
+    d.modifiers.distances_m = vec![0.0, 6_500.0];
+    d.modifiers.azimuths_deg = vec![80.0, 100.0];
+    let p = plan(
+        &d,
+        &Ridged {
+            max_chord_px: Some(8.0),
+        },
+    );
+    let pointer = p
+        .screen
+        .iter()
+        .find(|i| i.role == PartRole::Orientation)
+        .expect("the fan has a pointer");
+    let pts = pointer.shape.points();
+    assert!(pts.len() > 6, "the shaft is more than one chord");
+    let eighth_x = 0.1125 * Ridged::PX_PER_DEG;
+    let at = pts
+        .iter()
+        .min_by(|a, b| (a.x - eighth_x).abs().total_cmp(&(b.x - eighth_x).abs()))
+        .unwrap();
+    let ground = 0.1 * Ridged::PX_PER_DEG + Ridged::ripple(20.0125);
+    assert!(
+        (at.y - ground).abs() < Ridged::RIPPLE_PX / 2.0,
+        "shaft at y {}, ground at {ground}",
+        at.y
+    );
+}
