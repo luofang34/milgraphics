@@ -10,7 +10,8 @@
 //! as projected.
 
 use crate::engine::visible::PixelBox;
-use crate::render::{ScreenPoint, ScreenRect};
+use crate::render::{RenderPlan, ScreenItem, ScreenPoint, ScreenRect, ScreenShape};
+use crate::style::Fill;
 
 /// The near box of `viewport`, if the host gives one.
 pub(crate) fn near(viewport: Option<ScreenRect>) -> Option<PixelBox> {
@@ -97,9 +98,78 @@ fn clip_segment(
     if t0 > t1 {
         return None;
     }
+    // Clamped: rounding may leave a cut end a hair outside `r`.
     let at = |t: f64| ScreenPoint {
-        x: a.x + dx * t,
-        y: a.y + dy * t,
+        x: (a.x + dx * t).clamp(r.min.x, r.max.x),
+        y: (a.y + dy * t).clamp(r.min.y, r.max.y),
     };
     Some((at(t0), at(t1), t1 < 1.0))
+}
+
+/// Brings the screen tier of `plan` within the near box of `viewport`,
+/// and every screen position to a finite one. Pieces beyond the box are cut
+/// away: a host's work grows with their length. Labels, handles and symbols
+/// keep any finite position, which costs a host the same wherever it is,
+/// and lose a non-finite one as if hidden. Without a viewport only
+/// non-finite positions are removed. Applied to every plan, it holds
+/// whatever the steps before it produce.
+pub(crate) fn bound(plan: &mut RenderPlan, viewport: Option<ScreenRect>) {
+    let r = near_rect(viewport).unwrap_or(EVERYWHERE);
+    plan.screen = core::mem::take(&mut plan.screen)
+        .into_iter()
+        .flat_map(|item| bound_item(item, r))
+        .collect();
+    let finite = |s: &Option<ScreenPoint>| s.is_some_and(|s| contains(EVERYWHERE, s));
+    for l in &mut plan.labels {
+        let corners = l
+            .corners
+            .is_none_or(|c| c.iter().all(|&p| contains(EVERYWHERE, p)));
+        if !finite(&l.screen) || !corners {
+            l.screen = None;
+            l.corners = None;
+        }
+    }
+    for h in &mut plan.handles {
+        if !finite(&h.screen) {
+            h.screen = None;
+        }
+    }
+    for s in &mut plan.symbols {
+        if !finite(&s.screen) {
+            s.screen = None;
+        }
+    }
+}
+
+/// Every finite point.
+const EVERYWHERE: ScreenRect = ScreenRect {
+    min: ScreenPoint {
+        x: f64::MIN,
+        y: f64::MIN,
+    },
+    max: ScreenPoint {
+        x: f64::MAX,
+        y: f64::MAX,
+    },
+};
+
+/// `item` cut at `r`: whole when inside, else the pieces inside as open
+/// lines without fill.
+fn bound_item(item: ScreenItem, r: ScreenRect) -> Vec<ScreenItem> {
+    let points = item.shape.points();
+    if points.iter().all(|&p| contains(r, p)) {
+        return vec![item];
+    }
+    let mut path = points.to_vec();
+    if let (ScreenShape::Polygon(_), Some(&first)) = (&item.shape, points.first()) {
+        path.push(first);
+    }
+    clip(&path, r)
+        .into_iter()
+        .map(|run| ScreenItem {
+            shape: ScreenShape::Polyline(run),
+            fill: Fill::None,
+            ..item.clone()
+        })
+        .collect()
 }

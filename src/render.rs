@@ -407,7 +407,7 @@ pub fn render(
             screen: ctx.project(h.at),
         })
         .collect();
-    Ok(RenderPlan {
+    let mut plan = RenderPlan {
         renderer_version: construction.renderer_version,
         revision: construction.revision,
         view_revision: view.view_revision,
@@ -418,5 +418,7 @@ pub fn render(
         labels,
         handles,
         symbols,
-    })
+    };
+    near::bound(&mut plan, projection.viewport());
+    Ok(plan)
 }
