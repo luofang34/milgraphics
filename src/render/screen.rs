@@ -53,6 +53,8 @@ pub(crate) struct ScreenCtx<'a> {
     earth: &'a Earth,
     projection: &'a dyn Projection,
     meter: &'a mut VertexMeter,
+    /// Whether a segment hidden at both ends is searched for a visible span.
+    probe_hidden: bool,
 }
 
 impl<'a> ScreenCtx<'a> {
@@ -65,7 +67,23 @@ impl<'a> ScreenCtx<'a> {
             earth,
             projection,
             meter,
+            probe_hidden: true,
         }
+    }
+
+    /// [`Self::part`] for a path whose vertices are a few pixels apart, such
+    /// as a decoration drawn in pixels: a visible span between two hidden
+    /// vertices would be as narrow, so hidden segments are not searched.
+    /// Tens of thousands of such segments can lie behind a camera.
+    pub(crate) fn dense_part(
+        &mut self,
+        geometry: &GeoGeometry,
+        fill: Fill,
+    ) -> Result<Vec<(ScreenShape, Fill)>, BudgetError> {
+        self.probe_hidden = false;
+        let out = self.part(geometry, fill);
+        self.probe_hidden = true;
+        out
     }
 
     /// Reserves `count` output vertices from the render budget.
@@ -201,6 +219,7 @@ impl<'a> ScreenCtx<'a> {
                     }
                 }
             }
+            (None, None) if !self.probe_hidden => Ok(()),
             (None, None) if depth == 0 && !self.projection.segment_may_be_visible(a, b) => Ok(()),
             (None, None) if depth < HIDDEN_PROBE_DEPTH => {
                 // Both ends hidden, but the middle may cross the view.

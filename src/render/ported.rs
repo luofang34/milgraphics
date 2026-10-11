@@ -116,7 +116,7 @@ fn screen_items(
             }
             GeoGeometry::Ring(ground)
         };
-        for (shape, fill) in ctx.part(&geometry, fill)? {
+        for (shape, fill) in ctx.dense_part(&geometry, fill)? {
             items.push(ScreenItem {
                 pick: pick.clone(),
                 role: PartRole::Decoration,
