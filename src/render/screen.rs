@@ -71,7 +71,7 @@ impl<'a> ScreenCtx<'a> {
     }
 
     /// The WGS84 model used for geodesics.
-    pub(crate) fn earth(&self) -> &Earth {
+    pub(crate) fn earth(&self) -> &'a Earth {
         self.earth
     }
 
@@ -247,7 +247,7 @@ impl<'a> ScreenCtx<'a> {
             y: (sa.y + sb.y) / 2.0,
         };
         let (dx, dy) = sm.sub(chord_mid);
-        if dx.hypot(dy) <= self.projection.tolerance_px() {
+        if dx.hypot(dy) <= self.projection.tolerance_px() && !self.too_long(sa, sb) {
             return Ok(());
         }
         if depth + 1 < MAX_DEPTH && self.may_stray(sa, sm) {
@@ -259,6 +259,14 @@ impl<'a> ScreenCtx<'a> {
             self.refine(line, (tm, sm), (tb, sb), depth + 1, run)?;
         }
         Ok(())
+    }
+
+    /// Whether a chord is too long to accept on its midpoint alone.
+    fn too_long(&self, sa: ScreenPoint, sb: ScreenPoint) -> bool {
+        let (dx, dy) = sb.sub(sa);
+        self.projection
+            .max_chord_px()
+            .is_some_and(|max| dx.hypot(dy) > max)
     }
 
     /// Whether the curve between two projected ends may stray from their

@@ -148,6 +148,79 @@ fn screen_tier_follows_the_geodesic_within_tolerance() {
     }
 }
 
+/// Flat view over ground that ripples on screen with a period of half the
+/// test line, so the ripple is zero at the line's ends and middle.
+struct Ridged {
+    max_chord_px: Option<f64>,
+}
+
+impl Ridged {
+    const PX_PER_DEG: f64 = 10_000.0;
+    const RIPPLE_PX: f64 = 30.0;
+
+    fn ripple(lon: f64) -> f64 {
+        Self::RIPPLE_PX * (4.0 * std::f64::consts::PI * (lon - 20.0) / 0.1).sin()
+    }
+}
+
+impl Projection for Ridged {
+    fn project(&self, p: GeoPoint) -> Option<ScreenPoint> {
+        Some(ScreenPoint {
+            x: (p.lon() - 19.9) * Self::PX_PER_DEG,
+            y: (50.1 - p.lat()) * Self::PX_PER_DEG + Self::ripple(p.lon()),
+        })
+    }
+
+    fn unproject(&self, _s: ScreenPoint) -> Option<GeoPoint> {
+        None
+    }
+
+    fn max_chord_px(&self) -> Option<f64> {
+        self.max_chord_px
+    }
+}
+
+#[test]
+fn a_projection_onto_terrain_is_sampled_between_its_chord_ends() {
+    let d = def(PL, &[(20.0, 50.0), (20.1, 50.0)], None);
+    let line = |max_chord_px| {
+        let p = plan(&d, &Ridged { max_chord_px });
+        let ScreenShape::Polyline(pts) = p.screen[0].shape.clone() else {
+            panic!()
+        };
+        pts
+    };
+    let deviation = |pts: &[ScreenPoint]| {
+        pts.iter()
+            .map(|s| {
+                let lon = s.x / Ridged::PX_PER_DEG + 19.9;
+                (s.y - (0.1 * Ridged::PX_PER_DEG + Ridged::ripple(lon))).abs()
+            })
+            .fold(0.0_f64, f64::max)
+    };
+    let trusting = line(None);
+    assert_eq!(trusting.len(), 2, "the midpoint lies on the chord");
+    let sampled = line(Some(8.0));
+    for pair in sampled.windows(2) {
+        let (dx, dy) = pair[1].sub(pair[0]);
+        assert!(dx.hypot(dy) <= 8.0, "chord of {} px", dx.hypot(dy));
+    }
+    // Vertices lie on the ground (the geodesic bows about 0.1 px north of
+    // the parallel measured against), and chords of 8 px follow a 30 px
+    // ripple with a 500 px period to within a fraction of a pixel.
+    assert!(deviation(&sampled) < 0.2);
+    let sag = sampled
+        .windows(2)
+        .map(|w| {
+            let mid_x = (w[0].x + w[1].x) / 2.0;
+            let lon = mid_x / Ridged::PX_PER_DEG + 19.9;
+            let ground = 0.1 * Ridged::PX_PER_DEG + Ridged::ripple(lon);
+            ((w[0].y + w[1].y) / 2.0 - ground).abs()
+        })
+        .fold(0.0_f64, f64::max);
+    assert!(sag < 0.5, "chords sag {sag} px off the ground");
+}
+
 #[test]
 fn geographic_tier_does_not_depend_on_the_view() {
     let d = def(PL, &[(20.0, 50.0), (20.1, 50.02)], Some("A"));

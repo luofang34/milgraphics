@@ -951,6 +951,7 @@ pub fn milgraphics::render::LocalEquirectangular::fmt(&self, &mut core::fmt::For
 impl core::marker::Copy for milgraphics::render::LocalEquirectangular
 impl core::marker::StructuralPartialEq for milgraphics::render::LocalEquirectangular
 impl milgraphics::render::Projection for milgraphics::render::LocalEquirectangular
+pub fn milgraphics::render::LocalEquirectangular::max_chord_px(&self) -> core::option::Option<f64>
 pub fn milgraphics::render::LocalEquirectangular::project(&self, milgraphics::geo::GeoPoint) -> core::option::Option<milgraphics::render::ScreenPoint>
 pub fn milgraphics::render::LocalEquirectangular::segment_may_be_visible(&self, milgraphics::geo::GeoPoint, milgraphics::geo::GeoPoint) -> bool
 pub fn milgraphics::render::LocalEquirectangular::tolerance_px(&self) -> f64
@@ -1050,12 +1051,14 @@ pub fn milgraphics::render::FixedAdvanceMetrics::identity(&self) -> &str
 pub fn milgraphics::render::FixedAdvanceMetrics::line_height_px(&self, &milgraphics::render::Font) -> f64
 pub fn milgraphics::render::FixedAdvanceMetrics::text_width_px(&self, &milgraphics::render::Font, &str) -> f64
 pub trait milgraphics::render::Projection
+pub fn milgraphics::render::Projection::max_chord_px(&self) -> core::option::Option<f64>
 pub fn milgraphics::render::Projection::project(&self, milgraphics::geo::GeoPoint) -> core::option::Option<milgraphics::render::ScreenPoint>
 pub fn milgraphics::render::Projection::segment_may_be_visible(&self, milgraphics::geo::GeoPoint, milgraphics::geo::GeoPoint) -> bool
 pub fn milgraphics::render::Projection::tolerance_px(&self) -> f64
 pub fn milgraphics::render::Projection::unproject(&self, milgraphics::render::ScreenPoint) -> core::option::Option<milgraphics::geo::GeoPoint>
 pub fn milgraphics::render::Projection::viewport(&self) -> core::option::Option<milgraphics::render::ScreenRect>
 impl milgraphics::render::Projection for milgraphics::render::LocalEquirectangular
+pub fn milgraphics::render::LocalEquirectangular::max_chord_px(&self) -> core::option::Option<f64>
 pub fn milgraphics::render::LocalEquirectangular::project(&self, milgraphics::geo::GeoPoint) -> core::option::Option<milgraphics::render::ScreenPoint>
 pub fn milgraphics::render::LocalEquirectangular::segment_may_be_visible(&self, milgraphics::geo::GeoPoint, milgraphics::geo::GeoPoint) -> bool
 pub fn milgraphics::render::LocalEquirectangular::tolerance_px(&self) -> f64
