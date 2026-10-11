@@ -4,6 +4,7 @@ use crate::budget::{BudgetError, VertexMeter};
 use crate::construction::GeoGeometry;
 use crate::geo::GeoPoint;
 use crate::geodesy::{Earth, Line};
+use crate::render::near;
 use crate::render::{Projection, ScreenPoint, ScreenRect, ScreenShape};
 use crate::style::Fill;
 
@@ -23,6 +24,18 @@ struct Runs {
     pieces: Vec<Vec<ScreenPoint>>,
     run: Vec<ScreenPoint>,
     clipped: bool,
+}
+
+/// Cuts every piece at the near box `r`; see [`near`].
+fn bound(runs: &mut Runs, r: ScreenRect) {
+    if runs.pieces.iter().flatten().all(|&p| near::contains(r, p)) {
+        return;
+    }
+    runs.clipped = true;
+    runs.pieces = core::mem::take(&mut runs.pieces)
+        .iter()
+        .flat_map(|piece| near::clip(piece, r))
+        .collect();
 }
 
 impl Runs {
@@ -80,8 +93,8 @@ impl<'a> ScreenCtx<'a> {
         self.projection.project(p)
     }
 
-    /// Screen pieces of a part. A ring cut by the horizon is returned as
-    /// open polylines without fill.
+    /// Screen pieces of a part. A ring cut by the horizon or the near box is
+    /// returned as open polylines without fill.
     pub(crate) fn part(
         &mut self,
         geometry: &GeoGeometry,
@@ -116,7 +129,11 @@ impl<'a> ScreenCtx<'a> {
                 }
                 // The first run starts at the ring's first vertex and the last
                 // ends there when that vertex is visible: they are one line.
-                let start_visible = points.first().is_some_and(|&p| self.project(p).is_some());
+                let start_visible = points.first().is_some_and(|&p| {
+                    self.project(p).is_some_and(|s| {
+                        near::near_rect(self.viewport()).is_none_or(|r| near::contains(r, s))
+                    })
+                });
                 if start_visible && pieces.len() >= 2 {
                     let first = pieces.remove(0);
                     if let Some(last) = pieces.last_mut() {
@@ -144,6 +161,9 @@ impl<'a> ScreenCtx<'a> {
             prev = Some((p, s));
         }
         runs.cut();
+        if let Some(r) = near::near_rect(self.viewport()) {
+            bound(&mut runs, r);
+        }
         Ok(runs)
     }
 

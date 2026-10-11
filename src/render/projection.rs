@@ -66,8 +66,9 @@ pub trait Projection {
     }
 
     /// The part of the screen the host draws, if it knows it. Geometry
-    /// beyond it is still returned, but chords that cannot reach it are not
-    /// refined, which keeps off-screen graphics cheap. A line whose
+    /// beyond it is still returned up to a viewport's size past each edge,
+    /// where the screen tier is cut, but chords that cannot reach it are
+    /// not refined, which keeps off-screen graphics cheap. A line whose
     /// screen-sized decorations would stretch over more than 100,000 pixels
     /// keeps them only near the viewport, and loses them without one. The
     /// default `None` refines everywhere.
