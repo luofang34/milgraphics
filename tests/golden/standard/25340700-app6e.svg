@@ -1,9 +1,9 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="806" height="655" viewBox="0 0 806 655">
-<polyline points="267.75,531.06 530.2,493.57 658.47,442.24" fill="none" stroke="#000000ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt" stroke-dasharray="6 6"/>
-<polyline points="273.97,574.62 541.65,536.39 674.82,483.1" fill="none" stroke="#000000ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt" stroke-dasharray="6 6"/>
-<polyline points="683.36,455.98 650.3,421.82 658.47,442.24" fill="none" stroke="#000000ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt" stroke-dasharray="6 6"/>
-<polyline points="674.82,483.1 682.99,503.52 683.36,455.98 683.36,455.98" fill="none" stroke="#000000ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt" stroke-dasharray="6 6"/>
-<polyline points="704.9,496.37 710.47,483.37 684.1,417.45 671.1,411.88" fill="none" stroke="#000000ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt" stroke-dasharray="6 6"/>
-<polyline points="697.28,450.41 725.14,439.26 708,437 725.14,439.26 713,451" fill="none" stroke="#000000ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt" stroke-dasharray="6 6"/>
-<text transform="translate(601 489) rotate(-21.8)" x="0" y="-3.6" text-anchor="middle" dominant-baseline="central" font-family="PT Sans" font-size="12" font-weight="bold">CATK T</text>
+<polyline points="267.73,531.04 530.18,493.55 658.46,442.2" fill="none" stroke="#000000ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt" stroke-dasharray="6 6"/>
+<polyline points="273.99,574.64 541.67,536.41 674.85,483.11" fill="none" stroke="#000000ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt" stroke-dasharray="6 6"/>
+<polyline points="683.37,455.97 650.26,421.75 658.46,442.2" fill="none" stroke="#000000ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt" stroke-dasharray="6 6"/>
+<polyline points="674.85,483.11 683.05,503.56 683.37,455.97 683.37,455.97" fill="none" stroke="#000000ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt" stroke-dasharray="6 6"/>
+<polyline points="704.96,496.42 710.52,483.41 684.06,417.4 671.05,411.82" fill="none" stroke="#000000ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt" stroke-dasharray="6 6"/>
+<polyline points="697.29,450.4 725.14,439.26 707.99,437 725.14,439.26 713.02,451.01" fill="none" stroke="#000000ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt" stroke-dasharray="6 6"/>
+<text transform="translate(601.06 489.07) rotate(-21.85)" x="0" y="-3.6" text-anchor="middle" dominant-baseline="central" font-family="PT Sans" font-size="12" font-weight="bold">CATK T</text>
 </svg>

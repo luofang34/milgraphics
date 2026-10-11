@@ -119,9 +119,10 @@ pub(crate) struct ScreenDecoration(pub(crate) Decoration);
 #[derive(Clone, Debug, PartialEq)]
 pub(crate) enum Decoration {
     /// Shapes and labels the ported upstream renderer draws in pixels for
-    /// line type `line_type`, from the control points projected for the
-    /// view. Shapes at the indices in `geographic` are already parts of the
-    /// construction and are not drawn again, as long as the renderer gives
+    /// line type `line_type`, from the control points placed in the
+    /// graphic's frame for the view (`render::ported`). Shapes at the
+    /// indices in `geographic` are already parts of the construction and
+    /// are not drawn again, as long as the renderer gives
     /// `shape_count` shapes.
     Engine {
         line_type: i32,

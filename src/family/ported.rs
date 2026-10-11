@@ -4,7 +4,8 @@
 //! pixel sizes: a shape that comes out the same on the ground both times is
 //! proportional to the control points and becomes a geographic part; the
 //! others carry pixel-sized elements (teeth, ticks, fixed arrowheads) and are
-//! drawn for each view from the projected control points.
+//! drawn for each view, in the graphic's frame for that view
+//! (`render::ported`).
 
 use crate::catalog::CatalogDrawRule;
 use crate::construction::{Decoration, GeoGeometry, PartRole};

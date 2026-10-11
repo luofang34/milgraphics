@@ -1,5 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="730" height="603" viewBox="0 0 730 603">
+<svg xmlns="http://www.w3.org/2000/svg" width="730" height="604" viewBox="0 0 730 604">
 <polyline points="649.46,481.32 270.77,481.32" fill="none" stroke="#000000ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt"/>
-<polyline points="607,523 649.46,481.32 607,439" fill="none" stroke="#000000ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt"/>
-<polyline points="228,523 270.77,481.32 228,439" fill="none" stroke="#000000ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt" stroke-dasharray="6 6"/>
+<polyline points="607.07,523.03 649.46,481.32 606.94,438.97" fill="none" stroke="#000000ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt"/>
+<polyline points="228.11,523.25 270.77,481.32 227.98,439.19" fill="none" stroke="#000000ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt" stroke-dasharray="6 6"/>
 </svg>

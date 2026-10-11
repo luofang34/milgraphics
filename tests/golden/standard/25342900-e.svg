@@ -1,14 +1,14 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="869" height="655" viewBox="0 0 869 655">
-<polygon points="787.14,519.29 788.73,526.92 781.09,528.51" fill="#000000ff" stroke="none"/>
-<polygon points="714.82,338.56 710.7,331.94 704.08,336.05" fill="#000000ff" stroke="none"/>
-<polyline points="267.75,531.06 530.2,493.57 658.47,442.24" fill="none" stroke="#000000ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt"/>
-<polyline points="273.97,574.62 541.65,536.39 674.82,483.1" fill="none" stroke="#000000ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt"/>
-<polyline points="725.14,439.26 650.3,421.82 658.47,442.24" fill="none" stroke="#000000ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt"/>
-<polyline points="674.82,483.1 682.99,503.52 725.14,439.26 725.14,439.26" fill="none" stroke="#000000ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt"/>
-<polyline points="690.27,419.59 696.37,369.14 704.61,382.38 710.7,331.94" fill="none" stroke="#000000ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt"/>
-<polyline points="713.47,477.56 752.69,509.88 749.51,494.61 788.73,526.92" fill="none" stroke="#000000ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt"/>
-<text transform="translate(403 534) rotate(0)" x="0" y="-3.6" text-anchor="middle" dominant-baseline="central" font-family="PT Sans" font-size="12" font-weight="bold">W0800Z - </text>
-<text transform="translate(403 546) rotate(0)" x="0" y="-3.6" text-anchor="middle" dominant-baseline="central" font-family="PT Sans" font-size="12" font-weight="bold">W1200Z</text>
-<text transform="translate(403 558) rotate(0)" x="0" y="-3.6" text-anchor="middle" dominant-baseline="central" font-family="PT Sans" font-size="12" font-weight="bold">T1X</text>
+<polygon points="787.24,519.42 788.84,527.07 781.2,528.65" fill="#000000ff" stroke="none"/>
+<polygon points="714.71,338.44 710.59,331.81 703.97,335.93" fill="#000000ff" stroke="none"/>
+<polyline points="267.73,531.04 530.18,493.55 658.46,442.2" fill="none" stroke="#000000ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt"/>
+<polyline points="273.99,574.64 541.67,536.41 674.85,483.11" fill="none" stroke="#000000ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt"/>
+<polyline points="725.14,439.26 650.26,421.75 658.46,442.2" fill="none" stroke="#000000ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt"/>
+<polyline points="674.85,483.11 683.05,503.56 725.14,439.26 725.14,439.26" fill="none" stroke="#000000ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt"/>
+<polyline points="690.24,419.54 696.29,369.04 704.54,382.31 710.59,331.81" fill="none" stroke="#000000ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt"/>
+<polyline points="713.51,477.6 752.77,509.97 749.58,494.68 788.84,527.07" fill="none" stroke="#000000ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt"/>
+<text transform="translate(403.09 534.23) rotate(-0.05)" x="0" y="-3.6" text-anchor="middle" dominant-baseline="central" font-family="PT Sans" font-size="12" font-weight="bold">W0800Z - </text>
+<text transform="translate(403.11 546.25) rotate(-0.05)" x="0" y="-3.6" text-anchor="middle" dominant-baseline="central" font-family="PT Sans" font-size="12" font-weight="bold">W1200Z</text>
+<text transform="translate(403.13 558.26) rotate(-0.05)" x="0" y="-3.6" text-anchor="middle" dominant-baseline="central" font-family="PT Sans" font-size="12" font-weight="bold">T1X</text>
 <rect x="255.86" y="537.84" width="30" height="30" fill="none" stroke="#808080" stroke-dasharray="3 2"/><text x="270.86" y="552.84" text-anchor="middle" dominant-baseline="central" font-family="sans-serif" font-size="6">10031000001211000000</text>
 </svg>
