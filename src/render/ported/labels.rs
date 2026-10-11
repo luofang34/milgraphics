@@ -4,15 +4,18 @@
 //! one place on the graphic. Carrying each line's position to the ground on
 //! its own would let a tilted camera foreshorten the spacing while the text
 //! stays its size in pixels, and the lines would overprint. Labels set
-//! close together at one angle are therefore placed as a block: the block's
-//! middle is on the ground, and each line keeps its offset from it in
-//! pixels, turned as the graphic runs on screen there.
+//! close together at one angle are therefore placed as a block, each line
+//! keeping its offset in pixels from the block's anchor, turned as the
+//! graphic runs on screen there. A block set beside the graphic's line is
+//! anchored at the point of the line nearest its middle, so it keeps its
+//! distance from the line too; a block farther out, such as one inside an
+//! area, is anchored at its middle on the ground.
 
 use crate::engine::api::{self, Justify};
 use crate::pick::PickRef;
 use crate::render::label::{self, Label, TextAlign};
 use crate::render::screen::ScreenCtx;
-use crate::render::{Font, FontMetrics};
+use crate::render::{Font, FontMetrics, ScreenPoint};
 
 use super::frame::Frame;
 
@@ -22,10 +25,12 @@ const BLOCK_GAP_EM: f64 = 2.0;
 /// Angles, in degrees, that count as the same.
 const SAME_ANGLE_DEG: f64 = 1.0;
 
-/// Labels placed in blocks; a block whose middle is hidden is not drawn.
+/// Labels placed in blocks beside `line`, the control points' line in the
+/// frame; a block whose anchor is hidden is not drawn.
 pub(super) fn placed(
     ctx: &mut ScreenCtx<'_>,
     frame: &Frame<'_>,
+    line: &[ScreenPoint],
     labels: Vec<api::Label>,
     font: &Font,
     metrics: &dyn FontMetrics,
@@ -43,12 +48,15 @@ pub(super) fn placed(
         let Some(first) = block.first().and_then(|&i| labels.get(i)) else {
             continue;
         };
-        let anchor = frame.to_geo(middle);
+        let base = nearest_on(line, middle)
+            .filter(|&p| (p.0 - middle.0).hypot(p.1 - middle.1) <= BLOCK_GAP_EM * font.size_px)
+            .unwrap_or(middle);
+        let anchor = frame.to_geo(base);
         let Some(screen) = ctx.project(anchor) else {
             continue;
         };
         let turn = frame
-            .screen_angle(ctx, middle, first.angle_deg)
+            .screen_angle(ctx, base, first.angle_deg)
             .map_or(0.0, |a| a - first.angle_deg);
         for &i in &block {
             let Some(l) = labels.get(i) else { continue };
@@ -60,7 +68,7 @@ pub(super) fn placed(
                 (Justify::Center, _) => TextAlign::Center,
                 (Justify::Right, false) | (Justify::Left, true) => TextAlign::Right,
             };
-            let on_screen = rotate((l.x - middle.0, l.y - middle.1), turn);
+            let on_screen = rotate((l.x - base.0, l.y - base.1), turn);
             out.push(label::at_screen(
                 label::PlacedText {
                     text: l.text.clone(),
@@ -123,6 +131,28 @@ fn blocks(labels: &[api::Label], size_px: f64) -> Vec<Vec<usize>> {
         }
     }
     out
+}
+
+/// The point of the polyline `line` nearest `p`.
+fn nearest_on(line: &[ScreenPoint], p: (f64, f64)) -> Option<(f64, f64)> {
+    let foot = |a: &ScreenPoint, b: &ScreenPoint| {
+        let (dx, dy) = (b.x - a.x, b.y - a.y);
+        let len2 = dx * dx + dy * dy;
+        let t = if len2 > 0.0 {
+            (((p.0 - a.x) * dx + (p.1 - a.y) * dy) / len2).clamp(0.0, 1.0)
+        } else {
+            0.0
+        };
+        (a.x + t * dx, a.y + t * dy)
+    };
+    let feet = line.windows(2).filter_map(|w| match w {
+        [a, b] => Some(foot(a, b)),
+        _ => None,
+    });
+    feet.chain(line.first().map(|a| (a.x, a.y))).min_by(|a, b| {
+        let d = |q: &(f64, f64)| (q.0 - p.0).hypot(q.1 - p.1);
+        d(a).total_cmp(&d(b))
+    })
 }
 
 /// `v` turned clockwise on screen by `deg`.

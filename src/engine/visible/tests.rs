@@ -41,6 +41,7 @@ fn drawn(
         modifiers: &modifiers,
         meters_per_pixel: 10.0,
         text_width: &width,
+        line_height: None,
         ms_info: crate::family::ms_info(&symbol),
         style: crate::engine::api::Style::default(),
         visible,

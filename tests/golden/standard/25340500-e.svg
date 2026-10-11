@@ -9,5 +9,5 @@
 <polyline points="535.89,496.48 518.59,506.48" fill="none" stroke="#000000ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt"/>
 <polyline points="536.09,647.92 518.77,637.91" fill="none" stroke="#000000ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt"/>
 <polyline points="536.09,647.92 518.79,657.91" fill="none" stroke="#000000ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt"/>
-<text transform="translate(403.79 570.54) rotate(-0.02)" x="0" y="-3.6" text-anchor="middle" dominant-baseline="central" font-family="PT Sans" font-size="12" font-weight="bold">C</text>
+<text transform="translate(403.79 570.24) rotate(-0.02)" x="0" y="-3.6" text-anchor="middle" dominant-baseline="central" font-family="PT Sans" font-size="12" font-weight="bold">C</text>
 </svg>

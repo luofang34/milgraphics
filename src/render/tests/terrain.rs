@@ -192,6 +192,22 @@ impl Projection for Tilted {
     }
 }
 
+/// [`Tilted`] without the foreshortening.
+struct Flat;
+
+impl Projection for Flat {
+    fn project(&self, p: GeoPoint) -> Option<ScreenPoint> {
+        Some(ScreenPoint {
+            x: (p.lon() - 19.95) * Tilted::PX_PER_DEG,
+            y: (50.05 - p.lat()) * Tilted::PX_PER_DEG / 50.0_f64.to_radians().cos(),
+        })
+    }
+
+    fn unproject(&self, _s: ScreenPoint) -> Option<GeoPoint> {
+        None
+    }
+}
+
 /// Where a label's text sits on screen: its anchor moved by its offset.
 fn text_position(l: &Label) -> ScreenPoint {
     let s = l.screen.unwrap();
@@ -214,11 +230,32 @@ fn stacked_labels_keep_their_spacing_in_a_tilted_view() {
     let stack: Vec<ScreenPoint> = p.labels.iter().map(text_position).collect();
     assert!(stack.len() >= 3, "{} labels", stack.len());
     let size = p.labels[0].font.size_px;
+    // Each line keeps the distance from the graphic's line it has in a flat view
+    // at the same east–west scale.
+    let flat = plan(&d, &Flat);
+    let off_line = |p: &RenderPlan, projection: &dyn Projection| -> Vec<f64> {
+        let line_y = projection
+            .project(GeoPoint::new(20.05, 50.0).unwrap())
+            .unwrap()
+            .y;
+        p.labels
+            .iter()
+            .map(|l| text_position(l).y - line_y)
+            .collect()
+    };
+    let (tilted, level) = (off_line(&p, &Tilted), off_line(&flat, &Flat));
+    for (t, f) in tilted.iter().zip(&level) {
+        assert!((t - f).abs() < 1.0, "{t} px from the line, {f} px flat");
+    }
+    // Stacked a line height apart, the host's measure of a line of text, so halos and
+    // descenders do not overlap.
+    let line = FixedAdvanceMetrics::default().line_height_px(&p.labels[0].font);
+    assert!(line > size);
     for pair in stack.windows(2) {
         let (dx, dy) = pair[1].sub(pair[0]);
         assert!(
-            dx.hypot(dy) >= 0.95 * size,
-            "lines {} px apart at a {size} px font",
+            dx.hypot(dy) >= 0.95 * line,
+            "lines {} px apart at a {line} px line height",
             dx.hypot(dy)
         );
     }

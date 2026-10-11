@@ -1,7 +1,7 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="730" height="577" viewBox="0 0 730 577">
 <polyline points="270.77,496.47 270.68,420.8 423.03,420.75" fill="none" stroke="#000000ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt"/>
 <polyline points="497.03,420.75 649.38,420.8 649.46,496.47" fill="none" stroke="#000000ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt"/>
-<text transform="translate(423 421) rotate(-0.01)" x="0" y="-3.6" text-anchor="start" dominant-baseline="central" font-family="PT Sans" font-size="12" font-weight="bold">E</text>
+<text transform="translate(428.02 433.55) rotate(0)" x="-5.01" y="-16.14" text-anchor="start" dominant-baseline="central" font-family="PT Sans" font-size="12" font-weight="bold">E</text>
 <text transform="translate(497 421) rotate(0)" x="0" y="-3.6" text-anchor="end" dominant-baseline="central" font-family="PT Sans" font-size="12" font-weight="bold">E</text>
 <rect x="445.03" y="405.75" width="30" height="30" fill="none" stroke="#808080" stroke-dasharray="3 2"/><text x="460.03" y="420.75" text-anchor="middle" dominant-baseline="central" font-family="sans-serif" font-size="6">10031000001211000000</text>
 </svg>

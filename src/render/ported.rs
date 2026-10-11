@@ -63,6 +63,7 @@ pub(crate) fn resolve(
             modifiers,
             meters_per_pixel: frame.meters_per_pixel(),
             text_width: &width,
+            line_height: Some(metrics.line_height_px(font)),
             ms_info: crate::family::ms_info(symbol),
             style: *style,
             visible: near,
@@ -85,6 +86,7 @@ pub(crate) fn resolve(
         labels.extend(labels::placed(
             ctx,
             &frame,
+            &run,
             out.labels,
             font,
             metrics,

@@ -20,6 +20,9 @@ pub(crate) struct Input<'a> {
     pub(crate) meters_per_pixel: f64,
     /// Width of `text` in pixels in the label font.
     pub(crate) text_width: &'a dyn Fn(&str) -> f64,
+    /// Height in pixels of a line of label text, from which stacked labels are spaced;
+    /// `None` spaces them a font size apart, as upstream.
+    pub(crate) line_height: Option<f64>,
     /// The symbol's draw rule and point range, as upstream's `MSInfo` has them.
     pub(crate) ms_info: Option<super::line_type::classes::MsInfo>,
     /// The operator's colours, in place of the symbol's.

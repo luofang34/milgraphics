@@ -9,10 +9,10 @@
 <polyline points="606.82,474.44 682.49,432.8" fill="none" stroke="#000000ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt"/>
 <polyline points="675.94,441.13 682.49,432.8 670.94,433.12" fill="none" stroke="#000000ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt"/>
 <polyline points="612.96,465.09 606.82,474.44 617.96,473.1" fill="none" stroke="#000000ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt"/>
-<text transform="translate(335.43 460.38) rotate(-32.84)" x="0" y="-13.8" text-anchor="middle" dominant-baseline="central" font-family="PT Sans" font-size="12" font-weight="bold">MSR T1X</text>
-<text transform="translate(335.43 460.38) rotate(-32.84)" x="0" y="6.6" text-anchor="middle" dominant-baseline="central" font-family="PT Sans" font-size="12" font-weight="bold">ALT</text>
-<text transform="translate(507.51 447.88) rotate(26.6)" x="0" y="-13.8" text-anchor="middle" dominant-baseline="central" font-family="PT Sans" font-size="12" font-weight="bold">MSR T1X</text>
-<text transform="translate(507.51 447.88) rotate(26.6)" x="0" y="6.6" text-anchor="middle" dominant-baseline="central" font-family="PT Sans" font-size="12" font-weight="bold">ALT</text>
-<text transform="translate(640.06 444.65) rotate(-28.63)" x="0" y="-13.8" text-anchor="middle" dominant-baseline="central" font-family="PT Sans" font-size="12" font-weight="bold">MSR T1X</text>
-<text transform="translate(640.06 444.65) rotate(-28.63)" x="0" y="6.6" text-anchor="middle" dominant-baseline="central" font-family="PT Sans" font-size="12" font-weight="bold">ALT</text>
+<text transform="translate(327.68 448.37) rotate(-32.84)" x="0" y="-3.6" text-anchor="middle" dominant-baseline="central" font-family="PT Sans" font-size="12" font-weight="bold">MSR T1X</text>
+<text transform="translate(346.54 477.54) rotate(-32.84)" x="-0.03" y="-13.82" text-anchor="middle" dominant-baseline="central" font-family="PT Sans" font-size="12" font-weight="bold">ALT</text>
+<text transform="translate(513.89 435.1) rotate(26.6)" x="0" y="-3.6" text-anchor="middle" dominant-baseline="central" font-family="PT Sans" font-size="12" font-weight="bold">MSR T1X</text>
+<text transform="translate(498.32 466.31) rotate(26.6)" x="-0.01" y="-14" text-anchor="middle" dominant-baseline="central" font-family="PT Sans" font-size="12" font-weight="bold">ALT</text>
+<text transform="translate(633.2 432.1) rotate(-28.63)" x="0" y="-3.6" text-anchor="middle" dominant-baseline="central" font-family="PT Sans" font-size="12" font-weight="bold">MSR T1X</text>
+<text transform="translate(649.71 462.26) rotate(-28.62)" x="-0.03" y="-13.46" text-anchor="middle" dominant-baseline="central" font-family="PT Sans" font-size="12" font-weight="bold">ALT</text>
 </svg>

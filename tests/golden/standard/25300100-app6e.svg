@@ -1,9 +1,9 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="806" height="607" viewBox="0 0 806 607">
 <polyline points="270.86,526.75 422.25,428.32 573.81,504.04 725.15,420.75" fill="none" stroke="#000000ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt"/>
-<text transform="translate(301.69 515.2) rotate(-32.98)" x="0" y="-18.8" text-anchor="middle" dominant-baseline="central" font-family="PT Sans" font-size="12" font-weight="bold">ICL T1</text>
-<text transform="translate(301.69 515.2) rotate(-32.98)" x="0" y="-2" text-anchor="middle" dominant-baseline="central" font-family="PT Sans" font-size="12" font-weight="bold">W0800Z - </text>
-<text transform="translate(301.69 515.2) rotate(-32.98)" x="0" y="10" text-anchor="middle" dominant-baseline="central" font-family="PT Sans" font-size="12" font-weight="bold">W1200Z</text>
-<text transform="translate(700.15 442.15) rotate(-28.16)" x="0" y="-18.8" text-anchor="middle" dominant-baseline="central" font-family="PT Sans" font-size="12" font-weight="bold">ICL T1</text>
-<text transform="translate(700.15 442.15) rotate(-28.16)" x="0" y="-2" text-anchor="middle" dominant-baseline="central" font-family="PT Sans" font-size="12" font-weight="bold">W0800Z - </text>
-<text transform="translate(700.15 442.15) rotate(-28.16)" x="0" y="10" text-anchor="middle" dominant-baseline="central" font-family="PT Sans" font-size="12" font-weight="bold">W1200Z</text>
+<text transform="translate(297.81 509.23) rotate(-32.98)" x="0.01" y="-13.36" text-anchor="middle" dominant-baseline="central" font-family="PT Sans" font-size="12" font-weight="bold">ICL T1</text>
+<text transform="translate(297.81 509.23) rotate(-32.98)" x="0.01" y="6.8" text-anchor="middle" dominant-baseline="central" font-family="PT Sans" font-size="12" font-weight="bold">W0800Z - </text>
+<text transform="translate(297.81 509.23) rotate(-32.98)" x="0.01" y="21.2" text-anchor="middle" dominant-baseline="central" font-family="PT Sans" font-size="12" font-weight="bold">W1200Z</text>
+<text transform="translate(696.91 436.29) rotate(-28.16)" x="0.09" y="-13.79" text-anchor="middle" dominant-baseline="central" font-family="PT Sans" font-size="12" font-weight="bold">ICL T1</text>
+<text transform="translate(696.91 436.29) rotate(-28.16)" x="0.09" y="6.37" text-anchor="middle" dominant-baseline="central" font-family="PT Sans" font-size="12" font-weight="bold">W0800Z - </text>
+<text transform="translate(696.91 436.29) rotate(-28.16)" x="0.09" y="20.77" text-anchor="middle" dominant-baseline="central" font-family="PT Sans" font-size="12" font-weight="bold">W1200Z</text>
 </svg>

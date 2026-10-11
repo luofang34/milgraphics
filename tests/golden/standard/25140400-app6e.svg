@@ -1,5 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="806" height="608" viewBox="0 0 806 608">
+<svg xmlns="http://www.w3.org/2000/svg" width="806" height="607" viewBox="0 0 806 607">
 <polyline points="270.86,526.75 422.25,428.32 573.81,504.04 725.15,420.75" fill="none" stroke="#000000ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt"/>
-<text transform="translate(271 527) rotate(-33.28)" x="0" y="-3.6" text-anchor="end" dominant-baseline="central" font-family="PT Sans" font-size="12" font-weight="bold">FEBA</text>
-<text transform="translate(724.93 421.16) rotate(-28.78)" x="0" y="-3.6" text-anchor="start" dominant-baseline="central" font-family="PT Sans" font-size="12" font-weight="bold">FEBA</text>
+<text transform="translate(270.86 526.75) rotate(-33.28)" x="-0.02" y="-3.32" text-anchor="end" dominant-baseline="central" font-family="PT Sans" font-size="12" font-weight="bold">FEBA</text>
+<text transform="translate(724.81 420.94) rotate(-28.78)" x="0" y="-3.35" text-anchor="start" dominant-baseline="central" font-family="PT Sans" font-size="12" font-weight="bold">FEBA</text>
 </svg>

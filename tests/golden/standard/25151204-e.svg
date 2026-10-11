@@ -11,6 +11,6 @@
 <polyline points="166.16,577.81 218.57,556.07" fill="none" stroke="#000000ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt"/>
 <polyline points="227.48,429.41 249.23,481.87" fill="none" stroke="#000000ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt"/>
 <polyline points="227.62,639.26 249.3,586.8" fill="none" stroke="#000000ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt"/>
-<text transform="translate(157.1 532.59) rotate(-0.02)" x="0" y="-3.6" text-anchor="middle" dominant-baseline="central" font-family="PT Sans" font-size="12" font-weight="bold">C</text>
+<text transform="translate(157.1 532.29) rotate(-0.02)" x="0" y="-3.6" text-anchor="middle" dominant-baseline="central" font-family="PT Sans" font-size="12" font-weight="bold">C</text>
 <text transform="translate(422.55 534.1) rotate(0.02)" x="0" y="-3.6" text-anchor="middle" dominant-baseline="central" font-family="PT Sans" font-size="12" font-weight="bold">ENY</text>
 </svg>
