@@ -23,9 +23,9 @@
 <polyline points="309.85,647.91 536.99,420.76" fill="none" stroke="#000000ff" stroke-width="2" stroke-linejoin="miter" stroke-linecap="butt"/>
 <polyline points="322.85,647.91 549.99,420.76" fill="none" stroke="#000000ff" stroke-width="2" stroke-linejoin="miter" stroke-linecap="butt"/>
 <polyline points="335.85,647.91 452.97,530.78" fill="none" stroke="#000000ff" stroke-width="2" stroke-linejoin="miter" stroke-linecap="butt"/>
-<polyline points="456.62,527.13 562.99,420.76" fill="none" stroke="#000000ff" stroke-width="2" stroke-linejoin="miter" stroke-linecap="butt"/>
-<polyline points="348.85,647.91 455.22,541.53" fill="none" stroke="#000000ff" stroke-width="2" stroke-linejoin="miter" stroke-linecap="butt"/>
-<polyline points="467.37,529.38 575.99,420.76" fill="none" stroke="#000000ff" stroke-width="2" stroke-linejoin="miter" stroke-linecap="butt"/>
+<polyline points="456.66,527.09 562.99,420.76" fill="none" stroke="#000000ff" stroke-width="2" stroke-linejoin="miter" stroke-linecap="butt"/>
+<polyline points="348.85,647.91 455.26,541.49" fill="none" stroke="#000000ff" stroke-width="2" stroke-linejoin="miter" stroke-linecap="butt"/>
+<polyline points="467.38,529.38 575.99,420.76" fill="none" stroke="#000000ff" stroke-width="2" stroke-linejoin="miter" stroke-linecap="butt"/>
 <polyline points="361.85,647.91 588.99,420.76" fill="none" stroke="#000000ff" stroke-width="2" stroke-linejoin="miter" stroke-linecap="butt"/>
 <polyline points="374.85,647.91 601.99,420.76" fill="none" stroke="#000000ff" stroke-width="2" stroke-linejoin="miter" stroke-linecap="butt"/>
 <polyline points="387.85,647.91 614.99,420.76" fill="none" stroke="#000000ff" stroke-width="2" stroke-linejoin="miter" stroke-linecap="butt"/>
@@ -49,5 +49,5 @@
 <polyline points="621.85,647.91 649.6,620.15" fill="none" stroke="#000000ff" stroke-width="2" stroke-linejoin="miter" stroke-linecap="butt"/>
 <polyline points="634.85,647.91 649.62,633.13" fill="none" stroke="#000000ff" stroke-width="2" stroke-linejoin="miter" stroke-linecap="butt"/>
 <polyline points="647.85,647.91 649.64,646.11" fill="none" stroke="#000000ff" stroke-width="2" stroke-linejoin="miter" stroke-linecap="butt"/>
-<text transform="translate(460.17 537.93) rotate(0)" x="0" y="-3.6" text-anchor="middle" dominant-baseline="central" font-family="PT Sans" font-size="12" font-weight="bold">HH</text>
+<text transform="translate(460.17 537.89) rotate(0.03)" x="0" y="-3.6" text-anchor="middle" dominant-baseline="central" font-family="PT Sans" font-size="12" font-weight="bold">HH</text>
 </svg>

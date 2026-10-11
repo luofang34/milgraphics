@@ -48,7 +48,7 @@ pub(super) fn limits_itself(line_type: i32, symbol: &SymbolId) -> bool {
     ) || crate::engine::edition::spreads_wire(symbol)
 }
 
-/// The stretches of the projected control points to draw: the whole line
+/// The stretches of the control points, in the frame's pixels, to draw: the whole line
 /// when it is short enough or, `whole`, its generator keeps to `near`;
 /// otherwise, for an open line repeating its glyph, the fixed stretches
 /// ([`STRETCH_PX`]) that reach `near`, or for a line passing `near` too
@@ -150,7 +150,7 @@ pub(super) fn length_of(points: &[ScreenPoint]) -> f64 {
     length(points)
 }
 
-fn length(points: &[ScreenPoint]) -> f64 {
+pub(super) fn length(points: &[ScreenPoint]) -> f64 {
     points
         .windows(2)
         .map(|w| match w {
