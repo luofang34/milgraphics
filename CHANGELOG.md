@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.1.2 — 2026-10-11
+
+Terrain occlusion for the screen tier.
+
+- `Projection::project_depth` lets a host give, with each screen position,
+  the depth its frame stores there. Every point of every screen item then
+  carries that depth (`ScreenItem::depth`), and labels, handles and symbol
+  placements carry their anchor's (`depth` on each), so a host can test the
+  screen tier against its frame's depth and let terrain hide what lies
+  behind it. Hosts that give no depth see no change.
+- Plans for views of many graphics are quicker to build.
+
 ## 0.1.1 — 2026-10-11
 
 Graphics on terrain and in tilted views.
