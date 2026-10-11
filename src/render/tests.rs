@@ -460,3 +460,17 @@ fn a_mine_cluster_figure_is_drawn_dashed_in_the_screen_tier() {
         .collect();
     assert_eq!(clusters.len(), 3);
 }
+
+#[test]
+fn only_graphics_with_pixel_sized_decorations_say_they_have_them() {
+    let has = |sidc| {
+        construct(
+            &def(sidc, &[(20.0, 50.0), (20.1, 50.0)], None),
+            &Config::default(),
+        )
+        .unwrap()
+        .has_screen_decorations()
+    };
+    assert!(has("11032500001401000000"), "a FLOT has scallops");
+    assert!(!has(PL), "a phase line is lines and labels only");
+}

@@ -306,6 +306,7 @@ impl core::marker::StructuralPartialEq for milgraphics::construction::PartRole
 #[non_exhaustive] pub struct milgraphics::construction::Construction
 impl milgraphics::construction::Construction
 pub fn milgraphics::construction::Construction::definition(&self) -> &milgraphics::definition::GraphicId
+pub fn milgraphics::construction::Construction::has_screen_decorations(&self) -> bool
 pub fn milgraphics::construction::Construction::renderer_version(&self) -> &'static str
 pub fn milgraphics::construction::Construction::revision(&self) -> u64
 impl core::clone::Clone for milgraphics::construction::Construction
@@ -1826,6 +1827,7 @@ impl core::marker::StructuralPartialEq for milgraphics::Config
 #[non_exhaustive] pub struct milgraphics::Construction
 impl milgraphics::construction::Construction
 pub fn milgraphics::construction::Construction::definition(&self) -> &milgraphics::definition::GraphicId
+pub fn milgraphics::construction::Construction::has_screen_decorations(&self) -> bool
 pub fn milgraphics::construction::Construction::renderer_version(&self) -> &'static str
 pub fn milgraphics::construction::Construction::revision(&self) -> u64
 impl core::clone::Clone for milgraphics::construction::Construction
