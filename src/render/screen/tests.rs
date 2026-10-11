@@ -250,3 +250,41 @@ fn ground_under_a_perspective_camera_is_cut_near_the_viewport() {
         }
     }
 }
+
+/// [`Pinhole`], counting its projections.
+struct CountedPinhole(Cell<usize>);
+
+impl Projection for CountedPinhole {
+    fn project(&self, p: GeoPoint) -> Option<ScreenPoint> {
+        self.0.set(self.0.get() + 1);
+        Pinhole.project(p)
+    }
+
+    fn unproject(&self, s: ScreenPoint) -> Option<GeoPoint> {
+        Pinhole.unproject(s)
+    }
+
+    fn viewport(&self) -> Option<ScreenRect> {
+        Pinhole.viewport()
+    }
+}
+
+#[test]
+fn wire_behind_the_camera_is_not_searched_mark_by_mark() {
+    // Single concertina, mostly behind the camera: its loops are a few
+    // pixels apart, and each pair hidden at both ends is skipped.
+    let d = GraphicDefinition::new(
+        GraphicId::new("g").unwrap(),
+        SymbolId::parse("11032500002903070000").unwrap(),
+        [(20.01, 49.0), (20.01, 50.1)]
+            .iter()
+            .map(|&(lon, lat)| ControlPoint::ground(GeoPoint::new(lon, lat).unwrap()))
+            .collect(),
+    );
+    let camera = CountedPinhole(Cell::new(0));
+    let p = plan(&d, &camera);
+    let marks = p.screen.iter().filter(|i| i.decoration).count();
+    assert!(marks > 0);
+    // Searching every hidden pair takes over a million projections.
+    assert!(camera.0.get() < 100_000, "{} projections", camera.0.get());
+}
