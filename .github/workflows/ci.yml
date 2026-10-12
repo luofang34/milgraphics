@@ -114,7 +114,9 @@ jobs:
       - uses: Swatinem/rust-cache@v2
       - run: tools/ci/changelog.sh
       - run: tools/ci/release-auth.sh
-      - run: cargo publish --locked --dry-run -p milgraphics
+      - name: Release workflow and repository checks match milsymbol's
+        run: tools/ci/shared-ci.sh
+      - run: cargo publish --locked --dry-run -p "$(tools/ci/crate.sh name)"
       - run: cargo package --locked --no-verify -p milgraphics
       - name: Package stays small and omits development tooling
         run: |
