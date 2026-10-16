@@ -26,7 +26,7 @@ mod catalog {
 
     mod perspective;
     mod review;
-    mod screen_only;
+    mod screen_tier;
     mod standard;
 
     const RECORDS: &str = include_str!("fixtures/oracle/all.jsonl");
