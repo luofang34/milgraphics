@@ -12,6 +12,25 @@ fn each_symbol_is_declared_once_per_standard() {
     assert_eq!(keys.len(), count);
 }
 
+/// A symbol a family of its own draws in one edition is drawn by it in every
+/// edition: the ported renderer sizes outlines in pixels, so the editions it
+/// draws would lose the geographic tier the family gives the others.
+#[test]
+fn hand_built_symbols_are_hand_built_in_every_edition() {
+    let hand: Vec<_> = all()
+        .filter(|s| s.family != Family::Ported)
+        .map(|s| (s.symbol_set, s.entity))
+        .collect();
+    let ported: Vec<String> = all()
+        .filter(|s| s.family == Family::Ported && hand.contains(&(s.symbol_set, s.entity)))
+        .map(|s| format!("{:?} {}", s.standard, s.name()))
+        .collect();
+    assert!(
+        ported.is_empty(),
+        "drawn by a family in another edition: {ported:?}"
+    );
+}
+
 #[test]
 fn declarations_are_internally_consistent() {
     for s in all() {

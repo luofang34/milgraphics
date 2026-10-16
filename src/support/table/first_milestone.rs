@@ -4,7 +4,9 @@
 use super::{MANY, cm, list, opt, req};
 use crate::family::Family;
 use crate::modifier::ModifierField as M;
-use crate::standard::StandardVersion::{Mil2525Dch1 as D1, Mil2525Ech1 as E1};
+use crate::standard::StandardVersion::{
+    App6D as D6, App6Ech2 as E6, Mil2525Dch1 as D1, Mil2525Ech1 as E1,
+};
 use crate::support::SymbolSpec;
 
 const NAI: Family = Family::LabelledArea { prefix: "NAI" };
@@ -23,15 +25,21 @@ const FAN: &[crate::support::ModifierSpec] = &[
     list(M::X, false, 1, MANY),
 ];
 
+const fn phase_line(standard: crate::standard::StandardVersion) -> SymbolSpec {
+    cm(standard, 140300, Family::PhaseLine)
+        .points(2, MANY)
+        .amplifiers(T)
+}
+
 pub(super) static SPECS: &[SymbolSpec] = &[
-    cm(D1, 140300, Family::PhaseLine)
-        .points(2, MANY)
-        .amplifiers(T),
-    cm(E1, 140300, Family::PhaseLine)
-        .points(2, MANY)
-        .amplifiers(T),
+    phase_line(D6),
+    phase_line(D1),
+    phase_line(E1),
+    phase_line(E6),
+    cm(D6, 120200, NAI).points(3, MANY).amplifiers(T),
     cm(D1, 120200, NAI).points(3, MANY).amplifiers(T),
     cm(E1, 120200, NAI).points(3, MANY).amplifiers(T),
+    cm(E6, 120200, NAI).points(3, MANY).amplifiers(T),
     cm(
         D1,
         170100,
@@ -52,8 +60,12 @@ pub(super) static SPECS: &[SymbolSpec] = &[
     )
     .points(2, 99)
     .amplifiers(CORRIDOR),
+    cm(D6, 242200, Family::RangeFanSector).amplifiers(FAN),
     cm(D1, 242200, Family::RangeFanSector).amplifiers(FAN),
     cm(E1, 242200, Family::RangeFanSector).amplifiers(FAN),
+    cm(E6, 242200, Family::RangeFanSector).amplifiers(FAN),
+    cm(D6, 270601, Family::Bypass).points(3, 3),
     cm(D1, 270601, Family::Bypass).points(3, 3),
     cm(E1, 270601, Family::Bypass).points(3, 3),
+    cm(E6, 270601, Family::Bypass).points(3, 3),
 ];
