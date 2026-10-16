@@ -1,5 +1,22 @@
 # Changelog
 
+## 0.1.3 — 2026-10-16
+
+Graphics' lines on the ground.
+
+- Every axis of advance (Airborne, Attack Helicopter, Main and Supporting
+  Attack, Feint) is drawn by the axis family in every edition, so its
+  outline is sized on the ground and lies in the geographic tier.
+- Air corridors and routes, Range Fan Sector, Bypass Easy, Phase Line and
+  Named Area of Interest are drawn by their own families in every edition.
+- Fronts, obstacle and wire lines, traffic routes and other lines with
+  pixel-sized teeth, ticks or glyphs put their line in the geographic tier;
+  only the decorations stay in the screen tier. Isopleths, depth curves,
+  coastlines, ice edges and other smooth lines follow their curve on the
+  ground.
+- Mission tasks draw their arcs, bars and arrow bodies in the geographic
+  tier and their pixel-sized arrowheads in the screen tier.
+
 ## 0.1.2 — 2026-10-11
 
 Terrain occlusion for the screen tier.
