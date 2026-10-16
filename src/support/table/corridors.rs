@@ -18,7 +18,7 @@ const AMPLIFIERS: &[crate::support::ModifierSpec] = &[
 ];
 
 /// Base MIL-STD-2525D, which shares version code 10, allows at most 99 points
-/// for these (TABLE H-XIII).
+/// for Air Corridor and Low Level Transit Route (TABLE H-XIII).
 const BASE_2525D_MAX: usize = 99;
 
 const fn route(standard: StandardVersion, entity: u32, prefix: &'static str) -> SymbolSpec {
