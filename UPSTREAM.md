@@ -94,7 +94,10 @@ instead, as do edges between control points that the renderer strokes whole
 at both sizes, straight or along the spline of a smooth line
 (`src/family/ported/baseline.rs`): the line of a front, an obstacle line or
 an isopleth is drawn on the ground, and only its teeth, ticks and glyphs in
-pixels. `tests/fixtures/oracle/screen_tier.txt` lists every graphic that
+pixels. In a graphic with no such edge, segments whose ends land on the same
+ground at both sizes are geographic too (`src/family/ported/stable.rs`): a
+mission task's arc or bar is drawn on the ground, and its pixel-sized
+arrowheads in pixels. `tests/fixtures/oracle/screen_tier.txt` lists every graphic that
 still draws anything in the screen tier.
 
 | Port | Upstream source (mil-sym-java `src/main/java/armyc2/c5isr/`) |

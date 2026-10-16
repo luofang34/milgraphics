@@ -45,6 +45,19 @@ pub(super) struct Run<'a> {
 }
 
 impl<'a> Run<'a> {
+    pub(super) fn shapes(&self) -> &'a [Shape] {
+        self.shapes
+    }
+
+    /// Whether shape `i` is already a geographic part.
+    pub(super) fn skips(&self, i: usize) -> bool {
+        self.skip.get(i).copied().unwrap_or(false)
+    }
+
+    pub(super) fn mpp(&self) -> f64 {
+        self.mpp
+    }
+
     /// The two classification runs, the shapes of the first already
     /// geographic where `geographic` says so.
     pub(super) fn pair(

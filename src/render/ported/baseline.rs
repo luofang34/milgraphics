@@ -1,5 +1,7 @@
-//! Leaving out of the screen tier the stroked segments that lie on edges
-//! the construction drew as geographic lines (`family::ported::baseline`).
+//! Leaving out of the screen tier the stroked segments that lie on lines
+//! the construction drew on the ground: control-point edges
+//! (`family::ported::baseline`) and chains of segments that stay put
+//! (`family::ported::stable`).
 
 use crate::family::ported_baseline::{Edge, Paths, path};
 
@@ -9,18 +11,22 @@ use crate::plane::Xy;
 use crate::render::ScreenPoint;
 
 /// The paths, in frame pixels, of the edges listed in `baseline` between
-/// the control points at `pixels`. The frame is a similarity of the plane
-/// the edges were found in, so a spline maps to the same spline.
-pub(super) fn paths(pixels: &[ScreenPoint], baseline: &[(usize, Edge)]) -> Option<Paths> {
-    if baseline.is_empty() {
-        return None;
-    }
+/// the control points at `pixels`, and of the `chains` of segments. The
+/// frame is a similarity of the plane the edges were found in, so a spline
+/// maps to the same spline.
+pub(super) fn paths(
+    pixels: &[ScreenPoint],
+    baseline: &[(usize, Edge)],
+    chains: impl Iterator<Item = Vec<ScreenPoint>>,
+) -> Option<Paths> {
     let points: Vec<Xy> = pixels.iter().map(|p| Xy::new(p.x, p.y)).collect();
-    let paths = baseline
+    let mut paths: Vec<(Vec<Xy>, f64)> = baseline
         .iter()
         .filter_map(|&(i, edge)| Some((path(&points, i, edge, FLATNESS_PX)?, edge.tolerance_px())))
         .collect();
-    Some(Paths::new(paths))
+    let straight = Edge::Straight.tolerance_px();
+    paths.extend(chains.map(|c| (c.iter().map(|p| Xy::new(p.x, p.y)).collect(), straight)));
+    (!paths.is_empty()).then(|| Paths::new(paths))
 }
 
 /// `lines` split where their segments start and end on a path, without

@@ -6,7 +6,7 @@ use super::from_px;
 
 /// Largest difference on the ground, as a fraction of the graphic's extent,
 /// for a shape drawn at two pixel sizes to count as the same.
-const SAME_FRACTION: f64 = 1e-4;
+pub(super) const SAME_FRACTION: f64 = 1e-4;
 
 /// For each shape of run `a`: whether run `b` drew it at the same place on
 /// the ground. Runs that drew different numbers of shapes keep everything in

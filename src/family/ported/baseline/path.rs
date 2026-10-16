@@ -188,8 +188,22 @@ impl Paths {
                 let sv = locate(points, cum, v, *tolerance)?;
                 let on = locate(points, cum, mid, *tolerance).is_some();
                 let (lo, hi) = (su.min(sv), su.max(sv));
-                // A chord between two far parts of a curved path is not on it.
-                (hi > lo && hi - lo <= v.sub(u).len() + 2.0 * tolerance).then_some((k, lo, hi, on))
+                let reach = v.sub(u).len() + 2.0 * tolerance;
+                // A chord between two far parts of a curved path is not on
+                // it, except across the start of a closed path, where its
+                // ends are found at either end of the path's length.
+                let total = cum.last().copied().unwrap_or(0.0);
+                let closed = match (points.first(), points.last()) {
+                    (Some(&p), Some(&q)) => p.sub(q).len() <= *tolerance,
+                    _ => false,
+                };
+                if hi > lo && hi - lo <= reach {
+                    Some((k, lo, hi, on))
+                } else if closed && hi > lo && total - (hi - lo) <= reach {
+                    Some((k, hi, total, on))
+                } else {
+                    None
+                }
             })
             .collect()
     }
