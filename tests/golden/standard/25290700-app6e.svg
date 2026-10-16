@@ -1,6 +1,7 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="730" height="584" viewBox="0 0 730 584">
+<polyline points="270.8,496.46 649.4,420.74" fill="none" stroke="#000000ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt"/>
 <polygon points="291.99,478.98 270.8,496.46 297.01,503.01" fill="#000000ff" stroke="none"/>
 <polygon points="627.03,437.09 649.4,420.74 622.01,413.07" fill="#000000ff" stroke="none"/>
-<polyline points="270.8,496.46 649.4,420.74 627.03,437.09 649.4,420.74 622.01,413.07" fill="none" stroke="#000000ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt"/>
+<polyline points="649.4,420.74 627.03,437.09 649.4,420.74 622.01,413.07" fill="none" stroke="#000000ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt"/>
 <polyline points="291.99,478.98 270.8,496.46 297.01,503.01" fill="none" stroke="#000000ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt"/>
 </svg>

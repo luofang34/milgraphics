@@ -20,6 +20,7 @@ use crate::plane::{LocalPlane, Xy};
 use crate::render::{FixedAdvanceMetrics, Font, FontMetrics};
 use crate::style::{DashPattern, Fill, Hatch, Rgba, Stroke};
 
+pub(crate) mod baseline;
 mod classify;
 mod labels;
 mod pattern;
@@ -102,6 +103,12 @@ fn draw(
             }
         }
     }
+    let runs = baseline::Run::pair((&a.shapes, mpp_a), (&b.shapes, mpp_b), &geographic);
+    let baseline = baseline::add(ctx, &plane, &anchors, &xy, &runs);
+    if let Some(&(id, _)) = baseline.first() {
+        first.get_or_insert(id);
+    }
+    let baseline: Vec<_> = baseline.into_iter().flat_map(|(_, edges)| edges).collect();
     let part = first.unwrap_or_else(|| ctx.next_part());
     // The larger run follows a curve more closely.
     let drawn: Vec<GeoPoint> = b
@@ -120,6 +127,7 @@ fn draw(
         style: crate::engine::api::Style::of(&def.style),
         geographic,
         shape_count: a.shapes.len(),
+        baseline,
         part,
         reach_m: extent,
     });
