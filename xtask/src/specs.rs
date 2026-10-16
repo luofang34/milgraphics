@@ -34,8 +34,8 @@ const OUTPUT: &str = "src/generated/specs.rs";
 /// family of their own in `src/family` or declared differently from
 /// upstream's catalog row, and the version codes they are declared for.
 const HAND_BUILT: &[(u32, &[u32])] = &[
-    (140_300, &[11, 15]),
-    (120_200, &[11, 15]),
+    (140_300, &[10, 11, 15, 16]),
+    (120_200, &[10, 11, 15, 16]),
     (151_401, &[10, 11, 15, 16]),
     (151_402, &[10, 11, 15, 16]),
     (151_403, &[10, 11, 15, 16]),

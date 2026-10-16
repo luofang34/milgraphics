@@ -25,15 +25,21 @@ const FAN: &[crate::support::ModifierSpec] = &[
     list(M::X, false, 1, MANY),
 ];
 
+const fn phase_line(standard: crate::standard::StandardVersion) -> SymbolSpec {
+    cm(standard, 140300, Family::PhaseLine)
+        .points(2, MANY)
+        .amplifiers(T)
+}
+
 pub(super) static SPECS: &[SymbolSpec] = &[
-    cm(D1, 140300, Family::PhaseLine)
-        .points(2, MANY)
-        .amplifiers(T),
-    cm(E1, 140300, Family::PhaseLine)
-        .points(2, MANY)
-        .amplifiers(T),
+    phase_line(D6),
+    phase_line(D1),
+    phase_line(E1),
+    phase_line(E6),
+    cm(D6, 120200, NAI).points(3, MANY).amplifiers(T),
     cm(D1, 120200, NAI).points(3, MANY).amplifiers(T),
     cm(E1, 120200, NAI).points(3, MANY).amplifiers(T),
+    cm(E6, 120200, NAI).points(3, MANY).amplifiers(T),
     cm(
         D1,
         170100,
