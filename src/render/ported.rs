@@ -49,7 +49,7 @@ pub(crate) fn resolve(
         return Ok((Vec::new(), Vec::new()));
     };
     let pixels: Vec<ScreenPoint> = anchors.iter().map(|&a| frame.to_px(a)).collect();
-    let edges = baseline::edges(&pixels, baseline);
+    let edges = baseline::paths(&pixels, baseline);
     let kind = (*line_type, clip::limits_itself(*line_type, symbol));
     let near = if kind.1 || clip::length(&pixels) > clip::MAX_LINE_PX {
         frame.near(ctx)
@@ -80,7 +80,7 @@ pub(crate) fn resolve(
                 continue;
             }
             let lines = if crate::family::ported_baseline::stroked(shape) {
-                baseline::strip(shape.polylines(), &edges)
+                baseline::strip(shape.polylines(), edges.as_ref())
             } else {
                 shape.polylines()
             };

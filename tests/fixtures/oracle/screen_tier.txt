@@ -487,10 +487,8 @@
 45110315-e screen-only Stationary Frontolysis
 45110401-app6d screen-only Trough Axis
 45110401-d screen-only Trough Axis
-45110401-e screen-only Trough Axis
 45110402-app6d screen-only Upper Trough Axis
 45110402-d screen-only Upper Trough Axis
-45110402-e screen-only Upper Trough Axis
 45110403-app6d screen-only Ridge Axis
 45110403-d screen-only Ridge Axis
 45110403-e screen-only Ridge Axis
@@ -510,94 +508,52 @@
 45110409-app6d screen-only Inter-Tropical Discontinuity
 45110409-d screen-only Inter-Tropical Discontinuity
 45110409-e screen-only Inter-Tropical Discontinuity
-45140300-app6d screen-only Jet Stream
-45140300-d screen-only Jet Stream
-45140300-e screen-only Jet Stream
-45140400-app6d screen-only Stream Line
-45140400-d screen-only Stream Line
-45140400-e screen-only Stream Line
+45140300-app6d mixed Jet Stream
+45140300-d mixed Jet Stream
+45140300-e mixed Jet Stream
+45140400-app6d mixed Stream Line
+45140400-d mixed Stream Line
+45140400-e mixed Stream Line
 45170200-app6d screen-only Marginal Visual Flight Rule (MVFR)
 45170200-d screen-only Marginal Visual Flight Rule (MVFR)
 45170200-e screen-only Marginal Visual Flight Rule (MVFR)
 45170400-app6d screen-only Icing
 45170400-d screen-only Icing
 45170400-e screen-only Icing
-45180100-app6d screen-only Isobar - Surface
-45180100-d screen-only Isobar - Surface
-45180100-e screen-only Isobar - Surface
-45180200-app6d screen-only Contour - Upper Air
-45180200-d screen-only Contour - Upper Air
-45180200-e screen-only Contour - Upper Air
-45180300-app6d screen-only Isotherm
-45180300-d screen-only Isotherm
-45180300-e screen-only Isotherm
-45180400-app6d screen-only Isotach
-45180400-d screen-only Isotach
-45180400-e screen-only Isotach
-45180500-app6d screen-only Isodrosotherm
-45180500-d screen-only Isodrosotherm
-45180500-e screen-only Isodrosotherm
-45180600-app6d screen-only Thickness
-45180600-d screen-only Thickness
-45180600-e screen-only Thickness
 46110501-d screen-only Limits of Visual Observation
 46110501-e screen-only Limits of Visual Observation
 46110502-d screen-only Limits of Under Cast
 46110502-e screen-only Limits of Under Cast
 46110503-d screen-only Limits of Radar Observation
 46110503-e screen-only Limits of Radar Observation
-46110504-d screen-only Observed Ice Edge or Boundary
-46110504-e screen-only Observed Ice Edge or Boundary
-46110505-d screen-only Estimated Ice Edge or Boundary
-46110505-e screen-only Estimated Ice Edge or Boundary
-46110506-d screen-only Ice Edge or Boundary From Radar
-46110506-e screen-only Ice Edge or Boundary From Radar
-46110601-d screen-only Cracks
-46110601-e screen-only Cracks
-46110602-d screen-only Cracks at a Specific Location
-46110602-e screen-only Cracks at a Specific Location
+46110506-d mixed Ice Edge or Boundary From Radar
+46110506-e mixed Ice Edge or Boundary From Radar
+46110602-d mixed Cracks at a Specific Location
+46110602-e mixed Cracks at a Specific Location
 46110603-d screen-only Lead
 46110603-e screen-only Lead
 46110604-d screen-only Frozen Lead
 46110604-e screen-only Frozen Lead
-46120102-d screen-only Depth Curve
-46120102-e screen-only Depth Curve
-46120103-d screen-only Depth Contour
-46120103-e screen-only Depth Contour
 46120104-d mixed Depth Area
 46120104-e mixed Depth Area
-46120201-d screen-only Coastline
-46120201-e screen-only Coastline
 46120305-d screen-only Anchorage - Line
 46120305-e screen-only Anchorage - Line
 46120306-d screen-only Anchorage - Area
 46120306-e screen-only Anchorage - Area
-46120308-d screen-only Pier/Wharf/Quay
-46120308-e screen-only Pier/Wharf/Quay
 46120312-d mixed Fish Traps - Area
 46120312-e mixed Fish Traps - Area
-46120319-d screen-only Ramp - Above Water
-46120319-e screen-only Ramp - Above Water
-46120320-d screen-only Ramp - Below Water
-46120320-e screen-only Ramp - Below Water
-46120326-d screen-only Breakwater/Groin/Jetty - Above Water
-46120326-e screen-only Breakwater/Groin/Jetty - Above Water
-46120327-d screen-only Breakwater/Groin/Jetty - Below Water
-46120327-e screen-only Breakwater/Groin/Jetty - Below Water
-46120328-d screen-only Seawall
-46120328-e screen-only Seawall
-46120407-d screen-only Leading Line
-46120407-e screen-only Leading Line
+46120407-d mixed Leading Line
+46120407-e mixed Leading Line
 46120505-d mixed Foul Ground - Area
 46120505-e mixed Foul Ground - Area
 46120507-d mixed Kelp/Seaweed - Area
 46120507-e mixed Kelp/Seaweed - Area
 46120512-d screen-only Reef
 46120512-e screen-only Reef
-46120702-d screen-only Current Flow - Ebb
-46120702-e screen-only Current Flow - Ebb
-46120703-d screen-only Current Flow - Flood
-46120703-e screen-only Current Flow - Flood
+46120702-d mixed Current Flow - Ebb
+46120702-e mixed Current Flow - Ebb
+46120703-d mixed Current Flow - Flood
+46120703-e mixed Current Flow - Flood
 46130203-d mixed Moderate
 46130203-e mixed Moderate
 46130204-d mixed Steep

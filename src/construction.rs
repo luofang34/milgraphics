@@ -133,9 +133,10 @@ pub(crate) enum Decoration {
         geographic: Vec<bool>,
         shape_count: usize,
         /// Edges between control points, by index of their first point
-        /// (the last closes the ring), that are geographic lines: stroked
-        /// segments on them are not drawn again (`family::ported::baseline`).
-        baseline: Vec<usize>,
+        /// (the last closes the ring), with the path each follows, that are
+        /// geographic lines: stroked segments on them are not drawn again
+        /// (`family::ported::baseline`).
+        baseline: Vec<(usize, crate::family::ported_baseline::Edge)>,
         part: PartId,
         /// Ground size the graphic spans, in metres, so a view can tell how
         /// large it appears when it has no geographic parts to measure.

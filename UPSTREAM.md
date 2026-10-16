@@ -74,6 +74,7 @@ Each is bounded by a test in `tests/oracle_compare.rs`.
 | All | Edges are WGS84 geodesics; mil-sym draws straight lines in its local pixel frame | Geographic correctness across projections; at tactical scale the two agree | Geometry within 0.5–1.5 px |
 | Axes of advance | Body half-width is exactly half the width point's offset; mil-sym truncates to whole pixels | Ground-sized geometry must not depend on the display scale | Geometry within 1.5 px |
 | Axis of Advance for Feint | The dashed chevron is the arrowhead grown 1.5 times about the centre of its base, so it carries the body-width difference above at 1.5 times its size | Ground-sized geometry | Geometry within 3 px (`tests/oracle_catalog.rs`) |
+| Smooth METOC and hydrographic lines | The line follows upstream's spline on the ground; mil-sym joins samples taken a fixed number of pixels apart and cut to whole pixels, so its line is within about a pixel of the spline, and Ice Edge or Boundary From Radar, sampled every 20 px, cuts across its bends | Ground-sized geometry | Geometry within 2 px; Ice Edge or Boundary From Radar within 3 px (`tests/oracle_catalog.rs`) |
 | Main Attack | The designation is anchored at the geodesic midpoint of its control-point segment; mil-sym uses a midpoint of its internally adjusted pixel path | Label position must follow the control points, not renderer internals | Up to 12 px along the text, 2.5 px across |
 | Air Corridor | Empty `DTG Start:`/`DTG End:` lines are omitted; mil-sym prints them with no value | The standard's information block shows fields that have values | Label sets compared without empty fields |
 | Air Corridor | The information block is stacked outside the corridor edge of the first segment that is uppermost on screen, and "AC T" is placed inside every segment; mil-sym stacks the block across the middle segment, where it overlaps the corridor edge, with one "AC T" | 2525E change 1: the box goes "between points 1 and 2 in such a way it does not obscure the symbol", and the field inside appears "within each segment" | Label texts compared; positions reviewed in the golden SVGs |
@@ -90,9 +91,10 @@ pixel space. milgraphics feeds it control points projected for the view and
 draws its output as the screen tier. Shapes that come out identical on the
 ground at two pixel sizes (`src/family/ported.rs`) form the geographic tier
 instead, as do edges between control points that the renderer strokes whole
-at both sizes (`src/family/ported/baseline.rs`): the line of a front or an
-obstacle line is drawn on the ground, and only its teeth, ticks and glyphs
-in pixels. `tests/fixtures/oracle/screen_tier.txt` lists every graphic that
+at both sizes, straight or along the spline of a smooth line
+(`src/family/ported/baseline.rs`): the line of a front, an obstacle line or
+an isopleth is drawn on the ground, and only its teeth, ticks and glyphs in
+pixels. `tests/fixtures/oracle/screen_tier.txt` lists every graphic that
 still draws anything in the screen tier.
 
 | Port | Upstream source (mil-sym-java `src/main/java/armyc2/c5isr/`) |

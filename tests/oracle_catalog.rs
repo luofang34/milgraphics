@@ -49,6 +49,12 @@ mod catalog {
             "DEPTH_AREA bands are drawn as lines along their centres, not as fills with a hole",
         ),
         (
+            "46110506",
+            3.0,
+            "the ice edge follows its spline on the ground; mil-sym draws chords between samples \
+             20 px apart, which cut across its bends",
+        ),
+        (
             "25151406",
             3.0,
             "the feint chevron, 1.5 times the arrowhead, enlarges the arrowhead's \

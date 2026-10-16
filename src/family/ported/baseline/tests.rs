@@ -1,3 +1,4 @@
+use super::Edge;
 use crate::construction::{Decoration, GeoGeometry, PartRole};
 use crate::definition::{ControlPoint, GraphicDefinition, GraphicId};
 use crate::family::{Config, construct};
@@ -17,7 +18,7 @@ fn def(sidc: &str) -> GraphicDefinition {
     )
 }
 
-fn baseline(c: &crate::construction::Construction) -> Vec<usize> {
+fn baseline(c: &crate::construction::Construction) -> Vec<(usize, Edge)> {
     c.decorations
         .iter()
         .find_map(|d| match &d.0 {
@@ -30,7 +31,11 @@ fn baseline(c: &crate::construction::Construction) -> Vec<usize> {
 #[test]
 fn a_cold_front_draws_its_line_on_the_ground_and_its_teeth_on_screen() {
     let c = construct(&def("11004500001103010000"), &Config::default()).unwrap();
-    assert_eq!(baseline(&c), [0, 1], "both edges, and no closing edge");
+    assert_eq!(
+        baseline(&c),
+        [(0, Edge::Straight), (1, Edge::Straight)],
+        "both edges, and no closing edge"
+    );
     let lines: Vec<&Vec<GeoPoint>> = c
         .parts
         .iter()
@@ -88,4 +93,38 @@ fn the_screen_tier_holds_nothing_on_the_ground_line() {
             );
         }
     }
+}
+
+#[test]
+fn a_depth_curve_follows_its_spline_on_the_ground() {
+    let d = def("15004600001201020000");
+    let c = construct(&d, &Config::default()).unwrap();
+    assert_eq!(baseline(&c), [(0, Edge::Spline), (1, Edge::Spline)]);
+    let control: Vec<GeoPoint> = d.positions().collect();
+    let line = c
+        .parts
+        .iter()
+        .find_map(|p| match (&p.role, &p.geometry) {
+            (PartRole::Line, GeoGeometry::Line(points)) => Some(points),
+            _ => None,
+        })
+        .unwrap();
+    assert!(
+        line.len() > control.len(),
+        "the curve is sampled between control points"
+    );
+    assert!(line.contains(&control[1]), "and passes through them");
+    assert_eq!(
+        (line.first(), line.last()),
+        (control.first(), control.last())
+    );
+}
+
+#[test]
+fn a_line_changing_style_partway_along_an_edge_keeps_that_edge_in_pixels() {
+    // A leading line is solid for the first half of its samples and dashed
+    // after, so the edge it changes on is not one line.
+    let c = construct(&def("15004600001204070000"), &Config::default()).unwrap();
+    let edges = baseline(&c);
+    assert!(edges.iter().all(|&(i, _)| i == 0), "{edges:?}");
 }
