@@ -1,0 +1,506 @@
+# Declared graphics whose geographic tier is empty: every part is drawn by
+# the ported renderer in screen units. tests/catalog/screen_only.rs fails
+# when a listed case gains geographic parts or an unlisted one loses them.
+# Case id, then the catalog name.
+25140100-app6d Forward Line of Troops
+25140100-app6e Forward Line of Troops
+25140100-d Forward Line of Troops
+25140100-e Forward Line of Troops
+25140200-app6d Line of Contact
+25140601-app6d Friendly Aviation
+25140601-app6e Friendly Aviation
+25140601-d Friendly Aviation
+25140601-e Friendly Aviation
+25140602-app6d Friendly Main Attack /Decisive
+25140602-app6e Friendly Main Attack /Decisive
+25140602-d Friendly Main Attack /Decisive
+25140602-e Friendly Main Attack /Decisive
+25141700-app6d Ambush
+25141700-app6e Ambush
+25141700-d Ambush
+25141700-e Ambush
+25151000-app6d Fortified Area
+25151000-d Fortified Area
+25151000-e Fortified Area
+25151203-app6d Strong Point
+25151203-app6e Strong Point
+25151203-d Strong Point
+25151203-e Strong Point
+25151204-app6d Contain
+25151204-app6e Contain
+25151204-d Contain
+25151204-e Contain
+25151205-app6d Retain
+25151205-app6e Retain
+25151205-d Retain
+25151205-e Retain
+25151800-app6d Encirclement
+25151800-app6e Encirclement
+25151800-d Encirclement
+25151800-e Encirclement
+25152000-app6d Attack by Fire Position
+25152000-app6e Attack by Fire Position
+25152000-d Attack by Fire Position
+25152000-e Attack by Fire Position
+25152100-app6d Support by Fire
+25152100-app6e Support by Fire
+25152100-d Support by Fire
+25152100-e Support by Fire
+25152200-app6d Search Area/Reconnaissance Area
+25152200-app6e Search Area/Reconnaissance Area
+25152200-d Search Area/Reconnaissance Area
+25152200-e Search Area/Reconnaissance Area
+25152300-app6e Supporting Attack
+25152600-app6e Area Defense
+25152600-e Area Defense
+25152700-app6e Frontal Attack
+25152700-e Frontal Attack
+25152800-app6e Mobile Defense
+25152800-e Mobile Defense
+25152900-app6e Turning Movement
+25152900-e Turning Movement
+25218400-app6d Navigational
+25218400-app6e Navigational
+25218400-d Navigational
+25218400-e Navigational
+25240701-app6d Linear Target
+25240701-app6e Linear Target
+25240701-d Linear Target
+25240701-e Linear Target
+25240702-app6d Linear Smoke Target
+25240702-app6e Linear Smoke Target
+25240702-d Linear Smoke Target
+25240702-e Linear Smoke Target
+25240703-app6d Final Protective Fire (FPF)
+25240703-app6e Final Protective Fire (FPF)
+25240703-d Final Protective Fire (FPF)
+25240703-e Final Protective Fire (FPF)
+25270100-app6d Obstacle Belt
+25270100-app6e Obstacle Belt
+25270100-d Obstacle Belt
+25270100-e Obstacle Belt
+25270200-app6d Obstacle Zone
+25270200-app6e Obstacle Zone
+25270200-d Obstacle Zone
+25270200-e Obstacle Zone
+25270300-app6d Obstacle Free Zone
+25270300-app6e Obstacle Free Zone
+25270300-d Obstacle Free Zone
+25270300-e Obstacle Free Zone
+25270400-app6d Obstacle Restricted Zone
+25270400-app6e Obstacle Restricted Zone
+25270400-d Obstacle Restricted Zone
+25270400-e Obstacle Restricted Zone
+25270502-app6d Disrupt
+25270502-app6e Disrupt
+25270502-d Disrupt
+25270502-e Disrupt
+25270504-app6d Turn
+25270504-app6e Turn
+25270504-d Turn
+25270504-e Turn
+25270602-app6d Difficult
+25270602-app6e Difficult
+25270602-d Difficult
+25270602-e Difficult
+25270603-app6d Impossible
+25270603-app6e Impossible
+25270603-d Impossible
+25270603-e Impossible
+25271100-app6d Bridge or Gap
+25271100-app6e Bridge or Gap
+25271100-d Bridge or Gap
+25271100-e Bridge or Gap
+25271300-app6d Assault Crossing
+25271300-app6e Assault Crossing
+25271300-d Assault Crossing
+25271300-e Assault Crossing
+25272100-app6e Minimum Safe Distance Zone
+25272100-d Minimum Safe Distance Zone
+25272100-e Minimum Safe Distance Zone
+25280100-app6d Abatis
+25280100-app6e Abatis
+25280100-d Abatis
+25280100-e Abatis
+25282003-app6d Overhead Wire
+25282003-app6e Overhead Wire
+25282003-d Overhead Wire
+25282003-e Overhead Wire
+25290100-app6d Obstacle Line
+25290100-app6e Obstacle Line
+25290100-d Obstacle Line
+25290100-e Obstacle Line
+25290201-app6d Under Construction
+25290201-app6e Under Construction
+25290201-d Under Construction
+25290201-e Under Construction
+25290202-app6d Completed
+25290202-app6e Completed
+25290202-d Completed
+25290202-e Completed
+25290203-app6d Reinforced, with Antitank Mines
+25290203-app6e Reinforced, with Antitank Mines
+25290203-d Reinforced, with Antitank Mines
+25290203-e Reinforced, with Antitank Mines
+25290204-app6d Antitank Wall
+25290204-d Antitank Wall
+25290204-e Antitank Wall
+25290301-app6d Unspecified Wire
+25290301-app6e Unspecified Wire
+25290301-d Unspecified Wire
+25290301-e Unspecified Wire
+25290302-app6d Single Fence Wire
+25290302-app6e Single Fence Wire
+25290302-d Single Fence Wire
+25290302-e Single Fence Wire
+25290303-app6d Double Fence Wire
+25290303-app6e Double Fence Wire
+25290303-d Double Fence Wire
+25290303-e Double Fence Wire
+25290304-app6d Double Apron Fence
+25290304-app6e Double Apron Fence
+25290304-d Double Apron Fence
+25290304-e Double Apron Fence
+25290305-app6d Low Wire Fence
+25290305-app6e Low Wire Fence
+25290305-d Low Wire Fence
+25290305-e Low Wire Fence
+25290306-app6d High Wire Fence
+25290306-app6e High Wire Fence
+25290306-d High Wire Fence
+25290306-e High Wire Fence
+25290307-app6d Single Concertina
+25290307-app6e Single Concertina
+25290307-d Single Concertina
+25290307-e Single Concertina
+25290308-app6d Double Strand Concertina
+25290308-app6e Double Strand Concertina
+25290308-d Double Strand Concertina
+25290308-e Double Strand Concertina
+25290309-app6d Triple Strand Concertina
+25290309-app6e Triple Strand Concertina
+25290309-d Triple Strand Concertina
+25290309-e Triple Strand Concertina
+25290400-app6d Mine Cluster
+25290400-app6e Mine Cluster
+25290400-d Mine Cluster
+25290400-e Mine Cluster
+25290600-app6d Lane
+25290600-app6e Safe Lane or Gap
+25290600-d Lane
+25290600-e Lane
+25290700-app6d Ferry
+25290700-app6e Ferry
+25290700-d Ferry
+25290700-e Ferry
+25290800-app6d Raft Site
+25290800-app6e Raft Site
+25290800-d Raft Site
+25290800-e Raft Site
+25290900-app6d Fortified Line
+25290900-app6e Fortified Line
+25290900-d Fortified Line
+25290900-e Fortified Line
+25291000-app6d Fighting Position
+25291000-d Fighting Position
+25291000-e Fighting Position
+25330100-app6d Moving Convoy
+25330100-app6e Moving Convoy
+25330100-d Moving Convoy
+25330100-e Moving Convoy
+25330200-app6d Halted Convoy
+25330200-app6e Halted Convoy
+25330200-d Halted Convoy
+25330200-e Halted Convoy
+25330301-app6d One Way Traffic
+25330301-app6e One Way Traffic
+25330301-d One Way Traffic
+25330301-e One Way Traffic
+25330302-app6d Two Way Traffic
+25330302-app6e Two Way Traffic
+25330302-d Two Way Traffic
+25330302-e Two Way Traffic
+25330303-app6d Alternating Traffic
+25330303-app6e Alternating Traffic
+25330303-d Alternating Traffic
+25330303-e Alternating Traffic
+25330401-app6d One Way Traffic
+25330401-app6e One Way Traffic
+25330401-d One Way Traffic
+25330401-e One Way Traffic
+25330402-app6d Two Way Traffic
+25330402-app6e Two Way Traffic
+25330402-d Two Way Traffic
+25330402-e Two Way Traffic
+25330403-app6d Alternating Traffic
+25330403-app6e Alternating Traffic
+25330403-d Alternating Traffic
+25330403-e Alternating Traffic
+25330501-app6e One Way Traffic
+25330501-e One Way Traffic
+25330502-app6e Alternating Traffic
+25330502-e Alternating Traffic
+25340200-app6d Breach
+25340200-app6e Breach
+25340200-d Breach
+25340200-e Breach
+25340300-app6d Bypass
+25340300-app6e Bypass
+25340300-d Bypass
+25340300-e Bypass
+25340400-app6d Canalize
+25340400-app6e Canalize
+25340400-d Canalize
+25340400-e Canalize
+25340500-app6d Clear
+25340500-app6e Clear
+25340500-d Clear
+25340500-e Clear
+25340600-app6d Counterattack
+25340600-app6e Counterattack
+25340600-d Counterattack
+25340600-e Counterattack
+25340700-app6d Counterattack by Fire
+25340700-app6e Counterattack by Fire
+25340700-d Counterattack by Fire
+25340700-e Counterattack by Fire
+25341000-app6d Disrupt
+25341000-app6e Disrupt
+25341000-d Disrupt
+25341000-e Disrupt
+25341200-app6d Follow and Assume
+25341200-app6e Follow and Assume
+25341200-d Follow and Assume
+25341200-e Follow and Assume
+25341300-app6d Follow and Support
+25341300-app6e Follow and Support
+25341300-d Follow and Support
+25341300-e Follow and Support
+25341500-app6d Isolate
+25341500-app6e Isolate
+25341500-d Isolate
+25341500-e Isolate
+25341700-app6d Occupy
+25341700-app6e Occupy
+25341700-d Occupy
+25341700-e Occupy
+25341800-app6d Penetrate
+25341800-app6e Penetrate
+25341800-d Penetrate
+25341800-e Penetrate
+25341900-app6d Relief in Place (RIP)
+25341900-app6e Relief in Place (RIP)
+25341900-d Relief in Place (RIP)
+25341900-e Relief in Place (RIP)
+25342100-app6d Secure
+25342100-app6e Secure
+25342100-d Secure
+25342100-e Secure
+25342201-app6d Cover
+25342201-app6e Cover
+25342201-d Cover
+25342201-e Cover
+25342202-app6d Guard
+25342202-app6e Guard
+25342202-d Guard
+25342202-e Guard
+25342203-app6d Screen
+25342203-app6e Screen
+25342203-d Screen
+25342203-e Screen
+25342300-app6d Seize
+25342300-app6e Seize
+25342300-d Seize
+25342300-e Seize
+25342600-app6d Cordon and Knock
+25342600-app6e Cordon and Knock
+25342600-d Cordon and Knock
+25342600-e Cordon and Knock
+25342700-app6d Cordon and Search
+25342700-app6e Cordon and Search
+25342700-d Cordon and Search
+25342700-e Cordon and Search
+25342900-app6d Advance to Contact
+25342900-app6e Movement to Contact
+25342900-e Movement to Contact
+25343000-app6d Capture
+25343000-app6e Capture
+25343200-app6d Control
+25343300-app6d Demonstration
+25343300-app6e Demonstrate/Demonstration
+25343300-e Demonstrate/Demonstration
+25343400-app6d Deny
+25343400-app6e Deny
+25343500-app6d Envelop
+25343500-app6e Envelopment
+25343500-e Envelopment
+25343600-app6d Escort
+25343600-app6e Escort
+25343700-app6d Exfiltrate
+25343700-app6e Exfiltrate
+25343800-app6d Infiltrate
+25343800-app6e Infiltration
+25343800-e Infiltration
+25343900-app6d Locate
+25343900-app6e Locate
+25344500-app6e Evacuate/Evacuation
+25344500-e Evacuate/Evacuation
+25344600-app6e Recover
+25344700-app6e Turn
+25344700-e Turn
+45110301-app6d Cold Front
+45110301-d Cold Front
+45110301-e Cold Front
+45110302-app6d Upper Cold Front
+45110302-d Upper Cold Front
+45110302-e Upper Cold Front
+45110303-app6d Cold Frontogenesis
+45110303-d Cold Frontogenesis
+45110303-e Cold Frontogenesis
+45110304-app6d Cold Frontolysis
+45110304-d Cold Frontolysis
+45110304-e Cold Frontolysis
+45110305-app6d Warm Front
+45110305-d Warm Front
+45110305-e Warm Front
+45110306-app6d Upper Warm Front
+45110306-d Upper Warm Front
+45110306-e Upper Warm Front
+45110307-app6d Warm Frontogenesis
+45110307-d Warm Frontogenesis
+45110307-e Warm Frontogenesis
+45110308-app6d Warm Frontolysis
+45110308-d Warm Frontolysis
+45110308-e Warm Frontolysis
+45110309-app6d Occluded Front
+45110309-d Occluded Front
+45110309-e Occluded Front
+45110310-app6d Upper Occluded Front
+45110310-d Upper Occluded Front
+45110310-e Upper Occluded Front
+45110311-app6d Occluded Frontolysis
+45110311-d Occluded Frontolysis
+45110311-e Occluded Frontolysis
+45110312-app6d Stationary Front
+45110312-d Stationary Front
+45110312-e Stationary Front
+45110313-app6d Upper Stationary Front
+45110313-d Upper Stationary Front
+45110313-e Upper Stationary Front
+45110314-app6d Stationary Frontogenesis
+45110314-d Stationary Frontogenesis
+45110314-e Stationary Frontogenesis
+45110315-app6d Stationary Frontolysis
+45110315-d Stationary Frontolysis
+45110315-e Stationary Frontolysis
+45110401-app6d Trough Axis
+45110401-d Trough Axis
+45110401-e Trough Axis
+45110402-app6d Upper Trough Axis
+45110402-d Upper Trough Axis
+45110402-e Upper Trough Axis
+45110403-app6d Ridge Axis
+45110403-d Ridge Axis
+45110403-e Ridge Axis
+45110404-app6d Severe Squall Line
+45110404-d Severe Squall Line
+45110404-e Severe Squall Line
+45110405-app6d Instability Line
+45110405-d Instability Line
+45110405-e Instability Line
+45110406-app6d Shear Line
+45110406-d Shear Line
+45110406-e Shear Line
+45110407-e Inter-Tropical Convergence Zone
+45110408-app6d Convergence Line
+45110408-d Convergence Line
+45110408-e Convergence Line
+45110409-app6d Inter-Tropical Discontinuity
+45110409-d Inter-Tropical Discontinuity
+45110409-e Inter-Tropical Discontinuity
+45140300-app6d Jet Stream
+45140300-d Jet Stream
+45140300-e Jet Stream
+45140400-app6d Stream Line
+45140400-d Stream Line
+45140400-e Stream Line
+45170200-app6d Marginal Visual Flight Rule (MVFR)
+45170200-d Marginal Visual Flight Rule (MVFR)
+45170200-e Marginal Visual Flight Rule (MVFR)
+45170400-app6d Icing
+45170400-d Icing
+45170400-e Icing
+45180100-app6d Isobar - Surface
+45180100-d Isobar - Surface
+45180100-e Isobar - Surface
+45180200-app6d Contour - Upper Air
+45180200-d Contour - Upper Air
+45180200-e Contour - Upper Air
+45180300-app6d Isotherm
+45180300-d Isotherm
+45180300-e Isotherm
+45180400-app6d Isotach
+45180400-d Isotach
+45180400-e Isotach
+45180500-app6d Isodrosotherm
+45180500-d Isodrosotherm
+45180500-e Isodrosotherm
+45180600-app6d Thickness
+45180600-d Thickness
+45180600-e Thickness
+46110501-d Limits of Visual Observation
+46110501-e Limits of Visual Observation
+46110502-d Limits of Under Cast
+46110502-e Limits of Under Cast
+46110503-d Limits of Radar Observation
+46110503-e Limits of Radar Observation
+46110504-d Observed Ice Edge or Boundary
+46110504-e Observed Ice Edge or Boundary
+46110505-d Estimated Ice Edge or Boundary
+46110505-e Estimated Ice Edge or Boundary
+46110506-d Ice Edge or Boundary From Radar
+46110506-e Ice Edge or Boundary From Radar
+46110601-d Cracks
+46110601-e Cracks
+46110602-d Cracks at a Specific Location
+46110602-e Cracks at a Specific Location
+46110603-d Lead
+46110603-e Lead
+46110604-d Frozen Lead
+46110604-e Frozen Lead
+46120102-d Depth Curve
+46120102-e Depth Curve
+46120103-d Depth Contour
+46120103-e Depth Contour
+46120201-d Coastline
+46120201-e Coastline
+46120305-d Anchorage - Line
+46120305-e Anchorage - Line
+46120306-d Anchorage - Area
+46120306-e Anchorage - Area
+46120308-d Pier/Wharf/Quay
+46120308-e Pier/Wharf/Quay
+46120319-d Ramp - Above Water
+46120319-e Ramp - Above Water
+46120320-d Ramp - Below Water
+46120320-e Ramp - Below Water
+46120326-d Breakwater/Groin/Jetty - Above Water
+46120326-e Breakwater/Groin/Jetty - Above Water
+46120327-d Breakwater/Groin/Jetty - Below Water
+46120327-e Breakwater/Groin/Jetty - Below Water
+46120328-d Seawall
+46120328-e Seawall
+46120407-d Leading Line
+46120407-e Leading Line
+46120512-d Reef
+46120512-e Reef
+46120702-d Current Flow - Ebb
+46120702-e Current Flow - Ebb
+46120703-d Current Flow - Flood
+46120703-e Current Flow - Flood
+46150300-d Restricted Area
+46150300-e Restricted Area
+46160100-d Submarine Cable
+46160100-e Submarine Cable
+46160800-d Pipelines/Pipe
+46160800-e Pipelines/Pipe
