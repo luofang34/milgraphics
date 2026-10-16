@@ -26,6 +26,7 @@ mod validate;
 #[cfg(test)]
 mod tests;
 
+pub(crate) use axis::AxisKind;
 pub(crate) use context::Ctx;
 pub(crate) use ported::{ms_info, shape_fill, shape_outline};
 
@@ -39,8 +40,8 @@ pub(crate) enum Family {
         /// Label prefix, e.g. "NAI".
         prefix: &'static str,
     },
-    /// An axis of advance with a notched arrowhead (Main Attack).
-    Axis,
+    /// An axis of advance, drawn in the form of its kind.
+    Axis(AxisKind),
     /// An air corridor of width `AM`, labelled "`prefix` T" along each leg.
     Corridor {
         /// Name abbreviation, e.g. "AC" or "LLTR".
@@ -62,7 +63,7 @@ impl Family {
     pub(crate) fn allows_vertex_edits(self) -> bool {
         match self {
             Self::PhaseLine | Self::LabelledArea { .. } | Self::Corridor { .. } => true,
-            Self::Axis | Self::RangeFanSector | Self::Bypass | Self::Ported => false,
+            Self::Axis(_) | Self::RangeFanSector | Self::Bypass | Self::Ported => false,
         }
     }
 }
@@ -213,7 +214,7 @@ pub fn construct(
     match spec.family {
         Family::PhaseLine => phase_line::construct(&mut ctx, definition)?,
         Family::LabelledArea { prefix } => area::construct(&mut ctx, definition, prefix)?,
-        Family::Axis => axis::construct(&mut ctx, definition)?,
+        Family::Axis(kind) => axis::construct(&mut ctx, definition, kind)?,
         Family::Corridor { prefix, open } => {
             corridor::construct(&mut ctx, definition, prefix, open)?
         }

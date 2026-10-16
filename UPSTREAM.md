@@ -30,8 +30,9 @@ code 10) are declared on agreement with the oracle alone: every multipoint
 graphic upstream draws for them is declared when the ported renderer matches
 it, with upstream's catalog draw rule, and `SymbolSpec::reference` is `None`.
 
-APP-6 symbols are drawn by the ported renderer throughout, including the six
-graphics that 2525D/E change 1 draw with milgraphics' own families.
+APP-6 symbols are drawn by the ported renderer, except those declared by hand
+in `src/support/table` (among them every axis of advance, which is drawn by
+the axis family in all four editions so its outline is ground-sized).
 
 Draw rules are per edition. Phase Line is Line2 in 2525D change 1 and Line1 in
 2525E change 1; Main Attack is Axis2 and Axis1 respectively (2525E change 1
@@ -71,7 +72,8 @@ Each is bounded by a test in `tests/oracle_compare.rs`.
 | Graphic | Difference | Reason | Bound |
 |---|---|---|---|
 | All | Edges are WGS84 geodesics; mil-sym draws straight lines in its local pixel frame | Geographic correctness across projections; at tactical scale the two agree | Geometry within 0.5–1.5 px |
-| Main Attack | Body half-width is exactly half the width point's offset; mil-sym truncates to whole pixels | Ground-sized geometry must not depend on the display scale | Geometry within 1.5 px |
+| Axes of advance | Body half-width is exactly half the width point's offset; mil-sym truncates to whole pixels | Ground-sized geometry must not depend on the display scale | Geometry within 1.5 px |
+| Axis of Advance for Feint | The dashed chevron is the arrowhead grown 1.5 times about the centre of its base, so it carries the body-width difference above at 1.5 times its size | Ground-sized geometry | Geometry within 3 px (`tests/oracle_catalog.rs`) |
 | Main Attack | The designation is anchored at the geodesic midpoint of its control-point segment; mil-sym uses a midpoint of its internally adjusted pixel path | Label position must follow the control points, not renderer internals | Up to 12 px along the text, 2.5 px across |
 | Air Corridor | Empty `DTG Start:`/`DTG End:` lines are omitted; mil-sym prints them with no value | The standard's information block shows fields that have values | Label sets compared without empty fields |
 | Air Corridor | The information block is stacked outside the corridor edge of the first segment that is uppermost on screen, and "AC T" is placed inside every segment; mil-sym stacks the block across the middle segment, where it overlaps the corridor edge, with one "AC T" | 2525E change 1: the box goes "between points 1 and 2 in such a way it does not obscure the symbol", and the field inside appears "within each segment" | Label texts compared; positions reviewed in the golden SVGs |
@@ -81,7 +83,9 @@ Each is bounded by a test in `tests/oracle_compare.rs`.
 
 ## Ported renderer
 
-Every multipoint graphic other than the six above is drawn by `src/engine/`,
+Every multipoint graphic other than the six above and the other axes of
+advance (151401, 151402, 151404, 151406, drawn by the axis family in
+every edition so their outline is ground-sized) is drawn by `src/engine/`,
 a port of mil-sym-java's multipoint renderer (Apache-2.0, pinned commit in
 `pin.json`) that runs in pixel space. milgraphics feeds it control points
 projected for the view and draws its output as the screen tier; shapes that
