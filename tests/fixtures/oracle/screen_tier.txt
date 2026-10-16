@@ -23,14 +23,14 @@
 25140500-app6e mixed Field of Fire
 25140500-d mixed Principle Direction of Fire
 25140500-e mixed Principle Direction of Fire
-25140601-app6d screen-only Friendly Aviation
-25140601-app6e screen-only Aviation
-25140601-d screen-only Friendly Aviation
-25140601-e screen-only Friendly Aviation
-25140602-app6d screen-only Friendly Main Attack /Decisive
-25140602-app6e screen-only Main Attack
-25140602-d screen-only Friendly Main Attack /Decisive
-25140602-e screen-only Friendly Main Attack /Decisive
+25140601-app6d mixed Friendly Aviation
+25140601-app6e mixed Aviation
+25140601-d mixed Friendly Aviation
+25140601-e mixed Friendly Aviation
+25140602-app6d mixed Friendly Main Attack /Decisive
+25140602-app6e mixed Main Attack
+25140602-d mixed Friendly Main Attack /Decisive
+25140602-e mixed Friendly Main Attack /Decisive
 25140603-app6d mixed Friendly Supporting Attack
 25140603-app6e mixed Supporting Attack
 25140603-d mixed Friendly Supporting Attack
@@ -49,10 +49,10 @@
 25151100-app6e mixed Limited Access Area
 25151100-d mixed Limited Access Area
 25151100-e mixed Limited Access Area
-25151203-app6d screen-only Strong Point
-25151203-app6e screen-only Strong Point
-25151203-d screen-only Strong Point
-25151203-e screen-only Strong Point
+25151203-app6d mixed Strong Point
+25151203-app6e mixed Strong Point
+25151203-d mixed Strong Point
+25151203-e mixed Strong Point
 25151204-app6d screen-only Contain
 25151204-app6e screen-only Contain
 25151204-d screen-only Contain
@@ -61,18 +61,18 @@
 25151205-app6e screen-only Retain
 25151205-d screen-only Retain
 25151205-e screen-only Retain
-25151800-app6d screen-only Encirclement
-25151800-app6e screen-only Encirclement
-25151800-d screen-only Encirclement
-25151800-e screen-only Encirclement
-25152000-app6d screen-only Attack by Fire Position
-25152000-app6e screen-only Attack by Fire
-25152000-d screen-only Attack by Fire Position
-25152000-e screen-only Attack by Fire Position
-25152100-app6d screen-only Support by Fire
-25152100-app6e screen-only Support by Fire
-25152100-d screen-only Support by Fire
-25152100-e screen-only Support by Fire
+25151800-app6d mixed Encirclement
+25151800-app6e mixed Encirclement
+25151800-d mixed Encirclement
+25151800-e mixed Encirclement
+25152000-app6d mixed Attack by Fire Position
+25152000-app6e mixed Attack by Fire
+25152000-d mixed Attack by Fire Position
+25152000-e mixed Attack by Fire Position
+25152100-app6d mixed Support by Fire
+25152100-app6e mixed Support by Fire
+25152100-d mixed Support by Fire
+25152100-e mixed Support by Fire
 25152200-app6d screen-only Search Area/Reconnaissance Area
 25152200-app6e screen-only Search Area/Reconnaissance Area
 25152200-d screen-only Search Area/Reconnaissance Area
@@ -84,18 +84,18 @@
 25152600-e screen-only Area Defense
 25152700-app6e screen-only Frontal Attack
 25152700-e screen-only Frontal Attack
-25152800-app6e screen-only Mobile Defence
-25152800-e screen-only Mobile Defense
+25152800-app6e mixed Mobile Defence
+25152800-e mixed Mobile Defense
 25152900-app6e screen-only Turning Movement
 25152900-e screen-only Turning Movement
 25172000-app6d mixed Weapons Free Zone
 25172000-app6e mixed Weapons Free Zone
 25172000-d mixed Weapons Free Zone
 25172000-e mixed Weapons Free Zone
-25218400-app6d screen-only Navigational
-25218400-app6e screen-only Navigational
-25218400-d screen-only Navigational
-25218400-e screen-only Navigational
+25218400-app6d mixed Navigational
+25218400-app6e mixed Navigational
+25218400-d mixed Navigational
+25218400-e mixed Navigational
 25240301-app6d mixed Irregular
 25240301-app6e mixed Irregular
 25240301-d mixed Irregular
@@ -108,18 +108,18 @@
 25240303-app6e mixed Circular
 25240303-d mixed Circular
 25240303-e mixed Circular
-25240701-app6d screen-only Linear Target
-25240701-app6e screen-only Linear Target
-25240701-d screen-only Linear Target
-25240701-e screen-only Linear Target
-25240702-app6d screen-only Linear Smoke Target
-25240702-app6e screen-only Linear Smoke Target
-25240702-d screen-only Linear Smoke Target
-25240702-e screen-only Linear Smoke Target
-25240703-app6d screen-only Final Protective Fire (FPF)
-25240703-app6e screen-only Final Protective Fire (FPF)
-25240703-d screen-only Final Protective Fire (FPF)
-25240703-e screen-only Final Protective Fire (FPF)
+25240701-app6d mixed Linear Target
+25240701-app6e mixed Linear Target
+25240701-d mixed Linear Target
+25240701-e mixed Linear Target
+25240702-app6d mixed Linear Smoke Target
+25240702-app6e mixed Linear Smoke Target
+25240702-d mixed Linear Smoke Target
+25240702-e mixed Linear Smoke Target
+25240703-app6d mixed Final Protective Fire (FPF)
+25240703-app6e mixed Final Protective Fire (FPF)
+25240703-d mixed Final Protective Fire (FPF)
+25240703-e mixed Final Protective Fire (FPF)
 25242200-app6d mixed Weapon/Sensor Range fan, Sector
 25242200-app6e mixed Weapon/Sensor Range Fan, Sector
 25242200-d mixed Weapon/Sensor Range fan, Sector
@@ -143,10 +143,10 @@
 25270400-app6e screen-only Obstacle Restricted Zone
 25270400-d screen-only Obstacle Restricted Zone
 25270400-e screen-only Obstacle Restricted Zone
-25270502-app6d screen-only Disrupt
-25270502-app6e screen-only Disrupt
-25270502-d screen-only Disrupt
-25270502-e screen-only Disrupt
+25270502-app6d mixed Disrupt
+25270502-app6e mixed Disrupt
+25270502-d mixed Disrupt
+25270502-e mixed Disrupt
 25270504-app6d screen-only Turn
 25270504-app6e screen-only Turn
 25270504-d screen-only Turn
@@ -168,14 +168,14 @@
 25270801-d mixed Fenced
 25270801-e mixed Fenced
 25270901-app6d mixed Fenced Decoy
-25271100-app6d screen-only Bridge or Gap
-25271100-app6e screen-only Bridge
-25271100-d screen-only Bridge or Gap
-25271100-e screen-only Bridge or Gap
-25271300-app6d screen-only Assault Crossing
-25271300-app6e screen-only Assault Crossing
-25271300-d screen-only Assault Crossing
-25271300-e screen-only Assault Crossing
+25271100-app6d mixed Bridge or Gap
+25271100-app6e mixed Bridge
+25271100-d mixed Bridge or Gap
+25271100-e mixed Bridge or Gap
+25271300-app6d mixed Assault Crossing
+25271300-app6e mixed Assault Crossing
+25271300-d mixed Assault Crossing
+25271300-e mixed Assault Crossing
 25271600-app6d mixed Ford Difficult
 25271600-app6e mixed Ford Difficult
 25271600-d mixed Ford Difficult
@@ -205,10 +205,10 @@
 25272100-app6e screen-only Minimum Safe Distance Zone
 25272100-d screen-only Minimum Safe Distance Zone
 25272100-e screen-only Minimum Safe Distance Zone
-25280100-app6d screen-only Abatis
-25280100-app6e screen-only Abatis
-25280100-d screen-only Abatis
-25280100-e screen-only Abatis
+25280100-app6d mixed Abatis
+25280100-app6e mixed Abatis
+25280100-d mixed Abatis
+25280100-e mixed Abatis
 25282003-app6d screen-only Overhead Wire
 25282003-app6e screen-only Overhead Wire
 25282003-d screen-only Overhead Wire
@@ -217,18 +217,18 @@
 25290100-app6e screen-only Obstacle Line
 25290100-d screen-only Obstacle Line
 25290100-e screen-only Obstacle Line
-25290201-app6d screen-only Under Construction
-25290201-app6e screen-only Antitank Ditch Under Construction
-25290201-d screen-only Under Construction
-25290201-e screen-only Under Construction
-25290202-app6d screen-only Completed
-25290202-app6e screen-only Antitank Ditch Completed
-25290202-d screen-only Completed
-25290202-e screen-only Completed
-25290203-app6d screen-only Reinforced, with Antitank Mines
-25290203-app6e screen-only Antitank Ditch Reinforced, with Antitank Mines
-25290203-d screen-only Reinforced, with Antitank Mines
-25290203-e screen-only Reinforced, with Antitank Mines
+25290201-app6d mixed Under Construction
+25290201-app6e mixed Antitank Ditch Under Construction
+25290201-d mixed Under Construction
+25290201-e mixed Under Construction
+25290202-app6d mixed Completed
+25290202-app6e mixed Antitank Ditch Completed
+25290202-d mixed Completed
+25290202-e mixed Completed
+25290203-app6d mixed Reinforced, with Antitank Mines
+25290203-app6e mixed Antitank Ditch Reinforced, with Antitank Mines
+25290203-d mixed Reinforced, with Antitank Mines
+25290203-e mixed Reinforced, with Antitank Mines
 25290204-app6d screen-only Antitank Wall
 25290204-d screen-only Antitank Wall
 25290204-e screen-only Antitank Wall
@@ -236,62 +236,62 @@
 25290301-app6e screen-only Unspecified
 25290301-d screen-only Unspecified Wire
 25290301-e screen-only Unspecified Wire
-25290302-app6d screen-only Single Fence Wire
-25290302-app6e screen-only Single Fence
-25290302-d screen-only Single Fence Wire
-25290302-e screen-only Single Fence Wire
-25290303-app6d screen-only Double Fence Wire
-25290303-app6e screen-only Double Fence
-25290303-d screen-only Double Fence Wire
-25290303-e screen-only Double Fence Wire
-25290304-app6d screen-only Double Apron Fence
-25290304-app6e screen-only Double Apron Fence
-25290304-d screen-only Double Apron Fence
-25290304-e screen-only Double Apron Fence
-25290305-app6d screen-only Low Wire Fence
-25290305-app6e screen-only Low Wire Fence
-25290305-d screen-only Low Wire Fence
-25290305-e screen-only Low Wire Fence
-25290306-app6d screen-only High Wire Fence
-25290306-app6e screen-only High Wire Fence
-25290306-d screen-only High Wire Fence
-25290306-e screen-only High Wire Fence
-25290307-app6d screen-only Single Concertina
-25290307-app6e screen-only Single Concertina
-25290307-d screen-only Single Concertina
-25290307-e screen-only Single Concertina
-25290308-app6d screen-only Double Strand Concertina
-25290308-app6e screen-only Double Strand Concertina
-25290308-d screen-only Double Strand Concertina
-25290308-e screen-only Double Strand Concertina
-25290309-app6d screen-only Triple Strand Concertina
-25290309-app6e screen-only Triple Strand Concertina
-25290309-d screen-only Triple Strand Concertina
-25290309-e screen-only Triple Strand Concertina
-25290400-app6d screen-only Mine Cluster
-25290400-app6e screen-only Mine Cluster
-25290400-d screen-only Mine Cluster
-25290400-e screen-only Mine Cluster
+25290302-app6d mixed Single Fence Wire
+25290302-app6e mixed Single Fence
+25290302-d mixed Single Fence Wire
+25290302-e mixed Single Fence Wire
+25290303-app6d mixed Double Fence Wire
+25290303-app6e mixed Double Fence
+25290303-d mixed Double Fence Wire
+25290303-e mixed Double Fence Wire
+25290304-app6d mixed Double Apron Fence
+25290304-app6e mixed Double Apron Fence
+25290304-d mixed Double Apron Fence
+25290304-e mixed Double Apron Fence
+25290305-app6d mixed Low Wire Fence
+25290305-app6e mixed Low Wire Fence
+25290305-d mixed Low Wire Fence
+25290305-e mixed Low Wire Fence
+25290306-app6d mixed High Wire Fence
+25290306-app6e mixed High Wire Fence
+25290306-d mixed High Wire Fence
+25290306-e mixed High Wire Fence
+25290307-app6d mixed Single Concertina
+25290307-app6e mixed Single Concertina
+25290307-d mixed Single Concertina
+25290307-e mixed Single Concertina
+25290308-app6d mixed Double Strand Concertina
+25290308-app6e mixed Double Strand Concertina
+25290308-d mixed Double Strand Concertina
+25290308-e mixed Double Strand Concertina
+25290309-app6d mixed Triple Strand Concertina
+25290309-app6e mixed Triple Strand Concertina
+25290309-d mixed Triple Strand Concertina
+25290309-e mixed Triple Strand Concertina
+25290400-app6d mixed Mine Cluster
+25290400-app6e mixed Mine Cluster
+25290400-d mixed Mine Cluster
+25290400-e mixed Mine Cluster
 25290500-app6e mixed Trip Wire
-25290600-app6d screen-only Lane
-25290600-app6e screen-only Safe Lane or Gap
-25290600-d screen-only Lane
-25290600-e screen-only Lane
-25290700-app6d screen-only Ferry
-25290700-app6e screen-only Ferry
-25290700-d screen-only Ferry
-25290700-e screen-only Ferry
-25290800-app6d screen-only Raft Site
-25290800-app6e screen-only Raft Site
-25290800-d screen-only Raft Site
-25290800-e screen-only Raft Site
+25290600-app6d mixed Lane
+25290600-app6e mixed Safe Lane or Gap
+25290600-d mixed Lane
+25290600-e mixed Lane
+25290700-app6d mixed Ferry
+25290700-app6e mixed Ferry
+25290700-d mixed Ferry
+25290700-e mixed Ferry
+25290800-app6d mixed Raft Site
+25290800-app6e mixed Raft Site
+25290800-d mixed Raft Site
+25290800-e mixed Raft Site
 25290900-app6d screen-only Fortified Line
 25290900-app6e screen-only Fortified Line
 25290900-d screen-only Fortified Line
 25290900-e screen-only Fortified Line
-25291000-app6d screen-only Fighting Position
-25291000-d screen-only Fighting Position
-25291000-e screen-only Fighting Position
+25291000-app6d mixed Fighting Position
+25291000-d mixed Fighting Position
+25291000-e mixed Fighting Position
 25330100-app6d screen-only Moving Convoy
 25330100-app6e screen-only Moving Convoy
 25330100-d screen-only Moving Convoy
@@ -300,34 +300,34 @@
 25330200-app6e screen-only Halted Convoy
 25330200-d screen-only Halted Convoy
 25330200-e screen-only Halted Convoy
-25330301-app6d screen-only One Way Traffic
-25330301-app6e screen-only One Way Traffic
-25330301-d screen-only One Way Traffic
-25330301-e screen-only One Way Traffic
-25330302-app6d screen-only Two Way Traffic
-25330302-app6e screen-only Two Way Traffic
-25330302-d screen-only Two Way Traffic
-25330302-e screen-only Two Way Traffic
-25330303-app6d screen-only Alternating Traffic
-25330303-app6e screen-only Alternating Traffic
-25330303-d screen-only Alternating Traffic
-25330303-e screen-only Alternating Traffic
-25330401-app6d screen-only One Way Traffic
-25330401-app6e screen-only One Way Traffic
-25330401-d screen-only One Way Traffic
-25330401-e screen-only One Way Traffic
-25330402-app6d screen-only Two Way Traffic
-25330402-app6e screen-only Two Way Traffic
-25330402-d screen-only Two Way Traffic
-25330402-e screen-only Two Way Traffic
-25330403-app6d screen-only Alternating Traffic
-25330403-app6e screen-only Alternating Traffic
-25330403-d screen-only Alternating Traffic
-25330403-e screen-only Alternating Traffic
-25330501-app6e screen-only One Way Traffic
-25330501-e screen-only One Way Traffic
-25330502-app6e screen-only Alternating Traffic
-25330502-e screen-only Alternating Traffic
+25330301-app6d mixed One Way Traffic
+25330301-app6e mixed One Way Traffic
+25330301-d mixed One Way Traffic
+25330301-e mixed One Way Traffic
+25330302-app6d mixed Two Way Traffic
+25330302-app6e mixed Two Way Traffic
+25330302-d mixed Two Way Traffic
+25330302-e mixed Two Way Traffic
+25330303-app6d mixed Alternating Traffic
+25330303-app6e mixed Alternating Traffic
+25330303-d mixed Alternating Traffic
+25330303-e mixed Alternating Traffic
+25330401-app6d mixed One Way Traffic
+25330401-app6e mixed One Way Traffic
+25330401-d mixed One Way Traffic
+25330401-e mixed One Way Traffic
+25330402-app6d mixed Two Way Traffic
+25330402-app6e mixed Two Way Traffic
+25330402-d mixed Two Way Traffic
+25330402-e mixed Two Way Traffic
+25330403-app6d mixed Alternating Traffic
+25330403-app6e mixed Alternating Traffic
+25330403-d mixed Alternating Traffic
+25330403-e mixed Alternating Traffic
+25330501-app6e mixed One Way Traffic
+25330501-e mixed One Way Traffic
+25330502-app6e mixed Alternating Traffic
+25330502-e mixed Alternating Traffic
 25340200-app6d screen-only Breach
 25340200-app6e screen-only Breach
 25340200-d screen-only Breach
@@ -340,10 +340,10 @@
 25340400-app6e screen-only Canalize
 25340400-d screen-only Canalize
 25340400-e screen-only Canalize
-25340500-app6d screen-only Clear
-25340500-app6e screen-only Clear
-25340500-d screen-only Clear
-25340500-e screen-only Clear
+25340500-app6d mixed Clear
+25340500-app6e mixed Clear
+25340500-d mixed Clear
+25340500-e mixed Clear
 25340600-app6d screen-only Counterattack
 25340600-app6e screen-only Counter-Attack
 25340600-d screen-only Counterattack
@@ -352,10 +352,10 @@
 25340700-app6e screen-only Counter-Attack by Fire
 25340700-d screen-only Counterattack by Fire
 25340700-e screen-only Counterattack by Fire
-25341000-app6d screen-only Disrupt
-25341000-app6e screen-only Disrupt
-25341000-d screen-only Disrupt
-25341000-e screen-only Disrupt
+25341000-app6d mixed Disrupt
+25341000-app6e mixed Disrupt
+25341000-d mixed Disrupt
+25341000-e mixed Disrupt
 25341200-app6d screen-only Follow and Assume
 25341200-app6e screen-only Follow and Assume
 25341200-d screen-only Follow and Assume
@@ -372,14 +372,14 @@
 25341700-app6e screen-only Occupy
 25341700-d screen-only Occupy
 25341700-e screen-only Occupy
-25341800-app6d screen-only Penetrate
-25341800-app6e screen-only Penetrate
-25341800-d screen-only Penetrate
-25341800-e screen-only Penetrate
-25341900-app6d screen-only Relief in Place (RIP)
-25341900-app6e screen-only Relieve in Place /Relief in Place (RIP)
-25341900-d screen-only Relief in Place (RIP)
-25341900-e screen-only Relief in Place (RIP)
+25341800-app6d mixed Penetrate
+25341800-app6e mixed Penetrate
+25341800-d mixed Penetrate
+25341800-e mixed Penetrate
+25341900-app6d mixed Relief in Place (RIP)
+25341900-app6e mixed Relieve in Place /Relief in Place (RIP)
+25341900-d mixed Relief in Place (RIP)
+25341900-e mixed Relief in Place (RIP)
 25342100-app6d screen-only Secure
 25342100-app6e screen-only Secure
 25342100-d screen-only Secure
@@ -418,14 +418,14 @@
 25343100-e mixed Exploit/Exploitation
 25343200-app6d screen-only Control
 25343200-app6e mixed Control
-25343300-app6d screen-only Demonstration
-25343300-app6e screen-only Demonstration/Demonstrate
-25343300-e screen-only Demonstrate/Demonstration
+25343300-app6d mixed Demonstration
+25343300-app6e mixed Demonstration/Demonstrate
+25343300-e mixed Demonstrate/Demonstration
 25343400-app6d screen-only Deny
 25343400-app6e screen-only Deny
-25343500-app6d screen-only Envelop
-25343500-app6e screen-only Envelop
-25343500-e screen-only Envelopment
+25343500-app6d mixed Envelop
+25343500-app6e mixed Envelop
+25343500-e mixed Envelopment
 25343600-app6d screen-only Escort
 25343600-app6e screen-only Escort
 25343700-app6d screen-only Exfiltrate
@@ -440,36 +440,36 @@
 25344600-app6e screen-only Recover
 25344700-app6e screen-only Turn
 25344700-e screen-only Turn
-45110301-app6d screen-only Cold Front
-45110301-d screen-only Cold Front
-45110301-e screen-only Cold Front
-45110302-app6d screen-only Upper Cold Front
-45110302-d screen-only Upper Cold Front
-45110302-e screen-only Upper Cold Front
+45110301-app6d mixed Cold Front
+45110301-d mixed Cold Front
+45110301-e mixed Cold Front
+45110302-app6d mixed Upper Cold Front
+45110302-d mixed Upper Cold Front
+45110302-e mixed Upper Cold Front
 45110303-app6d screen-only Cold Frontogenesis
 45110303-d screen-only Cold Frontogenesis
 45110303-e screen-only Cold Frontogenesis
 45110304-app6d screen-only Cold Frontolysis
 45110304-d screen-only Cold Frontolysis
 45110304-e screen-only Cold Frontolysis
-45110305-app6d screen-only Warm Front
-45110305-d screen-only Warm Front
-45110305-e screen-only Warm Front
-45110306-app6d screen-only Upper Warm Front
-45110306-d screen-only Upper Warm Front
-45110306-e screen-only Upper Warm Front
+45110305-app6d mixed Warm Front
+45110305-d mixed Warm Front
+45110305-e mixed Warm Front
+45110306-app6d mixed Upper Warm Front
+45110306-d mixed Upper Warm Front
+45110306-e mixed Upper Warm Front
 45110307-app6d screen-only Warm Frontogenesis
 45110307-d screen-only Warm Frontogenesis
 45110307-e screen-only Warm Frontogenesis
 45110308-app6d screen-only Warm Frontolysis
 45110308-d screen-only Warm Frontolysis
 45110308-e screen-only Warm Frontolysis
-45110309-app6d screen-only Occluded Front
-45110309-d screen-only Occluded Front
-45110309-e screen-only Occluded Front
-45110310-app6d screen-only Upper Occluded Front
-45110310-d screen-only Upper Occluded Front
-45110310-e screen-only Upper Occluded Front
+45110309-app6d mixed Occluded Front
+45110309-d mixed Occluded Front
+45110309-e mixed Occluded Front
+45110310-app6d mixed Upper Occluded Front
+45110310-d mixed Upper Occluded Front
+45110310-e mixed Upper Occluded Front
 45110311-app6d screen-only Occluded Frontolysis
 45110311-d screen-only Occluded Frontolysis
 45110311-e screen-only Occluded Frontolysis
@@ -504,9 +504,9 @@
 45110406-d screen-only Shear Line
 45110406-e screen-only Shear Line
 45110407-e screen-only Inter-Tropical Convergence Zone
-45110408-app6d screen-only Convergence Line
-45110408-d screen-only Convergence Line
-45110408-e screen-only Convergence Line
+45110408-app6d mixed Convergence Line
+45110408-d mixed Convergence Line
+45110408-e mixed Convergence Line
 45110409-app6d screen-only Inter-Tropical Discontinuity
 45110409-d screen-only Inter-Tropical Discontinuity
 45110409-e screen-only Inter-Tropical Discontinuity

@@ -1,4 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="806" height="607" viewBox="0 0 806 607">
+<polyline points="270.86,526.75 422.25,428.32 573.81,504.04 725.15,420.75" fill="none" stroke="#ff0000ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt"/>
 <polygon points="296.99,506.98 297.99,509.99 297.99,513.99 296.99,516.99 295,519.99 292,522 289,522 286,522 282,519.99 279.99,517.99" fill="#ff0000ff" stroke="none"/>
 <polygon points="334.97,482.97 335.97,485.97 335.98,489.97 334.98,492.98 332.98,495.98 329.98,497.98 326.98,497.98 323.98,497.98 319.98,495.98 317.98,493.98" fill="#ff0000ff" stroke="none"/>
 <polygon points="372.95,457.96 373.96,460.96 373.96,464.96 372.96,467.96 370.96,470.97 367.96,472.97 364.96,472.97 361.96,472.97 357.96,470.96 355.96,468.96" fill="#ff0000ff" stroke="none"/>
@@ -23,5 +24,4 @@
 <polyline points="372.95,457.96 373.96,460.96 373.96,464.96 372.96,467.96 370.96,470.97 367.96,472.97 364.96,472.97 361.96,472.97 357.96,470.96 355.96,468.96" fill="none" stroke="#ff0000ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt"/>
 <polyline points="334.97,482.97 335.97,485.97 335.98,489.97 334.98,492.98 332.98,495.98 329.98,497.98 326.98,497.98 323.98,497.98 319.98,495.98 317.98,493.98" fill="none" stroke="#ff0000ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt"/>
 <polyline points="296.99,506.98 297.99,509.99 297.99,513.99 296.99,516.99 295,519.99 292,522 289,522 286,522 282,519.99 279.99,517.99" fill="none" stroke="#ff0000ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt"/>
-<polyline points="270.86,526.75 422.25,428.32 573.81,504.04 725.15,420.75" fill="none" stroke="#ff0000ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt"/>
 </svg>

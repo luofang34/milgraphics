@@ -83,14 +83,17 @@ Each is bounded by a test in `tests/oracle_compare.rs`.
 
 ## Ported renderer
 
-Every multipoint graphic other than the six above and the other axes of
-advance (151401, 151402, 151404, 151406, drawn by the axis family in
-every edition so their outline is ground-sized) is drawn by `src/engine/`,
-a port of mil-sym-java's multipoint renderer (Apache-2.0, pinned commit in
-`pin.json`) that runs in pixel space. milgraphics feeds it control points
-projected for the view and draws its output as the screen tier; shapes that
-come out identical on the ground at two pixel sizes (`src/family/ported.rs`)
-also form the geographic tier.
+Every multipoint graphic not declared on a family of its own in
+`src/support/table` is drawn by `src/engine/`, a port of mil-sym-java's
+multipoint renderer (Apache-2.0, pinned commit in `pin.json`) that runs in
+pixel space. milgraphics feeds it control points projected for the view and
+draws its output as the screen tier. Shapes that come out identical on the
+ground at two pixel sizes (`src/family/ported.rs`) form the geographic tier
+instead, as do edges between control points that the renderer strokes whole
+at both sizes (`src/family/ported/baseline.rs`): the line of a front or an
+obstacle line is drawn on the ground, and only its teeth, ticks and glyphs
+in pixels. `tests/fixtures/oracle/screen_tier.txt` lists every graphic that
+still draws anything in the screen tier.
 
 | Port | Upstream source (mil-sym-java `src/main/java/armyc2/c5isr/`) |
 |---|---|

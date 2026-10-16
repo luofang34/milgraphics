@@ -20,6 +20,7 @@ use crate::plane::{LocalPlane, Xy};
 use crate::render::{FixedAdvanceMetrics, Font, FontMetrics};
 use crate::style::{DashPattern, Fill, Hatch, Rgba, Stroke};
 
+pub(crate) mod baseline;
 mod classify;
 mod labels;
 mod pattern;
@@ -102,6 +103,11 @@ fn draw(
             }
         }
     }
+    let baseline = add_baseline(ctx, &anchors, &xy, (&a, mpp_a), (&b, mpp_b), &geographic);
+    if let Some(&(id, _)) = baseline.first() {
+        first.get_or_insert(id);
+    }
+    let baseline: Vec<usize> = baseline.into_iter().flat_map(|(_, edges)| edges).collect();
     let part = first.unwrap_or_else(|| ctx.next_part());
     // The larger run follows a curve more closely.
     let drawn: Vec<GeoPoint> = b
@@ -120,11 +126,75 @@ fn draw(
         style: crate::engine::api::Style::of(&def.style),
         geographic,
         shape_count: a.shapes.len(),
+        baseline,
         part,
         reach_m: extent,
     });
     ctx.add_handles(vertex_handles(def));
     Ok(())
+}
+
+/// The control-point edges both runs stroke whole, as geographic lines:
+/// consecutive edges with one stroke join into one part. Each part's id,
+/// with the edges it draws.
+fn add_baseline(
+    ctx: &mut Ctx<'_>,
+    anchors: &[GeoPoint],
+    xy: &[Xy],
+    (a, mpp_a): (&Output, f64),
+    (b, mpp_b): (&Output, f64),
+    geographic: &[bool],
+) -> Vec<(crate::construction::PartId, Vec<usize>)> {
+    // Shapes pair by index only when both runs drew the same number.
+    let none = vec![false; b.shapes.len()];
+    let skip_b = if a.shapes.len() == b.shapes.len() {
+        geographic
+    } else {
+        &none
+    };
+    let edges = baseline::edges(
+        xy,
+        &baseline::Run {
+            shapes: &a.shapes,
+            skip: geographic,
+            mpp: mpp_a,
+        },
+        &baseline::Run {
+            shapes: &b.shapes,
+            skip: skip_b,
+            mpp: mpp_b,
+        },
+        ctx.palette.line.color,
+    );
+    let mut runs: Vec<(Vec<usize>, Stroke)> = Vec::new();
+    for (i, stroke) in edges {
+        match runs.last_mut() {
+            Some((run, s)) if *s == stroke && run.last() == Some(&(i.wrapping_sub(1))) => {
+                run.push(i)
+            }
+            _ => runs.push((vec![i], stroke)),
+        }
+    }
+    runs.into_iter()
+        .map(|(run, stroke)| {
+            // Each edge's first point, then the last edge's end, which is the
+            // first anchor again for the closing edge.
+            let ends = run.last().map(|&i| (i + 1) % anchors.len().max(1));
+            let points: Vec<GeoPoint> = run
+                .iter()
+                .copied()
+                .chain(ends)
+                .filter_map(|i| anchors.get(i).copied())
+                .collect();
+            let id = ctx.add_part(
+                PartRole::Line,
+                GeoGeometry::Line(points),
+                Some(stroke),
+                Fill::None,
+            );
+            (id, run)
+        })
+        .collect()
 }
 
 /// Ground size the graphic spans, in metres: its control points' extent or,

@@ -1,5 +1,6 @@
 //! Drawing graphics of the ported upstream renderer for a view.
 
+mod baseline;
 mod clip;
 mod frame;
 mod labels;
@@ -37,6 +38,7 @@ pub(crate) fn resolve(
         style,
         geographic,
         shape_count,
+        baseline,
         part,
         ..
     } = decoration
@@ -47,6 +49,7 @@ pub(crate) fn resolve(
         return Ok((Vec::new(), Vec::new()));
     };
     let pixels: Vec<ScreenPoint> = anchors.iter().map(|&a| frame.to_px(a)).collect();
+    let edges = baseline::edges(&pixels, baseline);
     let kind = (*line_type, clip::limits_itself(*line_type, symbol));
     let near = if kind.1 || clip::length(&pixels) > clip::MAX_LINE_PX {
         frame.near(ctx)
@@ -76,10 +79,16 @@ pub(crate) fn resolve(
             if paired && geographic.get(i).copied().unwrap_or(false) {
                 continue;
             }
+            let lines = if crate::family::ported_baseline::stroked(shape) {
+                baseline::strip(shape.polylines(), &edges)
+            } else {
+                shape.polylines()
+            };
             items.extend(screen_items(
                 ctx,
                 &frame,
                 shape,
+                lines,
                 pick(PickTarget::Part(*part)),
             )?);
         }
@@ -96,18 +105,19 @@ pub(crate) fn resolve(
     Ok((items, labels))
 }
 
-/// An engine shape's lines as screen items, each vertex carried to the
-/// ground and the edges between them projected like geographic lines.
+/// Lines `lines` of an engine shape as screen items, each vertex carried to
+/// the ground and the edges between them projected like geographic lines.
 fn screen_items(
     ctx: &mut ScreenCtx<'_>,
     frame: &Frame<'_>,
     shape: &Shape,
+    lines: Vec<Vec<(f64, f64)>>,
     pick: PickRef,
 ) -> Result<Vec<ScreenItem>, BudgetError> {
     let mut items = Vec::new();
     let outline = shape_outline(shape, Rgba::BLACK);
     let fill = shape_fill(shape);
-    for line in shape.polylines() {
+    for line in lines {
         ctx.take(line.len())?;
         let mut ground: Vec<_> = line.into_iter().map(|p| frame.to_geo(p)).collect();
         let geometry = if fill == Fill::None {

@@ -1,9 +1,9 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="711" height="645" viewBox="0 0 711 645">
+<polyline points="270.77,534.33 573.73,534.33" fill="none" stroke="#000000ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt"/>
 <polygon points="308.64,534.32 330.78,534.32 319.74,564.13" fill="#000000ff" stroke="none"/>
 <polygon points="308.52,420.73 330.66,420.73 319.56,390.92" fill="#000000ff" stroke="none"/>
 <polygon points="605.15,430.33 606.61,397.51 584.68,421.84 595.33,425.08" fill="#000000ff" stroke="none"/>
 <polygon points="584.8,533.25 606.72,557.62 605.24,524.77 595.44,530.02" fill="#000000ff" stroke="none"/>
-<polyline points="270.77,534.33 573.73,534.33" fill="none" stroke="#000000ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt"/>
 <polyline points="573.61,420.74 270.65,420.74" fill="none" stroke="#000000ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt"/>
 <polyline points="270.77,534.33 297.52,507.52" fill="none" stroke="#000000ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt"/>
 <polyline points="270.77,534.33 297.58,561.12" fill="none" stroke="#000000ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt"/>
@@ -11,6 +11,6 @@
 <polyline points="584.8,533.25 606.72,557.62 605.24,524.77 595.44,530.02 584.8,533.25" fill="none" stroke="#000000ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt"/>
 <polyline points="605.15,430.33 606.61,397.51 584.68,421.84 595.33,425.08 605.15,430.33" fill="none" stroke="#000000ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt"/>
 <polyline points="308.52,420.73 330.66,420.73 319.56,390.92 308.52,420.73" fill="none" stroke="#000000ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt"/>
-<polyline points="308.64,534.32 330.78,534.32 319.74,564.13 308.64,534.32" fill="none" stroke="#000000ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt"/>
+<polyline points="330.78,534.32 319.74,564.13 308.64,534.32" fill="none" stroke="#000000ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt"/>
 <text transform="translate(629.94 484.12) rotate(0.05)" x="0" y="-3.6" text-anchor="middle" dominant-baseline="central" font-family="PT Sans" font-size="12" font-weight="bold">MD</text>
 </svg>

@@ -1,4 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="806" height="607" viewBox="0 0 806 607">
+<polyline points="270.86,526.75 422.25,428.32 573.81,504.04 725.15,420.75" fill="none" stroke="#a020f0ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt"/>
 <polyline points="707.92,430.23 707.94,431.15 707.94,434.16 706.94,438.16 704.94,440.16 701.94,442.16 697.94,442.15 694.94,442.15 691.94,440.14 690.41,439.87" fill="none" stroke="#a020f0ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt"/>
 <polyline points="686.03,442.27 686.94,464.64 668.52,451.91" fill="none" stroke="#a020f0ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt"/>
 <polyline points="657.84,457.79 657.95,459.13 657.96,462.13 656.96,466.13 654.96,468.13 651.96,470.13 647.96,470.13 644.96,470.12 641.96,468.12 640.33,467.43" fill="none" stroke="#a020f0ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt"/>
@@ -13,6 +14,5 @@
 <polyline points="383.95,453.22 386.47,475.46 367.18,464.12" fill="none" stroke="#a020f0ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt"/>
 <polyline points="354.75,472.2 354.96,473.96 354.97,477.97 353.97,480.97 351.97,483.97 348.97,485.97 345.97,485.97 342.97,485.97 338.97,483.97 337.99,483.1" fill="none" stroke="#a020f0ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt"/>
 <polyline points="333.79,485.83 336.32,508.06 317.03,496.73" fill="none" stroke="#a020f0ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt"/>
-<polyline points="304.36,504.97 303.99,505.98 303.99,509.99 302.99,512.99 300.99,515.99 297.99,517.99 294.99,517.99 291.99,517.99 287.99,515.99 287.59,515.87" fill="none" stroke="#a020f0ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt"/>
-<polyline points="270.86,526.75 422.25,428.32 573.81,504.04 725.15,420.75" fill="none" stroke="#a020f0ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt"/>
+<polyline points="304.36,504.97 303.99,505.98 303.99,509.99 302.99,512.99 300.99,515.99 297.99,517.99 294.99,517.99 291.99,517.99 287.99,515.99" fill="none" stroke="#a020f0ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt"/>
 </svg>
