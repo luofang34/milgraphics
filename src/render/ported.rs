@@ -50,7 +50,13 @@ pub(crate) fn resolve(
         return Ok((Vec::new(), Vec::new()));
     };
     let pixels: Vec<ScreenPoint> = anchors.iter().map(|&a| frame.to_px(a)).collect();
-    let edges = baseline::paths(&pixels, baseline);
+    let edges = baseline::paths(
+        &pixels,
+        baseline,
+        stable
+            .iter()
+            .map(|c| c.iter().map(|&p| frame.to_px(p)).collect()),
+    );
     let kind = (*line_type, clip::limits_itself(*line_type, symbol));
     let near = if kind.1 || clip::length(&pixels) > clip::MAX_LINE_PX {
         frame.near(ctx)
@@ -59,9 +65,7 @@ pub(crate) fn resolve(
     };
     let width = |t: &str| metrics.text_width_px(font, t);
     let (mut items, mut labels) = (Vec::new(), Vec::new());
-    let runs = clip::runs(kind, pixels, near);
-    let whole = runs.len() == 1;
-    for run in runs {
+    for run in clip::runs(kind, pixels, near) {
         let input = Input {
             line_type: *line_type,
             symbol,
@@ -82,7 +86,11 @@ pub(crate) fn resolve(
             if paired && geographic.get(i).copied().unwrap_or(false) {
                 continue;
             }
-            let lines = screen_lines(shape, i, edges.as_ref(), (stable, paired && whole));
+            let lines = if crate::family::ported_baseline::stroked(shape) {
+                baseline::strip(shape.polylines(), edges.as_ref())
+            } else {
+                shape.polylines()
+            };
             items.extend(screen_items(
                 ctx,
                 &frame,
@@ -102,27 +110,6 @@ pub(crate) fn resolve(
         ));
     }
     Ok((items, labels))
-}
-
-/// The lines of engine shape `i` left for the screen tier: without the
-/// segments the construction drew on the ground along control-point edges
-/// (`edges`) or, when the view draws the whole graphic with the shapes it
-/// had at construction (`matched`), segment by segment (`stable`).
-fn screen_lines(
-    shape: &Shape,
-    i: usize,
-    edges: Option<&crate::family::ported_baseline::Paths>,
-    (stable, matched): (&[crate::family::ported_stable::StableSegments], bool),
-) -> Vec<Vec<(f64, f64)>> {
-    if !crate::family::ported_baseline::stroked(shape) {
-        return shape.polylines();
-    }
-    let lines = baseline::strip(shape.polylines(), edges);
-    if matched {
-        crate::family::ported_stable::strip(i, lines, stable)
-    } else {
-        lines
-    }
 }
 
 /// Lines `lines` of an engine shape as screen items, each vertex carried to

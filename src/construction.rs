@@ -137,10 +137,10 @@ pub(crate) enum Decoration {
         /// geographic lines: stroked segments on them are not drawn again
         /// (`family::ported::baseline`).
         baseline: Vec<(usize, crate::family::ported_baseline::Edge)>,
-        /// Segments of the renderer's polylines that are geographic lines
-        /// (`family::ported::stable`), left out of the screen tier when a
-        /// view draws those polylines with the same vertices.
-        stable: Vec<crate::family::ported_stable::StableSegments>,
+        /// Chains of the renderer's segments that are geographic lines
+        /// (`family::ported::stable`): stroked segments on them are not
+        /// drawn again.
+        stable: Vec<Vec<GeoPoint>>,
         part: PartId,
         /// Ground size the graphic spans, in metres, so a view can tell how
         /// large it appears when it has no geographic parts to measure.

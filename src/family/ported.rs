@@ -25,7 +25,7 @@ mod classify;
 mod labels;
 mod pattern;
 mod rhumb;
-pub(crate) mod stable;
+mod stable;
 mod storm;
 
 /// Pixel extents the graphic is drawn at for classification. They lie on
@@ -134,21 +134,24 @@ fn draw(
     Ok(())
 }
 
+/// The first part's id, the control-point edges and the chains of
+/// segments added as geographic lines.
+type GroundLines = (
+    Option<crate::construction::PartId>,
+    Vec<(usize, baseline::Edge)>,
+    Vec<Vec<GeoPoint>>,
+);
+
 /// Adds the lines of non-geographic shapes that are geographic all the
 /// same: the control-point edges both runs stroke whole or, for a graphic
-/// with none, the segments both runs draw at one place. The first part's
-/// id, with the edges and segments added.
+/// with none, the segments both runs draw at one place.
 fn add_lines(
     ctx: &mut Ctx<'_>,
     plane: &LocalPlane<'_>,
     (anchors, xy): (&[GeoPoint], &[Xy]),
     runs: &(baseline::Run<'_>, baseline::Run<'_>),
     extent: f64,
-) -> (
-    Option<crate::construction::PartId>,
-    Vec<(usize, baseline::Edge)>,
-    Vec<stable::StableSegments>,
-) {
+) -> GroundLines {
     let added = baseline::add(ctx, plane, anchors, xy, runs);
     let first = added.first().map(|&(id, _)| id);
     let edges: Vec<_> = added.into_iter().flat_map(|(_, edges)| edges).collect();

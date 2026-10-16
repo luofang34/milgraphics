@@ -14,37 +14,18 @@ use crate::plane::LocalPlane;
 use crate::style::Fill;
 
 use super::baseline::{Run, stroked};
+use super::classify::SAME_FRACTION;
 use super::{from_px, shape_stroke};
-
-/// Largest distance on the ground, as a share of the graphic's extent, for a
-/// vertex drawn at both sizes to count as the same point. Upstream rounds
-/// some intermediate points to whole pixels, which moves them by up to a
-/// pixel at the smaller size.
-const SAME_FRACTION: f64 = 1e-3;
-
-/// The segments of one polyline of one renderer shape that are geographic.
-#[derive(Clone, Debug, PartialEq)]
-pub(crate) struct StableSegments {
-    /// Index of the shape among the renderer's shapes.
-    pub(crate) shape: usize,
-    /// Index of the polyline within the shape.
-    pub(crate) line: usize,
-    /// Vertices the polyline has; a view whose renderer draws another
-    /// number cannot be matched segment by segment.
-    pub(crate) points: usize,
-    /// For each segment, whether it is geographic.
-    pub(crate) segments: Vec<bool>,
-}
 
 /// Adds the segments both runs draw at the same place on the ground as
 /// geographic lines, each chain of them one part, from the larger run. The
-/// first part's id, with the segments found.
+/// first part's id, with each chain's points.
 pub(super) fn add(
     ctx: &mut Ctx<'_>,
     plane: &LocalPlane<'_>,
     (a, b): &(Run<'_>, Run<'_>),
     extent: f64,
-) -> (Option<PartId>, Vec<StableSegments>) {
+) -> (Option<PartId>, Vec<Vec<GeoPoint>>) {
     let mut first = None;
     let mut found = Vec::new();
     if a.shapes().len() != b.shapes().len() {
@@ -56,32 +37,24 @@ pub(super) fn add(
             continue;
         }
         let stroke = shape_stroke(sb, ctx.palette.line.color);
-        for (k, (la, lb)) in sa.polylines().iter().zip(sb.polylines()).enumerate() {
+        for (la, lb) in sa.polylines().iter().zip(sb.polylines()) {
             let Some(segments) = same(la, a.mpp(), &lb, b.mpp(), tolerance) else {
                 continue;
             };
-            let ground: Vec<GeoPoint> = lb
-                .iter()
-                .map(|&p| plane.to_geo(from_px(p, b.mpp())))
-                .collect();
             for chain in chains(&segments) {
-                if let Some(points) = ground.get(chain) {
-                    let id = ctx.add_part(
-                        PartRole::Line,
-                        GeoGeometry::Line(points.to_vec()),
-                        Some(stroke),
-                        Fill::None,
-                    );
-                    first.get_or_insert(id);
-                }
-            }
-            if segments.contains(&true) {
-                found.push(StableSegments {
-                    shape: s,
-                    line: k,
-                    points: lb.len(),
-                    segments,
-                });
+                let Some(px) = lb.get(chain) else { continue };
+                let points: Vec<GeoPoint> = px
+                    .iter()
+                    .map(|&p| plane.to_geo(from_px(p, b.mpp())))
+                    .collect();
+                let id = ctx.add_part(
+                    PartRole::Line,
+                    GeoGeometry::Line(points.clone()),
+                    Some(stroke),
+                    Fill::None,
+                );
+                first.get_or_insert(id);
+                found.push(points);
             }
         }
     }
@@ -129,45 +102,6 @@ fn chains(segments: &[bool]) -> Vec<core::ops::Range<usize>> {
                 start = None;
             }
             _ => {}
-        }
-    }
-    out
-}
-
-/// `lines` of renderer shape `shape` without the segments `stable` lists,
-/// split where those segments were, for a polyline drawn with the vertices
-/// it had at construction.
-pub(crate) fn strip(
-    shape: usize,
-    lines: Vec<Vec<(f64, f64)>>,
-    stable: &[StableSegments],
-) -> Vec<Vec<(f64, f64)>> {
-    let mut out = Vec::new();
-    for (k, line) in lines.into_iter().enumerate() {
-        let Some(found) = stable
-            .iter()
-            .find(|f| f.shape == shape && f.line == k && f.points == line.len())
-        else {
-            out.push(line);
-            continue;
-        };
-        let mut piece: Vec<(f64, f64)> = Vec::new();
-        for (w, &geographic) in line.windows(2).zip(&found.segments) {
-            let &[u, v] = w else { continue };
-            if geographic {
-                if piece.len() > 1 {
-                    out.push(core::mem::take(&mut piece));
-                }
-                piece.clear();
-            } else {
-                if piece.is_empty() {
-                    piece.push(u);
-                }
-                piece.push(v);
-            }
-        }
-        if piece.len() > 1 {
-            out.push(piece);
         }
     }
     out

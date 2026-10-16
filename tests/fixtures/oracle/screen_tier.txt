@@ -6,9 +6,16 @@
 #   tier draws the whole graphic flat on the screen.
 # mixed: geographic parts plus pixel-sized parts drawn on the screen.
 #
-# A graphic whose screen parts are pixel-sized by the standard (an arrowhead,
-# a glyph, a tooth) stays listed as mixed by design. Every other entry is a
-# graphic whose outline belongs in the geographic tier.
+# Entries that stay by design: mixed graphics whose screen parts are sized in
+# pixels (teeth, ticks, glyphs, arrowheads, area icons), and screen-only
+# graphics whose pattern is the line itself (square-wave and toothed lines
+# such as obstacle, fortified and antitank lines and obstacle zones; wire
+# loops; FLOT, Line of Contact, Ambush, convoys), which have no outline to
+# drape. The rest are graphics whose outline belongs in the geographic tier:
+# channel arrows (counterattack, frontal attack, turning movement, movement
+# to contact, follow and assume/support) and lines dashed or coloured in
+# pixel-length pieces (troughs, ridges, shear and instability lines,
+# stationary fronts, frontogenesis and frontolysis).
 25110500-app6e mixed Decision Line
 25120400-app6d mixed Airfield Zone
 25120400-app6e mixed Airfield Zone
