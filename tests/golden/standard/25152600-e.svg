@@ -1,12 +1,19 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="511" height="686" viewBox="0 0 511 686">
 <polyline points="422.45,420.74 418.48,455.35 406.71,488.14 387.77,517.36 362.66,541.48 332.7,559.22 299.49,569.64 264.76,572.2 230.37,566.76 198.12,553.6 169.72,533.43 146.67,507.3 130.19,476.59 121.14,442.94 120.02,408.11 126.87,373.94 141.34,342.25 162.66,314.7 189.7,292.76 221.04,277.58 255.01,269.97 289.83,270.33 323.65,278.64 354.69,294.46 381.31,316.95 402.09,344.93" fill="none" stroke="#000000ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt"/>
-<polyline points="406.71,488.14 416.06,540.86 362.66,541.48 387.77,517.36 406.71,488.14" fill="none" stroke="#000000ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt"/>
-<polyline points="332.7,559.22 306.1,605.89 264.76,572.2 299.49,569.64 332.7,559.22" fill="none" stroke="#000000ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt"/>
-<polyline points="230.37,566.76 180.09,585.88 169.72,533.43 198.12,553.6 230.37,566.76" fill="none" stroke="#000000ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt"/>
-<polyline points="146.67,507.3 95.02,489.83 121.14,442.94 130.19,476.59 146.67,507.3" fill="none" stroke="#000000ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt"/>
-<polyline points="120.02,408.11 90.94,362.73 141.34,342.25 126.87,373.94 120.02,408.11" fill="none" stroke="#000000ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt"/>
-<polyline points="162.66,314.7 169.87,261.62 221.04,277.58 189.7,292.76 162.66,314.7" fill="none" stroke="#000000ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt"/>
-<polyline points="255.01,269.97 293.85,233.58 323.65,278.64 289.83,270.33 255.01,269.97" fill="none" stroke="#000000ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt"/>
+<polyline points="362.66,541.48 387.77,517.36 406.71,488.14" fill="none" stroke="#000000ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt"/>
+<polyline points="264.76,572.2 299.49,569.64 332.7,559.22" fill="none" stroke="#000000ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt"/>
+<polyline points="169.72,533.43 198.12,553.6 230.37,566.76" fill="none" stroke="#000000ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt"/>
+<polyline points="121.14,442.94 130.19,476.59 146.67,507.3" fill="none" stroke="#000000ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt"/>
+<polyline points="141.34,342.25 126.87,373.94 120.02,408.11" fill="none" stroke="#000000ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt"/>
+<polyline points="221.04,277.58 189.7,292.76 162.66,314.7" fill="none" stroke="#000000ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt"/>
+<polyline points="323.65,278.64 289.83,270.33 255.01,269.97" fill="none" stroke="#000000ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt"/>
+<polyline points="406.71,488.14 416.06,540.86 362.66,541.48" fill="none" stroke="#000000ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt"/>
+<polyline points="332.7,559.22 306.1,605.89 264.76,572.2" fill="none" stroke="#000000ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt"/>
+<polyline points="230.37,566.76 180.09,585.88 169.72,533.43" fill="none" stroke="#000000ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt"/>
+<polyline points="146.67,507.3 95.02,489.83 121.14,442.94" fill="none" stroke="#000000ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt"/>
+<polyline points="120.02,408.11 90.94,362.73 141.34,342.25" fill="none" stroke="#000000ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt"/>
+<polyline points="162.66,314.7 169.87,261.62 221.04,277.58" fill="none" stroke="#000000ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt"/>
+<polyline points="255.01,269.97 293.85,233.58 323.65,278.64" fill="none" stroke="#000000ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt"/>
 <polyline points="381.94,333.94 402.09,344.93 397.93,321.94" fill="none" stroke="#000000ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt"/>
 <polyline points="430.01,441.05 422.45,420.74 410.01,439.04" fill="none" stroke="#000000ff" stroke-width="3" stroke-linejoin="miter" stroke-linecap="butt"/>
 <polygon points="406.71,488.14 416.06,540.86 362.66,541.48 387.77,517.36" fill="#000000ff" stroke="none"/>

@@ -37,10 +37,10 @@
 25140603-e mixed Friendly Supporting Attack
 25140605-app6d mixed Direction of Attack Feint
 25140605-app6e mixed Direction of Attack Feint
-25141700-app6d screen-only Ambush
-25141700-app6e screen-only Ambush
-25141700-d screen-only Ambush
-25141700-e screen-only Ambush
+25141700-app6d mixed Ambush
+25141700-app6e mixed Ambush
+25141700-d mixed Ambush
+25141700-e mixed Ambush
 25142100-app6e mixed Mobility Corridor
 25151000-app6d screen-only Fortified Area
 25151000-d screen-only Fortified Area
@@ -53,14 +53,14 @@
 25151203-app6e mixed Strong Point
 25151203-d mixed Strong Point
 25151203-e mixed Strong Point
-25151204-app6d screen-only Contain
-25151204-app6e screen-only Contain
-25151204-d screen-only Contain
-25151204-e screen-only Contain
-25151205-app6d screen-only Retain
-25151205-app6e screen-only Retain
-25151205-d screen-only Retain
-25151205-e screen-only Retain
+25151204-app6d mixed Contain
+25151204-app6e mixed Contain
+25151204-d mixed Contain
+25151204-e mixed Contain
+25151205-app6d mixed Retain
+25151205-app6e mixed Retain
+25151205-d mixed Retain
+25151205-e mixed Retain
 25151800-app6d mixed Encirclement
 25151800-app6e mixed Encirclement
 25151800-d mixed Encirclement
@@ -80,8 +80,8 @@
 25152300-app6e screen-only Avenue of Approach
 25152400-app6e mixed Restricted Terrain
 25152500-app6e mixed Severely Restricted Terrain
-25152600-app6e screen-only Area Defence
-25152600-e screen-only Area Defense
+25152600-app6e mixed Area Defence
+25152600-e mixed Area Defense
 25152700-app6e screen-only Frontal Attack
 25152700-e screen-only Frontal Attack
 25152800-app6e mixed Mobile Defence
@@ -155,14 +155,14 @@
 25270601-app6e mixed Easy
 25270601-d mixed Easy
 25270601-e mixed Easy
-25270602-app6d screen-only Difficult
-25270602-app6e screen-only Difficult
-25270602-d screen-only Difficult
-25270602-e screen-only Difficult
-25270603-app6d screen-only Impossible
-25270603-app6e screen-only Impossible
-25270603-d screen-only Impossible
-25270603-e screen-only Impossible
+25270602-app6d mixed Difficult
+25270602-app6e mixed Difficult
+25270602-d mixed Difficult
+25270602-e mixed Difficult
+25270603-app6d mixed Impossible
+25270603-app6e mixed Impossible
+25270603-d mixed Impossible
+25270603-e mixed Impossible
 25270801-app6d mixed Fenced
 25270801-app6e mixed Mined Area Fenced
 25270801-d mixed Fenced
@@ -202,9 +202,9 @@
 25272000-e mixed Radiological Contaminated Area
 25272001-app6d mixed Radiological Contaminated Area - Toxic Industrial Material
 25272001-app6e mixed Radiological Contaminated Area - Toxic Industrial Material
-25272100-app6e screen-only Minimum Safe Distance Zone
-25272100-d screen-only Minimum Safe Distance Zone
-25272100-e screen-only Minimum Safe Distance Zone
+25272100-app6e mixed Minimum Safe Distance Zone
+25272100-d mixed Minimum Safe Distance Zone
+25272100-e mixed Minimum Safe Distance Zone
 25280100-app6d mixed Abatis
 25280100-app6e mixed Abatis
 25280100-d mixed Abatis
@@ -328,18 +328,18 @@
 25330501-e mixed One Way Traffic
 25330502-app6e mixed Alternating Traffic
 25330502-e mixed Alternating Traffic
-25340200-app6d screen-only Breach
-25340200-app6e screen-only Breach
-25340200-d screen-only Breach
-25340200-e screen-only Breach
-25340300-app6d screen-only Bypass
-25340300-app6e screen-only Bypass
-25340300-d screen-only Bypass
-25340300-e screen-only Bypass
-25340400-app6d screen-only Canalize
-25340400-app6e screen-only Canalize
-25340400-d screen-only Canalize
-25340400-e screen-only Canalize
+25340200-app6d mixed Breach
+25340200-app6e mixed Breach
+25340200-d mixed Breach
+25340200-e mixed Breach
+25340300-app6d mixed Bypass
+25340300-app6e mixed Bypass
+25340300-d mixed Bypass
+25340300-e mixed Bypass
+25340400-app6d mixed Canalize
+25340400-app6e mixed Canalize
+25340400-d mixed Canalize
+25340400-e mixed Canalize
 25340500-app6d mixed Clear
 25340500-app6e mixed Clear
 25340500-d mixed Clear
@@ -364,14 +364,14 @@
 25341300-app6e screen-only Follow and Support
 25341300-d screen-only Follow and Support
 25341300-e screen-only Follow and Support
-25341500-app6d screen-only Isolate
-25341500-app6e screen-only Isolate
-25341500-d screen-only Isolate
-25341500-e screen-only Isolate
-25341700-app6d screen-only Occupy
-25341700-app6e screen-only Occupy
-25341700-d screen-only Occupy
-25341700-e screen-only Occupy
+25341500-app6d mixed Isolate
+25341500-app6e mixed Isolate
+25341500-d mixed Isolate
+25341500-e mixed Isolate
+25341700-app6d mixed Occupy
+25341700-app6e mixed Occupy
+25341700-d mixed Occupy
+25341700-e mixed Occupy
 25341800-app6d mixed Penetrate
 25341800-app6e mixed Penetrate
 25341800-d mixed Penetrate
@@ -380,10 +380,10 @@
 25341900-app6e mixed Relieve in Place /Relief in Place (RIP)
 25341900-d mixed Relief in Place (RIP)
 25341900-e mixed Relief in Place (RIP)
-25342100-app6d screen-only Secure
-25342100-app6e screen-only Secure
-25342100-d screen-only Secure
-25342100-e screen-only Secure
+25342100-app6d mixed Secure
+25342100-app6e mixed Secure
+25342100-d mixed Secure
+25342100-e mixed Secure
 25342201-app6d screen-only Cover
 25342201-app6e screen-only Cover
 25342201-d screen-only Cover
@@ -396,33 +396,33 @@
 25342203-app6e screen-only Screen
 25342203-d screen-only Screen
 25342203-e screen-only Screen
-25342300-app6d screen-only Seize
-25342300-app6e screen-only Seize
-25342300-d screen-only Seize
-25342300-e screen-only Seize
-25342600-app6d screen-only Cordon and Knock
-25342600-app6e screen-only Cordon and Knock
-25342600-d screen-only Cordon and Knock
-25342600-e screen-only Cordon and Knock
-25342700-app6d screen-only Cordon and Search
-25342700-app6e screen-only Cordon and Search
-25342700-d screen-only Cordon and Search
-25342700-e screen-only Cordon and Search
+25342300-app6d mixed Seize
+25342300-app6e mixed Seize
+25342300-d mixed Seize
+25342300-e mixed Seize
+25342600-app6d mixed Cordon and Knock
+25342600-app6e mixed Cordon and Knock
+25342600-d mixed Cordon and Knock
+25342600-e mixed Cordon and Knock
+25342700-app6d mixed Cordon and Search
+25342700-app6e mixed Cordon and Search
+25342700-d mixed Cordon and Search
+25342700-e mixed Cordon and Search
 25342900-app6d screen-only Advance to Contact
 25342900-app6e screen-only Advance to Contact
 25342900-e screen-only Movement to Contact
-25343000-app6d screen-only Capture
-25343000-app6e screen-only Capture
+25343000-app6d mixed Capture
+25343000-app6e mixed Capture
 25343100-app6d mixed Conduct Exploitation
 25343100-app6e mixed Exploit/Exploitation
 25343100-e mixed Exploit/Exploitation
-25343200-app6d screen-only Control
+25343200-app6d mixed Control
 25343200-app6e mixed Control
 25343300-app6d mixed Demonstration
 25343300-app6e mixed Demonstration/Demonstrate
 25343300-e mixed Demonstrate/Demonstration
-25343400-app6d screen-only Deny
-25343400-app6e screen-only Deny
+25343400-app6d mixed Deny
+25343400-app6e mixed Deny
 25343500-app6d mixed Envelop
 25343500-app6e mixed Envelop
 25343500-e mixed Envelopment
@@ -433,11 +433,11 @@
 25343800-app6d screen-only Infiltrate
 25343800-app6e screen-only Infiltrate
 25343800-e screen-only Infiltration
-25343900-app6d screen-only Locate
-25343900-app6e screen-only Locate
-25344500-app6e screen-only Evacuate
-25344500-e screen-only Evacuate/Evacuation
-25344600-app6e screen-only Recover
+25343900-app6d mixed Locate
+25343900-app6e mixed Locate
+25344500-app6e mixed Evacuate
+25344500-e mixed Evacuate/Evacuation
+25344600-app6e mixed Recover
 25344700-app6e screen-only Turn
 25344700-e screen-only Turn
 45110301-app6d mixed Cold Front

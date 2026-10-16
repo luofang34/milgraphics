@@ -25,6 +25,7 @@ mod classify;
 mod labels;
 mod pattern;
 mod rhumb;
+pub(crate) mod stable;
 mod storm;
 
 /// Pixel extents the graphic is drawn at for classification. They lie on
@@ -104,11 +105,8 @@ fn draw(
         }
     }
     let runs = baseline::Run::pair((&a.shapes, mpp_a), (&b.shapes, mpp_b), &geographic);
-    let baseline = baseline::add(ctx, &plane, &anchors, &xy, &runs);
-    if let Some(&(id, _)) = baseline.first() {
-        first.get_or_insert(id);
-    }
-    let baseline: Vec<_> = baseline.into_iter().flat_map(|(_, edges)| edges).collect();
+    let (lines, baseline, stable) = add_lines(ctx, &plane, (&anchors, &xy), &runs, extent);
+    first = first.or(lines);
     let part = first.unwrap_or_else(|| ctx.next_part());
     // The larger run follows a curve more closely.
     let drawn: Vec<GeoPoint> = b
@@ -128,11 +126,37 @@ fn draw(
         geographic,
         shape_count: a.shapes.len(),
         baseline,
+        stable,
         part,
         reach_m: extent,
     });
     ctx.add_handles(vertex_handles(def));
     Ok(())
+}
+
+/// Adds the lines of non-geographic shapes that are geographic all the
+/// same: the control-point edges both runs stroke whole or, for a graphic
+/// with none, the segments both runs draw at one place. The first part's
+/// id, with the edges and segments added.
+fn add_lines(
+    ctx: &mut Ctx<'_>,
+    plane: &LocalPlane<'_>,
+    (anchors, xy): (&[GeoPoint], &[Xy]),
+    runs: &(baseline::Run<'_>, baseline::Run<'_>),
+    extent: f64,
+) -> (
+    Option<crate::construction::PartId>,
+    Vec<(usize, baseline::Edge)>,
+    Vec<stable::StableSegments>,
+) {
+    let added = baseline::add(ctx, plane, anchors, xy, runs);
+    let first = added.first().map(|&(id, _)| id);
+    let edges: Vec<_> = added.into_iter().flat_map(|(_, edges)| edges).collect();
+    if !edges.is_empty() {
+        return (first, edges, Vec::new());
+    }
+    let (first, segments) = stable::add(ctx, plane, runs, extent);
+    (first, edges, segments)
 }
 
 /// Ground size the graphic spans, in metres: its control points' extent or,

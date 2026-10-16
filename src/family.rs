@@ -29,6 +29,7 @@ mod tests;
 pub(crate) use axis::AxisKind;
 pub(crate) use context::Ctx;
 pub(crate) use ported::baseline as ported_baseline;
+pub(crate) use ported::stable as ported_stable;
 pub(crate) use ported::{ms_info, shape_fill, shape_outline};
 
 /// How a family of symbols is constructed and edited.

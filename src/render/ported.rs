@@ -39,6 +39,7 @@ pub(crate) fn resolve(
         geographic,
         shape_count,
         baseline,
+        stable,
         part,
         ..
     } = decoration
@@ -58,7 +59,9 @@ pub(crate) fn resolve(
     };
     let width = |t: &str| metrics.text_width_px(font, t);
     let (mut items, mut labels) = (Vec::new(), Vec::new());
-    for run in clip::runs(kind, pixels, near) {
+    let runs = clip::runs(kind, pixels, near);
+    let whole = runs.len() == 1;
+    for run in runs {
         let input = Input {
             line_type: *line_type,
             symbol,
@@ -79,11 +82,7 @@ pub(crate) fn resolve(
             if paired && geographic.get(i).copied().unwrap_or(false) {
                 continue;
             }
-            let lines = if crate::family::ported_baseline::stroked(shape) {
-                baseline::strip(shape.polylines(), edges.as_ref())
-            } else {
-                shape.polylines()
-            };
+            let lines = screen_lines(shape, i, edges.as_ref(), (stable, paired && whole));
             items.extend(screen_items(
                 ctx,
                 &frame,
@@ -103,6 +102,27 @@ pub(crate) fn resolve(
         ));
     }
     Ok((items, labels))
+}
+
+/// The lines of engine shape `i` left for the screen tier: without the
+/// segments the construction drew on the ground along control-point edges
+/// (`edges`) or, when the view draws the whole graphic with the shapes it
+/// had at construction (`matched`), segment by segment (`stable`).
+fn screen_lines(
+    shape: &Shape,
+    i: usize,
+    edges: Option<&crate::family::ported_baseline::Paths>,
+    (stable, matched): (&[crate::family::ported_stable::StableSegments], bool),
+) -> Vec<Vec<(f64, f64)>> {
+    if !crate::family::ported_baseline::stroked(shape) {
+        return shape.polylines();
+    }
+    let lines = baseline::strip(shape.polylines(), edges);
+    if matched {
+        crate::family::ported_stable::strip(i, lines, stable)
+    } else {
+        lines
+    }
 }
 
 /// Lines `lines` of an engine shape as screen items, each vertex carried to
