@@ -1,5 +1,5 @@
-//! Phase Line, Named Area of Interest, Main Attack, Air Corridor, Range Fan
-//! Sector and Bypass Easy.
+//! Phase Line, Named Area of Interest, Air Corridor, Range Fan Sector and
+//! Bypass Easy; Main Attack is declared with the other axes (`axes`).
 
 use super::{MANY, cm, list, opt, req};
 use crate::family::Family;
@@ -9,7 +9,6 @@ use crate::support::SymbolSpec;
 
 const NAI: Family = Family::LabelledArea { prefix: "NAI" };
 const T: &[crate::support::ModifierSpec] = &[opt(M::T)];
-const AXIS: &[crate::support::ModifierSpec] = &[opt(M::T), opt(M::W), opt(M::W1)];
 const CORRIDOR: &[crate::support::ModifierSpec] = &[
     opt(M::T),
     req(M::AM),
@@ -33,8 +32,6 @@ pub(super) static SPECS: &[SymbolSpec] = &[
         .amplifiers(T),
     cm(D1, 120200, NAI).points(3, MANY).amplifiers(T),
     cm(E1, 120200, NAI).points(3, MANY).amplifiers(T),
-    cm(D1, 151403, Family::Axis).points(3, 50).amplifiers(AXIS),
-    cm(E1, 151403, Family::Axis).points(3, 50).amplifiers(AXIS),
     cm(
         D1,
         170100,

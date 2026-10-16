@@ -8,12 +8,14 @@ use crate::sidc::EntityCode;
 use crate::standard::StandardVersion;
 
 mod app6e;
+mod axes;
 mod corridors;
 mod first_milestone;
 
 /// Every declaration table.
 pub(super) static TABLES: &[&[SymbolSpec]] = &[
     first_milestone::SPECS,
+    axes::SPECS,
     corridors::SPECS,
     app6e::SPECS,
     crate::generated::specs::SPECS,

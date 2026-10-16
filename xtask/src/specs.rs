@@ -10,7 +10,7 @@
 //! agreement with the oracle alone. APP-6(E) graphics need a row in its
 //! text, which prints draw rules as prose, so both use the draw rule
 //! upstream's catalog gives. APP-6 graphics are drawn by the ported renderer
-//! throughout.
+//! unless `HAND_BUILT` lists their version code.
 
 mod fields;
 mod rules;
@@ -36,7 +36,11 @@ const OUTPUT: &str = "src/generated/specs.rs";
 const HAND_BUILT: &[(u32, &[u32])] = &[
     (140_300, &[11, 15]),
     (120_200, &[11, 15]),
-    (151_403, &[11, 15]),
+    (151_401, &[10, 11, 15, 16]),
+    (151_402, &[10, 11, 15, 16]),
+    (151_403, &[10, 11, 15, 16]),
+    (151_404, &[10, 11, 15, 16]),
+    (151_406, &[10, 16]),
     (170_100, &[11, 15, 16]),
     (242_200, &[11, 15]),
     (270_601, &[11, 15]),

@@ -269,3 +269,56 @@ fn the_control_point_limit_fits_vertex_handle_indices() {
     );
     assert_eq!(Budget::default().control_point_limit(), 10_000);
 }
+
+/// Every axis of advance in the catalogue is drawn by the axis family in
+/// every edition, so its sides and arrowhead are geographic parts the map
+/// drapes, never a frame fitted to the screen.
+#[test]
+fn every_axis_of_advance_is_geographic() {
+    use crate::construction::PartRole;
+    use crate::style::Fill;
+    const AXES: &[&str] = &["Maneuver Areas", "Axis of Advance"];
+    let mut checked = 0;
+    for entry in crate::catalog::entries().iter().filter(|e| e.path == AXES) {
+        for version in entry.versions.iter() {
+            let id = SymbolId::graphic(version, [0, 3, 0], entry.symbol_set, entry.entity).unwrap();
+            let spec =
+                support::spec(&id).unwrap_or_else(|e| panic!("{} {version:?}: {e}", entry.name));
+            assert!(
+                matches!(spec.family, Family::Axis(_)),
+                "{} {version:?} is not drawn by the axis family",
+                entry.name
+            );
+            let mut d = def(
+                "11032500001514030000",
+                &[(20.0, 50.0), (20.1, 50.03), (20.01, 50.01)],
+            );
+            d.symbol = id;
+            let c = construct(&d, &Config::default()).unwrap();
+            assert!(!c.has_screen_decorations(), "{}", entry.name);
+            let items = crate::render::geographic(&c, &crate::render::View::new(0, 0)).unwrap();
+            let roles = |r| items.iter().filter(|i| i.role == r).count();
+            assert!(
+                roles(PartRole::Line) >= 2,
+                "{} {version:?}: sides",
+                entry.name
+            );
+            assert!(
+                roles(PartRole::Arrowhead) >= 1,
+                "{} {version:?}: head",
+                entry.name
+            );
+            if entry.entity.get() == 151404 {
+                assert!(
+                    items
+                        .iter()
+                        .filter(|i| i.role == PartRole::Arrowhead)
+                        .all(|i| i.fill == Fill::None),
+                    "Supporting Attack {version:?}: filled arrowhead"
+                );
+            }
+            checked += 1;
+        }
+    }
+    assert_eq!(checked, 18);
+}

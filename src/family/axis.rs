@@ -1,26 +1,61 @@
-//! Axes of advance (Main Attack): a two-sided body along the centreline with
-//! a barbed, notched arrowhead.
+//! Axes of advance: a two-sided body along the centreline with an arrowhead,
+//! drawn in the form of each kind ([`AxisKind`]).
 //!
 //! Point 1 is the arrow tip, points 2..N-1 run back along the centreline,
 //! and point N sets the width (its distance from the last centreline
 //! segment) and the arrowhead length (its distance from the tip along that
-//! segment). Everything is sized on the ground, so it scales with the map.
+//! segment). Everything is sized on the ground, so it scales with the map
+//! and the whole graphic belongs to the geographic tier. The rear end stays
+//! open.
 
 use crate::construction::{GeoGeometry, LabelPlacement, LabelSpec, PartId, PartRole};
 use crate::definition::GraphicDefinition;
 use crate::family::{ConstructError, Ctx, vertex_handles};
 use crate::geo::GeoPoint;
 use crate::plane::{LocalPlane, Xy, offset_polyline};
-use crate::style::Fill;
+use crate::style::{DashPattern, Fill, Stroke};
+
+mod figures;
+#[cfg(test)]
+mod tests;
+
+/// Which axis of advance is drawn; each is the same body and arrowhead
+/// sized from the same points, with its own head and figures.
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
+pub(crate) enum AxisKind {
+    /// Main Attack: the arrowhead is closed by a notch behind the tip.
+    Main,
+    /// Supporting Attack: a plain, unfilled arrowhead.
+    Supporting,
+    /// Airborne/Aviation: the two sides cross over the last body segment.
+    Airborne,
+    /// Attack Helicopter: the Airborne form with a rotor at the crossing.
+    AttackHelicopter,
+    /// Feint: the Supporting form with a dashed chevron ahead of the head.
+    Feint,
+}
+
+impl AxisKind {
+    fn crossed(self) -> bool {
+        matches!(self, Self::Airborne | Self::AttackHelicopter)
+    }
+}
 
 /// The axis geometry in the local plane.
 struct Shape {
     lower: Vec<Xy>,
     upper: Vec<Xy>,
     head: Vec<Xy>,
+    /// Extra figures of the kind, each an open polyline, with whether it is
+    /// dashed.
+    figures: Vec<(Vec<Xy>, bool)>,
 }
 
-pub(crate) fn construct(ctx: &mut Ctx<'_>, def: &GraphicDefinition) -> Result<(), ConstructError> {
+pub(crate) fn construct(
+    ctx: &mut Ctx<'_>,
+    def: &GraphicDefinition,
+    kind: AxisKind,
+) -> Result<(), ConstructError> {
     let control: Vec<GeoPoint> = def.positions().collect();
     let degenerate = |reason| ConstructError::Degenerate {
         symbol: ctx.spec.name(),
@@ -29,10 +64,11 @@ pub(crate) fn construct(ctx: &mut Ctx<'_>, def: &GraphicDefinition) -> Result<()
     let origin = *control.first().ok_or(degenerate("an axis needs a tip"))?;
     let plane = LocalPlane::new(ctx.earth, origin);
     let xy: Vec<Xy> = control.iter().map(|&p| plane.to_xy(p)).collect();
-    let shape = shape(&xy).ok_or(degenerate(
+    let shape = shape(&xy, kind).ok_or(degenerate(
         "the tip, second and width points must not coincide",
     ))?;
-    ctx.take_vertices(shape.lower.len() + shape.upper.len() + shape.head.len())?;
+    let figure_vertices: usize = shape.figures.iter().map(|(f, _)| f.len()).sum();
+    ctx.take_vertices(shape.lower.len() + shape.upper.len() + shape.head.len() + figure_vertices)?;
     let to_geo = |pts: &[Xy]| pts.iter().map(|&p| plane.to_geo(p)).collect::<Vec<_>>();
     let (lower, upper, head) = (
         to_geo(&shape.lower),
@@ -48,6 +84,22 @@ pub(crate) fn construct(ctx: &mut Ctx<'_>, def: &GraphicDefinition) -> Result<()
         stroke,
         Fill::None,
     );
+    for (figure, dashed) in &shape.figures {
+        let stroke = if *dashed {
+            Stroke {
+                dash: DashPattern::Dashed,
+                ..ctx.palette.solid_line
+            }
+        } else {
+            ctx.palette.line
+        };
+        ctx.add_part(
+            PartRole::Decoration,
+            GeoGeometry::Line(to_geo(figure)),
+            Some(stroke),
+            Fill::None,
+        );
+    }
     add_labels(ctx, def, &control, body);
     ctx.add_handles(
         vertex_handles(def)
@@ -63,7 +115,7 @@ pub(crate) fn construct(ctx: &mut Ctx<'_>, def: &GraphicDefinition) -> Result<()
     Ok(())
 }
 
-fn shape(points: &[Xy]) -> Option<Shape> {
+fn shape(points: &[Xy], kind: AxisKind) -> Option<Shape> {
     let (centre, width_point) = points.split_at(points.len().checked_sub(1)?);
     let (&tip, &width_point) = (centre.first()?, width_point.first()?);
     let second = *centre.get(1)?;
@@ -81,17 +133,37 @@ fn shape(points: &[Xy]) -> Option<Shape> {
     // Body centreline from the tail to the arrowhead base.
     let mut line: Vec<Xy> = centre.iter().skip(1).rev().copied().collect();
     line.push(base);
-    let lower = offset_polyline(&line, -half)?;
-    let upper = offset_polyline(&line, half)?;
-    let (&l, &u) = (lower.last()?, upper.last()?);
+    let mut lower = offset_polyline(&line, -half)?;
+    let mut upper = offset_polyline(&line, half)?;
+    let (l, u) = (*lower.last()?, *upper.last()?);
     let across = u.sub(l).unit()?;
-    let inner = tip.add(base.sub(tip).unit()?.scale(half));
     let barb_l = l.sub(across.scale(half));
     let barb_u = u.add(across.scale(half));
+    let head = if kind == AxisKind::Main {
+        let inner = tip.add(base.sub(tip).unit()?.scale(half));
+        vec![tip, barb_l, l, inner, u, barb_u, tip]
+    } else {
+        vec![l, barb_l, tip, barb_u, u]
+    };
+    let mut figures = Vec::new();
+    if kind.crossed() {
+        // Each side ends on the other's side of the arrowhead base.
+        *lower.last_mut()? = u;
+        *upper.last_mut()? = l;
+    }
+    match kind {
+        AxisKind::AttackHelicopter => {
+            let rotor = figures::rotor(&lower, &upper, &line, half)?;
+            figures.extend(rotor.into_iter().map(|f| (f, false)));
+        }
+        AxisKind::Feint => figures.push((figures::feint(tip, base, barb_l, barb_u), true)),
+        AxisKind::Main | AxisKind::Supporting | AxisKind::Airborne => {}
+    }
     Some(Shape {
         lower,
         upper,
-        head: vec![tip, barb_l, l, inner, u, barb_u, tip],
+        head,
+        figures,
     })
 }
 
@@ -128,64 +200,4 @@ fn add_labels(ctx: &mut Ctx<'_>, def: &GraphicDefinition, control: &[GeoPoint], 
 
 fn non_empty(text: &Option<String>) -> Option<&str> {
     text.as_deref().filter(|t| !t.is_empty())
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn straight_axis_proportions() {
-        // Tip at the origin pointing west, second point 10 km east, width
-        // point 1 km behind the tip and 400 m off the axis.
-        let pts = [
-            Xy::new(0.0, 0.0),
-            Xy::new(10_000.0, 0.0),
-            Xy::new(1_000.0, 400.0),
-        ];
-        let s = shape(&pts).unwrap();
-        assert_eq!(
-            s.lower,
-            vec![Xy::new(10_000.0, 200.0), Xy::new(1_000.0, 200.0)]
-        );
-        assert_eq!(
-            s.upper,
-            vec![Xy::new(10_000.0, -200.0), Xy::new(1_000.0, -200.0)]
-        );
-        assert_eq!(
-            s.head,
-            vec![
-                Xy::new(0.0, 0.0),
-                Xy::new(1_000.0, 400.0),
-                Xy::new(1_000.0, 200.0),
-                Xy::new(200.0, 0.0),
-                Xy::new(1_000.0, -200.0),
-                Xy::new(1_000.0, -400.0),
-                Xy::new(0.0, 0.0),
-            ]
-        );
-    }
-
-    #[test]
-    fn bends_keep_every_centreline_point() {
-        let pts = [
-            Xy::new(0.0, 0.0),
-            Xy::new(5_000.0, 0.0),
-            Xy::new(5_000.0, 5_000.0),
-            Xy::new(500.0, 100.0),
-        ];
-        let s = shape(&pts).unwrap();
-        // Tail, mitred bend at point 2, then the arrowhead base.
-        assert_eq!(s.lower.len(), 3);
-        assert_eq!(s.lower[1], Xy::new(4_950.0, 50.0));
-        assert_eq!(s.upper[1], Xy::new(5_050.0, -50.0));
-    }
-
-    #[test]
-    fn degenerate_widths_are_refused() {
-        let on_axis = [Xy::new(0.0, 0.0), Xy::new(10.0, 0.0), Xy::new(5.0, 0.0)];
-        assert!(shape(&on_axis).is_none());
-        let same = [Xy::new(0.0, 0.0), Xy::new(0.0, 0.0), Xy::new(5.0, 5.0)];
-        assert!(shape(&same).is_none());
-    }
 }

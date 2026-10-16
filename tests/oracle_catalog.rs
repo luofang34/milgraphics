@@ -41,11 +41,19 @@ mod catalog {
 
     /// Accepted differences (UPSTREAM.md, "Ported renderer"): symbol code
     /// prefix of the case, the Hausdorff tolerance in pixels, and why.
-    const ACCEPTED: &[(&str, f64, &str)] = &[(
-        "46120104",
-        7.5,
-        "DEPTH_AREA bands are drawn as lines along their centres, not as fills with a hole",
-    )];
+    const ACCEPTED: &[(&str, f64, &str)] = &[
+        (
+            "46120104",
+            7.5,
+            "DEPTH_AREA bands are drawn as lines along their centres, not as fills with a hole",
+        ),
+        (
+            "25151406",
+            3.0,
+            "the feint chevron, 1.5 times the arrowhead, enlarges the arrowhead's \
+             pixel-truncated width in mil-sym",
+        ),
+    ];
 
     /// mil-sym modifier keys and the fields they fill.
     const KEYS: &[(&str, ModifierField)] = &[
